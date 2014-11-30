@@ -1,0 +1,19 @@
+#!/bin/bash
+
+DEP="$1"
+SQF="$1.sqf"
+
+tac $DEP > .$DEP
+rm -f $SQF && touch $SQF 
+
+while read l
+do
+    echo $l
+    p=$(echo $l)
+    p_test=$(grep -w $p $SQF)
+    if [[ -z $p_test ]]; then
+	echo $p >> $SQF
+    fi
+    
+done<.$DEP
+
