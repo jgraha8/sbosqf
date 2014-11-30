@@ -1,5 +1,6 @@
 apsw
 psutil
+pysetuptools
 netifaces
 six
 python-dateutil
@@ -21,6 +22,5 @@ lxml
 ecdsa
 pycrypto
 dnspython
-pysetuptools
 cssutils
 calibre
