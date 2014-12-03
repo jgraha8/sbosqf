@@ -16,3 +16,4 @@ do
     
 done<.$DEP
 
+rm -f .$DEP
