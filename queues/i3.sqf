@@ -1,0 +1,10 @@
+yajl
+libev
+dmenu
+perl-AnyEvent-Handle
+perl-JSON-XS
+perl-AnyEvent-I3
+perl-common-sense
+confuse
+i3status
+i3
