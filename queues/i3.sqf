@@ -1,10 +1,10 @@
 yajl
 libev
 dmenu
-perl-AnyEvent-Handle
-perl-JSON-XS
-perl-AnyEvent-I3
 perl-common-sense
+perl-AnyEvent-Handle
+perl-AnyEvent-I3
+perl-JSON-XS
 confuse
 i3status
 i3
