@@ -5,10 +5,11 @@ i3
 perl-JSON-XS
   perl-common-sense
   perl-JSON
-perl-AnyEvent-Handle
+perl-AnyEvent
+  Net-SSLeay
 perl-AnyEvent-I3
   perl-JSON-XS
-  perl-AnyEvent-Handle
+  perl-AnyEvent
 dmenu
 libev
 yajl
