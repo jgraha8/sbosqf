@@ -26,7 +26,10 @@ function parse_dep_file {
 	    (( USE_OPTPKGS == 0 )) && break
 	    /bin/true
 	else
-	    parse_dep_file $l $dep
+	    if [[ $l != "-"* && \
+		$l != "\#"* ]]; then
+		parse_dep_file $l $dep
+	    fi
 	fi
     done<$topdep
 }

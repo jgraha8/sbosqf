@@ -1,0 +1,5 @@
+REQUIRED:
+libunique
+gst1-plugins-bad
+
+OPTIONAL:
