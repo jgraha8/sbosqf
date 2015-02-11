@@ -1,0 +1,3 @@
+REQUIRED:
+perl-JSON-XS
+perl-AnyEvent
