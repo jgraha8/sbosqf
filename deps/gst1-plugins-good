@@ -1,0 +1,11 @@
+REQUIRED:
+gst1-plugins-base
+
+OPTIONAL:
+-libdv
+-libshout
+-libvpx
+-libiec61883,
+-jack-audio-connection-kit
+-pulseaudio
+-speex

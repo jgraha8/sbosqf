@@ -1,0 +1,10 @@
+REQUIRED:
+orc
+
+OPTIONAL:
+# SBo has these here; but there inclusion results in circular
+# dependency issues. There should only be a runtime dependency on
+# these plugins
+-gst1-plugins-base
+-gst1-plugins-good
+-gst1-plugins-ugly 

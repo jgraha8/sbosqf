@@ -11,82 +11,6 @@ function print_usage {
     echo "  -p          Print the dependency tree"
 }
 
-################################################################################
-# Parses a dependency file and inserts the package name into a global dependency 
-# file. Each entry is also the name of a dependency file which is recursively 
-# parsed.
-################################################################################
-function parse_dep_file {
- 
-   local topdep=$1
-   local dep=$2
-
-   if (( $CHECK_INST == 1 )); then
-       check_inst $topdep
-       (( $? == 1 )) && return
-   fi
-
-   echo $topdep >> $dep
-
-   if [[ ! -f $topdep ]]; then
-       echo "$topdep dependency file not found--assuming no dependencies"
-       return
-   fi
-
-    while read l
-    do 
-	if [[ $l == "REQUIRED:" || -z $l ]]; then
-	    /bin/true
-	elif [[ $l == "OPTIONAL:" ]]; then
-	    (( USE_OPTPKGS == 0 )) && break
-	    /bin/true
-	else
-	    if [[ $l != "-"* && \
-		$l != "\#"* ]]; then
-		parse_dep_file $l $dep
-	    fi
-	fi
-    done<$topdep
-}
-
-function check_inst {
-    local pkg=$1
-    for f in /var/log/packages/${pkg}*
-    do 
-	[[ ! -f $f ]] && break
-
-	pkg_other=${f##*\/}
-
-	pkg_info=$(get_pkg_info $pkg_other)
-
-	name=$(echo $pkg_info | cut -d: -f1)
-	ext=$(echo $pkg_info | cut -d: -f4)
-
-	if [[ $name == $pkg && $ext != *"_SBo" ]]; then
-	    echo "previous installation for $pkg found: $pkg_other"
-	    return 1
-	fi
-    done
-    return 0
-}
-
-function get_pkg_info {
-    local pkg=$1
-    
-    ext=${pkg##*-}
-    pkg=${pkg%-${ext}}
-
-    arch=${pkg##*-}
-    pkg=${pkg%-${arch}}
-    
-    ver=${pkg##*-}
-    pkg=${pkg%-${ver}}
-
-    name=${pkg}
-
-    echo "$name:$ver:$arch:$ext"
-}
-
 function print_blank_n {
     N=$1
     for (( i=0; i<$N; i++ ))
@@ -129,11 +53,53 @@ function print_dep_tree {
 	    print_blank_n $DEP_TREE_LVL
 	    echo "$l"
 	else
-	    print_dep_tree $l
+	    is_entry $l
+	    if (( $? == 1  )); then
+		print_dep_tree $l
+	    else
+		print_blank_n $DEP_TREE_LVL
+		echo $l
+	    fi
 	fi
     done<$topdep
 
     DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
+}
+
+################################################################################
+# Parses a dependency file and inserts the package name into a global dependency 
+# file. Each entry is also the name of a dependency file which is recursively 
+# parsed.
+################################################################################
+function parse_dep_file {
+ 
+   local topdep=$1
+   local dep=$2
+
+   if (( $CHECK_INST == 1 )); then
+       check_inst $topdep
+       (( $? == 1 )) && return
+   fi
+
+   echo $topdep >> $dep
+
+   if [[ ! -f $topdep ]]; then
+       echo "$topdep dependency file not found--assuming no dependencies"
+       return
+   fi
+
+    while read l
+    do 
+	if [[ $l == "REQUIRED:" || -z $l ]]; then
+	    /bin/true
+	elif [[ $l == "OPTIONAL:" ]]; then
+	    (( USE_OPTPKGS == 0 )) && break
+	    /bin/true
+	else
+	    is_entry $l
+	    (( $? == 1  )) && parse_dep_file $l $dep
+	fi
+    done<$topdep
 }
 
 
@@ -155,6 +121,53 @@ function gen_sqf_file {
 	
     done<.$dep
     rm -f .$dep
+}
+
+function is_entry {
+    local l=$1
+    if [[ $l == "-"* || $l == "#"* ]]; then
+	return 0
+    else
+	return 1
+    fi
+}
+
+function check_inst {
+    local pkg=$1
+    for f in /var/log/packages/${pkg}*
+    do 
+	[[ ! -f $f ]] && break
+
+	pkg_other=${f##*\/}
+
+	pkg_info=$(get_pkg_info $pkg_other)
+
+	name=$(echo $pkg_info | cut -d: -f1)
+	ext=$(echo $pkg_info | cut -d: -f4)
+
+	if [[ $name == $pkg && $ext != *"_SBo" ]]; then
+	    echo "previous installation for $pkg found: $pkg_other"
+	    return 1
+	fi
+    done
+    return 0
+}
+
+function get_pkg_info {
+    local pkg=$1
+    
+    ext=${pkg##*-}
+    pkg=${pkg%-${ext}}
+
+    arch=${pkg##*-}
+    pkg=${pkg%-${arch}}
+    
+    ver=${pkg##*-}
+    pkg=${pkg%-${ver}}
+
+    name=${pkg}
+
+    echo "$name:$ver:$arch:$ext"
 }
 
 # Set defaults

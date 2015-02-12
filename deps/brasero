@@ -3,3 +3,6 @@ libunique
 gst1-plugins-bad
 
 OPTIONAL:
+libburn
+libisofs
+-totem-pl-parser
