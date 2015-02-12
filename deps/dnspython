@@ -1,0 +1,5 @@
+REQUIRED:
+
+OPTIONAL:
+-pycrypto
+-ecdsa

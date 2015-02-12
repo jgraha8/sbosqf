@@ -1,0 +1,7 @@
+REQUIRED:
+
+OPTIONAL:
+-Pygments
+-Sphinx
+-python3
+pysetuptools
