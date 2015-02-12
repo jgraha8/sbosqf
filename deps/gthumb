@@ -1,0 +1,9 @@
+REQUIRED:
+
+OPTIONAL:
+-clutter
+-libwebp
+json-glib
+brasero
+-webkit2
+gstreamer1
