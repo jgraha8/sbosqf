@@ -1,15 +1,30 @@
 #!/bin/bash
+################################################################################
+#
+################################################################################
 
 function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
     echo "  -o          Enable optional packages"
+    echo "  -c          Check if packages are already installed from other sources; only active with option -o"
+    echo "  -p          Print the dependency tree"
 }
 
+################################################################################
+# Parses a dependency file and inserts the package name into a global dependency 
+# file. Each entry is also the name of a dependency file which is recursively 
+# parsed.
+################################################################################
 function parse_dep_file {
  
    local topdep=$1
    local dep=$2
+
+   if (( $CHECK_INST == 1 )); then
+       check_inst $topdep
+       (( $? == 1 )) && return
+   fi
 
    echo $topdep >> $dep
 
@@ -34,10 +49,59 @@ function parse_dep_file {
     done<$topdep
 }
 
-function pad_blanks {
-    for (( i=0; i<$1; i++ ))
+function check_inst {
+    local pkg=$1
+    for f in /var/log/packages/${pkg}*
+    do 
+	[[ ! -f $f ]] && break
+
+	pkg_other=${f##*\/}
+
+	pkg_info=$(get_pkg_info $pkg_other)
+
+	name=$(echo $pkg_info | cut -d: -f1)
+	ext=$(echo $pkg_info | cut -d: -f4)
+
+	if [[ $name == $pkg && $ext != *"_SBo" ]]; then
+	    echo "previous installation for $pkg found: $pkg_other"
+	    return 1
+	fi
+    done
+    return 0
+}
+
+function get_pkg_info {
+    local pkg=$1
+    
+    ext=${pkg##*-}
+    pkg=${pkg%-${ext}}
+
+    arch=${pkg##*-}
+    pkg=${pkg%-${arch}}
+    
+    ver=${pkg##*-}
+    pkg=${pkg%-${ver}}
+
+    name=${pkg}
+
+    echo "$name:$ver:$arch:$ext"
+}
+
+function print_blank_n {
+    N=$1
+    for (( i=0; i<$N; i++ ))
     do
-	echo -n "  "
+	echo -n ' '
+    done
+}
+
+
+function print_char_n {
+    char="$1"
+    N=$2
+    for (( i=0; i<$N; i++ ))
+    do
+	echo -ne $char
     done
 }
 
@@ -45,10 +109,10 @@ function print_dep_tree {
  
    local topdep=$1
 
-   pad_blanks $DEP_TREE_LVL
-   echo $topdep
+   print_blank_n $DEP_TREE_LVL
+   echo "$topdep"
 
-   DEP_TREE_LVL=$(( DEP_TREE_LVL + 2 ))
+   DEP_TREE_LVL=$(( DEP_TREE_LVL + 8 ))
 
    if [[ ! -f $topdep ]]; then
        echo "$topdep dependency file not found--assuming no dependencies"
@@ -58,17 +122,18 @@ function print_dep_tree {
     while read l
     do 
 	if [[ $l == "REQUIRED:" || -z $l ]]; then
-	    pad_blanks $DEP_TREE_LVL
-	    echo $l
+	    print_blank_n $DEP_TREE_LVL
+	    echo "$l"
 	elif [[ $l == "OPTIONAL:" ]]; then
 	    (( USE_OPTPKGS == 0 )) && break
-	    echo $l
+	    print_blank_n $DEP_TREE_LVL
+	    echo "$l"
 	else
 	    print_dep_tree $l
 	fi
     done<$topdep
 
-    DEP_TREE_LVL=$(( DEP_TREE_LVL - 2 ))
+    DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
 }
 
 
@@ -98,7 +163,9 @@ ACTION_GENSQF=2
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
+CHECK_INST=0
 ACTION=$ACTION_GENSQF
+ARCH=$(uname -m)
 
 # Run through the options
 while (( $# > 0 )); do
@@ -109,6 +176,10 @@ while (( $# > 0 )); do
 	    ;;
 	"-p")
 	    ACTION=$ACTION_PRINT
+	    shift 1
+	    ;;
+	"-c")
+	    CHECK_INST=1
 	    shift 1
 	    ;;
 	*)
@@ -125,7 +196,7 @@ TOPDEP="$1"
 DEP="dep"
 SQF="$1.sqf"
 
-rm -f $DEP
+rm -f $DEP && touch $DEP
 rm -f $SQF
 
 if (( $ACTION == $ACTION_PRINT )); then
