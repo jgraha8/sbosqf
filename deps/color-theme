@@ -1,0 +1,5 @@
+REQUIRED:
+# From SBo:
+# Put the following line in your configuration file (~/.emacs for a single user):
+#
+# (require 'color-theme)
