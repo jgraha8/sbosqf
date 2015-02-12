@@ -35,7 +35,6 @@ function print_dep_tree {
 
    print_blank_n $DEP_TREE_LVL
    echo "$topdep"
-
    DEP_TREE_LVL=$(( DEP_TREE_LVL + 8 ))
 
    if [[ ! -f $topdep ]]; then
@@ -53,7 +52,7 @@ function print_dep_tree {
 	    print_blank_n $DEP_TREE_LVL
 	    echo "$l"
 	else
-	    is_entry $l
+	    check_is_entry $l
 	    if (( $? == 1  )); then
 		print_dep_tree $l
 	    else
@@ -62,7 +61,7 @@ function print_dep_tree {
 	    fi
 	fi
     done<$topdep
-
+    
     DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
 }
 
@@ -76,12 +75,18 @@ function parse_dep_file {
    local topdep=$1
    local dep=$2
 
-   if (( $CHECK_INST == 1 )); then
-       check_inst $topdep
-       (( $? == 1 )) && return
-   fi
+   # First find if it is a metapackage
+   check_is_metapkg $topdep
+   local metapkg=$?
 
-   echo $topdep >> $dep
+   if (( $metapkg == 0 )); then
+       if (( $CHECK_IS_INST == 1 )); then
+	   check_is_inst $topdep
+	   (( $? == 1 )) && return
+       fi
+       # Only write the pkg name if not a metapkg
+       echo $topdep >> $dep
+   fi
 
    if [[ ! -f $topdep ]]; then
        echo "$topdep dependency file not found--assuming no dependencies"
@@ -94,9 +99,8 @@ function parse_dep_file {
 	    /bin/true
 	elif [[ $l == "OPTIONAL:" ]]; then
 	    (( USE_OPTPKGS == 0 )) && break
-	    /bin/true
 	else
-	    is_entry $l
+	    check_is_entry $l
 	    (( $? == 1  )) && parse_dep_file $l $dep
 	fi
     done<$topdep
@@ -123,16 +127,30 @@ function gen_sqf_file {
     rm -f .$dep
 }
 
-function is_entry {
-    local l=$1
-    if [[ $l == "-"* || $l == "#"* ]]; then
+function check_is_metapkg {
+    local topdep=$1
+    local val=$(grep -w "METAPKG" $topdep)
+    
+    if [[ -z $val ]]; then
 	return 0
     else
 	return 1
     fi
 }
 
-function check_inst {
+function check_is_entry {
+    local l=$1
+    
+    if [[ $l == "-"* || \
+	$l == "#"*  || \
+	$l == "METAPKG" ]]; then
+	return 0
+    else
+	return 1
+    fi
+}
+
+function check_is_inst {
     local pkg=$1
     for f in /var/log/packages/${pkg}*
     do 
@@ -176,7 +194,7 @@ ACTION_GENSQF=2
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
-CHECK_INST=0
+CHECK_IS_INST=0
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
 
@@ -192,7 +210,7 @@ while (( $# > 0 )); do
 	    shift 1
 	    ;;
 	"-c")
-	    CHECK_INST=1
+	    CHECK_IS_INST=1
 	    shift 1
 	    ;;
 	*)
