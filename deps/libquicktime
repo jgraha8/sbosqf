@@ -1,0 +1,10 @@
+REQUIRED:
+
+OPTIONAL:
+faac
+faad2
+ffmpeg
+lame
+-libdv
+schroedinger
+x264

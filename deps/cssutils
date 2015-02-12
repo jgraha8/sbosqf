@@ -1,0 +1,6 @@
+REQUIRED:
+pysetuptools
+
+OPTIONAL:
+-python2-chardet
+-gdata

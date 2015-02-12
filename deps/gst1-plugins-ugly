@@ -1,0 +1,11 @@
+REQUIRED:
+gst1-plugins-base
+
+OPTIONAL:
+-a52dec
+-opencore-amr
+lame
+libdvdcss
+libmpeg2
+-twolame
+x264

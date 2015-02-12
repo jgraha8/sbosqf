@@ -1,0 +1,25 @@
+REQUIRED:
+blas
+lapack
+
+OPTIONAL:
+# These are part of suitesparse; disabled individual components and using suitesparse instead
+-amd
+-camd
+-colamd
+-ccolamd
+-cholmod
+-umfpack
+-cxsparse
+suitesparse
+glpk
+arpack-ng
+qrupdate
+qhull
+hdf5
+fltk
+ftgl
+gl2ps
+jdk
+# Disabling to try to use the default ImageMagick package
+-GraphicsMagick
