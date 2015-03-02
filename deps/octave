@@ -17,7 +17,8 @@ arpack-ng
 qrupdate
 qhull
 hdf5
-fltk
+# Disabling since may be giving segfaults when plotting
+-fltk
 ftgl
 gl2ps
 jdk
