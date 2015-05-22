@@ -1,0 +1,11 @@
+REQUIRED:
+libpeas
+json-glib
+totem-pl-parser
+
+OPTIONAL:
+vala
+avahi
+libdmapsharing
+brasero
+libmusicbrainz3
