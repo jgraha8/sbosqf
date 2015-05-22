@@ -1,6 +1,6 @@
 REQUIRED:
-blas
-lapack
+atlas
+lapack-atlas
 
 OPTIONAL:
 # These are part of suitesparse; disabled individual components and using suitesparse instead
