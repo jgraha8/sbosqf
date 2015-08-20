@@ -1,0 +1,4 @@
+REQUIRED:
+gst-ffmpeg
+pysetuptools
+gst-python

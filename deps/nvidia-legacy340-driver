@@ -1,0 +1,3 @@
+REQUIRED:
+nvidia-legacy340-kernel
+libvdpau

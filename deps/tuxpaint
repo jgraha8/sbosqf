@@ -1,0 +1,5 @@
+REQUIRED:
+libpaper
+
+OPTIONAL:
+SDL_Pango
