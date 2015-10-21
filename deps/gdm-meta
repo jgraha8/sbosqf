@@ -1,0 +1,4 @@
+METAPKG
+REQUIRED:
+gdm
+gdm-themes-slack
