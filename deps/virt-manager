@@ -1,0 +1,12 @@
+REQUIRED:
+gnome-python2-gconf
+tunctl
+urlgrabber
+ipaddr-py
+spice-gtk
+gtk-vnc
+libvirt-glib
+pygobject3
+vte3
+libvirt-python
+libosinfo

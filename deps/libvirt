@@ -1,0 +1,10 @@
+REQUIRED:
+urlgrabber
+yajl
+
+OPTIONAL:
+-netcat-openbsd
+avahi
+-libcap-ng
+-libssh2
+-xen
