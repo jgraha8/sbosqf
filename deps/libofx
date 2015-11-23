@@ -1,0 +1,5 @@
+REQUIRED:
+
+#This optionally depends on libxml++ in order to build ofxconnect.
+OPTIONAL:
+-libxml++

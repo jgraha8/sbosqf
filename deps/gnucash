@@ -1,0 +1,11 @@
+REQUIRED:
+libgnomecanvas
+libofx
+goffice0.8
+webkitgtk
+
+# If you want the SQL database integration, you must first have libdbi
+# and libdbi-drivers installed, and then pass the DBI=true flag.
+OPTIONAL:
+-libdbi
+-libdbi-drivers
