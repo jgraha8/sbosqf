@@ -118,7 +118,7 @@ function gen_sqf_file {
     while read l
     do
 	p=$(echo $l)
-	p_test=$(grep -w $p $sqf)
+	p_test=$(grep -x $p $sqf)
 	if [[ -z $p_test ]]; then
 	    echo $p >> $sqf
 	fi
