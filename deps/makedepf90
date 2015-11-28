@@ -1,2 +1,3 @@
 BUILDOPTS: 
+# Applies the '-B PATH' option patch
 PATCH=yes

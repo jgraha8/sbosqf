@@ -1,2 +1,6 @@
 REQUIRED:
 lablgtk
+
+BUILDOPTS:
+# Enables gui
+FLAVOR=gtk2
