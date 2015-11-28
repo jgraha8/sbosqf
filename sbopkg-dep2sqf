@@ -30,17 +30,14 @@ function print_char_n {
 }
 
 function print_dep_tree {
- 
-   local topdep=$1
+    
+    local topdep=$1
 
-   print_blank_n $DEP_TREE_LVL
-   echo "$topdep"
-   DEP_TREE_LVL=$(( DEP_TREE_LVL + 8 ))
-
-   if [[ ! -f $topdep ]]; then
-       echo "$topdep dependency file not found--assuming no dependencies"
-       return
-   fi
+    [[ ! -f $topdep ]] && return
+    
+    print_blank_n $DEP_TREE_LVL
+    echo "$topdep"
+    DEP_TREE_LVL=$(( DEP_TREE_LVL + 8 ))
 
     while read l
     do 
@@ -62,7 +59,7 @@ function print_dep_tree {
 		echo $l
 	    fi
 	fi
-    done<$topdep
+    done <$topdep
     
     DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
 }
@@ -73,32 +70,32 @@ function print_dep_tree {
 # parsed.
 ################################################################################
 function parse_dep_file {
- 
-   local topdep=$1
-   local dep=$2
+    
+    local topdep=$1
+    local dep=$2
 
-   local block=0
+    local block=0
 
-   # First find if it is a metapackage
-   check_is_metapkg $topdep
-   local metapkg=$?
+    # First find if it is a metapackage
+    check_is_metapkg $topdep
+    local metapkg=$?
 
-   if (( $metapkg == 0 )); then
-       if (( $CHECK_IS_INST == 1 )); then
-	   check_is_inst $topdep
-	   (( $? == 1 )) && return
-       fi
-       # Only write the pkg name if not a metapkg
-       echo "$topdep $(get_buildopts $topdep)" >> $dep
-   fi
+    if (( $metapkg == 0 )); then
+	if (( $CHECK_IS_INST == 1 )); then
+	    check_is_inst $topdep
+	    (( $? == 1 )) && return
+	fi
+	# Only write the pkg name if not a metapkg
+	echo "$topdep $(get_buildopts $topdep)" >> $dep
+    fi
 
-   if [[ ! -f $topdep ]]; then
-       echo "$topdep dependency file not found--assuming no dependencies"
-       return
-   fi
+    if [[ ! -f $topdep ]]; then
+	echo "$topdep dependency file not found--assuming no dependencies"
+	return
+    fi
 
     while read l
-    do 
+    do
 	if [[ $l == "REQUIRED:" || -z $l ]]; then
 	    /bin/true
 	elif [[ $l == "OPTIONAL:" ]]; then
@@ -109,30 +106,38 @@ function parse_dep_file {
 	    check_is_entry $l
 	    (( $? == 1  )) && parse_dep_file $l $dep
 	fi
-    done<$topdep
+    done <$topdep
 }
 
 function get_buildopts {
+
     local topdep=$1
-    local inblock=0
+
+    [[ ! -f $topdep ]] && return
+
+    # Get the line number of the BUILDOPTS
+    local n=$(grep -nx "BUILDOPTS:" $topdep | cut -d: -f1)
+    [[ -z $n ]] && return
+
+    # Extract only the build options
+    tail -n +$((n+1)) $topdep > .buildopts
 
     local buildopts=""
-
     while read l
     do
-	if [[ $l == "BUILDOPTS:" ]]; then
-	    inblock=1
-	elif [[ $l == "OPTIONAL:" || 
-		$l == "REQUIRED:" ]]; then
-	    inblock=0
+	if [[ $l == "OPTIONAL:" || $l == "REQUIRED:" ]]; then
+	    break
 	else
 	    check_is_entry "$l"
 	    (( $? == 1 )) && buildopts="$buildopts $l"
 	fi
-    done<$topdep
-	
+    done <.buildopts
+
+    rm -f .buildopts
+
     [[ ! -z $buildopts ]] && buildopts="|$buildopts"
     echo "$buildopts"
+   
 }
 
 function gen_sqf_file {
@@ -151,13 +156,13 @@ function gen_sqf_file {
 	    echo "$p" >> $sqf
 	fi
 	
-    done<.$dep
+    done <.$dep
     rm -f .$dep
 }
 
 function check_is_metapkg {
     local topdep=$1
-    local val=$(grep -w "METAPKG" $topdep)
+    local val=$(grep -w "METAPKG" $topdep 2> /dev/null)
     
     if [[ -z $val ]]; then
 	return 0
