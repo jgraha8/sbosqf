@@ -1,10 +1,9 @@
 REQUIRED:
 
+OPTIONAL:
 # CIRCULAR DEPENDENCY WARNING: as libcacard is now included in qemu,
 # if you want smartcard support in spice you will need to build qemu
 # then rebuild spice.
-
-OPTIONAL:
 spice
 usbredir
 -device-tree-compile
