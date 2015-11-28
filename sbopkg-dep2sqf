@@ -51,6 +51,8 @@ function print_dep_tree {
 	    (( USE_OPTPKGS == 0 )) && break
 	    print_blank_n $DEP_TREE_LVL
 	    echo "$l"
+	elif [[ $l == "BUILDOPTS:" ]]; then
+	    break
 	else
 	    check_is_entry $l
 	    if (( $? == 1  )); then
@@ -75,6 +77,8 @@ function parse_dep_file {
    local topdep=$1
    local dep=$2
 
+   local block=0
+
    # First find if it is a metapackage
    check_is_metapkg $topdep
    local metapkg=$?
@@ -85,7 +89,7 @@ function parse_dep_file {
 	   (( $? == 1 )) && return
        fi
        # Only write the pkg name if not a metapkg
-       echo $topdep >> $dep
+       echo "$topdep $(get_buildopts $topdep)" >> $dep
    fi
 
    if [[ ! -f $topdep ]]; then
@@ -99,6 +103,8 @@ function parse_dep_file {
 	    /bin/true
 	elif [[ $l == "OPTIONAL:" ]]; then
 	    (( USE_OPTPKGS == 0 )) && break
+	elif [[ $l == "BUILDOPTS:" ]]; then
+	    break
 	else
 	    check_is_entry $l
 	    (( $? == 1  )) && parse_dep_file $l $dep
@@ -106,6 +112,28 @@ function parse_dep_file {
     done<$topdep
 }
 
+function get_buildopts {
+    local topdep=$1
+    local inblock=0
+
+    local buildopts=""
+
+    while read l
+    do
+	if [[ $l == "BUILDOPTS:" ]]; then
+	    inblock=1
+	elif [[ $l == "OPTIONAL:" || 
+		$l == "REQUIRED:" ]]; then
+	    inblock=0
+	else
+	    check_is_entry "$l"
+	    (( $? == 1 )) && buildopts="$buildopts $l"
+	fi
+    done<$topdep
+	
+    [[ ! -z $buildopts ]] && buildopts="|$buildopts"
+    echo "$buildopts"
+}
 
 function gen_sqf_file {
 
@@ -117,10 +145,10 @@ function gen_sqf_file {
 
     while read l
     do
-	p=$(echo $l)
-	p_test=$(grep -x $p $sqf)
+	p=$(echo "$l")
+	p_test=$(grep -x "$p" $sqf)
 	if [[ -z $p_test ]]; then
-	    echo $p >> $sqf
+	    echo "$p" >> $sqf
 	fi
 	
     done<.$dep
@@ -139,9 +167,10 @@ function check_is_metapkg {
 }
 
 function check_is_entry {
-    local l=$1
+    local l="$1"
     
-    if [[ $l == "-"* || \
+    if [[ -z $l || \
+	$l == "-"* || \
 	$l == "#"*  || \
 	$l == "METAPKG" ]]; then
 	return 0
