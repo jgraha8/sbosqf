@@ -1,0 +1,4 @@
+OPTIONAL: 
+# xtables-addons is an optional dependency to use the new per-IP accounting
+# feature.
+-xtable-addons
