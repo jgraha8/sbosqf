@@ -4,10 +4,8 @@ libvirt-glib
 libvirt-python
 gnome-python2-gconf
 tunctl
-urlgrabber
 ipaddr-py
-python-urllib3
-python-requests
+urlgrabber
 pygobject3
 gtk-vnc
 spice-gtk
