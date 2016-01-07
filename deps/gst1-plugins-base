@@ -2,6 +2,6 @@ REQUIRED:
 gstreamer1
 
 OPTIONAL:
-# orc is required by streamer1 so leaving it will get pulled even if
+# orc is required by gstreamer1 so leaving it will get pulled even if
 # optional packages are not requested
 orc
