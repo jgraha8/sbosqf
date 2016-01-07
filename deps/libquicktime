@@ -1,5 +1,8 @@
 REQUIRED:
 
+BUILDOPTS:
+LDFLAGS=-L/usr/lib64
+
 OPTIONAL:
 faac
 faad2
@@ -8,3 +11,4 @@ lame
 -libdv
 schroedinger
 x264
+

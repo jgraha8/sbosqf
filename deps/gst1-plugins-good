@@ -1,6 +1,9 @@
 REQUIRED:
 gst1-plugins-base
 
+BUILDOPTS:
+LDFLAGS=-L/usr/lib64
+
 OPTIONAL:
 -libdv
 -libshout
