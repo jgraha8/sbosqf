@@ -94,18 +94,27 @@ function parse_dep_file {
 	return
     fi
 
+    local in_block=0
     while read l
     do
 	if [[ $l == "REQUIRED:" || -z $l ]]; then
-	    /bin/true
+	    in_block=REQUIRED_BLOCK
+	    continue
 	elif [[ $l == "OPTIONAL:" ]]; then
-	    (( USE_OPTPKGS == 0 )) && break
+	    in_block=OPTIONAL_BLOCK
+	    continue
 	elif [[ $l == "BUILDOPTS:" ]]; then
-	    break
-	else
+	    in_block=BUILDOPTS_BLOCK
+	    continue
+	fi
+
+	# Only parse recursively for required or optional blocks
+	if (( in_block == REQUIRED_BLOCK )) || \
+	   (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
 	    check_is_entry $l
 	    (( $? == 1  )) && parse_dep_file $l $dep
 	fi
+
     done <$topdep
 }
 
@@ -119,7 +128,7 @@ function get_buildopts {
     local n=$(grep -nx "BUILDOPTS:" $topdep | cut -d: -f1)
     [[ -z $n ]] && return
 
-    # Extract only the build options
+    # Extract only the build options and down
     tail -n +$((n+1)) $topdep > .buildopts
 
     local buildopts=""
@@ -221,6 +230,11 @@ function get_pkg_info {
 
     echo "$name:$ver:$arch:$ext"
 }
+
+# Parameters
+REQUIRED_BLOCK=1
+OPTIONAL_BLOCK=2
+BUILDOPTS_BLOCK=3
 
 # Set defaults
 ACTION_PRINT=1
