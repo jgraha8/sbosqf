@@ -1,0 +1,4 @@
+REQUIRED:
+SDL2_image
+OpenAL
+physfs
