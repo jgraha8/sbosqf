@@ -4,7 +4,7 @@ yajl
 
 OPTIONAL:
 -netcat-openbsd
-avahi
+-avahi
 -libcap-ng
 -libssh2
 -xen
