@@ -1,0 +1,13 @@
+# Bindings for Lua and libdbi (optional dependencies) will be made
+# automatically if they are detected, this can be changed with: LUA=no
+# LIBDBI=no
+
+OPTIONAL:
+lua
+libdbi
+# runtime dependency for libdbi (requires libdbi)
+libdbi-drivers
+
+BUILDOPTS:
+LUA=yes
+LIBDBI=yes

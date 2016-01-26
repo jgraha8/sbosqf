@@ -1,0 +1,14 @@
+# numactl:
+# libnuma provides conversion helpers between hwloc CPU setsand
+# libnuma-specific types, such as bitmasks. It helps you use libnuma
+# memory-binding functions with hwloc CPU sets.
+
+# cudatoolkit:
+# CUDA enables interoperability with NVIDIA CUDA Driver and Runtime
+# interfaces. For instance, it may return the list of processors near
+# NVIDIA GPUs. Note that if I/O device discovery is enabled, GPUs may
+# also appear as PCI objects in the topology. 
+
+OPTIONAL:
+numactl
+cudatoolkit

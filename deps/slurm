@@ -1,0 +1,21 @@
+# The SLURM controller (slurmctld) can run without elevated privileges,
+# so it is recommended that a user "slurm" be created for it before Slurm is executed.
+
+# # groupadd -g 311 slurm
+# # useradd -u 311 -d /var/lib/slurm -s /bin/false -g slurm slurm
+
+# Next, a configuration file can be build using your favorite web browser and the
+# file /usr/doc/slurm-14.11.8/html/configurator.html.
+
+REQUIRED:
+munge
+
+OPTIONAL:
+hwloc
+rrdtool
+
+BUILDOPTS:
+HWLOC=yes
+RRDTOOL=yes
+# Auto-detected if not set (i.e. enabled if numactl is installed)
+NUMA=yes

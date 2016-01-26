@@ -1,0 +1,9 @@
+# On most platforms, the munged daemon does not require root privileges to run.
+# If possible, you should run the daemon as a non-privileged user.
+# This can be specified in the init script /etc/rc.d/rc.munge.
+
+# # groupadd -g 310 munge
+# # useradd -u 310 -d /var/lib/munge -s /bin/false -g munge munge
+
+# After installation a secret key file needs to be created. Follow instructions from:
+# https://github.com/dun/munge/wiki/Installation-Guide#creating-a-secret-key
