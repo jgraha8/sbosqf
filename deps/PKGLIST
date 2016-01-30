@@ -1,13 +1,13 @@
-BeautifulSoup \
-GraphicsMagick \
-Net-SSLeay \
-OpenAL \
-SDL2 \
-SDL2_image \
-SDL_Pango \
-apsw \
-arno-iptables-firewall \
-arpack-ng \
+BeautifulSoup
+GraphicsMagick
+Net-SSLeay
+OpenAL
+SDL2
+SDL2_image
+SDL_Pango
+apsw
+arno-iptables-firewall
+arpack-ng
 atlas
 avahi
 base-meta
