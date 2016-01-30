@@ -6,9 +6,10 @@
 function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
-    echo "  -o          Enable optional packages"
     echo "  -c          Check if packages are already installed from other sources; only active with option -o"
-    echo "  -p          Print the dependency tree"
+    echo "  -o          Enable optional packages"
+    echo "  -p          Print the dependency tree (does not generate sqf file)"
+    echo "  -r          Generates sqf file to remove a package and dependencies"
 }
 
 function print_blank_n {
@@ -51,7 +52,7 @@ function print_dep_tree {
 	elif [[ $l == "BUILDOPTS:" ]]; then
 	    break
 	else
-	    check_is_entry $l
+	    check_is_entry $l 
 	    if (( $? == 1  )); then
 		print_dep_tree $l
 	    else
@@ -82,7 +83,7 @@ function parse_dep_file {
 
     if (( $metapkg == 0 )); then
 	if (( $CHECK_IS_INST == 1 )); then
-	    check_is_inst $topdep
+	    check_is_inst $topdep 0 # check only non-SBo packages
 	    (( $? == 1 )) && return
 	fi
 	# Only write the pkg name if not a metapkg
@@ -110,7 +111,7 @@ function parse_dep_file {
 
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-	   (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
+	    (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
 	    check_is_entry $l
 	    (( $? == 1  )) && parse_dep_file $l $dep
 	fi
@@ -118,6 +119,9 @@ function parse_dep_file {
     done <$topdep
 }
 
+################################################################################
+#
+################################################################################
 function get_buildopts {
 
     local topdep=$1
@@ -146,9 +150,12 @@ function get_buildopts {
 
     [[ ! -z $buildopts ]] && buildopts="|$buildopts"
     echo "$buildopts"
-   
+    
 }
 
+################################################################################
+#
+################################################################################
 function gen_sqf_file {
 
     local dep=$1
@@ -167,8 +174,78 @@ function gen_sqf_file {
 	
     done <.$dep
     rm -f .$dep
+
+    echo -e "${COLOR_OK}[OK]${COLOR_END} $sqf generated"
 }
 
+################################################################################
+#
+################################################################################
+function gen_sqf_rm_file {
+
+    local dep=$1
+    local sqf=$2
+
+    local pkg=$(tail -n 1 $sqf)
+    local is_needed=0
+
+    tac $sqf > .tmp
+    rm -f $sqf
+
+    sqf="rm-${sqf}"
+    rm -f $sqf
+    
+    while read p
+    do
+	p=$(echo $p | cut -d' ' -f1)
+
+	local remove=0
+
+	# Check if the pkg is installed
+	check_is_inst $p 1 &> /dev/null # Check only SBo packages
+	if (( $? == 1 )); then # Is installed
+	    remove=1
+	    # Loop through the package list seeing if this packages is needed
+	    while read pl
+	    do
+		[[ $p == $pl ]] && continue
+		# Check if it is a package in the queue file
+		local t=$(grep $pl .tmp)
+		[[ ! -z $t ]] && continue
+
+		t=$(grep -x $p $pl)
+		if [[ ! -z $t ]]; then
+		    check_is_inst $pl 1 &> /dev/null # Check only SBo packages
+		    # Other package needs this one
+		    if (( $? == 1 )); then
+			echo -e "${COLOR_FAIL}[KEEP]${COLOR_END} $p (needed by $pl)"
+			remove=0
+			break
+		    fi
+		fi
+	    done<$PKGLIST
+	fi
+
+	if (( remove == 1 )); then
+	    echo -e "${COLOR_OK}[RM]${COLOR_END} $p"
+	    echo $p >> $sqf
+	fi
+
+    done <.tmp
+
+    rm -f .tmp
+
+    if [[ -f $sqf ]]; then
+	echo -e "${COLOR_OK}[OK]${COLOR_END} $sqf generated"
+    else
+	echo -e "${COLOR_FAIL}[FAIL]${COLOR_END} $sqf not generated"
+    fi
+}
+
+
+################################################################################
+#
+################################################################################
 function check_is_metapkg {
     local topdep=$1
     local val=$(grep -w "METAPKG" $topdep 2> /dev/null)
@@ -180,6 +257,9 @@ function check_is_metapkg {
     fi
 }
 
+################################################################################
+#
+################################################################################
 function check_is_entry {
     local l="$1"
     
@@ -193,8 +273,13 @@ function check_is_entry {
     fi
 }
 
+################################################################################
+#
+################################################################################
 function check_is_inst {
     local pkg=$1
+    local include=$2
+
     for f in /var/log/packages/${pkg}*
     do 
 	[[ ! -f $f ]] && break
@@ -206,14 +291,42 @@ function check_is_inst {
 	name=$(echo $pkg_info | cut -d: -f1)
 	ext=$(echo $pkg_info | cut -d: -f4)
 
-	if [[ $name == $pkg && $ext != *"_SBo" ]]; then
-	    echo "previous installation for $pkg found: $pkg_other"
-	    return 1
+	if [[ $name == $pkg ]]; then
+
+	    [[ -z $include ]] && return 1
+
+	    if [[ ! $include && $ext != *"_SBo"  ]]; then
+		echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
+		echo "external installation of $pkg found: $pkg_other"
+		return 1
+	    fi
+
+	    if [[ $include && $ext == *"_SBo" ]]; then
+		echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
+		echo "installation of $pkg found: $pkg_other"
+		return 1
+	    fi
+
 	fi
     done
     return 0
 }
 
+################################################################################
+# Check if package is a dependency of an installed package
+################################################################################
+function check_is_ext_dep {
+    local pkg=$1
+
+    for p in `grep -H ^$pkg *`
+    do
+	echo $p
+    done
+}
+
+################################################################################
+#
+################################################################################
 function get_pkg_info {
     local pkg=$1
     
@@ -231,7 +344,22 @@ function get_pkg_info {
     echo "$name:$ver:$arch:$ext"
 }
 
+BLACK="01;30"
+RED="01;31"
+GREEN="01;32"
+YELLOW="01;33"
+BLUE='01;34'
+MAGENTA="01;35"
+CYAN="01;36"
+
+COLOR_OK="\033[${GREEN}m"
+COLOR_WARN="\033[${YELLOW}m"
+COLOR_INFO="\033[${YELLOW}m"
+COLOR_FAIL="\033[${RED}m"
+COLOR_END="\033[0m"
+
 # Parameters
+PKGLIST="PKGLIST"
 REQUIRED_BLOCK=1
 OPTIONAL_BLOCK=2
 BUILDOPTS_BLOCK=3
@@ -239,16 +367,22 @@ BUILDOPTS_BLOCK=3
 # Set defaults
 ACTION_PRINT=1
 ACTION_GENSQF=2
+ACTION_GENSQF_RM=3
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
 CHECK_IS_INST=0
+# Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
 
 # Run through the options
 while (( $# > 0 )); do
     case $1 in
+	"-c")
+	    CHECK_IS_INST=1
+	    shift 1
+	    ;;
 	"-o")
 	    USE_OPTPKGS=1
 	    shift 1
@@ -257,8 +391,8 @@ while (( $# > 0 )); do
 	    ACTION=$ACTION_PRINT
 	    shift 1
 	    ;;
-	"-c")
-	    CHECK_IS_INST=1
+	"-r")
+	    ACTION=$ACTION_GENSQF_RM
 	    shift 1
 	    ;;
 	*)
@@ -280,6 +414,12 @@ rm -f $SQF
 
 if (( $ACTION == $ACTION_PRINT )); then
     print_dep_tree $TOPDEP
+elif (( $ACTION == $ACTION_GENSQF_RM )); then
+    # Enable external installed checking
+    CHECK_IS_INST=1
+    parse_dep_file $TOPDEP $DEP
+    gen_sqf_file $DEP $SQF &> /dev/null
+    gen_sqf_rm_file $DEP $SQF
 else
     parse_dep_file $TOPDEP $DEP
     gen_sqf_file $DEP $SQF
