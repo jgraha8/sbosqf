@@ -227,7 +227,7 @@ function gen_sqf_rm_file {
 		    check_is_inst $pl 1 1> /dev/null # Check only SBo packages
 		    # Other package needs this one
 		    if (( $? == 1 )); then
-			echo -e "${COLOR_FAIL}[KEEP]${COLOR_END} " > /dev/stderr
+			echo -en "${COLOR_FAIL}[KEEP]${COLOR_END} " > /dev/stderr
 			echo "$p (needed at least by $pl)" > /dev/stderr
 			remove=0
 			break
