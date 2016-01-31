@@ -87,14 +87,15 @@ function parse_dep_file {
 	    check_is_inst $topdep 0 # check only non-SBo packages
 	    (( $? == 1 )) && return
 	fi
+
+	if [[ -z $(grep -x $topdep $PKGLIST) ]]; then
+	    echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
+	    echo "$topdep not in $PKGLIST" > /dev/stderr
+	    exit 1
+	fi
+
 	# Only write the pkg name if not a metapkg
 	echo "$topdep $(get_buildopts $topdep)" >> $dep
-    fi
-
-    if [[ -z $(grep -x $topdep $PKGLIST) ]]; then
-	echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
-	echo "$topdep not in $PKGLIST" > /dev/stderr
-	exit 1
     fi
 
     if [[ ! -f $topdep ]]; then
