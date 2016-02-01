@@ -6,7 +6,8 @@
 function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
-    echo "  -c          Check if packages are already installed from other sources; only active with option -o"
+    echo "  -C          Check if packages are already installed"
+    echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -h          Show this information"
     echo "  -o          Enable optional packages"
     echo "  -p          Print the dependency tree (does not generate sqf file)"
@@ -83,8 +84,8 @@ function parse_dep_file {
     local metapkg=$?
 
     if (( $metapkg == 0 )); then
-	if (( $CHECK_IS_INST_EXT == 1 )); then
-	    check_is_inst $topdep 0 # check only non-SBo packages
+	if (( $CHECK_INST == 1 )); then
+	    check_is_inst $topdep $CHECK_INST_SBO_ONLY
 	    (( $? == 1 )) && return
 	fi
 
@@ -231,6 +232,10 @@ function gen_sqf_rm_file {
 			echo -en "${COLOR_FAIL}[KEEP]${COLOR_END} " > /dev/stderr
 			echo "$p (needed at least by $pl)" > /dev/stderr
 			remove=0
+
+			# If we cannot remove the target package, then break completely out and terminate
+			[[ $p == $pkg ]] && break 2
+
 			break
 		    fi
 		fi
@@ -383,7 +388,10 @@ ACTION_GENSQF_RM=3
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
-CHECK_IS_INST_EXT=0
+CHECK_INST_EXT=0
+CHECK_INST_ALL=0
+CHECK_INST=0
+CHECK_INST_SBO_ONLY=""
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
@@ -391,8 +399,12 @@ ARCH=$(uname -m)
 # Run through the options
 while (( $# > 0 )); do
     case $1 in
+	"-C")
+	    CHECK_INST_ALL=1
+	    shift 1
+	    ;;
 	"-c")
-	    CHECK_IS_INST_EXT=1
+	    CHECK_INST_EXT=1
 	    shift 1
 	    ;;
 	"-h")
@@ -421,6 +433,32 @@ if (( $# != 1 )); then
     exit 1
 fi
 
+# Manually setting the installation checks if we are generating a 
+if (( $ACTION == $ACTION_GENSQF_RM )); then
+    if (( $CHECK_INST_ALL == 1 )); then
+	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
+	echo "ignoring option -C"
+    fi
+    
+    CHECK_INST_EXT=1
+    CHECK_INST_ALL=0
+fi
+
+# Set the installation check flags 
+if (( $CHECK_INST_EXT == 1 )); then
+    CHECK_INST=1
+    CHECK_INST_SBO_ONLY=0 # Exclude SBo packages
+fi
+if (( $CHECK_INST_ALL == 1 )); then
+    if (( $CHECK_INST_EXT == 1 )); then
+	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
+	echo "ignoring option -c"
+	CHECK_INST_EXT=0
+    fi
+    CHECK_INST=1
+    CHECK_INST_SBO_ONLY="" # No setting for SBo only, so this will include all packages
+fi
+
 TOPDEP="$1"
 DEP="dep"
 SQF="$1.sqf"
@@ -432,7 +470,6 @@ if (( $ACTION == $ACTION_PRINT )); then
     print_dep_tree $TOPDEP
 elif (( $ACTION == $ACTION_GENSQF_RM )); then
     # Enable external installed checking
-    CHECK_IS_INST_EXT=1
     parse_dep_file $TOPDEP $DEP 1> /dev/null
     gen_sqf_file $DEP $SQF 1> /dev/null
     gen_sqf_rm_file $DEP $SQF
