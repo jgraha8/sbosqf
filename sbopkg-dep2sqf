@@ -310,19 +310,15 @@ function check_is_inst {
 
 	if [[ $name == $pkg ]]; then
 
-	    [[ -z $sbo_only ]] && return 1
-
-	    if [[ (( $sbo_only == 0 )) && $ext != *"_SBo"  ]]; then
-		echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
-		echo "external installation of $pkg found: $pkg_other"
-		return 1
+	    if [[ (( $sbo_only == 0 )) && $ext == *"_SBo"  ]]; then
+		continue
+	    elif [[ (( $sbo_only == 1 )) && $ext != *"_SBo" ]]; then
+		continue
 	    fi
 
-	    if [[ (( $sbo_only == 1 )) && $ext == *"_SBo" ]]; then
-		echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
-		echo "installation of $pkg found: $pkg_other"
-		return 1
-	    fi
+	    echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
+	    echo "installation of $pkg found: $pkg_other"
+	    return 1	    
 
 	fi
     done
