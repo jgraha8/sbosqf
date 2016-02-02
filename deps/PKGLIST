@@ -1,6 +1,7 @@
 BeautifulSoup
 GraphicsMagick
 Net-SSLeay
+NetworkManager-openconnect
 OpenAL
 SDL2
 SDL2_image
@@ -29,6 +30,7 @@ cvsps
 cython
 dmenu
 dnspython
+dos2unix
 faac
 faad2
 feh
@@ -37,6 +39,7 @@ flashplayer-plugin
 flawfinder
 fltk
 ftgl
+gcalctool
 gdm
 gdm-meta
 gdm-themes-slack
@@ -47,6 +50,7 @@ gnome-python2-gconf
 gnucash
 goffice0.8
 graphviz
+gsl
 gst-ffmpeg
 gst-python
 gst1-plugins-bad
@@ -64,6 +68,7 @@ hwloc
 i3
 i3status
 imlib2
+iotop
 ipaddr-py
 irrlicht
 jdk
@@ -84,6 +89,7 @@ libdvpau
 libev
 libgnomecanvas
 libisofs
+libjpeg-turbo
 libmp4v2
 libmpeg2
 libmusicbrainz3
@@ -104,12 +110,14 @@ libvirt-glib
 libvirt-python
 libwebp
 libx86emu
+linux_logo
 ltrace
 lua
 lxml
 makedepf90
 mechanize
 meld
+mplayer-codecs64
 munge
 ndiswrapper-kernel
 ndiswrapper-utils
@@ -121,6 +129,7 @@ nvidia-legacy340-kernel
 ocaml
 ocaml-findlib
 octave
+openconnect
 openjpeg
 openmpi
 orc
@@ -153,16 +162,20 @@ python-urllib3
 qemu
 qhull
 qrupdate
+quilt
 quvi
 rdiff-backup
+reptyr
 rhythmbox
 rrdtool
+rxvt-unicode
 schroedinger
 scons
 shiboken
 shorewall
 shorewall-core
 six
+sloccount
 slurm
 smpeg
 sourcenav
@@ -182,6 +195,7 @@ totem-pl-parser
 tunctl
 tuxpaint
 unison
+units
 urlgrabber
 usbredir
 vala
