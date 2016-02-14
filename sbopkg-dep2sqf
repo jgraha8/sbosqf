@@ -315,9 +315,9 @@ function check_is_inst {
 
 	if [[ $name == $pkg ]]; then
 
-	    if [[ (( $sbo_only == 0 )) && $ext == *"_SBo"  ]]; then
+	    if [[ (( $sbo_only == 0 )) && $ext == *"ponce"  ]]; then
 		continue
-	    elif [[ (( $sbo_only == 1 )) && $ext != *"_SBo" ]]; then
+	    elif [[ (( $sbo_only == 1 )) && $ext != *"ponce" ]]; then
 		continue
 	    fi
 
