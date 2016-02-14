@@ -154,7 +154,6 @@ pygame
 pygobject3
 pygtksourceview
 pyparsing
-pysetuptools
 pyside
 python-dateutil
 python-requests

@@ -2,4 +2,3 @@ OPTIONAL:
 lxml
 -Sphinx
 -Pygments
-pysetuptools

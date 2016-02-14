@@ -4,7 +4,6 @@ BeautifulSoup
 OPTIONAL:
 -Cython
 -python3
-pysetuptools
 # Runtime dependencies
 -cssselect
 -html5lib
