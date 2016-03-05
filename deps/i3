@@ -2,9 +2,8 @@ REQUIRED:
 dmenu
 libev
 yajl
+libxkbcommon
 
 OPTIONAL:
 i3status
-perl-JSON-XS
-perl-AnyEvent
 perl-AnyEvent-I3

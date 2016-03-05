@@ -110,6 +110,7 @@ libvirt-glib
 libvirt-python
 libwebp
 libx86emu
+libxkbcommon
 linux_logo
 ltrace
 lua
