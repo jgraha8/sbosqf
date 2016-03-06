@@ -54,8 +54,6 @@ gsl
 gst-ffmpeg
 gst-python
 gst-plugins-bad
-gst1-plugins-base
-gst1-plugins-good
 gst1-plugins-ugly
 gstreamer1
 gthumb
