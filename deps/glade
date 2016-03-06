@@ -1,0 +1,2 @@
+BUILDOPTS:
+LDFLAGS="-L/usr/lib64"

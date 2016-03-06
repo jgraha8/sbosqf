@@ -1,6 +1,5 @@
 REQUIRED:
-libunique
-gst1-plugins-bad
+gst-plugins-bad
 
 OPTIONAL:
 libburn

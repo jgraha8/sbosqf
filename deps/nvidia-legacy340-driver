@@ -1,3 +1,5 @@
 REQUIRED:
 nvidia-legacy340-kernel
-libvdpau
+
+BUILDOPTS:
+COMPAT32=yes

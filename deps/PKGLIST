@@ -53,7 +53,7 @@ graphviz
 gsl
 gst-ffmpeg
 gst-python
-gst1-plugins-bad
+gst-plugins-bad
 gst1-plugins-base
 gst1-plugins-good
 gst1-plugins-ugly
@@ -84,7 +84,6 @@ libdbi
 libdbi-drivers
 libdmapsharing
 libdvdcss
-libdvdnav
 libdvpau
 libev
 libgnomecanvas
@@ -209,3 +208,6 @@ xvidcore
 yajl
 youtube-dl
 zotero
+meld3
+gtksourceview3
+glade

@@ -1,6 +1,3 @@
-REQUIRED:
-gst1-plugins-base
-
 OPTIONAL:
 -amrnb
 -amrwb
@@ -9,7 +6,6 @@ OPTIONAL:
 -celt
 -libdc1394
 -libdca
-libdvdnav
 faac
 faad2
 -flite
@@ -22,14 +18,11 @@ faad2
 -libmusicbrainz
 -libofa
 libquicktime
-libvdpau
--libvpx
 -libwebp
 -lv2
 -musepack-tools
 OpenAL
 -opencv
-openjpeg
 -soundtouch
 swfdec
 xvidcore
