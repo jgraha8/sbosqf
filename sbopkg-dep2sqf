@@ -90,9 +90,9 @@ function parse_dep_file {
 	fi
 
 	if [[ -z $(grep -x $topdep $PKGLIST) ]]; then
-	    echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
-	    echo "$topdep not in $PKGLIST" > /dev/stderr
-	    exit 1
+	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
+	    echo -n "$topdep not in $PKGLIST: "
+	    request_pkg_add $topdep
 	fi
 
 	# Only write the pkg name if not a metapkg
@@ -355,6 +355,29 @@ function get_pkg_info {
     name=${pkg}
 
     echo "$name:$ver:$arch:$ext"
+}
+
+################################################################################
+#
+################################################################################
+function request_pkg_add {  
+    local pkg="$1"
+
+    echo -n "add $pkg? (y/n): "
+    read -u 1 ans
+
+    if [[ "$ans" == "y" ]]; then
+	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
+	echo "$pkg added"
+
+	echo "$1" >> $PKGLIST
+	sort -n $PKGLIST > .p
+	mv .p $PKGLIST
+    else
+	echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
+	echo "not adding required $pkg" > /dev/stderr
+	exit 1
+    fi   
 }
 
 BLACK="01;30"
