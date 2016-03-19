@@ -51,7 +51,6 @@ LAME=yes
 OPENAL=yes
 OPENSSL=yes
 OPUS=yes
-RTMP=yes
 SCHROEDINGER=yes
 SPEEX=yes
 X264=yes
