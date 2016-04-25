@@ -64,6 +64,7 @@ gtk-vnc
 gtksourceview
 gtksourceview3
 gts
+guile1.8
 hdf5
 hwinfo
 hwloc
@@ -202,6 +203,7 @@ sword
 texi2html
 texlive
 texlive-texmf-extra
+texmacs
 totem-pl-parser
 tunctl
 tuxpaint
