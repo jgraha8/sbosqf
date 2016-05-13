@@ -107,6 +107,7 @@ libquvi-scripts
 libreoffice
 librsync
 libsigsegv
+libtxc_dxtn
 libunique
 libvdpau
 libvirt
@@ -195,6 +196,7 @@ spice
 spice-gtk
 spice-protocol
 sshfs-fuse
+steam
 suitesparse
 supertux
 supertuxkart
