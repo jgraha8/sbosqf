@@ -54,9 +54,9 @@ goffice0.8
 graphviz
 gsl
 gsm
-gst-ffmpeg
 gst-plugins-bad
-gst-python
+gst0-ffmpeg
+gst0-python
 gst1-plugins-ugly
 gstreamer1
 gthumb

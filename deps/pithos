@@ -1,3 +1,3 @@
 REQUIRED:
-gst-ffmpeg
-gst-python
+gst0-ffmpeg
+gst0-python
