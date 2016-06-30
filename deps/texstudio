@@ -1,0 +1,2 @@
+BUILDOPTS:
+-QT5GUI=yes
