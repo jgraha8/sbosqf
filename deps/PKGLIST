@@ -32,6 +32,7 @@ dmenu
 dnspython
 dos2unix
 enca
+engauge
 faac
 faad2
 feh
@@ -227,3 +228,5 @@ xvidcore
 yajl
 youtube-dl
 zotero
+gsoap
+texstudio
