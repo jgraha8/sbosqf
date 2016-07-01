@@ -55,6 +55,7 @@ goffice0.8
 graphviz
 gsl
 gsm
+gsoap
 gst-plugins-bad
 gst0-ffmpeg
 gst0-python
@@ -208,6 +209,7 @@ texi2html
 texlive
 texlive-texmf-extra
 texmacs
+texstudio
 totem-pl-parser
 trilinos
 tunctl
@@ -216,6 +218,7 @@ unison
 units
 urlgrabber
 usbredir
+vagrant
 vala
 valgrind
 virt-manager
@@ -228,5 +231,3 @@ xvidcore
 yajl
 youtube-dl
 zotero
-gsoap
-texstudio
