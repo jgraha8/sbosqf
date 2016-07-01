@@ -9,6 +9,7 @@ function print_usage {
     echo "  -C          Check if packages are already installed"
     echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -h          Show this information"
+    echo "  -l          Print the sqf package list to stdout (build options are not included)"
     echo "  -o          Enable optional packages"
     echo "  -p          Print the dependency tree (does not generate sqf file)"
     echo "  -r          Generates sqf file to remove a package and dependencies"
@@ -166,7 +167,7 @@ function get_buildopts {
 ################################################################################
 #
 ################################################################################
-function gen_sqf_file {
+function __gen_sqf {
 
     local dep=$1
     local sqf=$2
@@ -184,6 +185,18 @@ function gen_sqf_file {
 	
     done <.$dep
     rm -f .$dep
+}
+
+
+################################################################################
+#
+################################################################################
+function gen_sqf {
+
+    local dep=$1
+    local sqf=$2
+
+    __gen_sqf $dep $sqf
 
     echo -e "${COLOR_OK}[OK]${COLOR_END} $sqf generated"
 }
@@ -191,7 +204,29 @@ function gen_sqf_file {
 ################################################################################
 #
 ################################################################################
-function gen_sqf_rm_file {
+function gen_sqf_list {
+
+    local dep=$1
+    local sqf=$2
+    local -i n=0
+    
+    __gen_sqf $dep $sqf
+
+    while read l
+    do
+	(( n++ ))
+	p=$(echo $l | cut -d'|' -f1)
+	echo -n "$p "
+    done<$sqf
+    (( n > 0 )) && echo
+    
+    rm -f $sqf
+}
+
+################################################################################
+#
+################################################################################
+function gen_sqf_rm {
 
     local dep=$1
     local sqf=$2
@@ -404,6 +439,7 @@ BUILDOPTS_BLOCK=3
 ACTION_PRINT=1
 ACTION_GENSQF=2
 ACTION_GENSQF_RM=3
+ACTION_GENSQF_LIST=4
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
@@ -430,6 +466,10 @@ while (( $# > 0 )); do
 	    print_usage
 	    exit 0
 	    ;;
+	"-l")
+	    ACTION=$ACTION_GENSQF_LIST
+	    shift 1
+	    ;;	
 	"-o")
 	    USE_OPTPKGS=1
 	    shift 1
@@ -490,11 +530,14 @@ if (( $ACTION == $ACTION_PRINT )); then
 elif (( $ACTION == $ACTION_GENSQF_RM )); then
     # Enable external installed checking
     parse_dep_file $TOPDEP $DEP 1> /dev/null
-    gen_sqf_file $DEP $SQF 1> /dev/null
-    gen_sqf_rm_file $DEP $SQF
+    gen_sqf $DEP $SQF 1> /dev/null
+    gen_sqf_rm $DEP $SQF
+elif (( $ACTION == $ACTION_GENSQF_LIST )); then
+    parse_dep_file $TOPDEP $DEP
+    gen_sqf_list $DEP .$SQF
 else
     parse_dep_file $TOPDEP $DEP
-    gen_sqf_file $DEP $SQF
+    gen_sqf $DEP $SQF
 fi
 
 rm -f $DEP
