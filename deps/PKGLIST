@@ -52,6 +52,7 @@ gnucash
 goffice0.8
 graphviz
 gsl
+gsoap
 gst-ffmpeg
 gst-python
 gst1-plugins-bad
@@ -192,9 +193,11 @@ sword
 texi2html
 texlive
 texlive-texmf-extra
+texstudio
 totem-pl-parser
 tunctl
 tuxpaint
+twolame
 unison
 units
 urlgrabber
@@ -206,9 +209,8 @@ voxelands
 vte3
 webkitgtk
 x264
+x265
 xvidcore
 yajl
 youtube-dl
 zotero
-gsoap
-texstudio
