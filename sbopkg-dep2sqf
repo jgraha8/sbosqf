@@ -147,13 +147,18 @@ function get_buildopts {
     tail -n +$((n+1)) $topdep > .buildopts
 
     local buildopts=""
+    local opt=""
     while read l
     do
 	if [[ $l == "OPTIONAL:" || $l == "REQUIRED:" ]]; then
 	    break
 	else
 	    check_is_entry "$l"
-	    (( $? == 1 )) && buildopts="$buildopts $l"
+	    if (( $? == 1 )); then
+		# Trim inline comments and whitespace
+		opt=$(echo ${l%%#*})
+		buildopts="$buildopts $opt"
+	    fi
 	fi
     done <.buildopts
 
