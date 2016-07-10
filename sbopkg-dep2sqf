@@ -350,9 +350,9 @@ function check_is_inst {
 
 	if [[ $name == $pkg ]]; then
 
-	    if [[ (( $sbo_only == 0 )) && $ext == *"ponce"  ]]; then
+	    if [[ (( $sbo_only == 0 )) && $ext == *${SBO_TAG}  ]]; then
 		continue
-	    elif [[ (( $sbo_only == 1 )) && $ext != *"ponce" ]]; then
+	    elif [[ (( $sbo_only == 1 )) && $ext != *${SBO_TAG} ]]; then
 		continue
 	    fi
 
@@ -435,6 +435,7 @@ COLOR_FAIL="\033[${RED}m"
 COLOR_END="\033[0m"
 
 # Parameters
+SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REQUIRED_BLOCK=1
 OPTIONAL_BLOCK=2
