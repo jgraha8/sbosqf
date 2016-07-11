@@ -96,6 +96,11 @@ function parse_dep_file {
 	    request_pkg_add $topdep
 	fi
 
+	if [[ -z $(grep -x $topdep $REVIEWED) ]]; then
+	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
+	    echo "$topdep has not been reviewed"
+	fi
+
 	# Only write the pkg name if not a metapkg
 	echo "$topdep $(get_buildopts $topdep)" >> $dep
     fi
@@ -378,6 +383,20 @@ function check_is_ext_dep {
 }
 
 ################################################################################
+# Check package has been reviewed by search the REVIEWED file
+################################################################################
+function check_is_reviewed {
+    local pkg=$1
+
+    if [[ ! -z $(grep -x $pkg $REVIEWED) ]]; then
+	return 1
+    else
+	return 0
+    fi
+}
+
+
+################################################################################
 #
 ################################################################################
 function get_pkg_info {
@@ -437,6 +456,7 @@ COLOR_END="\033[0m"
 # Parameters
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
+REVIEWED="REVIEWED"
 REQUIRED_BLOCK=1
 OPTIONAL_BLOCK=2
 BUILDOPTS_BLOCK=3
