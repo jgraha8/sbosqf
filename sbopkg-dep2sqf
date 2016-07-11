@@ -54,9 +54,8 @@ function print_dep_tree {
 	    echo "$l"
 	elif [[ $l == "BUILDOPTS:" ]]; then
 	    break
-	else
-	    check_is_entry $l 
-	    if (( $? == 1  )); then
+	else    
+	    if check_is_entry $l; then
 		print_dep_tree $l
 	    else
 		print_blank_n $DEP_TREE_LVL
@@ -80,23 +79,19 @@ function parse_dep_file {
 
     local block=0
 
-    # First find if it is a metapackage
-    check_is_metapkg $topdep
-    local metapkg=$?
-
-    if (( $metapkg == 0 )); then
+    # First find if it is not a metapackage 
+    if ! check_is_metapkg $topdep; then
 	if (( $CHECK_INST == 1 )); then
-	    check_is_inst $topdep $CHECK_INST_SBO_ONLY
-	    (( $? == 1 )) && return
+	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
 
-	if [[ -z $(grep -x $topdep $PKGLIST) ]]; then
+	if ! check_is_pkg $topdep; then
 	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
 	    echo -n "$topdep not in $PKGLIST: "
 	    request_pkg_add $topdep
 	fi
 
-	if [[ -z $(grep -x $topdep $REVIEWED) ]]; then
+	if ! check_is_reviewed $topdep; then
 	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
 	    echo "$topdep has not been reviewed"
 	fi
@@ -127,9 +122,8 @@ function parse_dep_file {
 
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-	    (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
-	    check_is_entry $l
-	    (( $? == 1  )) && parse_dep_file $l $dep
+               (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
+	    check_is_entry $l && parse_dep_file $l $dep
 	fi
 
     done <$topdep
@@ -158,8 +152,8 @@ function get_buildopts {
 	if [[ $l == "OPTIONAL:" || $l == "REQUIRED:" ]]; then
 	    break
 	else
-	    check_is_entry "$l"
-	    if (( $? == 1 )); then
+	    
+	    if check_is_entry "$l"; then
 		# Trim inline comments and whitespace
 		opt=$(echo ${l%%#*})
 		buildopts="$buildopts $opt"
@@ -254,26 +248,22 @@ function gen_sqf_rm {
     do
 	p=$(echo $p | cut -d'|' -f1)
 
-
 	local remove=0
 
-	# Check if the pkg is installed
-	check_is_inst $p 1 1> /dev/null # Check only SBo packages
-	if (( $? == 1 )); then # Is installed
+	# Check only SBo packages 
+	if check_is_inst $p 1 1> /dev/null; then # Is installed
 	    remove=1
 	    # Loop through the package list seeing if this packages is needed
 	    while read pl
 	    do
 		[[ $p == $pl ]] && continue
 		# Check if it is a package in the queue file
-		local test=$(grep $pl .tmp)
-		[[ ! -z $test ]] && continue
+		[[ ! -z $(grep $pl .tmp) ]] && continue
 
-		test=$(grep -x $p $pl)
-		if [[ ! -z $test ]]; then
-		    check_is_inst $pl 1 1> /dev/null # Check only SBo packages
+		if [[ ! -z $(grep -x $p $pl) ]]; then
 		    # Other package needs this one
-		    if (( $? == 1 )); then
+		    # Check only SBo packages		    
+		    if check_is_inst $pl 1 1> /dev/null; then
 			echo -en "${COLOR_FAIL}[KEEP]${COLOR_END} " > /dev/stderr
 			echo "$p (needed at least by $pl)" > /dev/stderr
 			remove=0
@@ -313,9 +303,9 @@ function check_is_metapkg {
     local val=$(grep -w "METAPKG" $topdep 2> /dev/null)
     
     if [[ -z $val ]]; then
-	return 0
-    else
 	return 1
+    else
+	return 0
     fi
 }
 
@@ -326,12 +316,12 @@ function check_is_entry {
     local l="$1"
     
     if [[ -z $l || \
-	$l == "-"* || \
-	$l == "#"*  || \
-	$l == "METAPKG" ]]; then
-	return 0
-    else
+		$l == "-"* || \
+		$l == "#"*  || \
+		$l == "METAPKG" ]]; then
 	return 1
+    else
+	return 0
     fi
 }
 
@@ -363,11 +353,11 @@ function check_is_inst {
 
 	    echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
 	    echo "installation of $pkg found: $pkg_other"
-	    return 1	    
+	    return 0
 
 	fi
     done
-    return 0
+    return 1
 }
 
 ################################################################################
@@ -383,12 +373,23 @@ function check_is_ext_dep {
 }
 
 ################################################################################
-# Check package has been reviewed by search the REVIEWED file
+# Check if argument is a package by searching the PKGLIST file
+################################################################################
+function check_is_pkg {
+    local pkg=$1
+    if [[ -z $(grep -x $pkg $PKGLIST) ]]; then
+	return 1
+    else
+	return 0
+    fi
+}
+    
+################################################################################
+# Check package has been reviewed by searching the REVIEWED file
 ################################################################################
 function check_is_reviewed {
     local pkg=$1
-
-    if [[ ! -z $(grep -x $pkg $REVIEWED) ]]; then
+    if [[ -z $(grep -x $pkg $REVIEWED) ]]; then
 	return 1
     else
 	return 0
