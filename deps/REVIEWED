@@ -1,5 +1,14 @@
-i3
+Net-SSLeay
+confuse
 dmenu
+gthumb
+i3
+i3status
 libev
 libxkbcommon
+perl-AnyEvent
+perl-AnyEvent-I3
+perl-JSON
+perl-JSON-XS
+perl-common-sense
 yajl
