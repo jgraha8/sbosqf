@@ -68,6 +68,47 @@ function print_dep_tree {
 }
 
 ################################################################################
+# Prints the info and README of the package as found in the sbopkg repository
+################################################################################
+function print_pkg_info {
+    local pkg=$1
+
+    border1="================================================================================"
+    border2="::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    border3="--------------------------------------------------------------------------------"
+
+    ( 
+    # Should only be one found, but putting in loop in case more are found
+    for f in `find $SBOPKG_REPO -name $pkg -type d`
+    do
+	echo $border1
+	echo "$f"
+	echo $border1
+	echo 
+	echo $border2
+	echo "README"
+	echo $border2
+	cat $f/README
+	echo
+	echo $border2
+	echo "$pkg.info"
+	echo $border2
+	cat $f/$pkg.info
+	echo
+    done
+
+    echo $border1
+    echo "$pkg"
+    echo $border1
+    echo 
+    cat $pkg
+    echo
+        
+    ) | $PAGER
+}
+
+
+################################################################################
 # Parses a dependency file and inserts the package name into a global dependency 
 # file. Each entry is also the name of a dependency file which is recursively 
 # parsed.
@@ -440,6 +481,29 @@ function request_pkg_add {
     fi   
 }
 
+################################################################################
+#
+################################################################################
+function request_reviewed_add {  
+    local pkg="$1"
+
+    echo -n "add $pkg to $REVIEWED? (y/n): "
+    read -u 1 ans
+
+    if [[ "$ans" == "y" ]]; then
+	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
+	echo "$pkg added to REVIEWED"
+
+	echo "$1" >> $REVIEWED
+	sort -n $REVIEWED > .p
+	mv .p $REVIEWED
+    # else
+    # 	echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
+    # 	echo "not adding required $pkg" > /dev/stderr
+    # 	exit 1
+    fi   
+}
+
 BLACK="01;30"
 RED="01;31"
 GREEN="01;32"
@@ -454,7 +518,11 @@ COLOR_WARN="\033[${MAGENTA}m"
 COLOR_FAIL="\033[${RED}m"
 COLOR_END="\033[0m"
 
+# Environment
+PAGER=${PAGER:-less -r}
+
 # Parameters
+SBOPKG_REPO="/var/lib/sbopkg/SBo/14.2"
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
@@ -467,6 +535,7 @@ ACTION_PRINT=1
 ACTION_GENSQF=2
 ACTION_GENSQF_RM=3
 ACTION_GENSQF_LIST=4
+ACTION_REVIEW_PKG=5
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
@@ -483,6 +552,10 @@ while (( $# > 0 )); do
     case $1 in
 	"-C")
 	    CHECK_INST_ALL=1
+	    shift 1
+	    ;;
+	"-R")
+	    ACTION=$ACTION_REVIEW_PKG
 	    shift 1
 	    ;;
 	"-c")
@@ -562,6 +635,9 @@ elif (( $ACTION == $ACTION_GENSQF_RM )); then
 elif (( $ACTION == $ACTION_GENSQF_LIST )); then
     parse_dep_file $TOPDEP $DEP
     gen_sqf_list $DEP .$SQF
+elif (( $ACTION ==$ACTION_REVIEW_PKG )); then
+    print_pkg_info $TOPDEP
+    ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
 else
     parse_dep_file $TOPDEP $DEP
     gen_sqf $DEP $SQF
