@@ -1,4 +1,5 @@
 Net-SSLeay
+bibletime
 confuse
 dmenu
 gthumb
@@ -6,9 +7,11 @@ i3
 i3status
 libev
 libxkbcommon
+makedepf90
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-JSON
 perl-JSON-XS
 perl-common-sense
+sword
 yajl
