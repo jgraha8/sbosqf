@@ -1,0 +1,5 @@
+REQUIRED:
+OpenCASCADE
+eigen3
+Pivy
+xerces-c

@@ -1,0 +1,7 @@
+OPTIONAL:
+FreeImage
+tbb
+gl2ps
+
+BUILDOPTS:
+INSTALL_FULL_DOCS=yes
