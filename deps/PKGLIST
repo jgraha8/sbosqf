@@ -1,11 +1,17 @@
 BeautifulSoup
+Coin
+FreeCAD
+FreeImage
 GraphicsMagick
 Net-SSLeay
 NetworkManager-openconnect
 OpenAL
+OpenCASCADE
+Pivy
 SDL2
 SDL2_image
 SDL_Pango
+SoQt
 apsw
 arno-iptables-firewall
 arpack-ng
@@ -32,6 +38,7 @@ dmenu
 dnspython
 dos2unix
 enca
+eigen3
 engauge
 faac
 faad2
@@ -205,6 +212,7 @@ supertuxkart
 swfdec
 sword
 sword-data-kjv
+tbb
 texi2html
 texlive
 texlive-texmf-extra
