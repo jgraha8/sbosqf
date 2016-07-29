@@ -1,0 +1,2 @@
+BUILDOPTS:
+-DOCS=no

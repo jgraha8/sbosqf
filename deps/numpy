@@ -1,2 +1,4 @@
 REQUIRED:
-lapack-atlas
+-lapack-atlas
+lapack
+

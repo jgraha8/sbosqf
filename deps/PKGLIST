@@ -3,6 +3,7 @@ GraphicsMagick
 Net-SSLeay
 NetworkManager-openconnect
 OpenAL
+OpenBLAS
 SDL2
 SDL2_image
 SDL_Pango
@@ -17,6 +18,7 @@ blas
 bleachbit
 brasero
 calibre
+celt
 celt051
 chromium
 color-theme
@@ -39,6 +41,7 @@ feh
 ffmpeg
 flashplayer-plugin
 flawfinder
+flite
 fltk
 ftgl
 gcalctool
@@ -139,7 +142,8 @@ ocaml
 ocaml-findlib
 octave
 openconnect
-openjpeg
+opencore-amr
+opencv
 openmpi
 opus
 orc
@@ -182,6 +186,7 @@ recode
 reptyr
 rhythmbox
 rrdtool
+rtmpdump
 rxvt-unicode
 schroedinger
 scons
@@ -192,6 +197,7 @@ six
 sloccount
 slurm
 smpeg
+snappy
 sourcenav
 speex
 spice
@@ -222,6 +228,7 @@ usbredir
 vagrant
 vala
 valgrind
+vid.stab
 virt-manager
 voxelands
 vte3

@@ -12,25 +12,35 @@ REQUIRED:
 texlive
 
 OPTIONAL:
+libass
+celt
 faac
-openjpeg
+libfdk-aac
+flite
 lame
 OpenAL
+opencore-amr
+opus
+libquvi
+rtmpdump
 schroedinger
+snappy
+speex
 twolame
+vid.stab
 x264
 x265
 xvidcore
 
 BUILDOPTS:
-# ASS=yes          # (default: no), requires libass
+ASS=yes          # (default: no), requires libass
 # BLURAY=yes       # (default: no), requires libbluray
-# CELT=yes         # (default: no), requires celt
+CELT=yes         # (default: no), requires celt
 # DC1394=yes       # (default: no), requires libdc1394
 # DECKLINK=yes     # (default: no), requires decklink-sdk
 FAAC=yes         # (default: no), requires faac (creates non-redistributable binary)
-# FDK_AAC=yes      # (default: no), requires libfdk-aac (creates non-redistributable binary)
-# FLITE=yes        # (default: no), requires flite
+FDK_AAC=yes      # (default: no), requires libfdk-aac (creates non-redistributable binary)
+FLITE=yes        # (default: no), requires flite
 # FREI0R=yes       # (default: no), requires frei0r
 # GME=yes          # (default: no), requires libgme
 # GSM=yes          # (default: no), requires gsm
@@ -41,17 +51,17 @@ JP2=yes          # (default: no), requires openjpeg
 LAME=yes         # (default: no), requires lame
 # MODPLUG=yes      # (default: no), requires libmodplug
 OPENAL=yes       # (default: no), requires OpenAL
-# OPENCORE=yes     # (default: no), requires opencore-amr
+OPENCORE=yes     # (default: no), requires opencore-amr
 # OPENCV=yes       # (default: no), requires opencv
-# OPENSSL=yes      # (default: no), creates non-redistributable binary
-# OPUS=yes         # (default: no), requires opus
-# QUVI=yes         # (default: no), requires libquvi
-# RTMP=yes         # (default: no), requires rtmpdump
+OPENSSL=yes      # (default: no), creates non-redistributable binary
+OPUS=yes         # (default: no), requires opus
+QUVI=yes         # (default: no), requires libquvi
+RTMP=yes         # (default: no), requires rtmpdump
 SCHROEDINGER=yes # (default: no), requires schroedinger
-# SNAPPY=yes       # (default: no), requires snappy
-# SPEEX=yes        # (default: no), requires speex
+SNAPPY=yes       # (default: no), requires snappy
+SPEEX=yes        # (default: no), requires speex
 TWOLAME=yes      # (default: no), requires twolame
-# VIDSTAB=yes      # (default: no), requires vid.stab
+VIDSTAB=yes      # (default: no), requires vid.stab
 X264=yes         # (default: no), requires x264
 X265=yes         # (default: no), requires x265
 XVID=yes         # (default: no), requires xvidcore

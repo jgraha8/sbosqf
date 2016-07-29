@@ -1,0 +1,7 @@
+# The cudatoolkit does not support gcc 5.x so with it installed opencv
+# will not build (cuda is autodetected).
+
+OPTIONAL:
+numpy # Python bindings
+ffmpeg
+-qt5
