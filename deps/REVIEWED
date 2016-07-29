@@ -25,6 +25,8 @@ libquvi-scripts
 libxkbcommon
 lua
 makedepf90
+meld
+meld3
 numpy
 opencore-amr
 opencv
@@ -38,12 +40,14 @@ perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-String
 perl-common-sense
+pygtksourceview
 recode
 rtmpdump
 schroedinger
 slurm
 snappy
 speex
+supertux
 sword
 sword-data-kjv
 texi2html
