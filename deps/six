@@ -1,4 +1,5 @@
 OPTIONAL:
+-Pysetuptools
 -Pygments
 -Sphinx
 -python3

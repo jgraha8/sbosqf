@@ -36,11 +36,12 @@ cssutils
 cudatoolkit
 cvsps
 cython
+device-tree-compiler
 dmenu
 dnspython
 dos2unix
-enca
 eigen3
+enca
 engauge
 faac
 faad2
@@ -141,6 +142,7 @@ munge
 ndiswrapper-kernel
 ndiswrapper-utils
 netifaces
+ninja
 numactl
 numpy
 nvidia-legacy340-driver
@@ -154,6 +156,7 @@ opencv
 openmpi
 opus
 orc
+parallel
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
@@ -237,6 +240,7 @@ vagrant
 vala
 valgrind
 vid.stab
+virglrenderer
 virt-manager
 voxelands
 vte3
