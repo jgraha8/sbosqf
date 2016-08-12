@@ -112,7 +112,10 @@ libquvi-scripts
 libreoffice
 librsync
 libsigsegv
+libssh2
+libtar
 libunique
+libva
 libvdpau
 libvirt
 libvirt-glib
@@ -141,6 +144,7 @@ octave
 openconnect
 openjpeg
 openmpi
+opus
 orc
 perl-AnyEvent
 perl-AnyEvent-I3
@@ -177,6 +181,7 @@ rdiff-backup
 reptyr
 rhythmbox
 rrdtool
+rtmpdump
 rxvt-unicode
 schroedinger
 scons
@@ -212,7 +217,9 @@ urlgrabber
 usbredir
 vala
 valgrind
+vcdimager
 virt-manager
+vlc
 voxelands
 vte3
 webkitgtk
