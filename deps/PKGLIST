@@ -12,6 +12,7 @@ SDL2
 SDL2_image
 SDL_Pango
 SoQt
+a52dec
 apsw
 arno-iptables-firewall
 arpack-ng

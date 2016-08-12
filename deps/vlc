@@ -1,5 +1,7 @@
+REQUIRED:
+a52dec
+
 OPTIONAL:
--a52dec
 -libass
 -libdc1394
 -libdvbpsi
