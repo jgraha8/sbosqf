@@ -1,6 +1,7 @@
 Net-SSLeay
 OpenAL
 OpenBLAS
+SDL2
 bibletime
 celt
 celt051
@@ -67,6 +68,7 @@ rtmpdump
 rxvt-unicode
 schroedinger
 six
+slack
 slurm
 snappy
 speex

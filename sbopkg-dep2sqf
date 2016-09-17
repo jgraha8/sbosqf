@@ -107,6 +107,7 @@ function print_pkg_info {
     ) | $PAGER
 }
 
+declare -i dep_count=0
 
 ################################################################################
 # Parses a dependency file and inserts the package name into a global dependency 
@@ -120,9 +121,11 @@ function parse_dep_file {
 
     local block=0
 
+    (( dep_count++ ))
+    
     # First find if it is not a metapackage 
     if ! check_is_metapkg $topdep; then
-	if (( $CHECK_INST == 1 )); then
+	if (( $CHECK_INST == 1 && dep_count != 1 )); then
 	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
 
