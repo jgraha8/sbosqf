@@ -1,3 +1,2 @@
 REQUIRED:
--blas
-OpenBLAS
+blas

@@ -1,4 +1,2 @@
 REQUIRED:
-#atlas
-#lapack-atlas
 lapack

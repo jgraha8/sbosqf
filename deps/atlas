@@ -1,2 +1,2 @@
 REQUIRED:
-blas
+lapack-atlas
