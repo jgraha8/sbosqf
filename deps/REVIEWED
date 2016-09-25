@@ -28,8 +28,10 @@ lame
 lapack
 lapack-atlas
 libass
+libburn
 libev
 libfdk-aac
+libisofs
 libmp4v2
 libosinfo
 libquvi
@@ -88,6 +90,7 @@ tunctl
 twolame
 urlgrabber
 usbredir
+vagrant
 vala
 valgrind
 vid.stab
