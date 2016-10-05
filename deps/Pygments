@@ -1,0 +1,19 @@
+REQUIRED:
+pysetuptools
+
+#
+# Circular dependency: 
+#
+# Pygments with build option HTML=1 requires Sphinx which as Pygments
+# as a required package Here Sphinx is disabled in order to avoid the
+# circular dependency while processing the sqf file. However, the
+# Pygments entry will be before Sphinx in the sqf file with the HTML=1
+# option (if enabled) and must be manually moved after Sphinx with a simple
+# Pygment line in its place (without the HTML=1 option).
+#
+
+OPTIONAL:
+-Sphinx
+
+BUILDOPTS:
+HTML=1
