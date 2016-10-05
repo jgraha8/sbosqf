@@ -1,0 +1,20 @@
+OPTIONAL:
+openmpi
+
+BUILDOPTS:
+# You can enable a lot of optional features by passing variables to the script
+# (VAR=yes/no ./VTK.SlackBuild):
+# IMAGING=yes|no (default: no)
+# MPI=yes|no (default: no), requires openmpi
+# QT=yes|no (default: yes)
+# TK=yes|no (default: no)
+# VIEWS=yes|no (default: no)
+# WEB=yes|no (default: no)
+# PYTHON=yes|no (default: yes)
+# JAVA=yes|no (default: no)
+# TCL=yes|no (default: no)
+MPI=yes
+QT=yes
+TK=yes
+PYTHON=yes
+TCL=yes

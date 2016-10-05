@@ -1,5 +1,5 @@
 OPTIONAL:
--Pygments
--Sphinx
+Pygments
+Sphinx
 -python3
 pysetuptools
