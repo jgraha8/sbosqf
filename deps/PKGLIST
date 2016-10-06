@@ -11,7 +11,6 @@ OpenAL
 OpenCASCADE
 Pivy
 Pygments
-PythonQt
 SDL2
 SDL2_image
 SDL_Pango
@@ -157,7 +156,6 @@ openjpeg
 openmpi
 opus
 orc
-paraview
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
@@ -196,7 +194,6 @@ rhythmbox
 rrdtool
 rtmpdump
 rxvt-unicode
-salome-build
 schroedinger
 scons
 shiboken
