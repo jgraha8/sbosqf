@@ -1,20 +1,29 @@
+################################################################################
+#
+# THIS IS FOR THE 14.2 BUILD AND CANNOT BE BUILT USING SBOPKG POINTING TO A 14.1 
+# REPOSITORY.
+#
+################################################################################
+
 OPTIONAL:
 openmpi
 
-BUILDOPTS:
 # You can enable a lot of optional features by passing variables to the script
 # (VAR=yes/no ./VTK.SlackBuild):
+
 # IMAGING=yes|no (default: no)
 # MPI=yes|no (default: no), requires openmpi
-# QT=yes|no (default: yes)
-# TK=yes|no (default: no)
+# TCL=yes|no (default: yes)
+# TK=yes|no (default: yes)
 # VIEWS=yes|no (default: no)
-# WEB=yes|no (default: no)
+# WEB=yes|no (default: no), requires python-twisted
+# JAVA=yes|no (default: no), requires jdk
 # PYTHON=yes|no (default: yes)
-# JAVA=yes|no (default: no)
-# TCL=yes|no (default: no)
+# QT=yes|no (default: yes)
+
+BUILDOPTS:
 MPI=yes
-QT=yes
+TCL=yes
 TK=yes
 PYTHON=yes
-TCL=yes
+QT=yes
