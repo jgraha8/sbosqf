@@ -11,6 +11,7 @@ OpenAL
 OpenCASCADE
 Pivy
 Pygments
+PythonQt
 SDL2
 SDL2_image
 SDL_Pango
@@ -24,7 +25,6 @@ arpack-ng
 atlas
 avahi
 backports-ssl-match-hostname
-base-meta
 bibletime
 blas
 bleachbit
@@ -43,6 +43,7 @@ cvsps
 cython
 dmenu
 dnspython
+docutils
 dos2unix
 eigen3
 engauge
@@ -56,7 +57,6 @@ fltk
 ftgl
 gcalctool
 gdm
-gdm-meta
 gdm-themes-slack
 gitstats
 gl2ps
@@ -156,6 +156,7 @@ openjpeg
 openmpi
 opus
 orc
+paraview
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
