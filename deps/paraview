@@ -13,24 +13,19 @@
 REQUIRED:
 hdf5
 ffmpeg
-# Using openmpi instead of mpich
-# mpich
-openmpi
 Sphinx
+
+OPTIONAL:
+-openmpi
 matplotlib
 PythonQt
 
-# Although not recommended, building without MPI (mpich) and/or Matplotlib support
-# is possible by setting the relevant variables in the build environment:
-# MPICH=no
-# MATPLOTLIB=no
-
-# Embedding with PythonQt may be disabled by setting
-# PYTHONQT=no
-# in the build environment. This requires the SBo PythonQt package to be
-# installed at build time.
+# Options:
+# MPICH=no (default=no; Requires openmpi)
+# MATPLOTLIB=yes (default=yes)
+# PYTHONQT=yes ( default=yes; Requires PythonQt)
 
 BUILDOPTS:
-MPICH=yes
+MPICH=no
 MATPLOTLIB=yes
 PYTHONQT=yes
