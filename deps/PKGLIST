@@ -180,6 +180,7 @@ pygtksourceview
 pyparsing
 pysetuptools
 pyside
+pyside-tools
 python-dateutil
 python-requests
 python-urllib3
