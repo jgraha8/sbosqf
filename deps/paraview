@@ -9,7 +9,7 @@
 # FOR USING THE RESULTANT PACKAGE
 #
 ################################################################################
-METAPKG
+
 REQUIRED:
 hdf5
 ffmpeg
