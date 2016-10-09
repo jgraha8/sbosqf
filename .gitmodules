@@ -1,3 +1,0 @@
-[submodule "slackbuilds"]
-	path = slackbuilds
-	url = git://slackbuilds.org/slackbuilds.git
