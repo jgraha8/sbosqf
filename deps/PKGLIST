@@ -86,6 +86,7 @@ i3status
 imlib2
 iotop
 ipaddr-py
+iperf
 irrlicht
 jdk
 json-glib
@@ -204,6 +205,7 @@ shiboken
 shorewall
 shorewall-core
 six
+slack
 sloccount
 slurm
 smpeg
