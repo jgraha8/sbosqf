@@ -4,4 +4,4 @@
 OPTIONAL:
 numpy # Python bindings
 ffmpeg
--qt5
+qt5   # Needed by bibletime so using here also

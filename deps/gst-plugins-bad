@@ -1,14 +1,22 @@
+# This optionally depends on amrnb, amrwb, libass, libcdaudio, celt,
+# libdc1394, libdca, faac, faad2, flite, fluidsynth, gsm, libkate, liblrdf,
+# libmodplug, libmimic, libmusicbrainz, libofa, libquicktime, libwebp,lv2,
+# musepack-tools, OpenAL, opencv, soundtouch, swfdec, xvidcore, rtmpdump,
+# schroedinger, TiMidity++, and xvidcore.
+
+
+
 OPTIONAL:
 -amrnb
 -amrwb
--libass
+libass
 -libcdaudio
--celt
+celt
 -libdc1394
 -libdca
 faac
 faad2
--flite
+flite
 -fluidsynth
 -gsm
 -libkate
@@ -26,7 +34,7 @@ OpenAL
 -soundtouch
 swfdec
 xvidcore
--rtmpdump
+rtmpdump
 schroedinger
 -TiMidity++
 x264

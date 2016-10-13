@@ -9,7 +9,7 @@ vala
 OPTIONAL:
 -libcacard
 usbredir
--opus
+opus
 
 BUILDOPTS:
 -GTK=2
