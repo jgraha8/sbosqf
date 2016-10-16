@@ -103,6 +103,9 @@ sword
 sword-data-kjv
 texi2html
 texlive
+texlive-docs
+texlive-extra
+texlive-fonts
 texmacs
 tunctl
 twolame
