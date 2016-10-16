@@ -1,0 +1,8 @@
+REQUIRED:
+pytz
+tornado
+pysetuptools
+numpy
+pyparsing
+python-dateutil
+six

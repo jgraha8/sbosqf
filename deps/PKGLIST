@@ -3,6 +3,8 @@ Coin
 FreeCAD
 FreeImage
 GraphicsMagick
+Jinja2
+MarkupSafe
 Net-SSLeay
 NetworkManager-openconnect
 OpenAL
@@ -19,7 +21,7 @@ arpack-ng
 atlas
 audit
 avahi
-base-meta
+backports-ssl-match-hostname
 bibletime
 blas
 bleachbit
@@ -40,6 +42,7 @@ cython
 device-tree-compiler
 dmenu
 dnspython
+docutils
 dos2unix
 eigen3
 enca
@@ -55,7 +58,6 @@ fltk
 ftgl
 gcalctool
 gdm
-gdm-meta
 gdm-themes-slack
 gitstats
 gl2ps
@@ -124,6 +126,7 @@ librsync
 libsigsegv
 libtxc_dxtn
 libunique
+libva
 libvdpau
 libvirt
 libvirt-glib
@@ -136,6 +139,7 @@ ltrace
 lua
 lxml
 makedepf90
+matplotlib
 mechanize
 meld
 meld3
@@ -152,6 +156,8 @@ nvidia-legacy340-kernel
 ocaml
 ocaml-findlib
 octave
+omniORB
+omniORBpy
 openconnect
 opencore-amr
 opencv
@@ -185,9 +191,11 @@ pygobject3
 pygtksourceview
 pyparsing
 pyside
+pyside-tools
 python-dateutil
 python-requests
 python-urllib3
+pytz
 qemu
 qhull
 qrupdate
@@ -245,6 +253,7 @@ valgrind
 vid.stab
 virglrenderer
 virt-manager
+vlc
 voxelands
 vte3
 webkitgtk

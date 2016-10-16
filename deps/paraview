@@ -1,0 +1,31 @@
+################################################################################
+#
+# THIS IS FOR THE CUSTOM BUILD (BASED ON 14.2 SBo SCRIPTS) AND CANNOT BE BUILT 
+# USING SBOPKG AND MUST BE BUILT WITH
+#
+#     panoramix:/usr/src/slackbuilds/paraview/paraview.SlackBuild
+#
+# THE DEP FILE IS HERE TO HAVE A RECORD WITH THE DEPENDENCY INFORMATION NEEDED
+# FOR USING THE RESULTANT PACKAGE
+#
+################################################################################
+
+REQUIRED:
+hdf5
+ffmpeg
+Sphinx
+
+OPTIONAL:
+-openmpi
+matplotlib
+PythonQt
+
+# Options:
+# MPICH=no (default=no; Requires openmpi)
+# MATPLOTLIB=yes (default=yes)
+# PYTHONQT=yes ( default=yes; Requires PythonQt)
+
+BUILDOPTS:
+MPICH=no
+MATPLOTLIB=yes
+PYTHONQT=yes

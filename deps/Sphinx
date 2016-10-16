@@ -1,0 +1,9 @@
+#
+# Circular dependency:
+# Pygments with build option HTML=1 requires Sphinx
+#
+
+REQUIRED:
+Pygments
+docutils
+Jinja2

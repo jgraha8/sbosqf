@@ -196,7 +196,6 @@ function get_buildopts {
 	if [[ $l == "OPTIONAL:" || $l == "REQUIRED:" ]]; then
 	    break
 	else
-	    
 	    if check_is_entry "$l"; then
 		# Trim inline comments and whitespace
 		opt=$(echo ${l%%#*})

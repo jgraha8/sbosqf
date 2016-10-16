@@ -5,3 +5,6 @@ gl2ps
 
 BUILDOPTS:
 INSTALL_FULL_DOCS=yes
+-FREEIMAGE=yes # default=yes
+-TBB=yes       # default=yes
+-GL2PS=yes     # default=yes
