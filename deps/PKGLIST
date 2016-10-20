@@ -195,6 +195,8 @@ pyside-tools
 python-dateutil
 python-requests
 python-urllib3
+python3
+python3-sip
 pytz
 qemu
 qhull
