@@ -2,6 +2,8 @@
 
 DEPLIST=../deplist
 
+set -e
+
 ( 
     cd deps
 

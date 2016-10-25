@@ -1,3 +1,4 @@
+BeautifulSoup4
 Coin
 FreeCAD
 FreeImage
@@ -10,16 +11,20 @@ OpenAL
 OpenBLAS
 OpenCASCADE
 Pivy
+PyQt5
+Pygments
 SDL2
 SDL2_image
 SDL_Pango
 SoQt
+VTK
 apsw
 arno-iptables-firewall
 arpack-ng
 atlas
 audit
 avahi
+backports-abc
 backports-ssl-match-hostname
 bibletime
 blas
@@ -37,6 +42,7 @@ cssselect
 cssutils
 cudatoolkit
 cvsps
+cycler
 device-tree-compiler
 dmenu
 dnspython
@@ -54,6 +60,7 @@ flite
 fltk
 ftgl
 gcalctool
+geoclue
 gitstats
 gl2ps
 glade
@@ -74,6 +81,7 @@ gtksourceview3
 gts
 guile1.8
 hdf5
+html5lib
 hwinfo
 hwloc
 i3
@@ -113,6 +121,7 @@ libquvi
 libquvi-scripts
 libreoffice
 librsync
+libtar
 libtxc_dxtn
 libunique
 libvirt
@@ -147,6 +156,7 @@ openconnect
 opencore-amr
 opencv
 openmpi
+optipng
 opus
 parallel
 perl-AnyEvent
@@ -185,6 +195,7 @@ qemu
 qhull
 qrupdate
 qt5
+qt5-webkit
 quilt
 quvi
 rdiff-backup
@@ -225,6 +236,7 @@ texlive-extra
 texlive-fonts
 texmacs
 texstudio
+tornado
 totem-pl-parser
 trilinos
 tunctl
@@ -237,6 +249,7 @@ usbredir
 vagrant
 vala
 valgrind
+vcdimager
 vid.stab
 virglrenderer
 virt-manager

@@ -1,8 +1,5 @@
 # See SBo README for additional information
 
-REQUIRED:
-a52dec
-
 # Autodetected options
 OPTIONAL:
 -libass

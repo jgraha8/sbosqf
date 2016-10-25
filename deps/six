@@ -3,7 +3,7 @@
 # Pysetuptools is an optional build time dependency.
 
 OPTIONAL:
-Pysetuptools
+-Pysetuptools
 -Pygments
 -Sphinx
 -python3
