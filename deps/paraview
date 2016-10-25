@@ -1,14 +1,4 @@
-################################################################################
-#
-# THIS IS FOR THE CUSTOM BUILD (BASED ON 14.2 SBo SCRIPTS) AND CANNOT BE BUILT 
-# USING SBOPKG AND MUST BE BUILT WITH
-#
-#     panoramix:/usr/src/slackbuilds/paraview/paraview.SlackBuild
-#
-# THE DEP FILE IS HERE TO HAVE A RECORD WITH THE DEPENDENCY INFORMATION NEEDED
-# FOR USING THE RESULTANT PACKAGE
-#
-################################################################################
+# See SBo README for additional information
 
 REQUIRED:
 hdf5
