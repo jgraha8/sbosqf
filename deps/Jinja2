@@ -7,3 +7,9 @@
 
 REQUIRED:
 MarkupSafe
+
+OPTIONAL:
+-Sphinx
+
+BUILDOPTS:
+DOCS=no

@@ -1,2 +1,9 @@
+# See SBo README for additional information
+
 REQUIRED:
 ocaml-findlib
+
+OPTIONAL:
+-libgnomecanvas
+-libgnomeui
+-gtksourceview

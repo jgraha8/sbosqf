@@ -1,3 +1,5 @@
+# See SBo README for additional information
+
 # numactl:
 # libnuma provides conversion helpers between hwloc CPU setsand
 # libnuma-specific types, such as bitmasks. It helps you use libnuma

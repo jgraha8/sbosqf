@@ -1,9 +1,13 @@
+# See SBo README for additional information
+
 REQUIRED:
-BeautifulSoup
+BeautifulSoup4
+html5lib
 
 OPTIONAL:
--Cython
 -python3
-# Runtime dependencies
+-BeautifulSoup # Can be used in plae of BeautifulSoup4
 -cssselect
--html5lib
+
+BUILDOPTS:
+-PYTHON3=yes

@@ -1,5 +1,8 @@
 REQUIRED:
 OpenCASCADE
-eigen3
 Pivy
+matplotlib
+pyside
+pyside-tools
+shiboken
 xerces-c

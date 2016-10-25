@@ -1,6 +1,8 @@
+# See SBo README for additional information
+
 REQUIRED:
-atlas
-lapack-atlas
+blas
+lapack
 
 OPTIONAL:
 # These are part of suitesparse; disabled individual components and using suitesparse instead

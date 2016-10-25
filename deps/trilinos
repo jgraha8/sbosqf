@@ -1,3 +1,10 @@
+# See SBo README for additional information
+
 REQUIRED:
-atlas
+blas
+lapack
 suitesparse
+
+BUILDOPTS:
+-PARALLEL=yes # Requires ParMETIS and openmpi or mpich
+-CUDA=yes # Requires CUDA SDK and CUSPARSE

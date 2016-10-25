@@ -29,7 +29,6 @@ brasero
 calibre
 celt
 celt051
-chromium
 color-theme
 colordiff
 confuse
@@ -38,13 +37,11 @@ cssselect
 cssutils
 cudatoolkit
 cvsps
-cython
 device-tree-compiler
 dmenu
 dnspython
 docutils
 dos2unix
-eigen3
 enca
 engauge
 faac
@@ -57,8 +54,6 @@ flite
 fltk
 ftgl
 gcalctool
-gdm
-gdm-themes-slack
 gitstats
 gl2ps
 glade
@@ -67,14 +62,11 @@ gnome-python2-gconf
 gnucash
 goffice0.8
 graphviz
-gsl
 gsm
 gsoap
 gst-plugins-bad
 gst0-ffmpeg
 gst0-python
-gst1-plugins-ugly
-gstreamer1
 gthumb
 gtk-vnc
 gtksourceview
@@ -105,12 +97,10 @@ libdbi
 libdbi-drivers
 libdmapsharing
 libdvdcss
-libdvpau
 libev
 libfdk-aac
 libgnomecanvas
 libisofs
-libjpeg-turbo
 libmp4v2
 libmpeg2
 libmusicbrainz3
@@ -123,11 +113,8 @@ libquvi
 libquvi-scripts
 libreoffice
 librsync
-libsigsegv
 libtxc_dxtn
 libunique
-libva
-libvdpau
 libvirt
 libvirt-glib
 libvirt-python
@@ -145,8 +132,6 @@ meld
 meld3
 mplayer-codecs64
 munge
-ndiswrapper-kernel
-ndiswrapper-utils
 netifaces
 ninja
 numactl
@@ -163,7 +148,6 @@ opencore-amr
 opencv
 openmpi
 opus
-orc
 parallel
 perl-AnyEvent
 perl-AnyEvent-I3
@@ -187,7 +171,6 @@ podofo
 portmidi
 psutil
 pygame
-pygobject3
 pygtksourceview
 pyparsing
 pyside
@@ -211,7 +194,6 @@ rrdtool
 rtmpdump
 rxvt-unicode
 schroedinger
-scons
 shiboken
 shorewall
 shorewall-core

@@ -1,11 +1,12 @@
 REQUIRED:
 libpeas
 json-glib
+python3
 totem-pl-parser
 
 OPTIONAL:
 vala
-avahi
+-avahi
 libdmapsharing
 brasero
 libmusicbrainz3

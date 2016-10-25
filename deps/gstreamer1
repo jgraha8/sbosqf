@@ -1,9 +1,0 @@
-REQUIRED:
-orc
-
-OPTIONAL:
-# CIRCULAR DEPENDENCY WARNING: SBo has these here, but there should
-# only be a runtime dependency on these plugins
--gst1-plugins-base
--gst1-plugins-good
--gst1-plugins-ugly 

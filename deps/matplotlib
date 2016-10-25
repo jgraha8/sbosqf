@@ -1,8 +1,13 @@
+# See SBo README for additional information
+
 REQUIRED:
+numpy
+python-dateutil
 pytz
 tornado
-pysetuptools
-numpy
 pyparsing
-python-dateutil
-six
+cycler
+
+BUILDOPTS:
+-DISABLE_TESTS=no
+-DISABLE_TK_TESTS=no

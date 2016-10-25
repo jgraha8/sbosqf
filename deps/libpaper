@@ -1,0 +1,4 @@
+# See SBo README for additional information
+
+BUILDOPTS:
+PAPERSIZE=letter

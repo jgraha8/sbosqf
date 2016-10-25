@@ -1,13 +1,10 @@
-# Bindings for Lua and libdbi (optional dependencies) will be made
-# automatically if they are detected, this can be changed with: LUA=no
-# LIBDBI=no
+# See SBo README for additional information
 
 OPTIONAL:
-lua
-libdbi
-# runtime dependency for libdbi (requires libdbi)
-libdbi-drivers
+-lua
+-libdbi
 
 BUILDOPTS:
-LUA=yes
-LIBDBI=yes
+# Disable autodetected optional dependencies
+-LUA=no
+-LIBDBI=no

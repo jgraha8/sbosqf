@@ -1,0 +1,6 @@
+# See SBo README for additional information
+
+OPTIONAL:
+-python3
+-lgi
+-luajit

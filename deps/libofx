@@ -1,3 +1,5 @@
+# See SBo README for additional information
+
 #This optionally depends on libxml++ in order to build ofxconnect.
 OPTIONAL:
 -libxml++

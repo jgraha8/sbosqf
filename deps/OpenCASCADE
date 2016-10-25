@@ -1,3 +1,6 @@
+REQUIRED:
+VTK
+
 OPTIONAL:
 FreeImage
 tbb
