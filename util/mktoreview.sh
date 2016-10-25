@@ -5,8 +5,9 @@ if [[ ! -f PKGLIST ]]; then
     exit 1
 fi
 
+rm -f TO_REVIEW
 while read p
 do
     c=$(grep -x $p REVIEWED)
-    [[ -z $c ]] && echo $p > TO_REVIEW
+    [[ -z $c ]] && echo $p >> TO_REVIEW
 done<PKGLIST
