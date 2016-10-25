@@ -10,6 +10,7 @@ celt
 celt051
 color-theme
 confuse
+crashplan
 cudatoolkit
 device-tree-compiler
 dmenu
@@ -47,6 +48,7 @@ libquicktime
 libquvi
 libquvi-scripts
 libreoffice
+librsync
 libtxc_dxtn
 libvirt
 libvirt-glib
@@ -60,6 +62,8 @@ numactl
 numpy
 nvidia-legacy340-driver
 nvidia-legacy340-kernel
+ocaml
+ocaml-findlib
 opencore-amr
 opencv
 openmpi
@@ -83,6 +87,7 @@ python3-sip
 qemu
 qt5
 quilt
+rdiff-backup
 recode
 rtmpdump
 rxvt-unicode
@@ -111,6 +116,7 @@ texlive-fonts
 texmacs
 tunctl
 twolame
+unison
 units
 urlgrabber
 usbredir
