@@ -133,6 +133,7 @@ libwebp
 libx86emu
 libxkbcommon
 linux_logo
+log4cpp
 ltrace
 lua
 lxml
@@ -181,6 +182,7 @@ physfs
 pingus
 pithos
 podofo
+poppler-qt5
 portmidi
 psutil
 pygame

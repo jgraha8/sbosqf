@@ -132,6 +132,7 @@ libwebp
 libx86emu
 libxkbcommon
 linux_logo
+log4cpp
 ltrace
 lua
 lxml
@@ -180,6 +181,7 @@ physfs
 pingus
 pithos
 podofo
+poppler-qt5
 portmidi
 psutil
 pygame
@@ -256,6 +258,7 @@ vlc
 voxelands
 vte3
 webkitgtk
+wine
 x264
 x265
 xerces-c
