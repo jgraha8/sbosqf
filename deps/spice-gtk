@@ -9,6 +9,7 @@ vala
 OPTIONAL:
 -libcacard
 usbredir
+-phodav
 opus
 
 BUILDOPTS:

@@ -26,3 +26,4 @@ gl2ps
 jdk
 # Disabling to try to use the default ImageMagick package
 -GraphicsMagick
+-portaudio
