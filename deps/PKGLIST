@@ -263,6 +263,7 @@ webkitgtk
 wine
 x264
 x265
+xcb-util-xrm
 xerces-c
 xvidcore
 yajl

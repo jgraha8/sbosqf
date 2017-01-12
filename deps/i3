@@ -2,6 +2,7 @@ REQUIRED:
 dmenu
 libev
 yajl
+xcb-util-xrm
 libxkbcommon
 
 OPTIONAL:
