@@ -143,10 +143,12 @@ matplotlib
 mechanize
 meld
 meld3
+modules
 mplayer-codecs64
 munge
 netifaces
 ninja
+nload
 numactl
 numpy
 nvidia-driver
@@ -272,5 +274,4 @@ xcb-util-xrm
 xerces-c
 xvidcore
 yajl
-youtube-dl
 zotero

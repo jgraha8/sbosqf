@@ -1,0 +1,4 @@
+REQUIRED:
+perl-Test-Deep
+perl-html-parser
+perl-test-warn

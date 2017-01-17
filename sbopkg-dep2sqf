@@ -524,7 +524,7 @@ COLOR_END="\033[0m"
 PAGER=${PAGER:-less -r}
 
 # Parameters
-SBOPKG_REPO="/var/lib/sbopkg/SBo-git"
+SBOPKG_REPO="/var/lib/sbopkg/SBo-local-git"
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
