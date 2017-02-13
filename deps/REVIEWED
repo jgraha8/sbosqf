@@ -143,10 +143,12 @@ matplotlib
 mechanize
 meld
 meld3
+modules
 mplayer-codecs64
 munge
 netifaces
 ninja
+nload
 numactl
 numpy
 nvidia-driver
@@ -169,12 +171,15 @@ paraview
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
+perl-CGI
 perl-Cstools
 perl-IO-Socket-SSL
 perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
 perl-Net-SMTP-SSL
+perl-Test-Deep
+perl-Test-NoWarnings
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-String
@@ -272,5 +277,4 @@ xcb-util-xrm
 xerces-c
 xvidcore
 yajl
-youtube-dl
 zotero
