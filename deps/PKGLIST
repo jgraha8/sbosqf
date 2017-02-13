@@ -189,7 +189,6 @@ perl-digest-sha1
 perl-html-parser
 perl-html-tagset
 perl-test-warn
-perl-tree-dagnode
 physfs
 pingus
 pithos

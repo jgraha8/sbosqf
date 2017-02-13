@@ -178,6 +178,7 @@ perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
 perl-Net-SMTP-SSL
+perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
 perl-Unicode-Map
@@ -186,6 +187,9 @@ perl-Unicode-String
 perl-common-sense
 perl-digest-hmac
 perl-digest-sha1
+perl-html-parser
+perl-html-tagset
+perl-test-warn
 physfs
 pingus
 pithos
