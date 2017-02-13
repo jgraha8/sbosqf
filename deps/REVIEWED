@@ -171,12 +171,15 @@ paraview
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
+perl-CGI
 perl-Cstools
 perl-IO-Socket-SSL
 perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
 perl-Net-SMTP-SSL
+perl-Test-Deep
+perl-Test-NoWarnings
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-String
