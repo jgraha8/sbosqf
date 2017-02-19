@@ -28,6 +28,7 @@ audit
 avahi
 backports-abc
 backports-ssl-match-hostname
+batinfo
 bibletime
 blas
 bleachbit
@@ -66,6 +67,7 @@ geoclue
 gitstats
 gl2ps
 glade
+glances
 glpk
 gnome-python2-gconf
 gnucash
@@ -82,6 +84,7 @@ gtksourceview
 gtksourceview3
 gts
 guile1.8
+hddtemp
 hdf5
 html5lib
 hwinfo
@@ -197,8 +200,11 @@ podofo
 poppler-qt5
 portmidi
 psutil
+py-cpuinfo
+py3sensors
 pygame
 pygtksourceview
+pymdstat
 pyparsing
 pyside
 pyside-tools
