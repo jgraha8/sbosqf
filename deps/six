@@ -4,6 +4,6 @@
 
 OPTIONAL:
 -Pysetuptools
--Pygments
--Sphinx
+Pygments
+Sphinx
 -python3

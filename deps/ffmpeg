@@ -14,8 +14,8 @@ texlive
 OPTIONAL:
 libass
 celt
-faac
-libfdk-aac
+-faac
+-libfdk-aac
 flite
 lame
 OpenAL
@@ -40,8 +40,8 @@ ASS=yes          # (default: no), requires libass
 CELT=yes         # (default: no), requires celt
 # DC1394=yes       # (default: no), requires libdc1394
 # DECKLINK=yes     # (default: no), requires decklink-sdk
-FAAC=yes         # (default: no), requires faac (creates non-redistributable binary)
-FDK_AAC=yes      # (default: no), requires libfdk-aac (creates non-redistributable binary)
+# FAAC=yes         # (default: no), requires faac (creates non-redistributable binary)
+# FDK_AAC=yes      # (default: no), requires libfdk-aac (creates non-redistributable binary)
 FLITE=yes        # (default: no), requires flite
 # FREI0R=yes       # (default: no), requires frei0r
 # GME=yes          # (default: no), requires libgme

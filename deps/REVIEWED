@@ -169,12 +169,15 @@ opencv
 openmpi
 optipng
 opus
+osinfo-db
+osinfo-db-tools
 parallel
 paraview
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
 perl-CGI
+perl-Canary-Stability
 perl-Cstools
 perl-IO-Socket-SSL
 perl-JSON
@@ -184,6 +187,7 @@ perl-Net-SMTP-SSL
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
+perl-Types-Serialiser
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-String

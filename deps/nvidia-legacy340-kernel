@@ -10,4 +10,4 @@
 # The xf86-video-nouveau-blacklist package from /extra is required.
 
 BUILDOPTS:
-KERNEL=4.4.16
+-KERNEL=4.4.16
