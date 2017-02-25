@@ -125,9 +125,12 @@ function parse_dep_file {
     local block=0
 
     (( dep_count++ ))
+
+    check_is_metapkg $topdep    
+    local is_metapkg_rc=$?
     
     # First find if it is not a metapackage 
-    if ! check_is_metapkg $topdep; then
+    if (( $is_metapkg_rc == 1 )); then
 	if (( $CHECK_INST == 1 && dep_count != 1 )); then
 	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
@@ -166,6 +169,11 @@ function parse_dep_file {
 	    in_block=BUILDOPTS_BLOCK
 	    continue
 	fi
+
+	if (( $is_metapkg_rc == 0 && in_block == REQUIRED_BLOCK )); then
+	    echo "$l $(get_buildopts $l)" >> $dep
+	    continue
+	fi   
 
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
