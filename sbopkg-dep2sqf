@@ -7,6 +7,9 @@ function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
     echo "  -C          Check if packages are already installed"
+    echo "  -N          Disable recursive parsing of dep file (does not add dependencies; does"
+    echo "              add build options"
+    echo "  -R          Review the package README, info, and dep files"
     echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -h          Show this information"
     echo "  -l          Print the sqf package list to stdout (build options are not included)"
@@ -166,7 +169,8 @@ function parse_dep_file {
 
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-               (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
+           (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )) &&
+	   (( NO_DEPS == 0 )); then
 	    check_is_entry $l && parse_dep_file $l $dep
 	fi
 
@@ -545,6 +549,7 @@ CHECK_INST_EXT=0
 CHECK_INST_ALL=0
 CHECK_INST=0
 CHECK_INST_SBO_ONLY=""
+NO_DEPS=0
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
@@ -554,6 +559,10 @@ while (( $# > 0 )); do
     case $1 in
 	"-C")
 	    CHECK_INST_ALL=1
+	    shift 1
+	    ;;
+	"-N")
+	    NO_DEPS=1
 	    shift 1
 	    ;;
 	"-R")
