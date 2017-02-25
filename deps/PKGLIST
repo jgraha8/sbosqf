@@ -182,7 +182,6 @@ perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
 perl-Net-SMTP-SSL
-perl-Slurp-Tiny
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
@@ -283,7 +282,6 @@ vlc
 voxelands
 vte3
 webkitgtk
-wine
 x264
 x265
 xcb-util-xrm
