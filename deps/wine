@@ -1,7 +1,0 @@
-OPTIONAL:
--fontforge
--webcore-fonts
-
-BUILDOPTS:
-IEFIX=YES
-
