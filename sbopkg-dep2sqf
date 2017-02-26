@@ -9,6 +9,7 @@ function print_usage {
     echo "  -C          Check if packages are already installed"
     echo "  -N          Disable recursive parsing of dep file (does not add dependencies; does"
     echo "              add build options"
+    echo "  -P          Select packages which rely on all a particular package or meta package"
     echo "  -R          Review the package README, info, and dep files"
     echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -h          Show this information"
@@ -125,12 +126,9 @@ function parse_dep_file {
     local block=0
 
     (( dep_count++ ))
-
-    check_is_metapkg $topdep    
-    local is_metapkg_rc=$?
     
     # First find if it is not a metapackage 
-    if (( $is_metapkg_rc == 1 )); then
+    if ! check_is_metapkg $topdep; then
 	if (( $CHECK_INST == 1 && dep_count != 1 )); then
 	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
@@ -148,6 +146,8 @@ function parse_dep_file {
 
 	# Only write the pkg name if not a metapkg
 	echo "$topdep $(get_buildopts $topdep)" >> $dep
+
+	(( NO_DEPS == 1 )) && return
     fi
 
     if [[ ! -f $topdep ]]; then
@@ -170,15 +170,9 @@ function parse_dep_file {
 	    continue
 	fi
 
-	if (( $is_metapkg_rc == 0 && in_block == REQUIRED_BLOCK )); then
-	    echo "$l $(get_buildopts $l)" >> $dep
-	    continue
-	fi   
-
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-           (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )) &&
-	   (( NO_DEPS == 0 )); then
+           (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
 	    check_is_entry $l && parse_dep_file $l $dep
 	fi
 
@@ -193,6 +187,8 @@ function get_buildopts {
     local topdep=$1
 
     [[ ! -f $topdep ]] && return
+
+    (( USE_BUILDOPTS == 0 )) && return
 
     # Get the line number of the BUILDOPTS
     local n=$(grep -nx "BUILDOPTS:" $topdep | cut -d: -f1)
@@ -347,6 +343,67 @@ function gen_sqf_rm {
     else
 	echo -e "${COLOR_FAIL}[FAIL]${COLOR_END} $sqf not generated" > /dev/stderr
     fi
+}
+
+################################################################################
+# Finds all of the parent packages and appends them to the "dep" file
+# (meta package)
+################################################################################
+function get_all_parents {
+    local pkg=$1
+    local dep=$2
+    local p
+
+    local pkglist=$(cat $PKGLIST)
+    
+    for p in ${pkglist[@]}
+    do
+	if [[ ! -f $p ]]; then
+	    echo "${COLOR_FAIL}[FAIL]${COLOR_END} dep file for package $p not found"
+	    exit 1
+	fi
+	if [[ ! -z $(grep -w ^$pkg $p) ]]; then
+	    get_all_parents $p $dep
+	    echo $p >> $dep
+	fi
+    done #<$PKGLIST
+    
+}
+################################################################################
+#
+################################################################################
+function gen_metapkg_wparents {
+    local dep="$1"
+    local dep_wparents="$2"
+   
+    cat > $dep_wparents <<EOF
+METAPKG
+REQUIRED:
+EOF
+
+    # Disable build opts and following dependences
+    local buildopts=$USE_BUILDOPTS
+    local no_deps=$NO_DEPS
+
+    USE_BUILDOPTS=0
+    NO_DEPS=1
+
+    parse_dep_file $dep .pkglist
+
+    local pkglist=$(cat .pkglist)
+    local p
+    rm -f .pkglist
+    # For each package in the list, get all of the parents
+    for p in ${pkglist[@]}
+    do
+	get_all_parents $p $dep_wparents
+	echo $p >> $dep_wparents
+    done #<.pkglist
+
+
+    # Restore the original build options
+    USE_BUILDOPTS=$buildopts
+    NO_DEPS=$no_deps
 }
 
 
@@ -553,11 +610,13 @@ ACTION_REVIEW_PKG=5
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
+USE_BUILDOPTS=1
 CHECK_INST_EXT=0
 CHECK_INST_ALL=0
 CHECK_INST=0
 CHECK_INST_SBO_ONLY=""
 NO_DEPS=0
+PROCESS_PARENTS=0
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
@@ -571,6 +630,10 @@ while (( $# > 0 )); do
 	    ;;
 	"-N")
 	    NO_DEPS=1
+	    shift 1
+	    ;;
+	"-P")
+	    PROCESS_PARENTS=1
 	    shift 1
 	    ;;
 	"-R")
@@ -643,6 +706,19 @@ SQF="$1.sqf"
 
 rm -f $DEP && touch $DEP
 rm -f $SQF
+
+# If we are processing the parents
+if (( PROCESS_PARENTS == 1 )); then
+    # if (( NO_DEPS == 0 )); then
+    # 	echo -e "${COLOR_INFO}[INFO]${COLOR_END} not processing dependencies"
+    # 	NO_DEPS=1
+    # fi
+    gen_metapkg_wparents $TOPDEP $TOPDEP-wparents &&
+    echo "${COLOR_OK}[OK]${COLOR_END} $TOPDEP-wparents meta package dep file created"
+    exit 0
+    #TOPDEP=$TOPDEP-wparents
+    #SQF="${TOPDEP}.sqf"
+fi
 
 if (( $ACTION == $ACTION_PRINT )); then
     print_dep_tree $TOPDEP
