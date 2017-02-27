@@ -7,9 +7,12 @@ function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
     echo "  -C          Check if packages are already installed"
+    echo "  -D          Generates the package parent database (PARENTDB)"
     echo "  -N          Disable recursive parsing of dep file (does not add dependencies; does"
     echo "              add build options"
     echo "  -P          Select packages which rely on all a particular package or meta package"
+    echo "              Enables option -N (thus assumes all dependencies are met; used for rebuilding"
+    echo "              parent pacakges"
     echo "  -R          Review the package README, info, and dep files"
     echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -h          Show this information"
@@ -69,6 +72,15 @@ function print_dep_tree {
     done <$topdep
     
     DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
+}
+
+################################################################################
+# 
+################################################################################
+function load_pkglist_array {
+    if (( ${#PKGLIST_ARRAY[@]} == 0 )); then
+	PKGLIST_ARRAY=$(cat $PKGLIST)
+    fi
 }
 
 ################################################################################
@@ -169,10 +181,10 @@ function parse_dep_file {
 	    in_block=BUILDOPTS_BLOCK
 	    continue
 	fi
-
+	
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-           (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
+               (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
 	    check_is_entry $l && parse_dep_file $l $dep
 	fi
 
@@ -354,9 +366,9 @@ function get_all_parents {
     local dep=$2
     local p
 
-    local pkglist=$(cat $PKGLIST)
+    load_pkglist_array
     
-    for p in ${pkglist[@]}
+    for p in ${PKGLIST_ARRAY[@]}
     do
 	if [[ ! -f $p ]]; then
 	    echo "${COLOR_FAIL}[FAIL]${COLOR_END} dep file for package $p not found"
@@ -369,13 +381,37 @@ function get_all_parents {
     done #<$PKGLIST
     
 }
+
+################################################################################
+# Generates the parent database for all packages in PKGLIST
+################################################################################
+function gen_parentdb {
+    local db=$1
+
+    rm -f $db
+    touch $db
+
+    load_pkglist_array
+    
+    # load the package list
+    local p
+    local parent
+    for p in ${PKGLIST_ARRAY[@]}
+    do
+	parent=$(grep -w ^$p ${PKGLIST_ARRAY[@]} | cut -d: -f1)
+	echo $(echo $p: ${parent[@]}) >> $db
+    done
+}
+
 ################################################################################
 #
 ################################################################################
 function gen_metapkg_wparents {
     local dep="$1"
     local dep_wparents="$2"
-   
+
+    load_pkglist_array
+    
     cat > $dep_wparents <<EOF
 METAPKG
 REQUIRED:
@@ -384,22 +420,30 @@ EOF
     # Disable build opts and following dependences
     local buildopts=$USE_BUILDOPTS
     local no_deps=$NO_DEPS
-
+    
     USE_BUILDOPTS=0
     NO_DEPS=1
-
+    
     parse_dep_file $dep .pkglist
 
     local pkglist=$(cat .pkglist)
-    local p
     rm -f .pkglist
+
+    local p
     # For each package in the list, get all of the parents
     for p in ${pkglist[@]}
     do
-	get_all_parents $p $dep_wparents
-	echo $p >> $dep_wparents
-    done #<.pkglist
+	parent=$(grep -w ^$p ${PKGLIST_ARRAY[@]} | cut -d: -f1)
+	[[ -z $parent ]] && continue
 
+	# Looping to skip duplicates
+	for r in ${parent[@]}
+	do
+	    [[ ! -z $(grep -w ^$r $dep_wparents) ]] && continue
+	    echo "${r}" >> $dep_wparents
+	done
+	echo "${p}" >> $dep_wparents
+    done
 
     # Restore the original build options
     USE_BUILDOPTS=$buildopts
@@ -597,6 +641,7 @@ SBOPKG_REPO="/var/lib/sbopkg/SBo-git"
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
+PARENTDB="PARENTDB"
 REQUIRED_BLOCK=1
 OPTIONAL_BLOCK=2
 BUILDOPTS_BLOCK=3
@@ -617,6 +662,7 @@ CHECK_INST=0
 CHECK_INST_SBO_ONLY=""
 NO_DEPS=0
 PROCESS_PARENTS=0
+PARSE_DEP_RECURSIVE=1
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
@@ -626,6 +672,10 @@ while (( $# > 0 )); do
     case $1 in
 	"-C")
 	    CHECK_INST_ALL=1
+	    shift 1
+	    ;;
+	"-D")
+	    gen_parentdb $PARENTDB
 	    shift 1
 	    ;;
 	"-N")
@@ -709,15 +759,14 @@ rm -f $SQF
 
 # If we are processing the parents
 if (( PROCESS_PARENTS == 1 )); then
-    # if (( NO_DEPS == 0 )); then
-    # 	echo -e "${COLOR_INFO}[INFO]${COLOR_END} not processing dependencies"
-    # 	NO_DEPS=1
-    # fi
+    if (( NO_DEPS == 0 )); then
+    	echo -e "${COLOR_INFO}[INFO]${COLOR_END} not processing dependencies"
+    	NO_DEPS=1
+    fi
     gen_metapkg_wparents $TOPDEP $TOPDEP-wparents &&
-    echo "${COLOR_OK}[OK]${COLOR_END} $TOPDEP-wparents meta package dep file created"
-    exit 0
-    #TOPDEP=$TOPDEP-wparents
-    #SQF="${TOPDEP}.sqf"
+    echo -e "${COLOR_OK}[OK]${COLOR_END} $TOPDEP-wparents meta package dep file created"
+    TOPDEP=$TOPDEP-wparents
+    SQF="${TOPDEP}.sqf"
 fi
 
 if (( $ACTION == $ACTION_PRINT )); then
