@@ -7,14 +7,19 @@ function print_usage {
     echo "Usage: `basename $0` [options] <dep-file>"
     echo "Options:"
     echo "  -C          Check if packages are already installed"
-    echo "  -D          Generates the package parent database (PARENTDB)"
     echo "  -N          Disable recursive parsing of dep file (does not add dependencies; does"
     echo "              add build options"
     echo "  -P          Select packages which rely on all a particular package or meta package"
     echo "              Enables option -N (thus assumes all dependencies are met; used for rebuilding"
-    echo "              parent pacakges"
+    echo "              parent pacakges; this option respects option -o"
     echo "  -R          Review the package README, info, and dep files"
     echo "  -c          Check if packages are already installed from non-SBo sources"
+    echo "  -d          Generates the package dependency and parent databases ($DEPDB and $PARENTDB,"
+    echo "              the respectively); the databases are generated only if they are older than"
+    echo "              $DB_TIMEOUT (seconds); use option -f to force them to be generated; this option"
+    echo "              respects option -o"
+    echo "  -f          Force the generation of the dependency and parent databases; used with options"
+    echo "              -P and -d"
     echo "  -h          Show this information"
     echo "  -l          Print the sqf package list to stdout (build options are not included)"
     echo "  -o          Enable optional packages"
@@ -72,6 +77,14 @@ function print_dep_tree {
     done <$topdep
     
     DEP_TREE_LVL=$(( DEP_TREE_LVL - 8 ))
+}
+
+################################################################################
+# 
+################################################################################
+function sanitize_line {
+    local line="$1"
+    echo ${line%%#*}
 }
 
 ################################################################################
@@ -169,9 +182,15 @@ function parse_dep_file {
     fi
     
     local in_block=0
+    local l
     while read l
     do
-	if [[ $l == "REQUIRED:" || -z $l ]]; then
+	# Trim inline comments and whitespace
+	l=$(sanitize_line "$l")
+
+	[[ -z $l ]] && continue
+	
+	if [[ $l == "REQUIRED:" ]]; then
 	    in_block=REQUIRED_BLOCK
 	    continue
 	elif [[ $l == "OPTIONAL:" ]]; then
@@ -184,8 +203,15 @@ function parse_dep_file {
 	
 	# Only parse recursively for required or optional blocks
 	if (( in_block == REQUIRED_BLOCK )) || \
-               (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
-	    check_is_entry $l && parse_dep_file $l $dep
+           (( in_block == OPTIONAL_BLOCK && USE_OPTPKGS == 1 )); then
+
+	    if check_is_entry $l; then 
+	       if (( PARSE_DEP_RECURSIVE == 1 )); then
+		   parse_dep_file $l $dep
+	       else
+		   echo "$l $(get_buildopts $l)" >> $dep
+	       fi
+	   fi
 	fi
 
     done <$topdep
@@ -210,16 +236,17 @@ function get_buildopts {
     tail -n +$((n+1)) $topdep > .buildopts
 
     local buildopts=""
-    local opt=""
     while read l
     do
+	# Trim inline comments and whitespace
+	l=$(sanitize_line "$l")
 	if [[ $l == "OPTIONAL:" || $l == "REQUIRED:" ]]; then
 	    break
 	else
 	    if check_is_entry "$l"; then
-		# Trim inline comments and whitespace
-		opt=$(echo ${l%%#*})
-		buildopts="$buildopts $opt"
+
+		
+		buildopts="$buildopts $l"
 	    fi
 	fi
     done <.buildopts
@@ -358,49 +385,80 @@ function gen_sqf_rm {
 }
 
 ################################################################################
-# Finds all of the parent packages and appends them to the "dep" file
-# (meta package)
-################################################################################
-function get_all_parents {
-    local pkg=$1
-    local dep=$2
-    local p
-
-    load_pkglist_array
-    
-    for p in ${PKGLIST_ARRAY[@]}
-    do
-	if [[ ! -f $p ]]; then
-	    echo "${COLOR_FAIL}[FAIL]${COLOR_END} dep file for package $p not found"
-	    exit 1
-	fi
-	if [[ ! -z $(grep -w ^$pkg $p) ]]; then
-	    get_all_parents $p $dep
-	    echo $p >> $dep
-	fi
-    done #<$PKGLIST
-    
-}
-
-################################################################################
 # Generates the parent database for all packages in PKGLIST
 ################################################################################
 function gen_parentdb {
-    local db=$1
+    local force=$1
 
-    rm -f $db
-    touch $db
+    if (( force == 0 )) && [[ -f $PARENTDB ]]; then
+	local cur_time=$(date +%s)
+	local db_time=$(stat -c %Y $PARENTDB)
 
+	(( cur_time - db_time <= DB_TIMEOUT )) && return
+    fi
+
+    gen_depdb $force
+    
+    echo -n > $PARENTDB    
     load_pkglist_array
     
-    # load the package list
     local p
     local parent
     for p in ${PKGLIST_ARRAY[@]}
     do
-	parent=$(grep -w ^$p ${PKGLIST_ARRAY[@]} | cut -d: -f1)
-	echo $(echo $p: ${parent[@]}) >> $db
+	parent=$(grep -w $p $DEPDB | cut -d: -f1 | sed "/^${p}\b/Id")
+	echo $(echo $p: ${parent[@]}) >> $PARENTDB
     done
+
+    echo -e "${COLOR_INFO}[INFO]${COLOR_END} $PARENTDB created"            
+}
+
+################################################################################
+#
+################################################################################
+function gen_depdb {
+    local force=$1
+
+    if (( force == 0 )) && [[ -f $DEPDB ]]; then
+	local cur_time=$(date +%s)
+	local db_time=$(stat -c %Y $DEPDB)
+
+	(( cur_time - db_time <= DB_TIMEOUT )) && return
+    fi
+
+    echo -n > $DEPDB
+    load_pkglist_array
+
+    local no_deps=$NO_DEPS
+    local buildopts=$USE_BUILDOPTS
+
+    NO_DEPS=0
+    USE_BUILDOPTS=0
+
+    local p
+    local d
+    for p in ${PKGLIST_ARRAY[@]}
+    do
+	echo -n > .p
+	parse_dep_file $p .p
+	
+	d=$(echo `tail -n +2 .p`)
+	echo "$p: $d" >> $DEPDB
+    done
+    rm -f .p
+
+    NO_DEPS=$no_deps
+    USE_BUILDOPTS=$buildopts
+
+    echo -e "${COLOR_INFO}[INFO]${COLOR_END} $DEPDB created"        
+}
+
+################################################################################
+#
+################################################################################
+function gen_db {
+    local force=$1
+    gen_parentdb $force # Generates DEPDB also
 }
 
 ################################################################################
@@ -411,12 +469,8 @@ function gen_metapkg_wparents {
     local dep_wparents="$2"
 
     load_pkglist_array
+    gen_db $FORCE_GENDB 
     
-    cat > $dep_wparents <<EOF
-METAPKG
-REQUIRED:
-EOF
-
     # Disable build opts and following dependences
     local buildopts=$USE_BUILDOPTS
     local no_deps=$NO_DEPS
@@ -424,27 +478,65 @@ EOF
     USE_BUILDOPTS=0
     NO_DEPS=1
     
+    echo -n > .pkglist
     parse_dep_file $dep .pkglist
 
-    local pkglist=$(cat .pkglist)
-    rm -f .pkglist
-
+    echo -n > .parentlist
     local p
     # For each package in the list, get all of the parents
-    for p in ${pkglist[@]}
+    while read p 
     do
-	parent=$(grep -w ^$p ${PKGLIST_ARRAY[@]} | cut -d: -f1)
+	parent=$(grep -w "^$p:" $PARENTDB | cut -d: -f2)
 	[[ -z $parent ]] && continue
 
-	# Looping to skip duplicates
 	for r in ${parent[@]}
 	do
-	    [[ ! -z $(grep -w ^$r $dep_wparents) ]] && continue
-	    echo "${r}" >> $dep_wparents
+	    echo "${r}" >> .parentlist
 	done
-	echo "${p}" >> $dep_wparents
-    done
+	#echo "${p}" >> $dep_wparents
+    done<.pkglist
 
+    cat > .meta <<EOF
+METAPKG
+REQUIRED:
+EOF
+    # Append the parent and pkg lists and remove duplicates
+    cat .parentlist .pkglist | awk '!seen[$0]++' >> .meta
+
+    # Enable dependencies to get full tree    
+    NO_DEPS=0 
+    # Generate dep files for the full meta package
+    echo -n > .full_pkglist
+    parse_dep_file .meta .full_pkglist
+
+    # We put the full package list in reverse order since the
+    # recursive parsing of the meta package (containing the parents
+    # and original meta package list) has the correct dependency order
+    # starting with the end of the file. Thus reversing the order and
+    # retaining only the first instance of a each package ensures that
+    # when removing duplicates we retain the correct dependency
+    # order. The package list is then put back into the meta package
+    # order (parent then dependencies) which is then processed to
+    # obtain the final meta package
+    tac .full_pkglist | awk '!seen[$0]++' | tac > .p
+    mv .p .full_pkglist
+
+    # Purge the full package list of packages that are not in the .meta
+    # file. The .meta file contains the list of all the original
+    # packages along with all of the corresponding parents.
+    echo -n > .pkglist
+    while read p
+    do
+	[[ ! -z $(grep -w ^$p .meta) ]] && \
+	    echo $p >> .pkglist
+    done<.full_pkglist
+
+    cat > $dep_wparents <<EOF
+METAPKG
+REQUIRED:
+EOF
+    cat .pkglist >> $dep_wparents
+    
     # Restore the original build options
     USE_BUILDOPTS=$buildopts
     NO_DEPS=$no_deps
@@ -642,6 +734,7 @@ SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
 PARENTDB="PARENTDB"
+DEPDB="DEPDB"
 REQUIRED_BLOCK=1
 OPTIONAL_BLOCK=2
 BUILDOPTS_BLOCK=3
@@ -652,6 +745,8 @@ ACTION_GENSQF=2
 ACTION_GENSQF_RM=3
 ACTION_GENSQF_LIST=4
 ACTION_REVIEW_PKG=5
+ACTION_GENDB=6
+ACTION_PROCESS_PARENTS=7
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
@@ -661,8 +756,9 @@ CHECK_INST_ALL=0
 CHECK_INST=0
 CHECK_INST_SBO_ONLY=""
 NO_DEPS=0
-PROCESS_PARENTS=0
 PARSE_DEP_RECURSIVE=1
+FORCE_GENDB=0
+DB_TIMEOUT=$(( 60 * 30 )) # 30 min
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
@@ -674,16 +770,12 @@ while (( $# > 0 )); do
 	    CHECK_INST_ALL=1
 	    shift 1
 	    ;;
-	"-D")
-	    gen_parentdb $PARENTDB
-	    shift 1
-	    ;;
 	"-N")
 	    NO_DEPS=1
 	    shift 1
 	    ;;
 	"-P")
-	    PROCESS_PARENTS=1
+	    ACTION=$ACTION_PROCESS_PARENTS
 	    shift 1
 	    ;;
 	"-R")
@@ -692,6 +784,14 @@ while (( $# > 0 )); do
 	    ;;
 	"-c")
 	    CHECK_INST_EXT=1
+	    shift 1
+	    ;;
+	"-d")
+	    ACTION=$ACTION_GENDB
+	    shift 1
+	    ;;
+	"-f")
+	    FORCE_GENDB=1
 	    shift 1
 	    ;;
 	"-h")
@@ -714,12 +814,17 @@ while (( $# > 0 )); do
 	    ACTION=$ACTION_GENSQF_RM
 	    shift 1
 	    ;;
+	"-"*)
+	    echo "invalid option $1" >&2
+	    exit 1
+	    ;;
 	*)
 	    break
     esac
 done
 
-if (( $# != 1 )); then
+if (( $# != 1 )) && \
+   (( ACTION != ACTION_GENDB )); then
     print_usage
     exit 1
 fi
@@ -758,7 +863,7 @@ rm -f $DEP && touch $DEP
 rm -f $SQF
 
 # If we are processing the parents
-if (( PROCESS_PARENTS == 1 )); then
+if (( ACTION == ACTION_PROCESS_PARENTS )); then
     if (( NO_DEPS == 0 )); then
     	echo -e "${COLOR_INFO}[INFO]${COLOR_END} not processing dependencies"
     	NO_DEPS=1
@@ -767,19 +872,25 @@ if (( PROCESS_PARENTS == 1 )); then
     echo -e "${COLOR_OK}[OK]${COLOR_END} $TOPDEP-wparents meta package dep file created"
     TOPDEP=$TOPDEP-wparents
     SQF="${TOPDEP}.sqf"
-fi
 
-if (( $ACTION == $ACTION_PRINT )); then
+    # Set the gensqf action to generate the sqf file
+    ACTION=$ACTION_GENSQF
+fi
+   
+if (( ACTION == ACTION_GENDB )); then
+    gen_db $FORCE_GENDB
+    echo -e "${COLOR_OK}[OK]${COLOR_END} package databases created"    
+elif (( ACTION == ACTION_PRINT )); then
     print_dep_tree $TOPDEP
-elif (( $ACTION == $ACTION_GENSQF_RM )); then
+elif (( ACTION == ACTION_GENSQF_RM )); then
     # Enable external installed checking
     parse_dep_file $TOPDEP $DEP 1> /dev/null
     gen_sqf $DEP $SQF 1> /dev/null
     gen_sqf_rm $DEP $SQF
-elif (( $ACTION == $ACTION_GENSQF_LIST )); then
+elif (( ACTION == ACTION_GENSQF_LIST )); then
     parse_dep_file $TOPDEP $DEP
     gen_sqf_list $DEP .$SQF
-elif (( $ACTION ==$ACTION_REVIEW_PKG )); then
+elif (( ACTION ==ACTION_REVIEW_PKG )); then
     print_pkg_info $TOPDEP
     ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
 else
