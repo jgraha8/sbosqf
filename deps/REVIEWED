@@ -11,7 +11,6 @@ OpenAL
 OpenBLAS
 OpenCASCADE
 Pivy
-PyQt5
 Pygments
 PythonQt
 SDL2
@@ -21,9 +20,7 @@ SoQt
 Sphinx
 VTK
 apsw
-arno-iptables-firewall
 arpack-ng
-atlas
 audit
 avahi
 backports-abc
@@ -65,12 +62,9 @@ gcalctool
 geoclue
 gitstats
 gl2ps
-glade
 glances
 glpk
 gnome-python2-gconf
-gnucash
-goffice0.8
 graphviz
 gsm
 gsoap
@@ -80,7 +74,6 @@ gst0-python
 gthumb
 gtk-vnc
 gtksourceview
-gtksourceview3
 gts
 guile1.8
 hddtemp
@@ -100,7 +93,6 @@ json-glib
 lablgtk
 lame
 lapack
-lapack-atlas
 laptop-mode-tools
 libass
 libburn
@@ -111,12 +103,10 @@ libdmapsharing
 libdvdcss
 libev
 libfdk-aac
-libgnomecanvas
 libisofs
 libmp4v2
 libmpeg2
 libmusicbrainz3
-libofx
 libosinfo
 libpaper
 libpeas
@@ -144,7 +134,6 @@ makedepf90
 matplotlib
 mechanize
 meld
-meld3
 modules
 mplayer-codecs64
 munge
