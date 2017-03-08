@@ -1,6 +1,4 @@
-BeautifulSoup4
 Coin
-FreeCAD
 FreeImage
 GraphicsMagick
 Jinja2
@@ -9,7 +7,6 @@ Net-SSLeay
 NetworkManager-openconnect
 OpenAL
 OpenBLAS
-OpenCASCADE
 Pivy
 Pygments
 PythonQt
@@ -39,6 +36,7 @@ cppunit
 cssselect
 cssutils
 cudatoolkit
+cunit
 cvsps
 cycler
 device-tree-compiler
@@ -77,7 +75,6 @@ gts
 guile1.8
 hddtemp
 hdf5
-html5lib
 hwinfo
 hwloc
 i3
@@ -127,7 +124,6 @@ linux_logo
 log4cpp
 ltrace
 lua
-lxml
 makedepf90
 matplotlib
 mechanize
@@ -169,7 +165,6 @@ perl-IO-Socket-SSL
 perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
-perl-Net-SMTP-SSL
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
@@ -276,4 +271,5 @@ xcb-util-xrm
 xerces-c
 xvidcore
 yajl
+zoteo
 zotero
