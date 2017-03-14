@@ -34,12 +34,12 @@ colordiff
 confuse
 cppunit
 crashplan
-cssselect
 cssutils
 cudatoolkit
 cunit
 cvsps
 cycler
+dehydrated
 device-tree-compiler
 dmenu
 dnspython
@@ -93,6 +93,7 @@ lapack
 laptop-mode-tools
 libass
 libburn
+libdaemon
 libdbi
 libdbi-drivers
 libdmapsharing
@@ -181,6 +182,7 @@ perl-html-tagset
 perl-test-warn
 physfs
 pingus
+pip
 pithos
 podofo
 poppler-qt5
@@ -194,6 +196,7 @@ pymdstat
 pyparsing
 pyside
 pyside-tools
+python-augeas
 python-dateutil
 python-requests
 python-urllib3
@@ -262,6 +265,7 @@ vcdimager
 vid.stab
 virglrenderer
 virt-manager
+virtualenv
 vlc
 voxelands
 vte3

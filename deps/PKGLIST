@@ -19,6 +19,7 @@ VTK
 apsw
 arpack-ng
 audit
+augeas
 avahi
 backports-abc
 backports-ssl-match-hostname
@@ -33,12 +34,12 @@ color-theme
 colordiff
 confuse
 cppunit
-cssselect
 cssutils
 cudatoolkit
 cunit
 cvsps
 cycler
+dehydrated
 device-tree-compiler
 dmenu
 dnspython
@@ -180,6 +181,7 @@ perl-html-tagset
 perl-test-warn
 physfs
 pingus
+pip
 pithos
 podofo
 poppler-qt5
@@ -193,6 +195,7 @@ pymdstat
 pyparsing
 pyside
 pyside-tools
+python-augeas
 python-dateutil
 python-requests
 python-urllib3
@@ -261,6 +264,7 @@ vcdimager
 vid.stab
 virglrenderer
 virt-manager
+virtualenv
 vlc
 voxelands
 vte3
@@ -271,5 +275,4 @@ xcb-util-xrm
 xerces-c
 xvidcore
 yajl
-zoteo
 zotero

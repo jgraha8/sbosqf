@@ -46,6 +46,7 @@ numactl
 numpy
 openconnect
 parallel
+paraview
 pithos
 qemu
 reptyr
@@ -78,4 +79,4 @@ vagrant
 valgrind
 virt-manager
 vlc
-zoteo
+zotero
