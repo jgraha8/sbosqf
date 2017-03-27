@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if (( $# != 1 )); then
+if (( $# == 0 )); then
     echo "Usage: `basename $0` pkg"
     exit 1
 fi
@@ -10,20 +10,21 @@ if [[ ! -f PKGLIST ]]; then
     exit 1
 fi
 
-pkg=$1
+for pkg in $@
+do
 
-chk=$(grep -x $pkg PKGLIST)
+    chk=$(grep -x $pkg PKGLIST)
 
-if [[ -z $chk ]]; then
-    echo "$pkg not in PKGLIST"
-    exit 1
-fi
+    if [[ -z $chk ]]; then
+	echo "$pkg not in PKGLIST"
+	#exit 1
+	continue
+    fi
 
-set -e
-
-git rm -f $pkg
-sed -i "/^${pkg}/d" PKGLIST
-sed -i "/^${pkg}/d" REVIEWED
-echo "removed $pkg"
-
+    mkdir -p archive &&
+    git mv $pkg archive/$pkg &&
+    sed -i "/^${pkg}/d" PKGLIST &&
+    sed -i "/^${pkg}/d" REVIEWED &&
+    echo "removed $pkg"
+done
 

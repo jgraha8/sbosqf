@@ -1,4 +1,0 @@
-# See SBo README for additional information
-
-BUILDOPTS:
-LDFLAGS="-L/usr/lib64"

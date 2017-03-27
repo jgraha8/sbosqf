@@ -729,7 +729,7 @@ COLOR_END="\033[0m"
 PAGER=${PAGER:-less -r}
 
 # Parameters
-SBOPKG_REPO="/var/lib/sbopkg/SBo-git"
+SBOPKG_REPO=${SBOPKG_REPO:-"/var/lib/sbopkg/SBo"}
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"

@@ -1,6 +1,13 @@
 REQUIRED:
-lablgtk
+ocaml
+# lablgtk 
+
+OPTIONAL:
+# Put this as optional since it should only be needed with FLAVOR=gtk
+-lablgtk 
 
 BUILDOPTS:
 # Enables gui
-FLAVOR=gtk2
+-FLAVOR=gtk2
+# Enables text only
+FLAVOR=text

@@ -1,6 +1,4 @@
-BeautifulSoup4
 Coin
-FreeCAD
 FreeImage
 GraphicsMagick
 Jinja2
@@ -9,9 +7,7 @@ Net-SSLeay
 NetworkManager-openconnect
 OpenAL
 OpenBLAS
-OpenCASCADE
 Pivy
-PyQt5
 Pygments
 PythonQt
 SDL2
@@ -21,9 +17,7 @@ SoQt
 Sphinx
 VTK
 apsw
-arno-iptables-firewall
 arpack-ng
-atlas
 audit
 avahi
 backports-abc
@@ -34,7 +28,6 @@ bibletime
 blas
 bleachbit
 brasero
-calibre
 celt
 celt051
 color-theme
@@ -43,11 +36,12 @@ confuse
 connman
 cppunit
 crashplan
-cssselect
 cssutils
 cudatoolkit
+cunit
 cvsps
 cycler
+dehydrated
 device-tree-compiler
 dmenu
 dnspython
@@ -68,12 +62,9 @@ gcalctool
 geoclue
 gitstats
 gl2ps
-glade
 glances
 glpk
 gnome-python2-gconf
-gnucash
-goffice0.8
 graphviz
 gsm
 gsoap
@@ -83,12 +74,10 @@ gst0-python
 gthumb
 gtk-vnc
 gtksourceview
-gtksourceview3
 gts
 guile1.8
 hddtemp
 hdf5
-html5lib
 hwinfo
 hwloc
 i3
@@ -105,7 +94,6 @@ json-glib
 lablgtk
 lame
 lapack
-lapack-atlas
 laptop-mode-tools
 libass
 libburn
@@ -116,12 +104,10 @@ libdmapsharing
 libdvdcss
 libev
 libfdk-aac
-libgnomecanvas
 libisofs
 libmp4v2
 libmpeg2
 libmusicbrainz3
-libofx
 libosinfo
 libpaper
 libpeas
@@ -144,12 +130,10 @@ linux_logo
 log4cpp
 ltrace
 lua
-lxml
 makedepf90
 matplotlib
 mechanize
 meld
-meld3
 mit-scheme
 modules
 mplayer-codecs64
@@ -188,7 +172,6 @@ perl-IO-Socket-SSL
 perl-JSON
 perl-JSON-XS
 perl-Net-LibIDN
-perl-Net-SMTP-SSL
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
@@ -204,6 +187,7 @@ perl-html-tagset
 perl-test-warn
 physfs
 pingus
+pip
 pithos
 podofo
 poppler-qt5
@@ -217,6 +201,7 @@ pymdstat
 pyparsing
 pyside
 pyside-tools
+python-augeas
 python-dateutil
 python-requests
 python-urllib3
@@ -288,6 +273,7 @@ vcdimager
 vid.stab
 virglrenderer
 virt-manager
+virtualenv
 vlc
 voxelands
 vte3
