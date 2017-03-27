@@ -29,6 +29,7 @@ avahi
 backports-abc
 backports-ssl-match-hostname
 batinfo
+bfg
 bibletime
 blas
 bleachbit
@@ -39,6 +40,7 @@ celt051
 color-theme
 colordiff
 confuse
+connman
 cppunit
 crashplan
 cssselect
@@ -93,8 +95,10 @@ i3
 i3status
 imlib2
 iotop
+ip2location-c
 ipaddr-py
 iperf
+ipv6calc
 irrlicht
 jdk
 json-glib
@@ -146,6 +150,7 @@ matplotlib
 mechanize
 meld
 meld3
+mit-scheme
 modules
 mplayer-codecs64
 munge
@@ -240,6 +245,7 @@ six
 slack
 sloccount
 slurm
+smalltalk
 smpeg
 snappy
 sourcenav
@@ -269,6 +275,8 @@ trilinos
 tunctl
 tuxpaint
 twolame
+ucl
+uemacs
 unison
 units
 urlgrabber

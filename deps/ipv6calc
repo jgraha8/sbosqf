@@ -1,0 +1,6 @@
+OPTIONAL:
+ip2location-c
+
+BUILDOPTS:
+IP2LOCATION=yes 
+
