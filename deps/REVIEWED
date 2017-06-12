@@ -156,12 +156,14 @@ openconnect
 opencore-amr
 opencv
 openmpi
+opensc
 optipng
 opus
 osinfo-db
 osinfo-db-tools
 parallel
 paraview
+pcsc-lite
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL

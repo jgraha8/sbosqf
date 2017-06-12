@@ -725,6 +725,10 @@ COLOR_WARN="\033[${MAGENTA}m"
 COLOR_FAIL="\033[${RED}m"
 COLOR_END="\033[0m"
 
+if [ -f ~/.sbopkg-dep2sqf ]; then
+    . ~/.sbopkg-dep2sqf
+fi
+
 # Environment
 PAGER=${PAGER:-less -r}
 
