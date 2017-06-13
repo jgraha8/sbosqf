@@ -13,6 +13,7 @@ function print_usage {
     echo "              Enables option -N (thus assumes all dependencies are met; used for rebuilding"
     echo "              parent pacakges; this option respects option -o"
     echo "  -R          Review the package README, info, and dep files"
+    echo "  -a          Add package to package list ($PKGLIST)"
     echo "  -c          Check if packages are already installed from non-SBo sources"
     echo "  -d          Generates the package dependency and parent databases ($DEPDB and $PARENTDB,"
     echo "              the respectively); the databases are generated only if they are older than"
@@ -158,15 +159,10 @@ function parse_dep_file {
 	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
 
-	if ! check_is_pkg $topdep; then
-	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
-	    echo -n "$topdep not in $PKGLIST: "
-	    request_pkg_add $topdep
-	fi
+	check_pkg_add $topdep MESG_WARN
 
 	if ! check_is_reviewed $topdep; then
-	    echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
-	    echo "$topdep has not been reviewed"
+	    mesg_warn "$topdep has not been reviewed"
 	fi
 
 	# Only write the pkg name if not a metapkg
@@ -176,8 +172,7 @@ function parse_dep_file {
     fi
 
     if [[ ! -f $topdep ]]; then
-	echo -en "${COLOR_WARN}[WARN]${COLOR_END} "
-	echo "$topdep dependency file not found--assuming no dependencies"
+	mesg_warn "$topdep dependency file not found--assuming no dependencies"
 	return
     fi
     
@@ -292,7 +287,7 @@ function gen_sqf {
 
     __gen_sqf $dep $sqf
 
-    echo -e "${COLOR_OK}[OK]${COLOR_END} $sqf generated"
+    mesg_ok "$sqf generated"
 }
 
 ################################################################################
@@ -354,8 +349,7 @@ function gen_sqf_rm {
 		    # Other package needs this one
 		    # Check only SBo packages		    
 		    if check_is_inst $pl 1 1> /dev/null; then
-			echo -en "${COLOR_FAIL}[KEEP]${COLOR_END} " > /dev/stderr
-			echo "$p (needed at least by $pl)" > /dev/stderr
+			mesg_fail "$p (needed at least by $pl)" > /dev/stderr
 			remove=0
 
 			# If we cannot remove the target package, then break completely out and terminate
@@ -369,7 +363,7 @@ function gen_sqf_rm {
 
 
 	if (( remove == 1 )); then
-	    echo -e "${COLOR_OK}[RM]${COLOR_END} $p"
+	    mesg_ok "$p"
 	    echo $p >> $sqf
 	fi
 
@@ -378,9 +372,9 @@ function gen_sqf_rm {
     rm -f .tmp
 
     if [[ -f $sqf ]]; then
-	echo -e "${COLOR_OK}[OK]${COLOR_END} $sqf generated"
+	mesg_ok "$sqf generated"
     else
-	echo -e "${COLOR_FAIL}[FAIL]${COLOR_END} $sqf not generated" > /dev/stderr
+	mesg_fail "$sqf not generated" > /dev/stderr
     fi
 }
 
@@ -410,7 +404,7 @@ function gen_parentdb {
 	echo $(echo $p: ${parent[@]}) >> $PARENTDB
     done
 
-    echo -e "${COLOR_INFO}[INFO]${COLOR_END} $PARENTDB created"            
+    mesg_info "$PARENTDB created"            
 }
 
 ################################################################################
@@ -450,7 +444,7 @@ function gen_depdb {
     NO_DEPS=$no_deps
     USE_BUILDOPTS=$buildopts
 
-    echo -e "${COLOR_INFO}[INFO]${COLOR_END} $DEPDB created"        
+    mesg_info "$DEPDB created"
 }
 
 ################################################################################
@@ -599,8 +593,7 @@ function check_is_inst {
 		continue
 	    fi
 
-	    echo -ne "${COLOR_INFO}[INFO]${COLOR_END} "
-	    echo "installation of $pkg found: $pkg_other"
+	    mesg_info "installation of $pkg found: $pkg_other"
 	    return 0
 
 	fi
@@ -675,15 +668,13 @@ function request_pkg_add {
     read -u 1 ans
 
     if [[ "$ans" == "y" ]]; then
-	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
-	echo "$pkg added"
+	mesg_info "$pkg added"
 
 	echo "$1" >> $PKGLIST
 	sort -n $PKGLIST > .p
 	mv .p $PKGLIST
     else
-	echo -en "${COLOR_FAIL}[FAIL]${COLOR_END} " > /dev/stderr
-	echo "not adding required $pkg" > /dev/stderr
+	mesg_fail "not adding $pkg" > /dev/stderr
 	exit 1
     fi   
 }
@@ -698,8 +689,7 @@ function request_reviewed_add {
     read -u 1 ans
 
     if [[ "$ans" == "y" ]]; then
-	echo -en "${COLOR_INFO}[INFO]${COLOR_END} "
-	echo "$pkg added to REVIEWED"
+	mesg_info "$pkg added to REVIEWED"
 
 	echo "$1" >> $REVIEWED
 	sort -n $REVIEWED > .p
@@ -709,6 +699,52 @@ function request_reviewed_add {
     # 	echo "not adding required $pkg" > /dev/stderr
     # 	exit 1
     fi   
+}
+
+MESG_OK=0
+MESG_WARN=1
+MESG_INFO=2
+MESG_FAIL=3
+MESG_NO_NEWLINE="n"
+
+function mesg_ok {
+    echo -e$2 "${COLOR_OK}[OK]${COLOR_END} $1"
+}
+function mesg_warn {
+    echo -e$2 "${COLOR_WARN}[WARN]${COLOR_END} $1"
+}
+
+function mesg_info {
+    echo -e$2 "${COLOR_INFO}[INFO]${COLOR_END} $1"
+}
+
+function mesg_fail {
+    echo -e$2 "${COLOR_FAIL}[FAIL]${COLOR_END} $1"
+}
+################################################################################
+#
+################################################################################
+function check_pkg_add {
+    local topdep="$1"
+    local mesg_type=$2
+    local __mesg=""
+    if ! check_is_pkg $topdep; then
+	case $mesg_type in
+	    MESG_WARN)
+		__mesg=mesg_warn 
+		;;
+	    MESG_INFO)
+		__mesg=mesg_info
+		;;
+	    *)
+		mesg_fail "check_pkg_add requires message type argument (arg 2)"
+		exit 1
+		;;
+	esac
+		
+	$__mesg "$topdep not in $PKGLIST: " $MESG_NO_NEWLINE
+	request_pkg_add $topdep
+    fi
 }
 
 BLACK="01;30"
@@ -751,6 +787,7 @@ ACTION_GENSQF_LIST=4
 ACTION_REVIEW_PKG=5
 ACTION_GENDB=6
 ACTION_PROCESS_PARENTS=7
+ACTION_ADD_PKG=8
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
@@ -784,6 +821,10 @@ while (( $# > 0 )); do
 	    ;;
 	"-R")
 	    ACTION=$ACTION_REVIEW_PKG
+	    shift 1
+	    ;;
+	"-a")
+	    ACTION=$ACTION_ADD_PKG
 	    shift 1
 	    ;;
 	"-c")
@@ -897,6 +938,8 @@ elif (( ACTION == ACTION_GENSQF_LIST )); then
 elif (( ACTION ==ACTION_REVIEW_PKG )); then
     print_pkg_info $TOPDEP
     ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
+elif (( ACTION == ACTION_ADD_PKG )); then
+    check_pkg_add $TOPDEP MESG_INFO
 else
     parse_dep_file $TOPDEP $DEP
     gen_sqf $DEP $SQF
