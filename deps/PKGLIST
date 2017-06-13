@@ -109,6 +109,7 @@ libmp4v2
 libmpeg2
 libmusicbrainz3
 libosinfo
+libp11
 libpaper
 libpeas
 libquicktime
@@ -129,6 +130,7 @@ linux_logo
 log4cpp
 ltrace
 lua
+lynis
 makedepf90
 matplotlib
 mechanize
@@ -220,6 +222,7 @@ rdiff-backup
 recode
 reptyr
 rhythmbox
+rng-tools
 rrdtool
 rtmpdump
 rxvt-unicode

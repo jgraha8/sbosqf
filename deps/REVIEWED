@@ -19,6 +19,7 @@ VTK
 apsw
 arpack-ng
 audit
+augeas
 avahi
 backports-abc
 backports-ssl-match-hostname
@@ -109,6 +110,7 @@ libmp4v2
 libmpeg2
 libmusicbrainz3
 libosinfo
+libp11
 libpaper
 libpeas
 libpng-legacy12
@@ -130,6 +132,7 @@ linux_logo
 log4cpp
 ltrace
 lua
+lynis
 makedepf90
 matplotlib
 mechanize
