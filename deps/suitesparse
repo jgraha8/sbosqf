@@ -1,2 +1,9 @@
 REQUIRED:
 lapack
+chrpath
+
+OPTIONAL:
+-metis
+
+BUILDOPTS:
+USEMETIS=no

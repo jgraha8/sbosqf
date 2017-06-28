@@ -31,6 +31,7 @@ bleachbit
 brasero
 celt
 celt051
+chrpath
 color-theme
 colordiff
 confuse
@@ -135,6 +136,7 @@ makedepf90
 matplotlib
 mechanize
 meld
+metis
 mit-scheme
 modules
 mplayer-codecs64
