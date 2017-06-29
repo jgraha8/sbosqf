@@ -770,6 +770,7 @@ PAGER=${PAGER:-less -r}
 
 # Parameters
 SBOPKG_REPO=${SBOPKG_REPO:-"/var/lib/sbopkg/SBo"}
+DEPS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/deps"
 SBO_TAG="_SBo"
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
@@ -803,6 +804,11 @@ DB_TIMEOUT=$(( 60 * 30 )) # 30 min
 # Default action
 ACTION=$ACTION_GENSQF
 ARCH=$(uname -m)
+
+if [ ! -d $DEPS_DIR ]; then
+    mesg_fail "$DEPS_DIR not found"
+    exit 1
+fi
 
 # Run through the options
 while (( $# > 0 )); do
@@ -902,7 +908,9 @@ fi
 
 TOPDEP="$1"
 DEP="dep"
-SQF="$1.sqf"
+SQF="${PWD}/$1.sqf"
+
+cd $DEPS_DIR
 
 rm -f $DEP && touch $DEP
 rm -f $SQF
