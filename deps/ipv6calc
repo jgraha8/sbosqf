@@ -1,6 +1,8 @@
 OPTIONAL:
 ip2location-c
+GeoIP
 
 BUILDOPTS:
-IP2LOCATION=yes 
-
+EXTERNAL=yes
+IP2LOCATION=yes
+GEOIP=yes
