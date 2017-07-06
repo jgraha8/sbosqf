@@ -17,6 +17,7 @@ SDL_Pango
 SoQt
 Sphinx
 VTK
+anacron
 apsw
 arpack-ng
 audit
