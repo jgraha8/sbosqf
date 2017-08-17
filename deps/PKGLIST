@@ -168,6 +168,7 @@ osinfo-db
 osinfo-db-tools
 parallel
 paraview
+pcre2
 pcsc-lite
 perl-AnyEvent
 perl-AnyEvent-I3
@@ -192,6 +193,7 @@ perl-digest-sha1
 perl-html-parser
 perl-html-tagset
 perl-test-warn
+phpmyadmin
 physfs
 pingus
 pip
