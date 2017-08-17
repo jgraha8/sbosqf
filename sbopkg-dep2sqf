@@ -98,6 +98,19 @@ function load_pkglist_array {
 }
 
 ################################################################################
+# 
+################################################################################
+function request_create_dep_file {
+    local pkg=$1
+
+    [ -f $pkg ] && return
+    
+    mesg_warn "$pkg dependency file not found: create it now (only includes REQUIRED entry) (y/n): " n
+    read -u 1 ans
+    [[ "$ans" == "y" ]] && create_dep_file $pkg
+}
+
+################################################################################
 # Prints the info and README of the package as found in the sbopkg repository
 ################################################################################
 function print_pkg_info {
@@ -131,10 +144,32 @@ function print_pkg_info {
     echo "$pkg"
     echo $border1
     echo 
-    cat $pkg
-    echo
+    if [ -f $pkg ]; then
+	cat $pkg
+	echo
+    fi
         
     ) | $PAGER
+}
+
+################################################################################
+# Creates a dep file based on the REQUIRES: entry of the pkg info file
+################################################################################
+function create_dep_file {
+    # Should only be one found, but putting in loop in case more are found
+    local pkg=$1
+    local requires=""
+
+    for f in `find $SBOPKG_REPO -name $pkg -type d`
+    do
+	requires="$(grep "REQUIRES=" $f/$pkg.info | cut -d'=' -f2 | sed 's/\"//g')"
+    done
+
+    echo "REQUIRED:" > $pkg
+    for r in ${requires[@]}
+    do
+	echo "$r" >> $pkg
+    done
 }
 
 declare -i dep_count=0
@@ -152,17 +187,24 @@ function parse_dep_file {
     local block=0
 
     (( dep_count++ ))
-    
+
     # First find if it is not a metapackage 
     if ! check_is_metapkg $topdep; then
 	if (( $CHECK_INST == 1 && dep_count != 1 )); then
 	    check_is_inst $topdep $CHECK_INST_SBO_ONLY && return
 	fi
 
+	[ ! -f $topdep ] && request_create_dep_file $topdep
 	check_pkg_add $topdep MESG_WARN
 
 	if ! check_is_reviewed $topdep; then
-	    mesg_warn "$topdep has not been reviewed"
+	    mesg_warn "$topdep has not been reviewed" n
+	    echo -n ": review $topdep now (y/n): "
+	    read -u 1 ans
+	    if [[ "$ans" == "y" ]] ; then
+		print_pkg_info $topdep
+		request_reviewed_add $topdep
+	    fi
 	fi
 
 	# Only write the pkg name if not a metapkg
@@ -171,7 +213,7 @@ function parse_dep_file {
 	(( NO_DEPS == 1 )) && return
     fi
 
-    if [[ ! -f $topdep ]]; then
+    if [[ ! -f $topdep ]]; then 
 	mesg_warn "$topdep dependency file not found--assuming no dependencies"
 	return
     fi
@@ -944,6 +986,7 @@ elif (( ACTION == ACTION_GENSQF_LIST )); then
     parse_dep_file $TOPDEP $DEP
     gen_sqf_list $DEP .$SQF
 elif (( ACTION ==ACTION_REVIEW_PKG )); then
+    [ ! -f $TOPDEP ] && request_create_dep_file $TOPDEP
     print_pkg_info $TOPDEP
     ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
 elif (( ACTION == ACTION_ADD_PKG )); then
