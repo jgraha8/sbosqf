@@ -1,9 +1,9 @@
 REQUIRED:
 dmenu
 libev
-yajl
-xcb-util-xrm
 libxkbcommon
+xcb-util-xrm
+yajl
 
 OPTIONAL:
 i3status

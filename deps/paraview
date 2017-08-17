@@ -1,21 +1,14 @@
-# See SBo README for additional information
-
 REQUIRED:
-hdf5
+qt5
 ffmpeg
+hdf5
 Sphinx
+matplotlib
+openmpi # mpich 
 
 OPTIONAL:
--openmpi
-matplotlib
 PythonQt
 
-# Options:
-# MPICH=no (default=no; Requires openmpi)
-# MATPLOTLIB=yes (default=yes)
-# PYTHONQT=yes ( default=yes; Requires PythonQt)
-
 BUILDOPTS:
-MPICH=no
-MATPLOTLIB=yes
+MPICH=yes   # Really should be MPI 
 PYTHONQT=yes

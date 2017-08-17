@@ -1,9 +1,12 @@
-#
-# Circular dependency:
-# Pygments with build option HTML=1 requires Sphinx
-#
-
 REQUIRED:
-Pygments
+alabaster
+babel
 docutils
+imagesize
 Jinja2
+Pygments
+python-requests
+six
+snowballstemmer
+sphinxcontrib-websupport
+typing

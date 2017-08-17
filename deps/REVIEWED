@@ -17,12 +17,14 @@ SDL_Pango
 SoQt
 Sphinx
 VTK
+alabaster
 anacron
 apsw
 arpack-ng
 audit
 augeas
 avahi
+babel
 backports-abc
 backports-ssl-match-hostname
 batinfo
@@ -72,6 +74,7 @@ gnome-python2-gconf
 graphviz
 gsm
 gsoap
+gst-libav
 gst-plugins-bad
 gst0-ffmpeg
 gst0-python
@@ -86,6 +89,8 @@ hwinfo
 hwloc
 i3
 i3status
+idna
+imagesize
 imlib2
 iotop
 ip2location-c
@@ -135,6 +140,7 @@ linux_logo
 log4cpp
 ltrace
 lua
+luasocket
 lynis
 makedepf90
 matplotlib
@@ -213,6 +219,8 @@ pyparsing
 pyside
 pyside-tools
 python-augeas
+python-certifi
+python-chardet
 python-dateutil
 python-requests
 python-urllib3
@@ -246,8 +254,10 @@ slurm
 smalltalk
 smpeg
 snappy
+snowballstemmer
 sourcenav
 speex
+sphinxcontrib-websupport
 spice
 spice-gtk
 spice-protocol
@@ -273,6 +283,7 @@ trilinos
 tunctl
 tuxpaint
 twolame
+typing
 ucl
 uemacs
 unison

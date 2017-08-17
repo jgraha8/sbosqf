@@ -1,2 +1,8 @@
+REQUIRED:
+python-certifi
+python-chardet
+idna
+python-urllib3
+
 OPTIONAL:
 -python3

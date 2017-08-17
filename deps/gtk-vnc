@@ -6,5 +6,8 @@
 REQUIRED:
 vala
 
+OPTIONAL:
+-perl-Text-CSV
+
 BUILDOPTS:
--GTK3=no
+GTK3=yes

@@ -1,5 +1,3 @@
-# See SBo README for additional information
-
 REQUIRED:
 blas
 lapack

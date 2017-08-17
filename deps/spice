@@ -1,10 +1,12 @@
 REQUIRED:
-spice-protocol
 celt051
 pyparsing
 six
+spice-protocol
 
 OPTIONAL:
-# smartcard support
--libcacard
+-lz4
+gst-libav
+gst-plugins-bad # (with x264 support)
+-libcacard # (smartcard support)
 opus

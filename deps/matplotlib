@@ -1,5 +1,3 @@
-# See SBo README for additional information
-
 REQUIRED:
 numpy
 python-dateutil
@@ -7,6 +5,10 @@ pytz
 tornado
 pyparsing
 cycler
+
+OPTIONAL:
+-nose
+-mock
 
 BUILDOPTS:
 -DISABLE_TESTS=no
