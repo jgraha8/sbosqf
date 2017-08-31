@@ -47,6 +47,7 @@ cudatoolkit
 cunit
 cvsps
 cycler
+cyrus-imapd
 dehydrated
 device-tree-compiler
 dmenu
@@ -209,6 +210,7 @@ pithos
 podofo
 poppler-qt5
 portmidi
+postfix
 psutil
 py-cpuinfo
 py3sensors
@@ -302,6 +304,7 @@ vlc
 voxelands
 vte3
 webkitgtk
+webmin
 x264
 x265
 xcb-util-xrm

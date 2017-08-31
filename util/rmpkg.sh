@@ -22,9 +22,9 @@ do
     fi
 
     mkdir -p archive &&
-    git mv $pkg archive/$pkg &&
     sed -i "/^${pkg}/d" PKGLIST &&
-    sed -i "/^${pkg}/d" REVIEWED &&
+    sed -i "/^${pkg}/d" REVIEWED
+    [ -f $pkg ] && git mv $pkg archive/$pkg
     echo "removed $pkg"
 done
 

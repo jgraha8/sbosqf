@@ -1,0 +1,5 @@
+REQUIRED:
+
+BUILDOPTS:
+SASL=cyrus # (cyrus | dovecot)
+DATABSE=mysql # (mysql | pgsql)
