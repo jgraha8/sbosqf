@@ -108,6 +108,7 @@ lapack
 laptop-mode-tools
 libass
 libburn
+libconfig
 libdaemon
 libdbi
 libdbi-drivers
