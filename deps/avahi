@@ -2,3 +2,6 @@
 
 REQUIRED:
 libdaemon
+
+BUILDOPTS:
+MONO=no

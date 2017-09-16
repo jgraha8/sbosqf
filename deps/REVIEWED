@@ -32,6 +32,7 @@ bfg
 bibletime
 blas
 bleachbit
+bmake
 brasero
 celt
 celt051
@@ -157,8 +158,6 @@ ninja
 nload
 numactl
 numpy
-nvidia-driver
-nvidia-kernel
 nvidia-legacy340-driver
 nvidia-legacy340-kernel
 ocaml

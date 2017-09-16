@@ -12,3 +12,4 @@ PythonQt
 BUILDOPTS:
 MPICH=yes   # Really should be MPI 
 PYTHONQT=yes
+MATPLOTLIB=yes
