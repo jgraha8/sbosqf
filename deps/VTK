@@ -3,6 +3,7 @@ OPTIONAL:
 openmpi
 
 BUILDOPTS:
+IMAGING=yes
 MPI=yes
 TCL=yes
 TK=yes
