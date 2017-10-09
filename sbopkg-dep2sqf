@@ -625,13 +625,13 @@ function check_is_inst {
 	pkg_info=$(get_pkg_info $pkg_other)
 
 	name=$(echo $pkg_info | cut -d: -f1)
-	ext=$(echo $pkg_info | cut -d: -f4)
+	tag=$(echo $pkg_info | cut -d: -f5)
 
 	if [[ $name == $pkg ]]; then
 
-	    if [[ (( $sbo_only == 0 )) && $ext == *${SBO_TAG}  ]]; then
+	    if [[ (( $sbo_only == 0 )) && $tag == *${SBO_TAG}  ]]; then
 		continue
-	    elif [[ (( $sbo_only == 1 )) && $ext != *${SBO_TAG} ]]; then
+	    elif [[ (( $sbo_only == 1 )) && $tag != *${SBO_TAG} ]]; then
 		continue
 	    fi
 
@@ -684,20 +684,20 @@ function check_is_reviewed {
 #
 ################################################################################
 function get_pkg_info {
-    local pkg=$1
+    echo ${1##*/} | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_]*/&:/' | rev
+#   local pkg=$1    
+    # ext=${pkg##*-}
+    # pkg=${pkg%-${ext}}
+
+    # arch=${pkg##*-}
+    # pkg=${pkg%-${arch}}
     
-    ext=${pkg##*-}
-    pkg=${pkg%-${ext}}
+    # ver=${pkg##*-}
+    # pkg=${pkg%-${ver}}
 
-    arch=${pkg##*-}
-    pkg=${pkg%-${arch}}
-    
-    ver=${pkg##*-}
-    pkg=${pkg%-${ver}}
+    # name=${pkg}
 
-    name=${pkg}
-
-    echo "$name:$ver:$arch:$ext"
+    # echo "$name:$ver:$arch:$ext"
 }
 
 ################################################################################
