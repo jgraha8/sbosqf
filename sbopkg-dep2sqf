@@ -984,7 +984,8 @@ elif (( ACTION == ACTION_GENSQF_RM )); then
     gen_sqf_rm $DEP $SQF
 elif (( ACTION == ACTION_GENSQF_LIST )); then
     parse_dep_file $TOPDEP $DEP
-    gen_sqf_list $DEP .$SQF
+    gen_sqf_list $DEP $SQF
+    rm -f $SQF
 elif (( ACTION ==ACTION_REVIEW_PKG )); then
     [ ! -f $TOPDEP ] && request_create_dep_file $TOPDEP
     print_pkg_info $TOPDEP
