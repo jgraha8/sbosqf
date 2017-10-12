@@ -1,40 +1,13 @@
-# By default, this script builds only the x86 and arm emulation targets
-# for qemu; if you prefer to build all supported targets, do this:
-#
-#   TARGETS=all ./qemu.SlackBuild
-#
-# Disable vnc support via:
-#
-#   VNC_ENABLE=no ./qemu.SlackBuild
-#
-# Audio drivers support defaults to "pa,alsa,oss,sdl" and can be adusted e.g.
-#
-# AUDIODRIVERS="pa,alsa,oss" ./qemu.SlackBuild
-#
-# We patch the installed udev rules to require membership in "users" 
-# group instead of a custom "kvm" group to use /dev/kvm.  If you prefer
-# something different, then run the build script like this:
-#  
-#   KVMGROUP=group ./qemu.SlackBuild
-#
-# Don't forget to load the 'kvm-intel' or 'kvm-amd' module (depending on 
-# your processor) prior to launching qemu-system-ARCH with kvm enabled.
-# For older/unmaintained qemu frontends, this build also creates a symlink
-# to qemu-system-ARCH at /usr/bin/qemu-kvm.
-#
-# libcacard, spice, usbredir, virglrenderer and device-tree-compiler are
-# optional dependencies.
-# If you wish to emulate ARM, you will want device-tree-compiler.
-#
-# NOTES:
-#   This version breaks some backward compatibility with earlier versions.
-#   Consult the official changelogs for details.
-
 OPTIONAL:
+-libcacard
 spice
 usbredir
 virglrenderer
 device-tree-compiler
+libnfs
+snappy
+-glusterfs
+-vde2
 
 BUILDOPTS:
 KVMGROUP=users # Needs to be the same as libvirt
@@ -42,4 +15,4 @@ KVMGROUP=users # Needs to be the same as libvirt
 -VNC_ENABLE=no
 # AUDIODRIVERS defauls to "pa,alsa,oss,sdl"
 -AUDIODRIVERS="pa,alsa,oss"
-
+BRIDGE_HELPER_SETUID=yes

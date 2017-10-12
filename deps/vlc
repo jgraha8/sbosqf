@@ -33,9 +33,9 @@ faad2
 -musepack-tools
 vcdimager
 -dirac
--vsxu
 -gnome-vfs
 -live555
+-qt5
 rtmpdump
 libdvdcss
 -fluidsynth

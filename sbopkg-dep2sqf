@@ -198,13 +198,13 @@ function parse_dep_file {
 	check_pkg_add $topdep MESG_WARN
 
 	if ! check_is_reviewed $topdep; then
-	    mesg_warn "$topdep has not been reviewed" n
-	    echo -n ": review $topdep now (y/n): "
-	    read -u 1 ans
-	    if [[ "$ans" == "y" ]] ; then
-		print_pkg_info $topdep
-		request_reviewed_add $topdep
-	    fi
+	    mesg_warn "$topdep has not been reviewed" # n
+	    # echo -n ": review $topdep now (y/n): "
+	    # read -u 1 ans
+	    # if [[ "$ans" == "y" ]] ; then
+	    print_pkg_info $topdep
+	    request_reviewed_add $topdep
+	    # fi
 	fi
 
 	# Only write the pkg name if not a metapkg

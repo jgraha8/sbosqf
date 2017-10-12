@@ -16,14 +16,8 @@ SDL2_image
 SDL_Pango
 SoQt
 Sphinx
+Unidecode
 VTK
-alabaster
-alabaster
-alabaster
-alabaster
-alabaster
-alabaster
-alabaster
 alabaster
 anacron
 apsw
@@ -31,8 +25,6 @@ arpack-ng
 audit
 augeas
 avahi
-babel
-babel
 babel
 backports-abc
 backports-ssl-match-hostname
@@ -123,10 +115,12 @@ libdmapsharing
 libdvdcss
 libev
 libfdk-aac
+libinput
 libisofs
 libmp4v2
 libmpeg2
 libmusicbrainz3
+libnfs
 libosinfo
 libp11
 libpaper
