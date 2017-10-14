@@ -4,7 +4,8 @@ libev
 libxkbcommon
 xcb-util-xrm
 yajl
+perl-JSON-XS
+perl-AnyEvent
 
 OPTIONAL:
 i3status
-perl-AnyEvent-I3
