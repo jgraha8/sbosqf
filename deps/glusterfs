@@ -1,0 +1,5 @@
+REQUIRED:
+liburcu
+
+BUILDOPTS:
+LDFLAGS=-L/usr/lib64

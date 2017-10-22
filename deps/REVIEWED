@@ -73,6 +73,7 @@ gitstats
 gl2ps
 glances
 glpk
+glusterfs
 gnome-python2-gconf
 graphviz
 gsm
@@ -136,6 +137,7 @@ librsync
 libtar
 libtxc_dxtn
 libunique
+liburcu
 libvirt
 libvirt-glib
 libvirt-python
