@@ -368,7 +368,7 @@ function gen_sqf_rm {
     tac $sqf > .tmp
     rm -f $sqf
 
-    sqf="rm-${sqf}"
+    sqf="${sqf%/*}/rm-${sqf##*/}"    
     rm -f $sqf
 
     while read p
@@ -684,7 +684,8 @@ function check_is_reviewed {
 #
 ################################################################################
 function get_pkg_info {
-    echo ${1##*/} | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_]*/&:/' | rev
+    echo ${1##*/} | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_\.]*/&:/' | sed -E 's/^(z[bg]t)\./\1:/' | rev
+    
 #   local pkg=$1    
     # ext=${pkg##*-}
     # pkg=${pkg%-${ext}}
