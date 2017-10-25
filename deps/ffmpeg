@@ -20,6 +20,7 @@ xvidcore
 # An additional optional (autodetected) dependency is jack-audio-connection-kit.
 
 BUILDOPTS:
+LDFLAGS=-L/usr/lib64
 ASS=yes          # (default: no), requires libass
 # BLURAY=yes       # (default: no), requires libbluray
 # BS2B=yes|no (default: no), requires libbs2b
