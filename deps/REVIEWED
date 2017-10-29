@@ -72,9 +72,11 @@ geoclue
 gitstats
 gl2ps
 glances
+glm
 glpk
 glusterfs
 gnome-python2-gconf
+gource
 graphviz
 gsm
 gsoap
@@ -120,6 +122,7 @@ libev
 libfdk-aac
 libinput
 libisofs
+libmodbus
 libmp4v2
 libmpeg2
 libmusicbrainz3
@@ -146,6 +149,7 @@ libx86emu
 libxkbcommon
 linux_logo
 log4cpp
+lshw
 ltrace
 lua
 luasocket
@@ -246,6 +250,7 @@ reptyr
 rhythmbox
 rng-tools
 rrdtool
+rsnapshot
 rtmpdump
 rxvt-unicode
 schroedinger
