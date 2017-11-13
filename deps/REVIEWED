@@ -35,6 +35,7 @@ bibletime
 blas
 bleachbit
 brasero
+ccid
 celt
 celt051
 chrpath
@@ -106,6 +107,7 @@ ipv6calc
 irrlicht
 jdk
 json-glib
+krb5
 lablgtk
 lame
 lapack
@@ -177,8 +179,10 @@ omniORBpy
 openconnect
 opencore-amr
 opencv
+openldap-server
 openmpi
 opensc
+openssh-krb5
 optipng
 opus
 osinfo-db
@@ -187,6 +191,8 @@ parallel
 paraview
 pcre2
 pcsc-lite
+pcsc-perl
+pcsc-tools
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
@@ -204,11 +210,17 @@ perl-Types-Serialiser
 perl-Unicode-Map
 perl-Unicode-Map8
 perl-Unicode-String
+perl-cairo
 perl-common-sense
 perl-digest-hmac
 perl-digest-sha1
+perl-extutils-depends
+perl-extutils-pkgconfig
+perl-glib
+perl-gtk2
 perl-html-parser
 perl-html-tagset
+perl-pango
 perl-test-warn
 phpmyadmin
 physfs
