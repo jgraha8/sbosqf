@@ -1,0 +1,5 @@
+REQUIRED:
+perl-Authen-SASL
+perl-Convert-ASN1
+perl-IO-Socket-SSL
+perl-IO-Socket-INET6

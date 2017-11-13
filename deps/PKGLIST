@@ -192,11 +192,15 @@ perl-AnyEvent-I3
 perl-Authen-SASL
 perl-CGI
 perl-Canary-Stability
+perl-Convert-ASN1
 perl-Cstools
+perl-IO-Socket-INET6
 perl-IO-Socket-SSL
 perl-JSON
 perl-JSON-XS
+perl-Net-LDAP
 perl-Net-LibIDN
+perl-Socket6
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
@@ -317,6 +321,7 @@ vlc
 voxelands
 vte3
 webkitgtk
+webmin
 x264
 x265
 xcb-util-xrm
