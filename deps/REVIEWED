@@ -1,4 +1,5 @@
 
+ApacheDirectoryStudio
 Coin
 FreeImage
 GeoIP
@@ -187,6 +188,7 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+owncloud-server
 parallel
 paraview
 pcre2
