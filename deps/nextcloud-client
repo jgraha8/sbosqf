@@ -1,0 +1,6 @@
+REQUIRED:
+qtkeychain
+
+OPTIONAL:
+qt5   
+qt5-webkit # Required if qt5 is installed

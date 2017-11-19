@@ -1,0 +1,13 @@
+REQUIRED:
+
+OPTIONAL:
+php-imagick
+php-redis
+ffmpeg
+libreoffice
+
+BUILDOPTS:
+DOCROOT=/srv/httpd/vhosts
+NCNAME=nextcloud.compukix.net
+PHPUSER=apache
+PHPGROUP=apache

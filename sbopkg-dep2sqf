@@ -19,6 +19,7 @@ function print_usage {
     echo "              the respectively); the databases are generated only if they are older than"
     echo "              $DB_TIMEOUT (seconds); use option -f to force them to be generated; this option"
     echo "              respects option -o"
+    echo "  -e          Edit the specified dep file"
     echo "  -f          Force the generation of the dependency and parent databases; used with options"
     echo "              -P and -d"
     echo "  -h          Show this information"
@@ -832,6 +833,7 @@ ACTION_REVIEW_PKG=5
 ACTION_GENDB=6
 ACTION_PROCESS_PARENTS=7
 ACTION_ADD_PKG=8
+ACTION_EDIT_DEP=9
 DEP_TREE_LVL=0
 
 USE_OPTPKGS=0
@@ -882,6 +884,10 @@ while (( $# > 0 )); do
 	    ;;
 	"-d")
 	    ACTION=$ACTION_GENDB
+	    shift 1
+	    ;;
+	"-e")
+	    ACTION=$ACTION_EDIT_DEP
 	    shift 1
 	    ;;
 	"-f")
@@ -993,6 +999,12 @@ elif (( ACTION ==ACTION_REVIEW_PKG )); then
     ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
 elif (( ACTION == ACTION_ADD_PKG )); then
     check_pkg_add $TOPDEP MESG_INFO
+elif (( ACTION == ACTION_EDIT_DEP )); then
+    if [ ! -z $EDITOR ]; then
+	$EDITOR $TOPDEP
+    else
+	nano $TOPDEP
+    fi
 else
     parse_dep_file $TOPDEP $DEP
     gen_sqf $DEP $SQF

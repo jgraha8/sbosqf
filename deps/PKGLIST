@@ -50,6 +50,7 @@ cunit
 cvsps
 cycler
 cyrus-imapd
+davfs2
 dehydrated
 device-tree-compiler
 dmenu
@@ -162,6 +163,8 @@ modules
 mplayer-codecs64
 munge
 netifaces
+nextcloud-client
+nextcloud-server
 ninja
 nload
 numactl
@@ -221,6 +224,8 @@ perl-html-parser
 perl-html-tagset
 perl-pango
 perl-test-warn
+php-imagick
+php-redis
 phpmyadmin
 physfs
 pingus
@@ -253,10 +258,12 @@ qhull
 qrupdate
 qt5
 qt5-webkit
+qtkeychain
 quilt
 quvi
 rdiff-backup
 recode
+redis
 reptyr
 rhythmbox
 rng-tools

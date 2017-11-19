@@ -1,0 +1,13 @@
+REQUIRED:
+
+OPTIONAL:
+php-imagick
+php-redis
+ffmpeg
+libreoffice
+
+BUILDOPTS:
+DOCROOT=/srv/httpd/vhosts
+OCNAME=owncloud.compukix.net
+PHPUSER=apache
+PHPGROUP=apache
