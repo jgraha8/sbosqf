@@ -114,6 +114,7 @@ lablgtk
 lame
 lapack
 laptop-mode-tools
+ldapvi
 libass
 libburn
 libconfig
@@ -173,6 +174,7 @@ nextcloud-server
 ninja
 nload
 nodejs
+nss-pam-ldapd
 numactl
 numpy
 ocaml
