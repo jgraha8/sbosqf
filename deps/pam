@@ -2,4 +2,5 @@ OPTIONAL:
 cracklib
 
 BUILDOPTS:
+TAG=pam
 CRACKLIB=yes
