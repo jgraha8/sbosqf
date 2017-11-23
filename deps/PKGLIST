@@ -44,6 +44,7 @@ colordiff
 confuse
 connman
 cppunit
+cracklib
 cssutils
 cudatoolkit
 cunit
@@ -187,6 +188,7 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+pam
 parallel
 paraview
 pcre2
@@ -273,6 +275,7 @@ rrdtool
 rtmpdump
 rxvt-unicode
 schroedinger
+shadow
 shiboken
 shorewall
 shorewall-core

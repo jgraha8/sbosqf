@@ -1,4 +1,3 @@
-
 ApacheDirectoryStudio
 Coin
 FreeImage
@@ -45,6 +44,7 @@ colordiff
 confuse
 connman
 cppunit
+cracklib
 crashplan
 cssutils
 cudatoolkit
@@ -193,6 +193,7 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+pam
 parallel
 paraview
 pcre2
@@ -280,6 +281,7 @@ rsnapshot
 rtmpdump
 rxvt-unicode
 schroedinger
+shadow
 shiboken
 shorewall
 shorewall-core

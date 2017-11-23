@@ -1,0 +1,5 @@
+OPTIONAL:
+cracklib
+
+BUILDOPTS:
+CRACKLIB=yes
