@@ -3,3 +3,4 @@ REQUIRED:
 pam
 shadow
 nss-pam-ldapd
+pam_pkcs11
