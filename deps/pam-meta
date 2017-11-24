@@ -1,0 +1,5 @@
+METAPKG
+REQUIRED:
+pam
+shadow
+nss-pam-ldapd
