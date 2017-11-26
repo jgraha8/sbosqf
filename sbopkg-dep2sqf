@@ -630,9 +630,9 @@ function check_is_inst {
 
 	if [[ $name == $pkg ]]; then
 
-	    if [[ (( $sbo_only == 0 )) && $tag == *${SBO_TAG}  ]]; then
+	    if [[ (( $sbo_only == 0 )) && $tag == *"${SBO_TAG}"  ]]; then
 		continue
-	    elif [[ (( $sbo_only == 1 )) && $tag != *${SBO_TAG} ]]; then
+	    elif [[ (( $sbo_only == 1 )) && $tag != *"${SBO_TAG}" ]]; then
 		continue
 	    fi
 
@@ -685,7 +685,8 @@ function check_is_reviewed {
 #
 ################################################################################
 function get_pkg_info {
-    echo ${1##*/} | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_\.]*/&:/' | sed -E 's/^(z[bg]t)\./\1:/' | rev
+#    echo ${1##*/} | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_\.]*/&:/' | sed -E 's/^(z[bg]t)\./\1:/' | rev
+    echo $1 | rev | sed -E -e 's/-/:/' -e 's/-/:/' -e 's/-/:/' | sed 's/^[A-Za-z_\.]*/&:/' | sed -E 's/^(z[xg]t)\./\1:/' | rev    
     
 #   local pkg=$1    
     # ext=${pkg##*-}
@@ -815,7 +816,7 @@ PAGER=${PAGER:-less -r}
 # Parameters
 SBOPKG_REPO=${SBOPKG_REPO:-"/var/lib/sbopkg/SBo"}
 DEPS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/deps"
-SBO_TAG="_SBo"
+SBO_TAG=${SBO_TAG:-_SBo}
 PKGLIST="PKGLIST"
 REVIEWED="REVIEWED"
 PARENTDB="PARENTDB"
