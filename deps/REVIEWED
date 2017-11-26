@@ -194,6 +194,7 @@ opus
 osinfo-db
 osinfo-db-tools
 pam
+pam_pkcs11
 parallel
 paraview
 pcre2

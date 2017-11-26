@@ -1,6 +1,3 @@
 OPTIONAL:
 pam
 krb5
-
-BUILDOPTS:
-TAG=pam
