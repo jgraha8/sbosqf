@@ -57,6 +57,7 @@ dmenu
 dnspython
 docutils
 dos2unix
+drupal
 enca
 engauge
 faac
@@ -251,6 +252,7 @@ python-augeas
 python-certifi
 python-chardet
 python-dateutil
+python-django
 python-requests
 python-urllib3
 python3
