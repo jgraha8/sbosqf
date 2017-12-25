@@ -59,10 +59,12 @@ dmenu
 dnspython
 docutils
 dos2unix
+drupal
 enca
 engauge
 faac
 faad2
+fail2ban
 feh
 ffmpeg
 flashplayer-plugin
@@ -258,6 +260,7 @@ python-augeas
 python-certifi
 python-chardet
 python-dateutil
+python-django
 python-requests
 python-urllib3
 python3
