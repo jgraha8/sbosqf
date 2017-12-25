@@ -179,6 +179,7 @@ nodejs
 nss-pam-ldapd
 numactl
 numpy
+oath-toolkit
 ocaml
 ocaml-findlib
 octave
@@ -349,6 +350,7 @@ x264
 x265
 xcb-util-xrm
 xerces-c
+xmlsec
 xvidcore
 yajl
 youtube-dl
