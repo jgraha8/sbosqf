@@ -147,6 +147,7 @@ librsync
 libtar
 libtxc_dxtn
 libunique
+libunwind
 liburcu
 libvirt
 libvirt-glib
@@ -202,6 +203,7 @@ pcre2
 pcsc-lite
 pcsc-perl
 pcsc-tools
+perf
 perl-AnyEvent
 perl-AnyEvent-I3
 perl-Authen-SASL
