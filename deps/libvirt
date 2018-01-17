@@ -6,6 +6,9 @@ OPTIONAL:
 -netcat-openbsd
 -avahi
 -xen
+-glusterfs
+audit
+numactl
 
 BUILDOPTS:
 VIRTGROUP=users

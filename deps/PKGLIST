@@ -41,6 +41,7 @@ celt051
 chrpath
 color-theme
 colordiff
+composer
 confuse
 connman
 cppunit
@@ -172,6 +173,7 @@ nextcloud-client
 nextcloud-server
 ninja
 nload
+nodejs
 nss-pam-ldapd
 numactl
 numpy
