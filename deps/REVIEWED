@@ -209,6 +209,7 @@ pcsc-tools
 perf
 perl-AnyEvent
 perl-AnyEvent-I3
+perl-Authen-PAM
 perl-Authen-SASL
 perl-CGI
 perl-Canary-Stability
