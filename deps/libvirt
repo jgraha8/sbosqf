@@ -3,7 +3,7 @@ yajl
 urlgrabber
 
 OPTIONAL:
--netcat-openbsd
+netcat-openbsd
 -avahi
 -xen
 -glusterfs
