@@ -119,6 +119,7 @@ lapack
 laptop-mode-tools
 ldapvi
 libass
+libbsd
 libburn
 libconfig
 libdaemon
@@ -172,6 +173,7 @@ mit-scheme
 modules
 mplayer-codecs64
 munge
+netcat-openbsd
 netifaces
 nextcloud-client
 nextcloud-server
