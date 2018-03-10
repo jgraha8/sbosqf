@@ -191,6 +191,7 @@ opencv
 openldap-server
 openmpi
 opensc
+openssh
 openssh-krb5
 optipng
 opus
@@ -309,6 +310,7 @@ spice-gtk
 spice-protocol
 sshfs-fuse
 steam
+sudo
 suitesparse
 supertux
 supertuxkart
