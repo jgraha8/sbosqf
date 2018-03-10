@@ -1,6 +1,7 @@
 METAPKG
 REQUIRED:
+oath-toolkit
+openssh
 pam
 shadow
-nss-pam-ldapd
-pam_pkcs11
+sudo
