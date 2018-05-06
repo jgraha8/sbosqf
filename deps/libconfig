@@ -1,1 +1,6 @@
 REQUIRED:
+
+BUILDOPTS:
+DOC=yes
+EXAMPLES=yes
+

@@ -71,6 +71,7 @@ flawfinder
 flite
 fltk
 ftgl
+futures
 gcalctool
 geoclue
 gitstats
@@ -288,6 +289,7 @@ schroedinger
 shiboken
 shorewall
 shorewall-core
+singledispatch
 six
 slack
 sloccount

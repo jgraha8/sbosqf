@@ -1,3 +1,5 @@
 REQUIRED:
 backports-abc
-backports-ssl-match-hostname
+python-certifi
+futures
+singledispatch
