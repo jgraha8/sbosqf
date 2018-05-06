@@ -4,9 +4,9 @@ babel
 docutils
 imagesize
 Jinja2
+packaging
 Pygments
 python-requests
-six
 snowballstemmer
 sphinxcontrib-websupport
 typing

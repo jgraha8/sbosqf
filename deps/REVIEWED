@@ -156,6 +156,7 @@ liburcu
 libvirt
 libvirt-glib
 libvirt-python
+libwacom
 libwebp
 libx86emu
 libxkbcommon
@@ -170,6 +171,7 @@ makedepf90
 matplotlib
 mechanize
 meld
+meson
 metis
 mit-scheme
 modules
@@ -202,6 +204,7 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+packaging
 parallel
 paraview
 pcre2
@@ -268,11 +271,13 @@ python-certifi
 python-chardet
 python-dateutil
 python-django
+python-evdev
 python-requests
 python-urllib3
 python3
 python3-sip
 pytz
+pyudev
 qemu
 qhull
 qrencode

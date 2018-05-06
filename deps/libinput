@@ -1,2 +1,7 @@
-OPTIONAL:
--libwacom
+REQUIRED:
+libwacom
+meson
+graphviz
+python-evdev
+pyudev
+
