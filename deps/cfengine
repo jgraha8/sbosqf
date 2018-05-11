@@ -1,0 +1,4 @@
+REQUIRED:
+lmdb
+pam
+libvirt
