@@ -38,6 +38,7 @@ brasero
 ccid
 celt
 celt051
+cfengine
 chrpath
 color-theme
 colordiff
@@ -158,6 +159,7 @@ libwebp
 libx86emu
 libxkbcommon
 linux_logo
+lmdb
 log4cpp
 lshw
 ltrace
@@ -315,6 +317,7 @@ spice-gtk
 spice-protocol
 sshfs-fuse
 steam
+sudo
 suitesparse
 supertux
 supertuxkart
@@ -360,6 +363,7 @@ x265
 xcb-util-xrm
 xerces-c
 xmlsec
+xscreensaver
 xvidcore
 yajl
 youtube-dl
