@@ -1,4 +1,11 @@
 REQUIRED:
 lmdb
 pam
+
+OPTIONAL:
 libvirt
+
+BUILDOPTS:
+MYSQL_CLIENT=yes
+LIBVIRT=yes
+
