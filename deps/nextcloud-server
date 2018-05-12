@@ -9,5 +9,5 @@ libreoffice
 BUILDOPTS:
 DOCROOT=/srv/httpd/vhosts
 NCNAME=nextcloud.compukix.net
-PHPUSER=apache
+PHPUSER=root
 PHPGROUP=apache

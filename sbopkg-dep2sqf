@@ -994,10 +994,20 @@ elif (( ACTION == ACTION_GENSQF_LIST )); then
     parse_dep_file $TOPDEP $DEP
     gen_sqf_list $DEP $SQF
     rm -f $SQF
-elif (( ACTION ==ACTION_REVIEW_PKG )); then
-    [ ! -f $TOPDEP ] && request_create_dep_file $TOPDEP
-    print_pkg_info $TOPDEP
-    ! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
+elif (( ACTION ==ACTION_REVIEW_PKG )); then   
+    if check_is_metapkg $TOPDEP; then
+	NO_DEPS=0
+	PARSE_DEP_RECURSIVE=0
+	parse_dep_file $TOPDEP $DEP
+	for p in `gen_sqf_list $DEP $SQF`
+	do
+	    $0 -R $p
+	done
+    else
+	[ ! -f $TOPDEP ] && request_create_dep_file $TOPDEP	
+	print_pkg_info $TOPDEP
+	! check_is_reviewed $TOPDEP && request_reviewed_add $TOPDEP
+    fi
 elif (( ACTION == ACTION_ADD_PKG )); then
     check_pkg_add $TOPDEP MESG_INFO
 elif (( ACTION == ACTION_EDIT_DEP )); then

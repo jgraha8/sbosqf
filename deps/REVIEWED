@@ -21,6 +21,7 @@ Unidecode
 VTK
 alabaster
 anacron
+apachetop
 apsw
 arpack-ng
 atop
@@ -36,6 +37,7 @@ bibletime
 blas
 bleachbit
 brasero
+cackey
 ccid
 celt
 celt051
@@ -75,6 +77,7 @@ flawfinder
 flite
 fltk
 ftgl
+futures
 gcalctool
 geoclue
 gitstats
@@ -156,6 +159,7 @@ liburcu
 libvirt
 libvirt-glib
 libvirt-python
+libwacom
 libwebp
 libx86emu
 libxkbcommon
@@ -171,6 +175,7 @@ makedepf90
 matplotlib
 mechanize
 meld
+meson
 metis
 mit-scheme
 modules
@@ -206,6 +211,7 @@ osinfo-db
 osinfo-db-tools
 pam
 pam_pkcs11
+packaging
 parallel
 paraview
 pcre2
@@ -273,11 +279,13 @@ python-certifi
 python-chardet
 python-dateutil
 python-django
+python-evdev
 python-requests
 python-urllib3
 python3
 python3-sip
 pytz
+pyudev
 qemu
 qhull
 qrencode
@@ -302,6 +310,7 @@ shadow
 shiboken
 shorewall
 shorewall-core
+singledispatch
 six
 slack
 sloccount

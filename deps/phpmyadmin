@@ -1,4 +1,4 @@
 BUILDOPTS:
 DOCROOT=/srv/httpd/htdocs
-PHPUSER=apache
+PHPUSER=root
 PHPGROUP=apache
