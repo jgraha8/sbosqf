@@ -57,6 +57,7 @@ cvsps
 cycler
 cyrus-imapd
 davfs2
+ddclient
 dehydrated
 device-tree-compiler
 dmenu
@@ -336,6 +337,7 @@ texlive-extra
 texlive-fonts
 texmacs
 texstudio
+tor-browser
 tornado
 totem-pl-parser
 trilinos
