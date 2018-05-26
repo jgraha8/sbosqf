@@ -111,6 +111,7 @@ idna
 imagesize
 imlib2
 iotop
+ip2location-apache
 ip2location-c
 ipaddr-py
 iperf
@@ -179,6 +180,7 @@ meld
 meson
 metis
 mit-scheme
+modsecurity-apache
 modules
 mplayer-codecs64
 munge
