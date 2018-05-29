@@ -117,6 +117,7 @@ ipv6calc
 irrlicht
 jdk
 json-glib
+kexec-tools
 krb5
 lablgtk
 lame
@@ -207,9 +208,9 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+packaging
 pam
 pam_pkcs11
-packaging
 parallel
 paraview
 pcre2
