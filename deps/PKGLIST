@@ -303,6 +303,7 @@ rrdtool
 rtmpdump
 rxvt-unicode
 schroedinger
+scratch
 shadow
 shiboken
 shorewall
@@ -322,6 +323,7 @@ sphinxcontrib-websupport
 spice
 spice-gtk
 spice-protocol
+squeak-vm
 sshfs-fuse
 steam
 sudo
