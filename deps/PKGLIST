@@ -15,6 +15,7 @@ PythonQt
 SDL2
 SDL2_image
 SDL_Pango
+SFML
 SoQt
 Sphinx
 Unidecode
@@ -66,6 +67,8 @@ dos2unix
 drupal
 enca
 engauge
+extra-cmake-modules
+extremetuxracer
 faac
 faad2
 fail2ban
@@ -207,9 +210,9 @@ optipng
 opus
 osinfo-db
 osinfo-db-tools
+packaging
 pam
 pam_pkcs11
-packaging
 parallel
 paraview
 pcre2
