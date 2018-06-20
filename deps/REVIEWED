@@ -22,6 +22,7 @@ Unidecode
 VTK
 alabaster
 anacron
+android-studio
 apachetop
 apsw
 arpack-ng
@@ -333,6 +334,7 @@ sphinxcontrib-websupport
 spice
 spice-gtk
 spice-protocol
+squeak-vm
 sshfs-fuse
 steam
 sudo
