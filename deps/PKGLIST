@@ -118,6 +118,7 @@ ipaddr-py
 iperf
 ipv6calc
 irrlicht
+jbig2dec
 jdk
 json-glib
 krb5
@@ -182,6 +183,7 @@ modsecurity-apache
 modules
 mplayer-codecs64
 munge
+mupdf
 netcat-openbsd
 netifaces
 nextcloud-client
