@@ -1,4 +1,6 @@
 # See SBo README for additional information
+REQUIRED:
+qt5
 
 # Autodetected options
 OPTIONAL:
@@ -35,7 +37,6 @@ vcdimager
 -dirac
 -gnome-vfs
 -live555
--qt5
 rtmpdump
 libdvdcss
 -fluidsynth
