@@ -336,6 +336,8 @@ sphinxcontrib-websupport
 spice
 spice-gtk
 spice-protocol
+sqlitebrowser
+sqliteodbc
 squeak-vm
 sshfs-fuse
 steam
@@ -366,6 +368,7 @@ ucl
 uemacs
 unison
 units
+unixODBC
 urlgrabber
 usbredir
 vagrant
