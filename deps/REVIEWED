@@ -1,5 +1,6 @@
 ApacheDirectoryStudio
 Coin
+FreeCAD
 FreeImage
 GeoIP
 GraphicsMagick
@@ -9,6 +10,7 @@ Net-SSLeay
 NetworkManager-openconnect
 OpenAL
 OpenBLAS
+OpenCASCADE
 Pivy
 Pygments
 PythonQt

@@ -1,0 +1,11 @@
+REQUIRED:
+OpenCASCADE
+Pivy
+matplotlib
+pyside
+pyside-tools
+shiboken
+xerces-c
+
+OPTIONAL:
+graphviz

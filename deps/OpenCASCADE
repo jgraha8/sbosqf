@@ -1,0 +1,14 @@
+REQUIRED:
+VTK
+
+OPTIONAL:
+ffmpeg
+FreeImage
+-tbb
+gl2ps
+
+BUILDOPTS:
+FFMPEG=yes
+FREEIMAGE=yes
+-TBB=yes
+GL2PS=yes
