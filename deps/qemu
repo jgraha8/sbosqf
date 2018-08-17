@@ -6,7 +6,7 @@ virglrenderer
 device-tree-compiler
 libnfs
 snappy
--glusterfs
+glusterfs
 -vde2
 
 BUILDOPTS:
