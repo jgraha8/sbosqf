@@ -11,9 +11,11 @@ opus
 snappy
 -wayland
 -openvg
--libinput
+libinput
+pcre2
 
 BUILDOPTS:
 -DOCS=yes
 -EXAMPLES=yes
 -PROPRIETARY_CODECS=yes
+-PULSEAUDIO=no
