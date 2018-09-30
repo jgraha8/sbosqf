@@ -1,4 +1,4 @@
 REQUIRED:
 
 BUILDOPTS:
-CXX=gcc
+CXX=g++
