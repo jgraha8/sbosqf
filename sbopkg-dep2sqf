@@ -719,7 +719,7 @@ function request_pkg_add {
 	sort -n $PKGLIST > .p
 	mv .p $PKGLIST
     else
-	mesg_fail "not adding $pkg" > /dev/stderr
+	mesg_fail "not adding $pkg" 1>&2
 	exit 1
     fi   
 }
