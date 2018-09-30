@@ -1,7 +1,3 @@
-REQUIRED:
-ocaml
-# lablgtk 
-
 OPTIONAL:
 # Put this as optional since it should only be needed with FLAVOR=gtk
 -lablgtk 
