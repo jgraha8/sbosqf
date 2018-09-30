@@ -26,6 +26,7 @@ Unidecode
 VTK
 alabaster
 anacron
+android-studio
 apachetop
 apsw
 arpack-ng
@@ -208,7 +209,6 @@ omniORB
 omniORBpy
 openconnect
 opencore-amr
-opencv
 openldap-server
 openmpi
 opensc
