@@ -1,3 +1,6 @@
+REQUIRED:
+SDL2
+
 OPTIONAL:
 -libcacard
 spice
@@ -8,11 +11,12 @@ libnfs
 snappy
 glusterfs
 -vde2
+-libseccomp
 
 BUILDOPTS:
 KVMGROUP=users # Needs to be the same as libvirt
 -TARGETS=all
 -VNC_ENABLE=no
 # AUDIODRIVERS defauls to "pa,alsa,oss,sdl"
--AUDIODRIVERS="pa,alsa,oss"
+AUDIODRIVERS="pa,alsa"
 BRIDGE_HELPER_SETUID=yes
