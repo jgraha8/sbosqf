@@ -1,6 +1,3 @@
-REQUIRED:
-gst-plugins-bad
-
 OPTIONAL:
 libburn
 libisofs

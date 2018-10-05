@@ -72,6 +72,7 @@ dos2unix
 drupal
 enca
 engauge
+enum34
 extra-cmake-modules
 extremetuxracer
 faac
@@ -246,6 +247,7 @@ perl-Socket6
 perl-Sub-Uplevel
 perl-Test-Deep
 perl-Test-NoWarnings
+perl-Text-Soundex
 perl-Types-Serialiser
 perl-Unicode-Map
 perl-Unicode-Map8
@@ -291,6 +293,7 @@ python-django
 python-evdev
 python-requests
 python-urllib3
+python2-sip
 python3
 python3-sip
 pytz

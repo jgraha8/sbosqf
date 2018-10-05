@@ -13,6 +13,7 @@ munge
 OPTIONAL:
 hwloc
 rrdtool
+numactl
 
 BUILDOPTS:
 HWLOC=yes

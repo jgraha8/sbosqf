@@ -1,2 +1,4 @@
 REQUIRED:
 qt5-webkit
+python2-sip
+enum34
