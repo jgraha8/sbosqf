@@ -54,6 +54,7 @@ colordiff
 composer
 confuse
 connman
+containerd
 cppunit
 cracklib
 crashplan
@@ -69,6 +70,8 @@ dehydrated
 device-tree-compiler
 dmenu
 dnspython
+docker
+docker-proxy
 docutils
 dos2unix
 drupal
@@ -99,6 +102,7 @@ glm
 glpk
 glusterfs
 gnome-python2-gconf
+google-go-lang
 gource
 graphviz
 gsm
@@ -114,6 +118,7 @@ gts
 guile1.8
 hddtemp
 hdf5
+hiredis
 hwinfo
 hwloc
 i3
@@ -166,6 +171,7 @@ libquvi
 libquvi-scripts
 libreoffice
 librsync
+libseccomp
 libtar
 libtxc_dxtn
 libunique
@@ -322,6 +328,7 @@ rng-tools
 rrdtool
 rsnapshot
 rtmpdump
+runc
 rxvt-unicode
 schroedinger
 scratch
@@ -364,6 +371,7 @@ texlive-extra
 texlive-fonts
 texmacs
 texstudio
+tini
 tor-browser
 tornado
 totem-pl-parser
