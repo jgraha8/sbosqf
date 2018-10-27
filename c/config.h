@@ -1,3 +1,6 @@
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
 #define DEPDIR "/var/lib/sbopkg-dep2sqf"
 #define PKGFILE
 
@@ -23,6 +26,8 @@
 #define REVIEWED "REVIEWED"
 #define PARENTDB "PARENTDB"
 #define DEPDB "DEPDB"
-#define REQUIRED_BLOCK 1
-#define OPTIONAL_BLOCK 2
-#define BUILDOPTS_BLOCK 3
+
+// Environment
+#define PAGER "less -r"
+
+#endif // __CONFIG_H__

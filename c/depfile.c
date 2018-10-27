@@ -115,6 +115,7 @@ struct dep *load_depfile(const char *depdir, const char *pkg_name)
 			if( comment ) {
 				*comment = '\0';
 			}
+			
 			char *buildopt = bds_string_dup(bds_string_atrim(line));
 			if( dep->buildopts == NULL ) {
 				dep->buildopts = bds_stack_alloc(1, sizeof(char *), (void (*)(void *))free_string);

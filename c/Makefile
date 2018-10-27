@@ -6,5 +6,10 @@ LIBS:=-lbds
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-sbopkg-dep2sqf: pkglist.o depfile.o main.o
+sbopkg-dep2sqf: pkglist.o depfile.o user_config.o main.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+.PHONY: clean
+
+clean:
+	rm -f *.o sbopkg-dep2sqf
