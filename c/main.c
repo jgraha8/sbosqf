@@ -29,7 +29,7 @@ int main(int argc, char **argv)
         printf("sbo_tag = %s\n", user_config.sbo_tag);
         printf("pager = %s\n", user_config.pager);
 
-        struct bds_stack *pkglist = load_pkglist(DEPDIR);
+        pkg_stack_t *pkglist = load_pkglist(DEPDIR);
         print_pkglist(pkglist);
 
 	struct pkg *pkg = find_pkg(pkglist, "nextcloud-server");
@@ -42,10 +42,10 @@ int main(int argc, char **argv)
 	
         bds_stack_free(&pkglist);
 
-        struct dep *dep = load_depfile(DEPDIR, "ffmpeg", true);
+        struct dep *dep = load_depfile(DEPDIR, "test", true);
 
         printf("===========================\n");
-        print_depfile(dep);
+        print_dep_sqf(dep);
 
         dep_free(&dep);
 

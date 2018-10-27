@@ -10,6 +10,23 @@
 #include "depfile.h"
 #include "pkglist.h"
 
+__attribute__ ((unused))
+static int compar_string_list(const void *a, const void *b)
+{
+        return strcmp(*((const char **)a), *((const char **)b));
+}
+
+static int compar_dep_list(const void *a, const void *b)
+{
+        return strcmp((*(const struct dep **)a)->pkg_name, (*(const struct dep **)b)->pkg_name);
+}
+
+static void free_string(char **str)
+{
+        free(*str);
+        *str = NULL;
+}
+
 struct dep *dep_alloc(const char *pkg_name)
 {
         struct dep *dep = calloc(1, sizeof(*dep));
@@ -35,10 +52,55 @@ void dep_free(struct dep **dep)
         *dep = NULL;
 }
 
-static void free_string(char **str)
+void dep_required_alloc(struct dep *dep)
 {
-        free(*str);
-        *str = NULL;
+        dep->required = bds_stack_alloc(1, sizeof(struct dep *), (void (*)(void *))dep_free);
+}
+
+void dep_optional_alloc(struct dep *dep)
+{
+        dep->optional = bds_stack_alloc(1, sizeof(struct dep *), (void (*)(void *))dep_free);
+}
+
+void dep_buildopts_alloc(struct dep *dep)
+{
+        dep->buildopts = bds_stack_alloc(1, sizeof(char *), (void (*)(void *))free_string);
+}
+
+void dep_copy_buildopts(struct dep *dep, const struct dep *src)
+{
+        if (!src->buildopts)
+                return;
+
+        dep_buildopts_alloc(dep);
+
+        size_t n           = bds_stack_size(src->buildopts);
+        const char **bopts = (const char **)bds_stack_ptr(src->buildopts);
+
+        for (size_t i = 0; i < n; ++i) {
+                char *b = bds_string_dup(bopts[i]);
+                bds_stack_push(dep->buildopts, &b);
+        }
+}
+
+struct dep_list *dep_list_alloc(const char *pkg_name)
+{
+        struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
+
+        dep_list->pkg_name = bds_string_dup(pkg_name);
+        dep_list->dep_list = bds_stack_alloc(1, sizeof(struct dep *), (void (*)(void *))dep_free);
+
+        return dep_list;
+}
+void dep_list_free(struct dep_list **dep_list)
+{
+        if (*dep_list == NULL)
+                return;
+
+        free((*dep_list)->pkg_name);
+        bds_stack_free(&(*dep_list)->dep_list);
+        free(*dep_list);
+        *dep_list = NULL;
 }
 
 struct dep *load_depfile(const char *depdir, const char *pkg_name, bool recursive)
@@ -115,11 +177,10 @@ struct dep *load_depfile(const char *depdir, const char *pkg_name, bool recursiv
                         struct dep *req_dep = load_depfile(depdir, line, recursive);
                         if (req_dep == NULL) {
                                 fprintf(stderr, "%s required dependency file %s not found\n", pkg_name, line);
-                                break;
+				exit(EXIT_FAILURE);
                         }
                         if (dep->required == NULL) {
-                                dep->required =
-                                    bds_stack_alloc(1, sizeof(struct dep *), (void (*)(void *))dep_free);
+                                dep_required_alloc(dep);
                         }
                         bds_stack_push(dep->required, &req_dep);
                 } break;
@@ -127,12 +188,10 @@ struct dep *load_depfile(const char *depdir, const char *pkg_name, bool recursiv
                         struct dep *opt_dep = load_depfile(depdir, line, recursive);
                         if (opt_dep == NULL) {
                                 fprintf(stderr, "%s optional dependency file %s not found\n", pkg_name, line);
-                                break;
+				exit(EXIT_FAILURE);				
                         }
-
                         if (dep->optional == NULL) {
-                                dep->optional =
-                                    bds_stack_alloc(1, sizeof(struct dep *), (void (*)(void *))dep_free);
+                                dep_optional_alloc(dep);
                         }
                         bds_stack_push(dep->optional, &opt_dep);
                 } break;
@@ -144,7 +203,7 @@ struct dep *load_depfile(const char *depdir, const char *pkg_name, bool recursiv
 
                         char *buildopt = bds_string_dup(bds_string_atrim(line));
                         if (dep->buildopts == NULL) {
-                                dep->buildopts = bds_stack_alloc(1, sizeof(char *), (void (*)(void *))free_string);
+                                dep_buildopts_alloc(dep);
                         }
                         bds_stack_push(dep->buildopts, &buildopt);
                 } break;
@@ -172,34 +231,40 @@ finish:
         return dep;
 }
 
-void __print_deps(const struct bds_stack *deps)
+void __print_dep_sqf(const struct dep *dep)
 {
-        if (deps) {
-                size_t n             = bds_stack_size(deps);
-                const struct dep **d = (const struct dep **)bds_stack_ptr(deps);
-                for (size_t i = 0; i < n; ++i) {
-                        print_depfile(d[i]);
-                }
-        }
-}
+	if( dep->is_meta )
+		return;
+	
+        printf("%s", dep->pkg_name);
 
-void print_depfile(const struct dep *dep)
-{
-        __print_deps(dep->required);
-        __print_deps(dep->optional);
-
-        printf("%s ", dep->pkg_name);
         if (dep->buildopts) {
-                size_t n               = bds_stack_size(dep->buildopts);
-                const char **buildopts = (const char **)bds_stack_ptr(dep->buildopts);
-                for (size_t i = 0; i < n; ++i) {
-                        printf("%s ", buildopts[i]);
+                size_t nb          = bds_stack_size(dep->buildopts);
+                const char **bopts = (const char **)bds_stack_ptr(dep->buildopts);
+
+                for (size_t j = 0; j < nb; ++j) {
+                        printf(" %s", bopts[j]);
                 }
         }
         printf("\n");
 }
 
-/* void __write_deps_list(FILE *fp, const struct bds_stack *deps) */
+void print_dep_sqf(const struct dep *dep)
+{
+        struct dep_list *dep_list = load_dep_list_from_dep(dep);
+
+        size_t n              = bds_stack_size(dep_list->dep_list);
+        const struct dep **dl = (const struct dep **)bds_stack_ptr(dep_list->dep_list);
+
+        for (size_t i = 0; i < n; ++i) {
+                __print_dep_sqf(dl[i]);
+        }
+        __print_dep_sqf(dep);
+
+        dep_list_free(&dep_list);
+}
+
+/* void __write_deps_list(FILE *fp, const dep_stack_t *deps) */
 /* { */
 /*         if (!deps) */
 /*                 return; */
@@ -212,93 +277,68 @@ void print_depfile(const struct dep *dep)
 /*         } */
 /* } */
 
-void __append_deps(const struct bds_stack *deps, struct bds_stack *dl_list )
+void __append_deps(const dep_stack_t *deps, dep_stack_t *dep_list)
 {
-	if(!deps)
-		return;
+        if (!deps)
+                return;
 
-	size_t n             = bds_stack_size(deps);
-	const struct dep **d = (const struct dep **)bds_stack_ptr(deps);
+        size_t n             = bds_stack_size(deps);
+        const struct dep **d = (const struct dep **)bds_stack_ptr(deps);
 
-	for( size_t i=0; i<n; ++i ) {
-		__append_deps(d[i]->required, dl_list);
-		__append_deps(d[i]->optional, dl_list);
+        for (size_t i = 0; i < n; ++i) {
+                __append_deps(d[i]->required, dep_list);
+                __append_deps(d[i]->optional, dep_list);
 
-		char *pkg_name = bds_string_dup(d[i]->pkg_name);
-		bds_stack_push(dl_list, &pkg_name);
-	}
-	
-}
+                struct dep *dep = dep_alloc(d[i]->pkg_name);
+                if (bds_stack_lsearch(dep_list, &dep, compar_dep_list) == NULL) {
+			dep->is_meta = d[i]->is_meta;
+                        dep_copy_buildopts(dep, d[i]);
 
-struct dep_list *dep_list_alloc(const char *pkg_name)
-{
-	struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
-	
-	dep_list->pkg_name = bds_string_dup(pkg_name);
-	dep_list->dep_list = bds_stack_alloc(1, sizeof(char *), (void (*)(void *))free_string);
-
-	return dep_list;
-}
-void dep_list_free(struct dep_list **dep_list)
-{
-	if( *dep_list == NULL )
-		return;
-
-	free((*dep_list)->pkg_name);
-	bds_stack_free(&(*dep_list)->dep_list);
-	free(*dep_list);
-	*dep_list = NULL;
-}
-
-int compar_string_list(const void *a, const void *b)
-{
-	return strcmp(*((const char **)a), *((const char **)b));
+                        bds_stack_push(dep_list, &dep);
+                } else {
+                        dep_free(&dep);
+                }
+        }
 }
 
 struct dep_list *load_dep_list(const char *depdir, const char *pkg_name)
 {
-	struct dep_list *dep_list = dep_list_alloc(pkg_name);
-	
-	struct dep *dep = load_depfile(depdir, pkg_name, true);
-	assert(dep);
+        struct dep_list *dep_list = dep_list_alloc(pkg_name);
 
-	__append_deps(dep->required, dep_list->dep_list);
-	__append_deps(dep->optional, dep_list->dep_list);
+        struct dep *dep = load_depfile(depdir, pkg_name, true);
+        assert(dep);
 
-	// De-duplicate deps
-	struct bds_stack *__dep_list = bds_stack_alloc(1, sizeof(char *), (void (*)(void *))free_string);
+        __append_deps(dep->required, dep_list->dep_list);
+        __append_deps(dep->optional, dep_list->dep_list);
 
-	char *d;
-	while( bds_stack_pop(dep_list->dep_list, &d) ) {
-		const char **p = (const char **)bds_stack_lsearch(__dep_list, &d, compar_string_list);
-		if( !p ) {
-			char *__pkg_name = bds_string_dup(d);
-			bds_stack_push(__dep_list, &__pkg_name);
-		}
-		free(d);
-	}
+        dep_free(&dep);
 
-	while( bds_stack_pop(__dep_list, &d) ) {
-		bds_stack_push(dep_list->dep_list, &d);
-	}
-	bds_stack_free(&__dep_list);
+        return dep_list;
+}
 
-	return dep_list;
+struct dep_list *load_dep_list_from_dep(const struct dep *dep)
+{
+        struct dep_list *dep_list = dep_list_alloc(dep->pkg_name);
+
+        __append_deps(dep->required, dep_list->dep_list);
+        __append_deps(dep->optional, dep_list->dep_list);
+
+        return dep_list;
 }
 
 void write_dep_list(FILE *fp, const struct dep_list *dep_list)
 {
-	fprintf(fp, "%s:", dep_list->pkg_name);
-	size_t n             = bds_stack_size(dep_list->dep_list);
-	const char **pkg_name = (const char **)bds_stack_ptr(dep_list->dep_list);
+        fprintf(fp, "%s:", dep_list->pkg_name);
+        size_t n              = bds_stack_size(dep_list->dep_list);
+        const struct dep **dl = (const struct dep **)bds_stack_ptr(dep_list->dep_list);
 
-	for(size_t i=0; i<n; ++i ) {
-		fprintf(fp, " %s", pkg_name[i]);
-	}
-	fprintf(fp, "\n");
+        for (size_t i = 0; i < n; ++i) {
+                fprintf(fp, " %s", dl[i]->pkg_name);
+        }
+        fprintf(fp, "\n");
 }
 
-int write_depdb(const char *depdir, const struct bds_stack *pkglist)
+int write_depdb(const char *depdir, const pkg_stack_t *pkglist)
 {
         int rc   = 0;
         FILE *fp = fopen(DEPDB, "w");
@@ -317,7 +357,7 @@ int write_depdb(const char *depdir, const struct bds_stack *pkglist)
                         goto finish;
                 }
                 write_dep_list(fp, dep_list);
-		dep_list_free(&dep_list);
+                dep_list_free(&dep_list);
         }
 
 finish:
@@ -332,8 +372,8 @@ finish:
 /* 	return strcmp( ((const struct pkg_parents *)a)->pkg_name, ((const struct pkg_parents *)b)->pkg_name); */
 /* } */
 
-
-/* void __add_parents() {const struct bds_stack *deps, struct bds_queue *parent_queue, size_t parents_list_size, struct pkg_parents *parents_list) */
+/* void __add_parents() {const struct bds_stack *deps, struct bds_queue *parent_queue, size_t parents_list_size,
+ * struct pkg_parents *parents_list) */
 /* { */
 /* 	if(!deps) */
 /* 		return; */
@@ -343,7 +383,8 @@ finish:
 
 /* 	for( i =0; i<n; ++i ) { */
 /* 		struct pkg_parents key = { .pkg_name = d[i]->pkg_name }; */
-/* 		struct pkg_parents *parents = bsearch(&key, parents_list, parents_list_size, sizeof(struct pkg_parents), compar_parents); */
+/* 		struct pkg_parents *parents = bsearch(&key, parents_list, parents_list_size, sizeof(struct
+ * pkg_parents), compar_parents); */
 /* 		if( parents == NULL ) { */
 /* 			fprintf(stderr, "unable to find package %s parents\n", d[i]->pkg_name); */
 /* 			exit(EXIT_FAILURE); */
@@ -356,14 +397,13 @@ finish:
 /* 	} */
 /* } */
 
-
-/* void add_parents(const struct dep *dep, struct bds_queue *parent_queue, size_t parents_list_size, struct pkg_parents *parents_list) */
+/* void add_parents(const struct dep *dep, struct bds_queue *parent_queue, size_t parents_list_size, struct
+ * pkg_parents *parents_list) */
 /* { */
 /* 	char *pkg_name = bds_string_dup(dep->pkg_name); */
 /* 	bds_queue_push(parent_queue, &pkg_name); */
 
 /* 	const char *parent_name = *(const char **)bds_queue_frontptr(parent_queue); */
-
 
 /* } */
 
@@ -387,7 +427,7 @@ finish:
 /*         } */
 
 /* 	struct bds_queue *parent_queue = bds_queue_alloc(1, sizeof(char *), (void (*)(void *))free_string)); */
-	
+
 /*         for (size_t i = 0; i < n; ++i) { */
 /*                 const struct dep *dep = load_depfile(depdir, pkg->name, true); */
 /*                 if (dep == NULL) { */

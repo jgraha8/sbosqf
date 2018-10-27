@@ -31,7 +31,7 @@ void destroy_pkg(struct pkg *pkg)
         memset(pkg, 0, sizeof(*pkg));
 }
 
-struct pkg *find_pkg(struct bds_stack *pkglist, const char *pkg_name)
+struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name)
 {
         const struct pkg key = {.name = (char *)pkg_name};
 
@@ -39,9 +39,9 @@ struct pkg *find_pkg(struct bds_stack *pkglist, const char *pkg_name)
                                      compar_pkg);
 }
 
-struct bds_stack *load_pkglist(const char *depdir)
+pkg_stack_t *load_pkglist(const char *depdir)
 {
-        struct bds_stack *pkglist = bds_stack_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
+        pkg_stack_t *pkglist = bds_stack_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
 
         char *pkglist_file = bds_string_dup_concat(2, depdir, "/" PKGLIST);
         FILE *fp           = fopen(pkglist_file, "r");
@@ -86,7 +86,7 @@ struct bds_stack *load_pkglist(const char *depdir)
         return pkglist;
 }
 
-void print_pkglist(const struct bds_stack *pkglist)
+void print_pkglist(const pkg_stack_t *pkglist)
 {
         const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
 
