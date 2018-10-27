@@ -37,10 +37,12 @@ int main(int argc, char **argv)
 	if( pkg ) {
 		printf("found package %s\n", pkg->name);
 	}
+
+	write_depdb(DEPDIR, pkglist);
 	
         bds_stack_free(&pkglist);
 
-        struct dep *dep = load_depfile(DEPDIR, "ffmpeg");
+        struct dep *dep = load_depfile(DEPDIR, "ffmpeg", true);
 
         printf("===========================\n");
         print_depfile(dep);
