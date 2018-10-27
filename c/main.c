@@ -19,6 +19,7 @@
 #include "depfile.h"
 #include "pkglist.h"
 #include "user_config.h"
+#include "filesystem.h"
 
 int main(int argc, char **argv)
 {
@@ -49,7 +50,24 @@ int main(int argc, char **argv)
 
         dep_free(&dep);
 
-	destoy_user_config(&user_config);
+
+	printf("===========================\n");
+
+	const char *pkg_name = "virt-manager";
+	const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name);
+
+	if( sbo_dir ) {
+		printf("found %s package directory %s\n", pkg_name, sbo_dir );
+
+		const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name);
+		if( sbo_requires ) {
+			printf("  %s requires: %s\n", pkg_name, sbo_requires);
+		}
+	} else {
+		printf("unable to find ffmpeg package directory\n");
+	}
+	
+	destoy_user_config(&user_config);	
 
         return 0;
 }
