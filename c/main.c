@@ -41,7 +41,6 @@ int main(int argc, char **argv)
 
 	write_depdb(DEPDIR, pkglist);
 	
-        bds_stack_free(&pkglist);
 
         struct dep *dep = load_depfile(DEPDIR, "test", true);
 
@@ -66,7 +65,10 @@ int main(int argc, char **argv)
 	} else {
 		printf("unable to find ffmpeg package directory\n");
 	}
-	
+
+	write_parentdb(DEPDIR, pkglist);
+
+        bds_stack_free(&pkglist);
 	destoy_user_config(&user_config);	
 
         return 0;
