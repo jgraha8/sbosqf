@@ -131,6 +131,12 @@ void print_pkglist(const pkg_stack_t *pkglist)
 int request_pkg_add(pkg_stack_t *pkglist, const char *pkg_name)
 {
 	int rc=0;
+
+	if( find_pkg(pkglist, pkg_name ) != NULL ) {
+		printf("package %s already present in %s\n", pkg_name, PKGLIST);
+		rc = 5;
+		goto finish;
+	}
 	
 	printf("Add package %s (y/n)? ", pkg_name);
 	fflush(stdout);

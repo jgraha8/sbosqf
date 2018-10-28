@@ -158,19 +158,17 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
         ++level;
 
         struct dep *dep = NULL;
+        char *line      = NULL;
+        size_t num_line = 0;
         char *dep_file  = bds_string_dup_concat(3, depdir, "/", pkg_name);
         FILE *fp        = fopen(dep_file, "r");
 
         if (fp == NULL) {
+		// TODO: if dep file doesn't exist request dependency file add and package addition
+		fprintf(stderr, "unable to open dep file %s\n", dep_file);
                 goto finish;
         }
         dep = dep_alloc(pkg_name);
-
-        if (!recursive && level > 1)
-                goto finish;
-
-        char *line      = NULL;
-        size_t num_line = 0;
 
         enum block_type block_type = NO_BLOCK;
 
@@ -223,6 +221,13 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
 		if( block_type == OPTIONAL_BLOCK && !optional )
 			goto cycle;
 
+		/*
+		 * Recursive processing will occur on meta packages since they act as "include" files.  We only
+		 * check the recursive flag if the dependency file is not marked as a meta package.
+		 */
+		if (!dep->info.is_meta && !recursive && level > 1)
+			goto finish;
+
                 switch (block_type) {
                 case REQUIRED_BLOCK: {
                         struct dep *req_dep = load_dep_file(depdir, line, recursive, optional);
@@ -264,11 +269,13 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
                 line     = NULL;
                 num_line = 0;
         }
+
+finish:
         if (line != NULL) {
                 free(line);
         }
 
-finish:
+
         if (fp)
                 fclose(fp);
         free(dep_file);
@@ -350,12 +357,10 @@ void __append_deps(const dep_stack_t *deps, dep_info_stack_t *dep_info_stack)
 struct dep_list *load_dep_list(const char *depdir, const char *pkg_name, bool recursive, bool optional)
 {
         struct dep *dep = load_dep_file(depdir, pkg_name, recursive, optional);
-        assert(dep);
+	if( !dep )
+		return NULL;
 
         struct dep_list *dep_list = load_dep_list_from_dep(dep);	
-
-        __append_deps(dep->required, dep_list->dep_list);
-        __append_deps(dep->optional, dep_list->dep_list);
 
         dep_free(&dep);
 
@@ -488,8 +493,9 @@ int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursiv
 	for( pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter ) {
                 struct dep_list *dep_list = load_dep_list(depdir, pkg_iter->name, recursive, optional);
                 if (dep_list == NULL) {
-                        rc = 2;
-                        goto finish;
+			continue;
+                        /* rc = 2; */
+                        /* goto finish; */
                 }
 
                 const struct dep_info *di_begin = (const struct dep_info *)bds_stack_ptr(dep_list->dep_list);

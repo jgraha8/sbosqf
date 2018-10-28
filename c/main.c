@@ -23,8 +23,9 @@
 
 int main(int argc, char **argv)
 {
-	const bool recursive = false;
-	const bool optional = false;
+	const bool recursive = true;
+	const bool optional = true;
+	
         struct user_config user_config = default_user_config();
 	
         load_user_config(&user_config);
