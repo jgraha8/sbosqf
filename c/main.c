@@ -16,14 +16,17 @@
 #include <libbds/bds_string.h>
 
 #include "config.h"
-#include "depfile.h"
+#include "deps.h"
 #include "pkglist.h"
 #include "user_config.h"
 #include "filesystem.h"
 
 int main(int argc, char **argv)
 {
+	const bool recursive = false;
+	const bool optional = false;
         struct user_config user_config = default_user_config();
+	
         load_user_config(&user_config);
 
         printf("sbopkg_repo = %s\n", user_config.sbopkg_repo);
@@ -39,16 +42,15 @@ int main(int argc, char **argv)
 		printf("found package %s\n", pkg->name);
 	}
 
-	write_depdb(DEPDIR, pkglist);
+	write_depdb(DEPDIR, pkglist, recursive, optional);
 	
 
-        struct dep *dep = load_depfile(DEPDIR, "test", true);
+        struct dep *dep = load_dep_file(DEPDIR, "test", recursive, optional);
 
         printf("===========================\n");
         print_dep_sqf(dep);
 
         dep_free(&dep);
-
 
 	printf("===========================\n");
 
@@ -66,7 +68,7 @@ int main(int argc, char **argv)
 		printf("unable to find ffmpeg package directory\n");
 	}
 
-	write_parentdb(DEPDIR, pkglist);
+	write_parentdb(DEPDIR, pkglist, recursive, optional);
 
         bds_stack_free(&pkglist);
 	destoy_user_config(&user_config);	
