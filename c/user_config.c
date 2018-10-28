@@ -11,6 +11,8 @@
 #include "user_config.h"
 #include <libbds/bds_string.h>
 
+struct user_config user_config;
+
 static char *strip_quotes(char *str)
 {
         if (*str == '"' || *str == '\'') {
@@ -28,6 +30,16 @@ struct user_config default_user_config()
                                  .sbo_tag     = bds_string_dup(SBO_TAG),
                                  .pager       = bds_string_dup(PAGER)};
         return cs;
+}
+
+void init_user_config()
+{
+	user_config = default_user_config();
+}
+
+void fini_user_config()
+{
+	destoy_user_config(&user_config);
 }
 
 void destoy_user_config(struct user_config *uc)

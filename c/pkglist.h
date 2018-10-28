@@ -14,7 +14,10 @@ struct pkg create_pkg(const char *name);
 void destroy_pkg(struct pkg *pkg);
 
 pkg_stack_t *load_pkglist(const char *depdir);
+int write_pkglist(const char *depdir, const pkg_stack_t *pkglist);
 void print_pkglist(const pkg_stack_t *pkglist);
 struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name);
+
+int request_pkg_add(pkg_stack_t *pkglist, const char *pkg_name);
 	
 #endif // __PKGLIST_H__

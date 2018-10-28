@@ -70,6 +70,9 @@ int main(int argc, char **argv)
 
 	write_parentdb(DEPDIR, pkglist, recursive, optional);
 
+	if( request_pkg_add(pkglist, "junk") == 0 ) 
+		write_pkglist(DEPDIR, pkglist);
+	
         bds_stack_free(&pkglist);
 	destoy_user_config(&user_config);	
 

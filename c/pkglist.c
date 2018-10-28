@@ -7,7 +7,7 @@
 #include <libbds/bds_stack.h>
 #include <libbds/bds_string.h>
 
-#include "config.h"
+#include "user_config.h"
 #include "pkglist.h"
 
 int compar_pkg(const void *a, const void *b)
@@ -86,6 +86,39 @@ pkg_stack_t *load_pkglist(const char *depdir)
         return pkglist;
 }
 
+int write_pkglist(const char *depdir, const pkg_stack_t *pkglist)
+{
+        char *pkglist_file = bds_string_dup_concat(2, depdir, "/" PKGLIST);
+        char *tmp_file     = bds_string_dup_concat(2, depdir, "/." PKGLIST);	
+        FILE *fp           = fopen(tmp_file, "w");
+
+        if (fp == NULL) {
+		return 1;
+        }
+
+        const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
+
+        for (size_t i = 0; i < bds_stack_size(pkglist); ++i) {
+                fprintf(fp, "%s\n", p[i].name);
+        }
+
+	if( fflush(fp) != 0 ) {
+		perror("fflush");
+		return 2;
+	}
+	if( fclose(fp) != 0 ) {
+		perror("fclose");
+		return 3;
+	}
+
+	if( rename(tmp_file, pkglist_file) != 0 ) {
+		perror("rename");
+		return 4;
+	}
+	
+	return 0;
+}
+
 void print_pkglist(const pkg_stack_t *pkglist)
 {
         const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
@@ -93,4 +126,44 @@ void print_pkglist(const pkg_stack_t *pkglist)
         for (size_t i = 0; i < bds_stack_size(pkglist); ++i) {
                 printf("%s\n", p[i].name);
         }
+}
+
+int request_pkg_add(pkg_stack_t *pkglist, const char *pkg_name)
+{
+	int rc=0;
+	
+	printf("Add package %s (y/n)? ", pkg_name);
+	fflush(stdout);
+
+	char response[2] = {0};
+	if( fgets(response, 2, stdin) == NULL ) {
+		rc = 1;
+		goto finish;
+	}
+
+	if( *response != 'y' ) {
+		rc = 2;
+		goto finish;
+	}
+	
+	/* const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name); */
+	/* if( !sbo_dir ) { */
+	/* 	rc = 3; */
+	/* 	goto finish; */
+	/* } */
+
+	/* const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name); */
+	/* if( !sbo_requires ) { */
+	/* 	rc = 4; */
+	/* 	goto finish; */
+	/* } */
+
+	struct pkg pkg = create_pkg(pkg_name);
+	bds_stack_push(pkglist, &pkg);
+
+	bds_stack_qsort(pkglist, compar_pkg);
+
+finish:
+	return rc;
+	
 }
