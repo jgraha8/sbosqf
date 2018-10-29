@@ -67,6 +67,6 @@ struct dep_list *load_dep_list_from_dep(const struct dep *dep);
 
 int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursive, bool optional);
 
-
+int create_default_dep_file(const char *pkg_name);
 
 #endif // __DEPS_H__

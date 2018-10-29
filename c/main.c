@@ -25,10 +25,12 @@ int main(int argc, char **argv)
 {
 	const bool recursive = true;
 	const bool optional = true;
+
+	init_user_config();
 	
-        struct user_config user_config = default_user_config();
+        //struct user_config user_config = default_user_config();
 	
-        load_user_config(&user_config);
+        load_user_config();
 
         printf("sbopkg_repo = %s\n", user_config.sbopkg_repo);
         printf("sbo_tag = %s\n", user_config.sbo_tag);
@@ -75,7 +77,26 @@ int main(int argc, char **argv)
 		write_pkglist(DEPDIR, pkglist);
 	
         bds_stack_free(&pkglist);
-	destoy_user_config(&user_config);	
+	//destoy_user_config(&user_config);
 
+	printf("===========================\n");
+	printf("Creating dep file for wayland-protocols\n");
+	printf("===========================\n");
+	if( create_default_dep_file("wayland-protocols") != 0 ) {
+		fprintf(stderr, "unable to create wayland-protocols dep file\n");
+	}
+
+	const char *slack_pkg_name = "xorg-server-xephyr";
+	
+	printf("===========================\n");
+	printf("Checking if %s is installed\n", slack_pkg_name);
+	printf("===========================\n");
+	if( is_pkg_installed( slack_pkg_name, NULL) ) {
+		printf("%s is installed\n", slack_pkg_name);
+	} else {
+		fprintf(stderr, "%s is not installed\n", slack_pkg_name);
+	}
+	
+	destroy_user_config();
         return 0;
 }

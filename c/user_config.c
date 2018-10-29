@@ -32,31 +32,28 @@ struct user_config default_user_config()
         return cs;
 }
 
-void init_user_config()
+void init_user_config() { user_config = default_user_config(); }
+
+/* void fini_user_config() */
+/* { */
+/* 	destoy_user_config(&user_config); */
+/* } */
+
+void destroy_user_config()
 {
-	user_config = default_user_config();
+        free(user_config.sbopkg_repo);
+        free(user_config.depdir);
+        free(user_config.sbo_tag);
+        free(user_config.pager);
 }
 
-void fini_user_config()
-{
-	destoy_user_config(&user_config);
-}
-
-void destoy_user_config(struct user_config *uc)
-{
-        free(uc->sbopkg_repo);
-        free(uc->depdir);
-        free(uc->sbo_tag);
-        free(uc->pager);
-}
-
-#define SET_CONFIG(cs, field, value)                                                                              \
+#define SET_CONFIG(c, field, value)                                                                               \
         {                                                                                                         \
-                free((cs)->field);                                                                                \
-                (cs)->field = bds_string_dup(value);                                                              \
+                free((c).field);                                                                                  \
+                (c).field = bds_string_dup(value);                                                                \
         }
 
-void load_user_config(struct user_config *user_config)
+void load_user_config()
 {
         struct stat sb;
         char *home   = NULL;

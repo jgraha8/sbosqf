@@ -2,13 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <libbds/bds_stack.h>
 #include <libbds/bds_string.h>
 
 #include "config.h"
 #include "deps.h"
+#include "filesystem.h"
 #include "pkglist.h"
+#include "user_config.h"
 
 __attribute__((unused)) static int compar_string_list(const void *a, const void *b)
 {
@@ -62,27 +67,25 @@ struct dep_info dep_info_deep_copy(const struct dep_info *src)
 
         dep_info.is_meta = src->is_meta;
 
-	if( !src->buildopts )
-		goto finish;
-	
-        const char **bopts_iter     = (const char **)bds_stack_ptr(src->buildopts);
-        const char **bopts_end = bopts_iter + bds_stack_size(src->buildopts);
+        if (!src->buildopts)
+                goto finish;
 
-	if( bopts_iter == bopts_end )
-		goto finish;
-	
+        const char **bopts_iter = (const char **)bds_stack_ptr(src->buildopts);
+        const char **bopts_end  = bopts_iter + bds_stack_size(src->buildopts);
+
+        if (bopts_iter == bopts_end)
+                goto finish;
+
         dep_info_buildopts_init(&dep_info);
 
         for (; bopts_iter != bopts_end; ++bopts_iter) {
-		char *bopt = bds_string_dup(*bopts_iter);
+                char *bopt = bds_string_dup(*bopts_iter);
                 bds_stack_push(dep_info.buildopts, &bopt);
         }
 
 finish:
         return dep_info;
 }
-
-
 
 struct dep *dep_alloc(const char *pkg_name)
 {
@@ -124,7 +127,7 @@ struct dep_list *dep_list_alloc(const char *pkg_name)
         struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
 
         *(struct dep_info *)dep_list = dep_info_ctor(pkg_name);
-        dep_list->dep_list           = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
+        dep_list->dep_list = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
 
         return dep_list;
 }
@@ -134,11 +137,10 @@ struct dep_list *dep_list_alloc_with_info(const struct dep_info *info)
         struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
 
         *(struct dep_info *)dep_list = dep_info_deep_copy(info);
-        dep_list->dep_list           = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
+        dep_list->dep_list = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
 
         return dep_list;
 }
-
 
 void dep_list_free(struct dep_list **dep_list)
 {
@@ -164,8 +166,8 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
         FILE *fp        = fopen(dep_file, "r");
 
         if (fp == NULL) {
-		// TODO: if dep file doesn't exist request dependency file add and package addition
-		fprintf(stderr, "unable to open dep file %s\n", dep_file);
+                // TODO: if dep file doesn't exist request dependency file add and package addition
+                fprintf(stderr, "unable to open dep file %s\n", dep_file);
                 goto finish;
         }
         dep = dep_alloc(pkg_name);
@@ -218,15 +220,15 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
                         goto cycle;
                 }
 
-		if( block_type == OPTIONAL_BLOCK && !optional )
-			goto cycle;
+                if (block_type == OPTIONAL_BLOCK && !optional)
+                        goto cycle;
 
-		/*
-		 * Recursive processing will occur on meta packages since they act as "include" files.  We only
-		 * check the recursive flag if the dependency file is not marked as a meta package.
-		 */
-		if (!dep->info.is_meta && !recursive && level > 1)
-			goto finish;
+                /*
+                 * Recursive processing will occur on meta packages since they act as "include" files.  We only
+                 * check the recursive flag if the dependency file is not marked as a meta package.
+                 */
+                if (!dep->info.is_meta && !recursive && level > 1)
+                        goto finish;
 
                 switch (block_type) {
                 case REQUIRED_BLOCK: {
@@ -275,7 +277,6 @@ finish:
                 free(line);
         }
 
-
         if (fp)
                 fclose(fp);
         free(dep_file);
@@ -308,7 +309,7 @@ void print_dep_sqf(const struct dep *dep)
         struct dep_list *dep_list = load_dep_list_from_dep(dep);
 
         const struct dep_info *di_iter = (const struct dep_info *)bds_stack_ptr(dep_list->dep_list);
-        const struct dep_info *di_end = di_iter + bds_stack_size(dep_list->dep_list);
+        const struct dep_info *di_end  = di_iter + bds_stack_size(dep_list->dep_list);
 
         for (; di_iter != di_end; ++di_iter) {
                 __print_dep_sqf(di_iter);
@@ -357,10 +358,10 @@ void __append_deps(const dep_stack_t *deps, dep_info_stack_t *dep_info_stack)
 struct dep_list *load_dep_list(const char *depdir, const char *pkg_name, bool recursive, bool optional)
 {
         struct dep *dep = load_dep_file(depdir, pkg_name, recursive, optional);
-	if( !dep )
-		return NULL;
+        if (!dep)
+                return NULL;
 
-        struct dep_list *dep_list = load_dep_list_from_dep(dep);	
+        struct dep_list *dep_list = load_dep_list_from_dep(dep);
 
         dep_free(&dep);
 
@@ -386,7 +387,7 @@ void write_dep_list(FILE *fp, const struct dep_list *dep_list)
 
         while (di_iter != di_end) {
                 fprintf(fp, " %s", di_iter->pkg_name);
-		
+
                 ++di_iter;
         }
         fprintf(fp, "\n");
@@ -423,13 +424,12 @@ finish:
         return rc;
 }
 
-
 struct dep_parents *dep_parents_alloc(const char *pkg_name)
 {
         struct dep_parents *dp = calloc(1, sizeof(*dp));
 
         *(struct dep_info *)dp = dep_info_ctor(pkg_name);
-        dp->parents_list = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
+        dp->parents_list       = bds_stack_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
 
         return dp;
 }
@@ -479,30 +479,30 @@ int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursiv
                 goto finish;
         }
 
-        const struct pkg *pkg_begin = (const struct pkg *)bds_stack_ptr(pkglist);	
-        const struct pkg *pkg_end = pkg_begin + bds_stack_size(pkglist);
-        const struct pkg *pkg_iter = NULL;	
+        const struct pkg *pkg_begin = (const struct pkg *)bds_stack_ptr(pkglist);
+        const struct pkg *pkg_end   = pkg_begin + bds_stack_size(pkglist);
+        const struct pkg *pkg_iter  = NULL;
 
         dep_parents_stack_t *dp_stack = dep_parents_stack_alloc();
 
-	for( pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter ) {
+        for (pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter) {
                 struct dep_parents *dp = dep_parents_alloc(pkg_iter->name);
                 bds_stack_push(dp_stack, &dp);
         }
 
-	for( pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter ) {
+        for (pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter) {
                 struct dep_list *dep_list = load_dep_list(depdir, pkg_iter->name, recursive, optional);
                 if (dep_list == NULL) {
-			continue;
+                        continue;
                         /* rc = 2; */
                         /* goto finish; */
                 }
 
                 const struct dep_info *di_begin = (const struct dep_info *)bds_stack_ptr(dep_list->dep_list);
-		const struct dep_info *di_end = di_begin + bds_stack_size(dep_list->dep_list);
-		const struct dep_info *di_iter = NULL;
+                const struct dep_info *di_end   = di_begin + bds_stack_size(dep_list->dep_list);
+                const struct dep_info *di_iter  = NULL;
 
-		for( di_iter = di_begin; di_iter != di_end; ++di_iter ) {	
+                for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
                         struct dep_parents *dp = dep_parents_stack_search(dp_stack, di_iter->pkg_name);
                         assert(dp);
 
@@ -513,17 +513,17 @@ int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursiv
         }
 
         const struct dep_parents **dp_begin = (const struct dep_parents **)bds_stack_ptr(dp_stack);
-        const struct dep_parents **dp_end = dp_begin + bds_stack_size(dp_stack);
-        const struct dep_parents **dp_iter = NULL;	
+        const struct dep_parents **dp_end   = dp_begin + bds_stack_size(dp_stack);
+        const struct dep_parents **dp_iter  = NULL;
 
-	for( dp_iter = dp_begin; dp_iter != dp_end; ++dp_iter ) {
+        for (dp_iter = dp_begin; dp_iter != dp_end; ++dp_iter) {
                 fprintf(fp, "%s:", (*dp_iter)->info.pkg_name);
 
                 const struct dep_info *di_begin = (const struct dep_info *)bds_stack_ptr((*dp_iter)->parents_list);
-		const struct dep_info *di_end = di_begin + bds_stack_size((*dp_iter)->parents_list);
-		const struct dep_info *di_iter = NULL;
-		
-		for( di_iter = di_begin; di_iter != di_end; ++di_iter ) {
+                const struct dep_info *di_end   = di_begin + bds_stack_size((*dp_iter)->parents_list);
+                const struct dep_info *di_iter  = NULL;
+
+                for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
                         fprintf(fp, " %s", di_iter->pkg_name);
                 }
                 fprintf(fp, "\n");
@@ -534,6 +534,82 @@ finish:
                 fclose(fp);
         if (dp_stack)
                 dep_parents_stack_free(&dp_stack);
+
+        return rc;
+}
+
+int create_default_dep_file(const char *pkg_name)
+{
+        int rc              = 0;
+        FILE *fp            = NULL;
+        char **required     = NULL;
+        size_t num_required = 0;
+
+        // First check if dep file already exists
+        struct stat sb;
+
+        char *dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg_name);
+
+        if (stat(dep_file, &sb) == 0) {
+                if (sb.st_mode & S_IFREG) {
+                        fprintf(stderr, "dependency file for package %s already exists: %s\n", pkg_name, dep_file);
+                        rc = 1;
+                        goto finish;
+                } else if (sb.st_mode & S_IFDIR) {
+                        fprintf(stderr, "dependency file for package %s already exists as directory: %s\n",
+                                pkg_name, dep_file);
+                        rc = 2;
+                        goto finish;
+                } else {
+                        fprintf(stderr, "dependency file for package %s already exists as non-standard file: %s\n",
+                                pkg_name, dep_file);
+                        rc = 3;
+                        goto finish;
+                }
+        }
+
+        fp = fopen(dep_file, "w");
+        if (fp == NULL) {
+                perror("fopen");
+                rc = 4;
+                goto finish;
+        }
+
+        // Tokenize sbo_requires
+        const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name);
+        if (!sbo_dir) {
+                rc = 5;
+                goto finish;
+        }
+
+        const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name);
+        if (!sbo_requires) {
+                rc = 6;
+                goto finish;
+        }
+
+        fprintf(fp, "REQUIRED:\n");
+
+        bds_string_tokenize((char *)sbo_requires, " ", &num_required, &required);
+        for (size_t i = 0; i < num_required; ++i) {
+
+                if (required[i] == NULL)
+                        continue;
+                if (bds_string_atrim(required[i]) == 0)
+                        continue;
+                if (strcmp(required[i], "%README%") == 0)
+                        continue;
+
+                fprintf(fp, "%s\n", required[i]);
+        }
+
+finish:
+        if (dep_file)
+                free(dep_file);
+        if (fp)
+                fclose(fp);
+        if (required)
+                free(required);
 
         return rc;
 }
