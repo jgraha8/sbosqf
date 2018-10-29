@@ -13,6 +13,7 @@
 #include "deps.h"
 #include "filesystem.h"
 #include "pkglist.h"
+#include "response.h"
 #include "user_config.h"
 
 __attribute__((unused)) static int compar_string_list(const void *a, const void *b)
@@ -153,7 +154,7 @@ void dep_list_free(struct dep_list **dep_list)
         *dep_list = NULL;
 }
 
-struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursive, bool optional)
+struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
 {
         static int level = 0;
 
@@ -162,13 +163,20 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
         struct dep *dep = NULL;
         char *line      = NULL;
         size_t num_line = 0;
-        char *dep_file  = bds_string_dup_concat(3, depdir, "/", pkg_name);
+        char *dep_file  = bds_string_dup_concat(3, user_config.depdir, "/", pkg_name);
         FILE *fp        = fopen(dep_file, "r");
 
         if (fp == NULL) {
+                printf("dependency file %s not found: ", pkg_name);
                 // TODO: if dep file doesn't exist request dependency file add and package addition
-                fprintf(stderr, "unable to open dep file %s\n", dep_file);
-                goto finish;
+                if (request_add_dep_file(pkg_name) != 0) {
+                        goto finish;
+                }
+                fp = fopen(dep_file, "r");
+                if (fp == NULL) {
+                        fprintf(stderr, "unable to open dep file %s\n", dep_file);
+                        goto finish;
+                }
         }
         dep = dep_alloc(pkg_name);
 
@@ -232,7 +240,7 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
 
                 switch (block_type) {
                 case REQUIRED_BLOCK: {
-                        struct dep *req_dep = load_dep_file(depdir, line, recursive, optional);
+                        struct dep *req_dep = load_dep_file(line, recursive, optional);
                         if (req_dep == NULL) {
                                 fprintf(stderr, "%s required dependency file %s not found\n", pkg_name, line);
                                 exit(EXIT_FAILURE);
@@ -243,7 +251,7 @@ struct dep *load_dep_file(const char *depdir, const char *pkg_name, bool recursi
                         bds_stack_push(dep->required, &req_dep);
                 } break;
                 case OPTIONAL_BLOCK: {
-                        struct dep *opt_dep = load_dep_file(depdir, line, recursive, optional);
+                        struct dep *opt_dep = load_dep_file(line, recursive, optional);
                         if (opt_dep == NULL) {
                                 fprintf(stderr, "%s optional dependency file %s not found\n", pkg_name, line);
                                 exit(EXIT_FAILURE);
@@ -355,9 +363,9 @@ void __append_deps(const dep_stack_t *deps, dep_info_stack_t *dep_info_stack)
         }
 }
 
-struct dep_list *load_dep_list(const char *depdir, const char *pkg_name, bool recursive, bool optional)
+struct dep_list *load_dep_list(const char *pkg_name, bool recursive, bool optional)
 {
-        struct dep *dep = load_dep_file(depdir, pkg_name, recursive, optional);
+        struct dep *dep = load_dep_file(pkg_name, recursive, optional);
         if (!dep)
                 return NULL;
 
@@ -393,7 +401,7 @@ void write_dep_list(FILE *fp, const struct dep_list *dep_list)
         fprintf(fp, "\n");
 }
 
-int write_depdb(const char *depdir, const pkg_stack_t *pkglist, bool recursive, bool optional)
+int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
 {
         int rc   = 0;
         FILE *fp = fopen(DEPDB, "w");
@@ -406,7 +414,7 @@ int write_depdb(const char *depdir, const pkg_stack_t *pkglist, bool recursive, 
         const struct pkg *pkg_end  = pkg_iter + bds_stack_size(pkglist);
 
         while (pkg_iter != pkg_end) {
-                struct dep_list *dep_list = load_dep_list(depdir, pkg_iter->name, recursive, optional);
+                struct dep_list *dep_list = load_dep_list(pkg_iter->name, recursive, optional);
                 if (dep_list == NULL) {
                         rc = 2;
                         goto finish;
@@ -470,7 +478,7 @@ struct dep_parents *dep_parents_stack_search(dep_parents_stack_t *dp_stack, cons
         return *dp;
 }
 
-int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursive, bool optional)
+int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
 {
         int rc   = 0;
         FILE *fp = fopen(PARENTDB, "w");
@@ -491,7 +499,7 @@ int write_parentdb(const char *depdir, const pkg_stack_t *pkglist, bool recursiv
         }
 
         for (pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter) {
-                struct dep_list *dep_list = load_dep_list(depdir, pkg_iter->name, recursive, optional);
+                struct dep_list *dep_list = load_dep_list(pkg_iter->name, recursive, optional);
                 if (dep_list == NULL) {
                         continue;
                         /* rc = 2; */
@@ -568,31 +576,29 @@ int create_default_dep_file(const char *pkg_name)
                 }
         }
 
-        fp = fopen(dep_file, "w");
-        if (fp == NULL) {
-                perror("fopen");
-                rc = 4;
-                goto finish;
-        }
-
         // Tokenize sbo_requires
         const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name);
         if (!sbo_dir) {
-                rc = 5;
+                rc = 4;
                 goto finish;
         }
 
         const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name);
         if (!sbo_requires) {
-                rc = 6;
+                rc = 5;
                 goto finish;
         }
 
+        fp = fopen(dep_file, "w");
+        if (fp == NULL) {
+                perror("fopen");
+                rc = 6;
+                goto finish;
+        }
         fprintf(fp, "REQUIRED:\n");
 
         bds_string_tokenize((char *)sbo_requires, " ", &num_required, &required);
         for (size_t i = 0; i < num_required; ++i) {
-
                 if (required[i] == NULL)
                         continue;
                 if (bds_string_atrim(required[i]) == 0)
@@ -612,4 +618,19 @@ finish:
                 free(required);
 
         return rc;
+}
+
+int request_add_dep_file(const char *pkg_name)
+{
+        printf("Add dependency file %s (y/n)? ", pkg_name);
+        fflush(stdout);
+
+        if (read_response() != 'y') {
+                return 1;
+        }
+
+        if (create_default_dep_file(pkg_name) != 0) {
+                fprintf(stderr, "unable to add dependency file %s\n", pkg_name);
+        }
+        return 0;
 }

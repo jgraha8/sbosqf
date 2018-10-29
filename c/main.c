@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         printf("sbo_tag = %s\n", user_config.sbo_tag);
         printf("pager = %s\n", user_config.pager);
 
-        pkg_stack_t *pkglist = load_pkglist(DEPDIR);
+        pkg_stack_t *pkglist = load_pkglist();
         print_pkglist(pkglist);
 
 	struct pkg *pkg = find_pkg(pkglist, "nextcloud-server");
@@ -45,10 +45,10 @@ int main(int argc, char **argv)
 		printf("found package %s\n", pkg->name);
 	}
 
-	write_depdb(DEPDIR, pkglist, recursive, optional);
+	write_depdb(pkglist, recursive, optional);
 	
 
-        struct dep *dep = load_dep_file(DEPDIR, "test", recursive, optional);
+        struct dep *dep = load_dep_file("test", recursive, optional);
 
         printf("===========================\n");
         print_dep_sqf(dep);
@@ -71,19 +71,20 @@ int main(int argc, char **argv)
 		printf("unable to find ffmpeg package directory\n");
 	}
 
-	write_parentdb(DEPDIR, pkglist, recursive, optional);
+	write_parentdb(pkglist, recursive, optional);
 
-	if( request_pkg_add(pkglist, "junk") == 0 ) 
-		write_pkglist(DEPDIR, pkglist);
+	if( request_pkg_add(pkglist, "junk") != 0 ) {
+		fprintf(stderr, "unable to add package junk\n");
+	}
 	
         bds_stack_free(&pkglist);
 	//destoy_user_config(&user_config);
 
 	printf("===========================\n");
-	printf("Creating dep file for wayland-protocols\n");
+	printf("Creating dep file for ffmpeg\n");
 	printf("===========================\n");
-	if( create_default_dep_file("wayland-protocols") != 0 ) {
-		fprintf(stderr, "unable to create wayland-protocols dep file\n");
+	if( create_default_dep_file("ffmpeg") != 0 ) {
+		fprintf(stderr, "unable to create ffmpeg dep file\n");
 	}
 
 	const char *slack_pkg_name = "xorg-server-xephyr";

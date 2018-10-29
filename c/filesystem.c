@@ -85,11 +85,12 @@ const char *read_sbo_requires(const char *sbo_dir, const char *pkg_name)
                 goto finish;
         }
 
-        char *info = (char *)mmap(NULL, sb.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+        char *info = (char *)mmap(NULL, sb.st_size+1, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
         if (info == NULL) {
                 perror("unable to map package info file");
                 goto finish;
         }
+	info[sb.st_size]='\0';
 
         char *c = bds_string_find(info, "REQUIRES=");
         if (c == NULL) {

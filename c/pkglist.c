@@ -7,8 +7,9 @@
 #include <libbds/bds_stack.h>
 #include <libbds/bds_string.h>
 
-#include "user_config.h"
 #include "pkglist.h"
+#include "response.h"
+#include "user_config.h"
 
 int compar_pkg(const void *a, const void *b)
 {
@@ -39,11 +40,11 @@ struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name)
                                      compar_pkg);
 }
 
-pkg_stack_t *load_pkglist(const char *depdir)
+pkg_stack_t *load_pkglist()
 {
         pkg_stack_t *pkglist = bds_stack_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
 
-        char *pkglist_file = bds_string_dup_concat(2, depdir, "/" PKGLIST);
+        char *pkglist_file = bds_string_dup_concat(2, user_config.depdir, "/" PKGLIST);
         FILE *fp           = fopen(pkglist_file, "r");
 
         if (fp == NULL) {
@@ -86,14 +87,14 @@ pkg_stack_t *load_pkglist(const char *depdir)
         return pkglist;
 }
 
-int write_pkglist(const char *depdir, const pkg_stack_t *pkglist)
+int write_pkglist(const pkg_stack_t *pkglist)
 {
-        char *pkglist_file = bds_string_dup_concat(2, depdir, "/" PKGLIST);
-        char *tmp_file     = bds_string_dup_concat(2, depdir, "/." PKGLIST);	
+        char *pkglist_file = bds_string_dup_concat(2, user_config.depdir, "/" PKGLIST);
+        char *tmp_file     = bds_string_dup_concat(2, user_config.depdir, "/." PKGLIST);
         FILE *fp           = fopen(tmp_file, "w");
 
         if (fp == NULL) {
-		return 1;
+                return 1;
         }
 
         const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
@@ -102,21 +103,21 @@ int write_pkglist(const char *depdir, const pkg_stack_t *pkglist)
                 fprintf(fp, "%s\n", p[i].name);
         }
 
-	if( fflush(fp) != 0 ) {
-		perror("fflush");
-		return 2;
-	}
-	if( fclose(fp) != 0 ) {
-		perror("fclose");
-		return 3;
-	}
+        if (fflush(fp) != 0) {
+                perror("fflush");
+                return 2;
+        }
+        if (fclose(fp) != 0) {
+                perror("fclose");
+                return 3;
+        }
 
-	if( rename(tmp_file, pkglist_file) != 0 ) {
-		perror("rename");
-		return 4;
-	}
-	
-	return 0;
+        if (rename(tmp_file, pkglist_file) != 0) {
+                perror("rename");
+                return 4;
+        }
+
+        return 0;
 }
 
 void print_pkglist(const pkg_stack_t *pkglist)
@@ -130,46 +131,29 @@ void print_pkglist(const pkg_stack_t *pkglist)
 
 int request_pkg_add(pkg_stack_t *pkglist, const char *pkg_name)
 {
-	int rc=0;
+        int rc = 0;
 
-	if( find_pkg(pkglist, pkg_name ) != NULL ) {
-		printf("package %s already present in %s\n", pkg_name, PKGLIST);
-		rc = 5;
-		goto finish;
-	}
-	
-	printf("Add package %s (y/n)? ", pkg_name);
-	fflush(stdout);
+        if (find_pkg(pkglist, pkg_name) != NULL) {
+                printf("package %s already present in %s\n", pkg_name, PKGLIST);
+                rc = 1;
+                goto finish;
+        }
 
-	char response[2] = {0};
-	if( fgets(response, 2, stdin) == NULL ) {
-		rc = 1;
-		goto finish;
-	}
+        printf("Add package %s (y/n)? ", pkg_name);
+        fflush(stdout);
 
-	if( *response != 'y' ) {
-		rc = 2;
-		goto finish;
-	}
-	
-	/* const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name); */
-	/* if( !sbo_dir ) { */
-	/* 	rc = 3; */
-	/* 	goto finish; */
-	/* } */
+        if (read_response() != 'y') {
+                rc = 1;
+                goto finish;
+        }
 
-	/* const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name); */
-	/* if( !sbo_requires ) { */
-	/* 	rc = 4; */
-	/* 	goto finish; */
-	/* } */
+        struct pkg pkg = create_pkg(pkg_name);
+        bds_stack_push(pkglist, &pkg);
 
-	struct pkg pkg = create_pkg(pkg_name);
-	bds_stack_push(pkglist, &pkg);
+        bds_stack_qsort(pkglist, compar_pkg);
 
-	bds_stack_qsort(pkglist, compar_pkg);
+        rc = write_pkglist(pkglist);
 
 finish:
-	return rc;
-	
+        return rc;
 }
