@@ -4,7 +4,6 @@
 struct file_mmap {
         char *data;
         size_t data_len;
-        int fd;
 };
 
 struct file_mmap *file_mmap(const char *path);

@@ -39,14 +39,14 @@ struct file_mmap *file_mmap(const char *path)
         data[sb.st_size] = '\0';
 
 finish:
+        if (fd)
+                close(fd);
+
         if (rc != 0) {
-                if (fd)
-                        close(fd);
                 if (data)
                         munmap(data, sb.st_size);
         } else {
                 assert((fm = malloc(sizeof(*fm))) != NULL);
-                fm->fd       = fd;
                 fm->data     = data;
                 fm->data_len = sb.st_size;
         }
@@ -62,12 +62,6 @@ int file_munmap(struct file_mmap **fm)
 
         if (munmap((*fm)->data, (*fm)->data_len) == -1) {
                 perror("munmap()");
-                rc = 1;
-                goto finish;
-        }
-
-        if (close((*fm)->fd) == -1) {
-                perror("close()");
                 rc = 1;
                 goto finish;
         }

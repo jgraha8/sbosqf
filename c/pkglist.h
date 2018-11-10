@@ -18,7 +18,11 @@ int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb);
 void print_pkglist(const pkg_stack_t *pkglist);
 struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name);
 
-int request_pkg_add(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name);
+int add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name);
+int request_add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name);
+
+int request_reviewed_add(const char *pkgdb, const char *pkg_name );
+int request_review_pkg(const char *pkg_name);
 int review_pkg(const char *pkg_name);
 
 #endif // __PKGLIST_H__

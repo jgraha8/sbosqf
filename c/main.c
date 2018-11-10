@@ -26,6 +26,8 @@ int main(int argc, char **argv)
         const bool recursive = true;
         const bool optional  = true;
 
+	setbuf(stdout, NULL);
+
         init_user_config();
 
         // struct user_config user_config = default_user_config();
@@ -37,7 +39,7 @@ int main(int argc, char **argv)
         printf("pager = %s\n", user_config.pager);
 
         pkg_stack_t *pkglist = load_pkglist(PKGLIST);
-        print_pkglist(pkglist);
+        //print_pkglist(pkglist);
 
         struct pkg *pkg = find_pkg(pkglist, "nextcloud-server");
 
@@ -47,6 +49,7 @@ int main(int argc, char **argv)
 
         write_depdb(pkglist, recursive, optional);
 
+	return 0;
         struct dep *dep = load_dep_file("test", recursive, optional);
 
         printf("===========================\n");
@@ -72,7 +75,7 @@ int main(int argc, char **argv)
 
         write_parentdb(pkglist, recursive, optional);
 
-        if (request_pkg_add(pkglist, PKGLIST, "junk") != 0) {
+        if (request_add_pkg(pkglist, PKGLIST, "junk") != 0) {
                 fprintf(stderr, "unable to add package junk\n");
         }
 
@@ -97,7 +100,7 @@ int main(int argc, char **argv)
                 fprintf(stderr, "%s is not installed\n", slack_pkg_name);
         }
 
-        review_pkg(pkg_name);
+        request_reviewed_add(REVIEWED, pkg_name);
 
         destroy_user_config();
         return 0;

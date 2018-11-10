@@ -58,8 +58,8 @@ pkg_stack_t *load_pkglist(const char *pkgdb)
         FILE *fp           = fopen(pkglist_file, "r");
 
         if (fp == NULL) {
-                fprintf(stderr, "%s(%d): unable to open %s\n", __FILE__, __LINE__, pkglist_file);
-                exit(EXIT_FAILURE);
+		// Does not exist
+		return pkglist;
         }
 
         char *line       = NULL;
@@ -139,7 +139,17 @@ void print_pkglist(const pkg_stack_t *pkglist)
         }
 }
 
-int request_pkg_add(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
+int add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
+{
+        struct pkg pkg = create_pkg(pkg_name);
+        bds_stack_push(pkglist, &pkg);
+
+        bds_stack_qsort(pkglist, compar_pkg);
+
+        return write_pkglist(pkglist, pkgdb);
+}
+
+int request_add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
 {
         int rc = 0;
 
@@ -149,25 +159,42 @@ int request_pkg_add(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_nam
                 goto finish;
         }
 
-        printf("Add package %s (y/n)? ", pkg_name);
-        fflush(stdout);
+        printf("Add package %s to %s (y/n)? ", pkg_name, pkgdb);
 
         if (read_response() != 'y') {
                 printf("not adding package %s\n", pkg_name);
-                fflush(stdout);
                 rc = 1;
                 goto finish;
         }
 
-        struct pkg pkg = create_pkg(pkg_name);
-        bds_stack_push(pkglist, &pkg);
-
-        bds_stack_qsort(pkglist, compar_pkg);
-
-        rc = write_pkglist(pkglist, pkgdb);
+        rc = add_pkg(pkglist, pkgdb, pkg_name);
 
 finish:
         return rc;
+}
+
+int request_review_pkg(const char *pkg_name)
+{
+        printf("Review package %s (y/n)? ", pkg_name);
+
+        if (read_response() != 'y') {
+                printf("not reviewing package %s\n", pkg_name);
+                return 1;
+        }
+
+        return review_pkg(pkg_name);
+}
+
+int request_reviewed_add(const char *pkgdb, const char *pkg_name)
+{
+        pkg_stack_t *reviewed = load_pkglist(pkgdb);
+
+        if (find_pkg(reviewed, pkg_name) == NULL) {
+                request_add_pkg(reviewed, pkgdb, pkg_name);
+        }
+        bds_stack_free(&reviewed);
+
+        return 0;
 }
 
 int review_pkg(const char *pkg_name)
@@ -217,10 +244,13 @@ int review_pkg(const char *pkg_name)
                 BORDER1 "\n"
                         "%s\n" // package name
                 BORDER1 "\n"
-                        "\n" BORDER2 "\n"
-                        "README\n" BORDER2 "\n"
+                        "\n"
+		BORDER2 "\n"
+                        "README\n"
+		BORDER2 "\n"
                         "%s\n" // readme file
-                        "\n" BORDER2 "\n"
+                        "\n"
+		BORDER2 "\n"
                         "%s.info\n" // package name (info)
                 BORDER2 "\n"
                         "%s\n" // package info

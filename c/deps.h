@@ -10,6 +10,13 @@ typedef struct bds_stack string_stack_t;
 typedef struct bds_stack dep_stack_t;
 typedef struct bds_stack dep_info_stack_t;
 
+enum dep_file_status {
+	DEP_FILE_NONE,
+	DEP_FILE_EXISTS,
+	DEP_FILE_NOT_FILE
+};
+
+
 struct dep_info {
         char *pkg_name;
         string_stack_t *buildopts;
@@ -70,4 +77,6 @@ int request_add_dep_file(const char *pkg_name);
 int create_default_dep_file(const char *pkg_name);
 
 const char *find_dep_file(const char *pkg_name);
+
+enum dep_file_status dep_file_status(const char *pkg_name);
 #endif // __DEPS_H__
