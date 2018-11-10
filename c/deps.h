@@ -1,8 +1,8 @@
 #ifndef __DEPS_H__
 #define __DEPS_H__
 
-#include <stdbool.h>
 #include <libbds/bds_stack.h>
+#include <stdbool.h>
 
 #include "pkglist.h"
 
@@ -11,27 +11,27 @@ typedef struct bds_stack dep_stack_t;
 typedef struct bds_stack dep_info_stack_t;
 
 struct dep_info {
-	char *pkg_name;
-	string_stack_t *buildopts;
-	bool is_meta;
+        char *pkg_name;
+        string_stack_t *buildopts;
+        bool is_meta;
 };
 
 struct dep {
-	struct dep_info info;
-	dep_stack_t *required;
-	dep_stack_t *optional;
+        struct dep_info info;
+        dep_stack_t *required;
+        dep_stack_t *optional;
 };
 
 struct dep_list {
-	struct dep_info info;
-	dep_info_stack_t *dep_list;
+        struct dep_info info;
+        dep_info_stack_t *dep_list;
 };
 
 typedef struct bds_stack dep_parents_stack_t;
 
 struct dep_parents {
-	struct dep_info info;
-	dep_info_stack_t *parents_list;
+        struct dep_info info;
+        dep_info_stack_t *parents_list;
 };
 
 enum block_type { NO_BLOCK, REQUIRED_BLOCK, OPTIONAL_BLOCK, BUILDOPTS_BLOCK };
@@ -58,16 +58,16 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional);
 
 void print_dep_sqf(const struct dep *dep);
 
-void write_deplist(FILE *fp, const struct dep *dep );
+void write_deplist(FILE *fp, const struct dep *dep);
 int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional);
 
 struct dep_list *load_dep_list(const char *pkg_name, bool recursive, bool optional);
 struct dep_list *load_dep_list_from_dep(const struct dep *dep);
-
 
 int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional);
 
 int request_add_dep_file(const char *pkg_name);
 int create_default_dep_file(const char *pkg_name);
 
+const char *find_dep_file(const char *pkg_name);
 #endif // __DEPS_H__

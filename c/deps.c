@@ -626,6 +626,8 @@ int request_add_dep_file(const char *pkg_name)
         fflush(stdout);
 
         if (read_response() != 'y') {
+                printf("not adding dependency file %s\n", pkg_name);
+                fflush(stdout);
                 return 1;
         }
 
@@ -633,4 +635,17 @@ int request_add_dep_file(const char *pkg_name)
                 fprintf(stderr, "unable to add dependency file %s\n", pkg_name);
         }
         return 0;
+}
+
+const char *find_dep_file(const char *pkg_name)
+{
+        static char dep_file[4096];
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+
+        struct stat sb;
+        if (stat(dep_file, &sb) != 0)
+                return NULL;
+
+        return dep_file;
 }

@@ -12,11 +12,12 @@
 
 #include <libbds/bds_string.h>
 
+#include "file_mmap.h"
 #include "filesystem.h"
 
 #define SLACK_PKGDB "/var/log/packages"
 
-const char *find_sbo_dir(const char *dir_name, const char *pkg_name)
+const char *find_sbo_dir(const char *sbo_repo, const char *pkg_name)
 {
         static char sbo_dir[4096];
         static int level = 0;
@@ -24,7 +25,7 @@ const char *find_sbo_dir(const char *dir_name, const char *pkg_name)
         const char *rp        = NULL;
         struct dirent *dirent = NULL;
 
-        DIR *dp = opendir(dir_name);
+        DIR *dp = opendir(sbo_repo);
         if (dp == NULL)
                 return NULL;
 
@@ -41,7 +42,7 @@ const char *find_sbo_dir(const char *dir_name, const char *pkg_name)
 
                 if (level == 1) {
                         if (dirent->d_type == DT_DIR) {
-                                char *next_dir = bds_string_dup_concat(3, dir_name, "/", dirent->d_name);
+                                char *next_dir = bds_string_dup_concat(3, sbo_repo, "/", dirent->d_name);
                                 rp             = find_sbo_dir(next_dir, pkg_name);
                                 free(next_dir);
                                 if (rp) {
@@ -51,7 +52,7 @@ const char *find_sbo_dir(const char *dir_name, const char *pkg_name)
                 } else {
                         if (dirent->d_type == DT_DIR) {
                                 if (strcmp(dirent->d_name, pkg_name) == 0) {
-                                        rp = bds_string_copyf(sbo_dir, 4096, "%s/%s", dir_name, dirent->d_name);
+                                        rp = bds_string_copyf(sbo_dir, 4096, "%s/%s", sbo_repo, dirent->d_name);
                                         goto finish;
                                 }
                         }
@@ -66,33 +67,45 @@ finish:
         return rp;
 }
 
+const char *find_sbo_info(const char *sbo_repo, const char *pkg_name)
+{
+        static char info_file[4096];
+        const char *sbo_dir = find_sbo_dir(sbo_repo, pkg_name);
+
+        if (!sbo_dir)
+                return NULL;
+
+        bds_string_copyf(info_file, sizeof(info_file), "%s/%s.info", sbo_dir, pkg_name);
+
+        return info_file;
+}
+
+const char *find_sbo_readme(const char *sbo_repo, const char *pkg_name)
+{
+        static char readme_file[4096];
+        const char *sbo_dir = find_sbo_dir(sbo_repo, pkg_name);
+
+        if (!sbo_dir)
+                return NULL;
+
+        bds_string_copyf(readme_file, sizeof(readme_file), "%s/README", sbo_dir);
+
+        return readme_file;
+}
+
 const char *read_sbo_requires(const char *sbo_dir, const char *pkg_name)
 {
         static char sbo_requires[4096];
         const char *rp = NULL;
-        struct stat sb;
 
         char *info_file = bds_string_dup_concat(4, sbo_dir, "/", pkg_name, ".info");
-        int fd          = open(info_file, O_RDONLY);
 
-        if (fd == -1) {
-                perror("unable to read package info file");
+        struct file_mmap *info;
+        if ((info = file_mmap(info_file)) == NULL) {
                 goto finish;
         }
 
-        if (fstat(fd, &sb) != 0) {
-                perror("unable to stat package info file");
-                goto finish;
-        }
-
-        char *info = (char *)mmap(NULL, sb.st_size+1, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-        if (info == NULL) {
-                perror("unable to map package info file");
-                goto finish;
-        }
-	info[sb.st_size]='\0';
-
-        char *c = bds_string_find(info, "REQUIRES=");
+        char *c = bds_string_find(info->data, "REQUIRES=");
         if (c == NULL) {
                 goto finish;
         }
@@ -104,11 +117,8 @@ const char *read_sbo_requires(const char *sbo_dir, const char *pkg_name)
         }
 
         // Remove quotes
-        c = str;
-        while (*c) {
-                if (*c == '"')
-                        *c = ' ';
-                ++c;
+        while ((c = bds_string_find(str, "\""))) {
+                *c = ' ';
         }
         strncpy(sbo_requires, bds_string_atrim(str), 4096);
         rp = sbo_requires;
@@ -116,10 +126,8 @@ const char *read_sbo_requires(const char *sbo_dir, const char *pkg_name)
 finish:
         if (info_file)
                 free(info_file);
-        if (fd != -1)
-                close(fd);
         if (info)
-                munmap(info, sb.st_size);
+                file_munmap(&info);
 
         return rp;
 }
@@ -166,7 +174,7 @@ struct slack_pkg parse_slack_pkg(const char *pkgdb_entry)
 
 finish:
         if (rc != 0) {
-		destroy_slack_pkg(&slack_pkg);
+                destroy_slack_pkg(&slack_pkg);
         }
 
         return slack_pkg;
@@ -190,34 +198,33 @@ bool is_pkg_installed(const char *pkg_name, const char *tag)
                 return false;
         }
 
-	
-        bool rc = false;
-	bool do_check = true;
-        struct dirent *dirent = NULL;	
-	
+        bool rc               = false;
+        bool do_check         = true;
+        struct dirent *dirent = NULL;
+
         while (do_check && (dirent = readdir(dp)) != NULL) {
                 if (dirent->d_type != DT_REG)
                         continue;
 
-		struct slack_pkg slack_pkg = parse_slack_pkg(dirent->d_name);
-		if( slack_pkg.name == NULL )
-			continue;
+                struct slack_pkg slack_pkg = parse_slack_pkg(dirent->d_name);
+                if (slack_pkg.name == NULL)
+                        continue;
 
-		if( strcmp(slack_pkg.name, pkg_name) == 0 ) {
-			if( tag ) {
-				if( strcmp(slack_pkg.tag, tag) == 0 ) {
-					rc = true;
-				}
-			} else {
-				rc = true;
-			}
-			do_check = false;
-		}
-		destroy_slack_pkg(&slack_pkg);
+                if (strcmp(slack_pkg.name, pkg_name) == 0) {
+                        if (tag) {
+                                if (strcmp(slack_pkg.tag, tag) == 0) {
+                                        rc = true;
+                                }
+                        } else {
+                                rc = true;
+                        }
+                        do_check = false;
+                }
+                destroy_slack_pkg(&slack_pkg);
         }
 
-	if( dp )
-		closedir(dp);
+        if (dp)
+                closedir(dp);
 
-	return rc;
+        return rc;
 }

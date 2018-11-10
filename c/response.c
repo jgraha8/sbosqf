@@ -1,18 +1,28 @@
+#include <libbds/bds_string.h>
 #include <stdio.h>
 
 #include "response.h"
 
 char read_response()
 {
-	char response[3]={0};
+        char response[4096] = {0};
 
-	if( fgets(response, 3, stdin) == NULL ) {
-		return -1;
-	}
+        if (fgets(response, sizeof(response), stdin) == NULL) {
+                return -1;
+        }
 
-	// Expect newline
-	if( response[1] != '\n')
-		return -1;
+        char *c;
 
-	return *response;
+        // Expect newline
+        if ((c = bds_string_rfind(response, "\n"))) {
+                *c = '\0';
+        } else {
+                return -1;
+        }
+
+        // Expect only one character
+        if (response[1])
+                return -1;
+
+        return response[0];
 }
