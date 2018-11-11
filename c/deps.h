@@ -1,14 +1,14 @@
 #ifndef __DEPS_H__
 #define __DEPS_H__
 
-#include <libbds/bds_stack.h>
+#include <libbds/bds_vector.h>
 #include <stdbool.h>
 
 #include "pkglist.h"
 
-typedef struct bds_stack string_stack_t;
-typedef struct bds_stack dep_stack_t;
-typedef struct bds_stack dep_info_stack_t;
+typedef struct bds_vector string_stack_t;
+typedef struct bds_vector dep_stack_t;
+typedef struct bds_vector dep_info_stack_t;
 
 enum dep_file_status {
 	DEP_FILE_NONE,
@@ -34,7 +34,7 @@ struct dep_list {
         dep_info_stack_t *dep_list;
 };
 
-typedef struct bds_stack dep_parents_stack_t;
+typedef struct bds_vector dep_parents_stack_t;
 
 struct dep_parents {
         struct dep_info info;

@@ -1,9 +1,9 @@
 #ifndef __PKGLIST_H__
 #define __PKGLIST_H__
 
-#include <libbds/bds_stack.h>
+#include <libbds/bds_vector.h>
 
-typedef struct bds_stack pkg_stack_t;
+typedef struct bds_vector pkg_stack_t;
 
 struct pkg {
         char *name;

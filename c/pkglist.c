@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include <libbds/bds_stack.h>
+#include <libbds/bds_vector.h>
 #include <libbds/bds_string.h>
 
 #include "deps.h"
@@ -46,13 +46,13 @@ struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name)
 {
         const struct pkg key = {.name = (char *)pkg_name};
 
-        return (struct pkg *)bsearch(&key, bds_stack_ptr(pkglist), bds_stack_size(pkglist), sizeof(key),
+        return (struct pkg *)bsearch(&key, bds_vector_ptr(pkglist), bds_vector_size(pkglist), sizeof(key),
                                      compar_pkg);
 }
 
 pkg_stack_t *load_pkglist(const char *pkgdb)
 {
-        pkg_stack_t *pkglist = bds_stack_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
+        pkg_stack_t *pkglist = bds_vector_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
 
         char *pkglist_file = bds_string_dup_concat(3, user_config.depdir, "/", pkgdb);
         FILE *fp           = fopen(pkglist_file, "r");
@@ -78,7 +78,7 @@ pkg_stack_t *load_pkglist(const char *pkgdb)
                 }
 
                 struct pkg pkg = create_pkg(line);
-                bds_stack_push(pkglist, &pkg);
+                bds_vector_append(pkglist, &pkg);
 
         cycle:
                 free(line);
@@ -89,7 +89,7 @@ pkg_stack_t *load_pkglist(const char *pkgdb)
                 free(line);
         }
 
-        bds_stack_qsort(pkglist, compar_pkg);
+        bds_vector_qsort(pkglist, compar_pkg);
 
         fclose(fp);
         free(pkglist_file);
@@ -107,9 +107,9 @@ int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb)
                 return 1;
         }
 
-        const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
+        const struct pkg *p = (const struct pkg *)bds_vector_ptr(pkglist);
 
-        for (size_t i = 0; i < bds_stack_size(pkglist); ++i) {
+        for (size_t i = 0; i < bds_vector_size(pkglist); ++i) {
                 fprintf(fp, "%s\n", p[i].name);
         }
 
@@ -132,9 +132,9 @@ int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb)
 
 void print_pkglist(const pkg_stack_t *pkglist)
 {
-        const struct pkg *p = (const struct pkg *)bds_stack_ptr(pkglist);
+        const struct pkg *p = (const struct pkg *)bds_vector_ptr(pkglist);
 
-        for (size_t i = 0; i < bds_stack_size(pkglist); ++i) {
+        for (size_t i = 0; i < bds_vector_size(pkglist); ++i) {
                 printf("%s\n", p[i].name);
         }
 }
@@ -142,9 +142,9 @@ void print_pkglist(const pkg_stack_t *pkglist)
 int add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
 {
         struct pkg pkg = create_pkg(pkg_name);
-        bds_stack_push(pkglist, &pkg);
+        bds_vector_append(pkglist, &pkg);
 
-        bds_stack_qsort(pkglist, compar_pkg);
+        bds_vector_qsort(pkglist, compar_pkg);
 
         return write_pkglist(pkglist, pkgdb);
 }
@@ -192,7 +192,7 @@ int request_reviewed_add(const char *pkgdb, const char *pkg_name)
         if (find_pkg(reviewed, pkg_name) == NULL) {
                 request_add_pkg(reviewed, pkgdb, pkg_name);
         }
-        bds_stack_free(&reviewed);
+        bds_vector_free(&reviewed);
 
         return 0;
 }

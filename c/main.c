@@ -205,7 +205,7 @@ int main(int argc, char **argv)
                 break;
         }
 
-        bds_stack_free(&pkglist);
+        bds_vector_free(&pkglist);
 
         destroy_user_config();
         return 0;
