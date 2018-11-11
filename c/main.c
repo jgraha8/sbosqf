@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 
         init_user_config();
 
-        struct action_struct action = {ACTION_NONE, NULL};
+        struct action_struct as = {ACTION_NONE, NULL};
 
         while (1) {
                 int option_index = 0;
@@ -129,35 +129,35 @@ int main(int argc, char **argv)
                         process_parents = true;
                         break;
                 case 'R':
-                        set_action(&action, ACTION_REVIEW, find_option(NULL, 'R'));
+                        set_action(&as, ACTION_REVIEW, find_option(NULL, 'R'));
                         break;
                 case 'a':
-                        set_action(&action, ACTION_ADD, find_option(NULL, 'a'));
+                        set_action(&as, ACTION_ADD, find_option(NULL, 'a'));
                         break;
                 case 'c':
                         user_config.check_installed |= CHECK_FOREIGN_INSTALLED;
                         break;
                 case 'd':
-                        set_action(&action, ACTION_CREATEDB, find_option(NULL, 'd'));
+                        set_action(&as, ACTION_CREATEDB, find_option(NULL, 'd'));
                         pkg_name_required = false;
                         break;
                 case 'e':
-                        set_action(&action, ACTION_EDIT, find_option(NULL, 'e'));
+                        set_action(&as, ACTION_EDIT, find_option(NULL, 'e'));
                         break;
                 case 'h':
                         print_help();
                         exit(0);
                 case 'l':
-                        set_action(&action, ACTION_LIST, find_option(NULL, 'l'));
+                        set_action(&as, ACTION_LIST, find_option(NULL, 'l'));
                         break;
                 case 'o':
                         optional = true;
                         break;
                 case 'p':
-                        set_action(&action, ACTION_PRINT_TREE, find_option(NULL, 'p'));
+                        set_action(&as, ACTION_PRINT_TREE, find_option(NULL, 'p'));
                         break;
                 case 'r':
-                        set_action(&action, ACTION_REMOVE, find_option(NULL, 'r'));
+                        set_action(&as, ACTION_REMOVE, find_option(NULL, 'r'));
                         break;
                 default:
                         abort();
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
         /* set_action(&action, ACTION_PRINT_TREE, find_option(NULL, 'p')); */
         /* set_action(&action, ACTION_REMOVE, find_option(NULL, 'r')); */
 
-        switch (action.action) {
+        switch (as.action) {
         case ACTION_REVIEW:
                 if (find_dep_file(pkg_name) == NULL) {
 			rc = create_default_dep_file(pkg_name);
