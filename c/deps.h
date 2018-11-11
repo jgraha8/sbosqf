@@ -73,10 +73,12 @@ struct dep_list *load_dep_list_from_dep(const struct dep *dep);
 
 int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional);
 
-int request_add_dep_file(const char *pkg_name);
+int request_add_dep_file(const char *pkg_name, bool review);
 int create_default_dep_file(const char *pkg_name);
 
 const char *find_dep_file(const char *pkg_name);
 
 enum dep_file_status dep_file_status(const char *pkg_name);
+
+int edit_dep_file(const char *pkg_name);
 #endif // __DEPS_H__

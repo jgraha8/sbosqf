@@ -23,16 +23,14 @@ static char *strip_quotes(char *str)
         return str;
 }
 
-struct user_config default_user_config()
-{
-        struct user_config cs = {.sbopkg_repo = bds_string_dup(SBOPKG_REPO),
-                                 .depdir      = bds_string_dup(DEPDIR),
-                                 .sbo_tag     = bds_string_dup(SBO_TAG),
-                                 .pager       = bds_string_dup(PAGER)};
-        return cs;
-}
+static struct user_config default_user_config();
+static void load_user_config();
 
-void init_user_config() { user_config = default_user_config(); }
+void init_user_config()
+{
+        user_config = default_user_config();
+        load_user_config();
+}
 
 /* void fini_user_config() */
 /* { */
@@ -45,6 +43,17 @@ void destroy_user_config()
         free(user_config.depdir);
         free(user_config.sbo_tag);
         free(user_config.pager);
+        free(user_config.editor);
+}
+
+static struct user_config default_user_config()
+{
+        struct user_config cs = {.sbopkg_repo = bds_string_dup(SBOPKG_REPO),
+                                 .depdir      = bds_string_dup(DEPDIR),
+                                 .sbo_tag     = bds_string_dup(SBO_TAG),
+                                 .pager       = bds_string_dup(PAGER),
+                                 .editor      = bds_string_dup(EDITOR)};
+        return cs;
 }
 
 #define SET_CONFIG(c, field, value)                                                                               \
@@ -53,11 +62,12 @@ void destroy_user_config()
                 (c).field = bds_string_dup(value);                                                                \
         }
 
-void load_user_config()
+static void load_user_config()
 {
         struct stat sb;
         char *home   = NULL;
         char *pager  = NULL;
+        char *editor = NULL;
         char *config = NULL;
         FILE *fp     = NULL;
 
@@ -72,6 +82,11 @@ void load_user_config()
         pager = getenv("PAGER");
         if (pager) {
                 SET_CONFIG(user_config, pager, pager);
+        }
+
+        editor = getenv("EDITOR");
+        if (editor) {
+                SET_CONFIG(user_config, editor, editor);
         }
 
         config = bds_string_dup_concat(3, home, "/", CONFIG);
@@ -130,6 +145,8 @@ void load_user_config()
                         SET_CONFIG(user_config, depdir, keyval[1]);
                 } else if (strcmp(keyval[0], "PAGER") == 0) {
                         SET_CONFIG(user_config, pager, keyval[1]);
+                } else if (strcmp(keyval[0], "EDITOR") == 0) {
+                        SET_CONFIG(user_config, editor, keyval[1]);
                 } else {
                         fprintf(stderr, "unknown configuration %s=%s at line %d in %s\n", keyval[0], keyval[1],
                                 lineno, config);

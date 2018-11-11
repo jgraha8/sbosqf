@@ -169,7 +169,7 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
         if (fp == NULL) {
                 printf("dependency file %s not found: ", pkg_name);
                 // TODO: if dep file doesn't exist request dependency file add and package addition
-                if (request_add_dep_file(pkg_name) != 0) {
+                if (request_add_dep_file(pkg_name, true) != 0) {
                         goto finish;
                 }
                 fp = fopen(dep_file, "r");
@@ -389,14 +389,14 @@ void write_dep_list(FILE *fp, const struct dep_list *dep_list)
 
 int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
 {
-        int rc   = 0;
+        int rc = 0;
 
-	char tmpdb[4096];
-	char depdb[4096];
+        char tmpdb[4096];
+        char depdb[4096];
 
-	bds_string_copyf(tmpdb, sizeof(tmpdb), "%s/.%s", user_config.depdir, DEPDB);
-	bds_string_copyf(depdb, sizeof(depdb), "%s/%s", user_config.depdir, DEPDB);
-	
+        bds_string_copyf(tmpdb, sizeof(tmpdb), "%s/.%s", user_config.depdir, DEPDB);
+        bds_string_copyf(depdb, sizeof(depdb), "%s/%s", user_config.depdir, DEPDB);
+
         FILE *fp = fopen(tmpdb, "w");
         if (fp == NULL) {
                 rc = 1;
@@ -421,16 +421,16 @@ int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
 finish:
         if (fp)
                 fclose(fp);
-	
-	if( rc == 0 ) {
-		if (rename(tmpdb, depdb) != 0) {
-			perror("rename()");
-			rc=1;
-		}
-	} else {
-		if( unlink(tmpdb) == -1 )
-			perror("unlink()");
-	}
+
+        if (rc == 0) {
+                if (rename(tmpdb, depdb) != 0) {
+                        perror("rename()");
+                        rc = 1;
+                }
+        } else {
+                if (unlink(tmpdb) == -1)
+                        perror("unlink()");
+        }
 
         return rc;
 }
@@ -483,15 +483,15 @@ struct dep_parents *dep_parents_stack_search(dep_parents_stack_t *dp_stack, cons
 
 int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
 {
-        int rc   = 0;
+        int rc = 0;
 
-	char tmpdb[4096];
-	char depdb[4096];
+        char tmpdb[4096];
+        char depdb[4096];
 
-	bds_string_copyf(tmpdb, sizeof(tmpdb), "%s/.%s", user_config.depdir, PARENTDB);
-	bds_string_copyf(depdb, sizeof(depdb), "%s/%s", user_config.depdir, PARENTDB);
+        bds_string_copyf(tmpdb, sizeof(tmpdb), "%s/.%s", user_config.depdir, PARENTDB);
+        bds_string_copyf(depdb, sizeof(depdb), "%s/%s", user_config.depdir, PARENTDB);
 
-	FILE *fp = fopen(tmpdb, "w");
+        FILE *fp = fopen(tmpdb, "w");
         if (fp == NULL) {
                 rc = 1;
                 goto finish;
@@ -553,25 +553,25 @@ finish:
         if (dp_stack)
                 dep_parents_stack_free(&dp_stack);
 
-	if( rc == 0 ) {
-		if (rename(tmpdb, depdb) != 0) {
-			perror("rename()");
-			rc=1;
-		}
-	} else {
-		if( unlink(tmpdb) == -1 )
-			perror("unlink()");
-	}
+        if (rc == 0) {
+                if (rename(tmpdb, depdb) != 0) {
+                        perror("rename()");
+                        rc = 1;
+                }
+        } else {
+                if (unlink(tmpdb) == -1)
+                        perror("unlink()");
+        }
 
         return rc;
 }
 
 int create_default_dep_file(const char *pkg_name)
 {
-        int rc               = 0;
-        FILE *fp             = NULL;
-        char **required      = NULL;
-        size_t num_required  = 0;
+        int rc              = 0;
+        FILE *fp            = NULL;
+        char **required     = NULL;
+        size_t num_required = 0;
         char dep_file[4096];
 
         // First check if dep file already exists
@@ -592,8 +592,8 @@ int create_default_dep_file(const char *pkg_name)
                 goto finish;
         }
 
-	bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
-	
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+
         fp = fopen(dep_file, "w");
         if (fp == NULL) {
                 perror("fopen");
@@ -623,25 +623,23 @@ finish:
         return rc;
 }
 
-int request_add_dep_file(const char *pkg_name)
+int request_add_dep_file(const char *pkg_name, bool review)
 {
         if (create_default_dep_file(pkg_name) != 0) {
                 fprintf(stderr, "unable to create default dependency file %s\n", pkg_name);
-		return 1;
+                return 1;
         }
 
-        if (request_review_pkg(pkg_name) != 0) {
-		return 1;
+        if (review) {
+                request_review_pkg(pkg_name);
         }
 
         printf("Add dependency file %s (y/n)? ", pkg_name);
-
         if (read_response() != 'y') {
                 printf("not adding dependency file %s\n", pkg_name);
+                const char *dep_file = find_dep_file(pkg_name);
 
-		const char *dep_file = find_dep_file(pkg_name);
-
-		if( dep_file ) {
+                if (dep_file) {
                         if (unlink(dep_file) == -1)
                                 perror("unlink()");
                 }
@@ -649,7 +647,7 @@ int request_add_dep_file(const char *pkg_name)
                 return 1;
         }
 
-	return request_reviewed_add(REVIEWED, pkg_name);
+        return request_reviewed_add(REVIEWED, pkg_name);
 }
 
 const char *find_dep_file(const char *pkg_name)
@@ -671,4 +669,18 @@ const char *find_dep_file(const char *pkg_name)
                 }
         }
         return NULL;
+}
+
+int edit_dep_file(const char *pkg_name)
+{
+        char cmd[4096];
+
+        const char *dep_file = find_dep_file(pkg_name);
+        if (!dep_file) {
+                if (request_add_dep_file(pkg_name, true) != 0)
+                        return 1;
+        }
+
+        bds_string_copyf(cmd, sizeof(cmd), "%s %s/%s", user_config.editor, user_config.depdir, pkg_name);
+        return system(cmd);
 }

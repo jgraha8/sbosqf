@@ -29,5 +29,6 @@
 
 // Environment
 #define PAGER "less -r"
+#define EDITOR "vi"
 
 #endif // __CONFIG_H__

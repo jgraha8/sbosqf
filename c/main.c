@@ -5,6 +5,7 @@
  */
 
 #include <assert.h>
+#include <getopt.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,87 +22,199 @@
 #include "pkglist.h"
 #include "user_config.h"
 
+#define LONG_OPT(long_opt, opt)                                                                                   \
+        {                                                                                                         \
+                long_opt, no_argument, 0, opt                                                                     \
+        }
+
+static const char *options_str            = "CNPRacdehlopr";
+static const struct option long_options[] = {
+    /* These options set a flag. */
+    LONG_OPT("check-installed", 'C'),
+    LONG_OPT("no-recursive", 'N'),
+    LONG_OPT("parents", 'P'),
+    LONG_OPT("review", 'R'),
+    LONG_OPT("add", 'a'),
+    LONG_OPT("check-foreign-installed", 'c'),
+    LONG_OPT("database", 'd'),
+    LONG_OPT("edit", 'e'),
+    LONG_OPT("help", 'h'),
+    LONG_OPT("list", 'l'),
+    LONG_OPT("optional", 'o'),
+    LONG_OPT("print", 'p'),
+    LONG_OPT("remove", 'r'),
+    {0, 0, 0, 0}};
+
+static const struct option *find_option(const char *long_name, const int name)
+{
+        assert(long_name || name);
+
+        const struct option *opt = long_options;
+        while (opt->name) {
+                if (long_name) {
+                        if (strcmp(opt->name, long_name) == 0) {
+                                return opt;
+                        }
+                } else {
+                        if (name == opt->val) {
+                                return opt;
+                        }
+                }
+                ++opt;
+        }
+
+        return NULL;
+}
+
+enum action {
+        ACTION_NONE,
+        ACTION_REVIEW,
+        ACTION_ADD,
+        ACTION_CREATEDB,
+        ACTION_EDIT,
+        ACTION_LIST,
+        ACTION_PRINT_TREE,
+        ACTION_REMOVE
+};
+
+struct action_struct {
+        enum action action;
+        const struct option *option;
+};
+
+void set_action(struct action_struct *as, enum action value, const struct option *option)
+{
+        assert(option);
+
+        if (as->action != ACTION_NONE && as->option != option) {
+
+                fprintf(stderr, "argument --%s/-%c conflicts with argument --%s/-%c\n", as->option->name,
+                        as->option->val, option->name, option->val);
+                exit(EXIT_FAILURE);
+        }
+        as->action = value;
+        as->option = option;
+}
+
+static void print_help();
+
 int main(int argc, char **argv)
 {
-        const bool recursive = true;
-        const bool optional  = true;
-
-	setbuf(stdout, NULL);
+        bool process_parents   = false;
+        bool recursive         = true;
+        bool optional          = false;
+        bool pkg_name_required = true;
+        if (setvbuf(stdout, NULL, _IONBF, 0) != 0)
+                perror("setvbuf()");
 
         init_user_config();
 
-        // struct user_config user_config = default_user_config();
+        struct action_struct action = {ACTION_NONE, NULL};
 
-        load_user_config();
+        while (1) {
+                int option_index = 0;
+                char c           = getopt_long(argc, argv, options_str, long_options, &option_index);
 
-        printf("sbopkg_repo = %s\n", user_config.sbopkg_repo);
-        printf("sbo_tag = %s\n", user_config.sbo_tag);
-        printf("pager = %s\n", user_config.pager);
+                if (c == -1)
+                        break;
+
+                switch (c) {
+                case 'C':
+                        user_config.check_installed |= CHECK_INSTALLED;
+                        break;
+                case 'N':
+                        recursive = false;
+                        break;
+                case 'P':
+                        process_parents = true;
+                        break;
+                case 'R':
+                        set_action(&action, ACTION_REVIEW, find_option(NULL, 'R'));
+                        break;
+                case 'a':
+                        set_action(&action, ACTION_ADD, find_option(NULL, 'a'));
+                        break;
+                case 'c':
+                        user_config.check_installed |= CHECK_FOREIGN_INSTALLED;
+                        break;
+                case 'd':
+                        set_action(&action, ACTION_CREATEDB, find_option(NULL, 'd'));
+                        pkg_name_required = false;
+                        break;
+                case 'e':
+                        set_action(&action, ACTION_EDIT, find_option(NULL, 'e'));
+                        break;
+                case 'h':
+                        print_help();
+                        exit(0);
+                case 'l':
+                        set_action(&action, ACTION_LIST, find_option(NULL, 'l'));
+                        break;
+                case 'o':
+                        optional = true;
+                        break;
+                case 'p':
+                        set_action(&action, ACTION_PRINT_TREE, find_option(NULL, 'p'));
+                        break;
+                case 'r':
+                        set_action(&action, ACTION_REMOVE, find_option(NULL, 'r'));
+                        break;
+                default:
+                        abort();
+                }
+        }
+
+        const char *pkg_name = NULL;
+        if (pkg_name_required) {
+                if (argc - optind != 1) {
+                        print_help();
+                        exit(EXIT_FAILURE);
+                }
+                pkg_name = argv[optind];
+        }
 
         pkg_stack_t *pkglist = load_pkglist(PKGLIST);
-        //print_pkglist(pkglist);
 
-        struct pkg *pkg = find_pkg(pkglist, "nextcloud-server");
+        int rc = 0;
 
-        if (pkg) {
-                printf("found package %s\n", pkg->name);
-        }
+        /* set_action(&action, ACTION_REVIEW, find_option(NULL, 'R')); */
+        /* set_action(&action, ACTION_ADD, find_option(NULL, 'a')); */
+        /* set_action(&action, ACTION_CREATEDB, find_option(NULL, 'd')); */
+        /* set_action(&action, ACTION_EDIT, find_option(NULL, 'e')); */
+        /* set_action(&action, ACTION_LIST, find_option(NULL, 'l')); */
+        /* set_action(&action, ACTION_PRINT_TREE, find_option(NULL, 'p')); */
+        /* set_action(&action, ACTION_REMOVE, find_option(NULL, 'r')); */
 
-        write_depdb(pkglist, recursive, optional);
-
-	return 0;
-        struct dep *dep = load_dep_file("test", recursive, optional);
-
-        printf("===========================\n");
-        print_dep_sqf(dep);
-
-        dep_free(&dep);
-
-        printf("===========================\n");
-
-        const char *pkg_name = "virt-manager";
-        const char *sbo_dir  = find_sbo_dir(user_config.sbopkg_repo, pkg_name);
-
-        if (sbo_dir) {
-                printf("found %s package directory %s\n", pkg_name, sbo_dir);
-
-                const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name);
-                if (sbo_requires) {
-                        printf("  %s requires: %s\n", pkg_name, sbo_requires);
+        switch (action.action) {
+        case ACTION_REVIEW:
+                if (find_dep_file(pkg_name) == NULL) {
+			rc = create_default_dep_file(pkg_name);
                 }
-        } else {
-                printf("unable to find ffmpeg package directory\n");
-        }
-
-        write_parentdb(pkglist, recursive, optional);
-
-        if (request_add_pkg(pkglist, PKGLIST, "junk") != 0) {
-                fprintf(stderr, "unable to add package junk\n");
+                if( rc == 0 )
+			rc = review_pkg(pkg_name);
+                break;
+        case ACTION_ADD:
+                rc = add_pkg(pkglist, PKGLIST, pkg_name);
+                break;
+        case ACTION_CREATEDB:
+                if ((rc = write_depdb(pkglist, recursive, optional)) != 0)
+                        break;
+                rc = write_parentdb(pkglist, recursive, optional);
+        case ACTION_EDIT:
+                rc = edit_dep_file(pkg_name);
+                break;
         }
 
         bds_stack_free(&pkglist);
-        // destoy_user_config(&user_config);
-
-        printf("===========================\n");
-        printf("Creating dep file for ffmpeg\n");
-        printf("===========================\n");
-        if (create_default_dep_file("ffmpeg") != 0) {
-                fprintf(stderr, "unable to create ffmpeg dep file\n");
-        }
-
-        const char *slack_pkg_name = "xorg-server-xephyr";
-
-        printf("===========================\n");
-        printf("Checking if %s is installed\n", slack_pkg_name);
-        printf("===========================\n");
-        if (is_pkg_installed(slack_pkg_name, NULL)) {
-                printf("%s is installed\n", slack_pkg_name);
-        } else {
-                fprintf(stderr, "%s is not installed\n", slack_pkg_name);
-        }
-
-        request_reviewed_add(REVIEWED, pkg_name);
 
         destroy_user_config();
         return 0;
+}
+
+#define PROGRAM_NAME "sbopkg-dep2sqf"
+static void print_help()
+{
+        printf("Usage: %s [options] pkg\n"
+               "Options:\n",
+               PROGRAM_NAME);
 }
