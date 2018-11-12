@@ -6,13 +6,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#include <libbds/bds_vector.h>
 #include <libbds/bds_string.h>
+#include <libbds/bds_vector.h>
 
 #include "config.h"
 #include "deps.h"
 #include "filesystem.h"
-#include "pkglist.h"
+#include "pkg_db.h"
 #include "response.h"
 #include "user_config.h"
 
@@ -126,7 +126,7 @@ void dep_optional_init(struct dep *dep)
 struct dep_list *dep_list_alloc(const char *pkg_name)
 {
         struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
-
+	
         *(struct dep_info *)dep_list = dep_info_ctor(pkg_name);
         dep_list->dep_list = bds_vector_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
 
@@ -169,7 +169,7 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
         if (fp == NULL) {
                 printf("dependency file %s not found: ", pkg_name);
                 // TODO: if dep file doesn't exist request dependency file add and package addition
-                if (request_add_dep_file(pkg_name, true) != 0) {
+                if (request_add_dep_file(pkg_name, DEP_REVIEW_REQUEST) != 0) {
                         goto finish;
                 }
                 fp = fopen(dep_file, "r");
@@ -387,7 +387,7 @@ void write_dep_list(FILE *fp, const struct dep_list *dep_list)
         fprintf(fp, "\n");
 }
 
-int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
+int write_depdb(bool recursive, bool optional)
 {
         int rc = 0;
 
@@ -402,12 +402,11 @@ int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
                 rc = 1;
                 goto finish;
         }
-
-        const struct pkg *pkg_iter = (const struct pkg *)bds_vector_ptr(pkglist);
-        const struct pkg *pkg_end  = pkg_iter + bds_vector_size(pkglist);
-
-        while (pkg_iter != pkg_end) {
-                struct dep_list *dep_list = load_dep_list(pkg_iter->name, recursive, optional);
+	struct bds_list_node *node = bds_list_begin(pkg_db_pkglist);
+	
+	while( node != bds_list_end() ) {
+		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+		struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
                 if (dep_list == NULL) {
                         rc = 1;
                         goto finish;
@@ -415,7 +414,7 @@ int write_depdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
                 write_dep_list(fp, dep_list);
                 dep_list_free(&dep_list);
 
-                ++pkg_iter;
+                node = bds_list_iterate(node);
         }
 
 finish:
@@ -481,7 +480,7 @@ struct dep_parents *dep_parents_stack_search(dep_parents_stack_t *dp_stack, cons
         return *dp;
 }
 
-int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
+int write_parentdb(bool recursive, bool optional)
 {
         int rc = 0;
 
@@ -497,19 +496,20 @@ int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
                 goto finish;
         }
 
-        const struct pkg *pkg_begin = (const struct pkg *)bds_vector_ptr(pkglist);
-        const struct pkg *pkg_end   = pkg_begin + bds_vector_size(pkglist);
-        const struct pkg *pkg_iter  = NULL;
-
         dep_parents_stack_t *dp_stack = dep_parents_stack_alloc();
-
-        for (pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter) {
-                struct dep_parents *dp = dep_parents_alloc(pkg_iter->name);
+	struct bds_list_node *node = NULL;
+	
+        for (node = bds_list_begin(pkg_db_pkglist); node != bds_list_end(); node = bds_list_iterate(node) ) {
+		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+                struct dep_parents *dp = dep_parents_alloc(pkg->name);
                 bds_vector_append(dp_stack, &dp);
+
+		node = bds_list_iterate(node);
         }
 
-        for (pkg_iter = pkg_begin; pkg_iter != pkg_end; ++pkg_iter) {
-                struct dep_list *dep_list = load_dep_list(pkg_iter->name, recursive, optional);
+        for (node = bds_list_begin(pkg_db_pkglist); node != bds_list_end(); node = bds_list_iterate(node) ) {
+		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);		
+                struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
                 if (dep_list == NULL) {
                         continue;
                         /* rc = 2; */
@@ -537,9 +537,10 @@ int write_parentdb(const pkg_stack_t *pkglist, bool recursive, bool optional)
         for (dp_iter = dp_begin; dp_iter != dp_end; ++dp_iter) {
                 fprintf(fp, "%s:", (*dp_iter)->info.pkg_name);
 
-                const struct dep_info *di_begin = (const struct dep_info *)bds_vector_ptr((*dp_iter)->parents_list);
-                const struct dep_info *di_end   = di_begin + bds_vector_size((*dp_iter)->parents_list);
-                const struct dep_info *di_iter  = NULL;
+                const struct dep_info *di_begin =
+                    (const struct dep_info *)bds_vector_ptr((*dp_iter)->parents_list);
+                const struct dep_info *di_end  = di_begin + bds_vector_size((*dp_iter)->parents_list);
+                const struct dep_info *di_iter = NULL;
 
                 for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
                         fprintf(fp, " %s", di_iter->pkg_name);
@@ -566,29 +567,29 @@ finish:
         return rc;
 }
 
-int create_default_dep_file(const char *pkg_name)
+const char *create_default_dep_file(const char *pkg_name)
 {
-        int rc              = 0;
+        static char dep_file[4096];
+
         FILE *fp            = NULL;
         char **required     = NULL;
         size_t num_required = 0;
-        char dep_file[4096];
+
+        const char *rp = NULL;
 
         // First check if dep file already exists
         if (find_dep_file(pkg_name)) {
-                return 1;
+                return NULL;
         }
 
         // Tokenize sbo_requires
         const char *sbo_dir = find_sbo_dir(user_config.sbopkg_repo, pkg_name);
         if (!sbo_dir) {
-                rc = 1;
                 goto finish;
         }
 
         const char *sbo_requires = read_sbo_requires(sbo_dir, pkg_name);
         if (!sbo_requires) {
-                rc = 1;
                 goto finish;
         }
 
@@ -597,7 +598,6 @@ int create_default_dep_file(const char *pkg_name)
         fp = fopen(dep_file, "w");
         if (fp == NULL) {
                 perror("fopen");
-                rc = 1;
                 goto finish;
         }
         fprintf(fp, "REQUIRED:\n");
@@ -614,40 +614,53 @@ int create_default_dep_file(const char *pkg_name)
                 fprintf(fp, "%s\n", required[i]);
         }
 
+        rp = dep_file;
 finish:
         if (fp)
                 fclose(fp);
         if (required)
                 free(required);
 
-        return rc;
+        return rp;
 }
 
-int request_add_dep_file(const char *pkg_name, bool review)
+int request_add_dep_file(const char *pkg_name, enum dep_review review)
 {
-        if (create_default_dep_file(pkg_name) != 0) {
-                fprintf(stderr, "unable to create default dependency file %s\n", pkg_name);
+        const char *dep_file;
+
+        // METAPKG's will fail here since there is no associated SBo directory,
+        // which is the intention, since METAPKG's need to be managed manually.
+        if ((dep_file = create_default_dep_file(pkg_name)) == NULL) {
+                fprintf(stderr, "unable to create default dependency file for package %s\n", pkg_name);
                 return 1;
         }
 
-        if (review) {
+	switch(review) {
+	case DEP_REVIEW:
+                review_pkg(pkg_name);
+		break;
+	case DEP_REVIEW_REQUEST:
                 request_review_pkg(pkg_name);
+		break;
+	default:
+		break;
         }
 
         printf("Add dependency file %s (y/n)? ", pkg_name);
         if (read_response() != 'y') {
                 printf("not adding dependency file %s\n", pkg_name);
-                const char *dep_file = find_dep_file(pkg_name);
 
-                if (dep_file) {
-                        if (unlink(dep_file) == -1)
-                                perror("unlink()");
-                }
+                if (unlink(dep_file) == -1)
+                        perror("unlink()");
 
                 return 1;
         }
 
-        return request_reviewed_add(REVIEWED, pkg_name);
+        // Adding a dependency file implies it should be in the PKGLIST db
+        if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0)
+                return 1;
+
+        return request_add_pkg(pkg_db_reviewed, REVIEWED, pkg_name);
 }
 
 const char *find_dep_file(const char *pkg_name)
@@ -677,10 +690,26 @@ int edit_dep_file(const char *pkg_name)
 
         const char *dep_file = find_dep_file(pkg_name);
         if (!dep_file) {
-                if (request_add_dep_file(pkg_name, true) != 0)
+		printf("dependency file %s not found: ", pkg_name);
+                if (request_add_dep_file(pkg_name, DEP_REVIEW_REQUEST) != 0)
                         return 1;
         }
 
         bds_string_copyf(cmd, sizeof(cmd), "%s %s/%s", user_config.editor, user_config.depdir, pkg_name);
         return system(cmd);
+}
+
+int remove_dep_file(const char *pkg_name)
+{
+        const char *dep_file = find_dep_file(pkg_name);
+
+        if (dep_file) {
+                if (unlink(dep_file) == -1)
+                        perror("unlink()");
+        }
+
+        remove_pkg(pkg_db_pkglist, PKGLIST, pkg_name);
+        remove_pkg(pkg_db_reviewed, REVIEWED, pkg_name);
+
+        return 0;
 }

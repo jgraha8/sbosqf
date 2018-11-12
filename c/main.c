@@ -19,7 +19,7 @@
 #include "config.h"
 #include "deps.h"
 #include "filesystem.h"
-#include "pkglist.h"
+#include "pkg_db.h"
 #include "user_config.h"
 
 #define LONG_OPT(long_opt, opt)                                                                                   \
@@ -27,16 +27,16 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "CNPRacdehlopr";
+static const char *options_str            = "CDNPRacehlopr";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("check-installed", 'C'),
+    LONG_OPT("database", 'D'),
     LONG_OPT("no-recursive", 'N'),
     LONG_OPT("parents", 'P'),
     LONG_OPT("review", 'R'),
     LONG_OPT("add", 'a'),
     LONG_OPT("check-foreign-installed", 'c'),
-    LONG_OPT("database", 'd'),
     LONG_OPT("edit", 'e'),
     LONG_OPT("help", 'h'),
     LONG_OPT("list", 'l'),
@@ -122,6 +122,10 @@ int main(int argc, char **argv)
                 case 'C':
                         user_config.check_installed |= CHECK_INSTALLED;
                         break;
+                case 'D':
+                        set_action(&as, ACTION_CREATEDB, find_option(NULL, 'D'));
+                        pkg_name_required = false;
+                        break;
                 case 'N':
                         recursive = false;
                         break;
@@ -136,10 +140,6 @@ int main(int argc, char **argv)
                         break;
                 case 'c':
                         user_config.check_installed |= CHECK_FOREIGN_INSTALLED;
-                        break;
-                case 'd':
-                        set_action(&as, ACTION_CREATEDB, find_option(NULL, 'd'));
-                        pkg_name_required = false;
                         break;
                 case 'e':
                         set_action(&as, ACTION_EDIT, find_option(NULL, 'e'));
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
                 pkg_name = argv[optind];
         }
 
-        pkg_stack_t *pkglist = load_pkglist(PKGLIST);
+        init_pkg_db();
 
         int rc = 0;
 
@@ -188,26 +188,30 @@ int main(int argc, char **argv)
         switch (as.action) {
         case ACTION_REVIEW:
                 if (find_dep_file(pkg_name) == NULL) {
-			rc = create_default_dep_file(pkg_name);
-                }
-                if( rc == 0 )
-			rc = review_pkg(pkg_name);
+                        rc = request_add_dep_file(pkg_name, DEP_REVIEW);
+                } else {
+                        rc = review_pkg(pkg_name);
+		}
                 break;
         case ACTION_ADD:
-                rc = add_pkg(pkglist, PKGLIST, pkg_name);
+                rc = add_pkg(pkg_db_pkglist, PKGLIST, pkg_name);
                 break;
         case ACTION_CREATEDB:
-                if ((rc = write_depdb(pkglist, recursive, optional)) != 0)
+                if ((rc = write_depdb(recursive, optional)) != 0)
                         break;
-                rc = write_parentdb(pkglist, recursive, optional);
+                rc = write_parentdb(recursive, optional);
+		break;
         case ACTION_EDIT:
                 rc = edit_dep_file(pkg_name);
                 break;
+        case ACTION_REMOVE:
+                rc = remove_dep_file(pkg_name);
+                break;
         }
 
-        bds_vector_free(&pkglist);
-
         destroy_user_config();
+        fini_pkg_db();
+
         return 0;
 }
 

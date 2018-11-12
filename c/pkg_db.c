@@ -7,19 +7,42 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include <libbds/bds_vector.h>
+#include <libbds/bds_list.h>
 #include <libbds/bds_string.h>
 
 #include "deps.h"
 #include "file_mmap.h"
 #include "filesystem.h"
-#include "pkglist.h"
+#include "pkg_db.h"
 #include "response.h"
 #include "user_config.h"
 
 #define BORDER1 "================================================================================"
 #define BORDER2 "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
 #define BORDER3 "--------------------------------------------------------------------------------"
+
+pkg_list_t *pkg_db_pkglist = NULL;
+pkg_list_t *pkg_db_reviewed = NULL;
+
+static bool initd = false;
+void init_pkg_db()
+{
+	assert(pkg_db_pkglist = load_pkg_db(PKGLIST));
+	assert(pkg_db_reviewed = load_pkg_db(REVIEWED));
+
+	initd = true;
+}
+
+void fini_pkg_db()
+{
+	if( !initd )
+		return;
+	
+	bds_list_free(&pkg_db_pkglist);
+	bds_list_free(&pkg_db_reviewed);
+
+	initd = false;
+}
 
 int compar_pkg(const void *a, const void *b)
 {
@@ -42,24 +65,22 @@ void destroy_pkg(struct pkg *pkg)
         memset(pkg, 0, sizeof(*pkg));
 }
 
-struct pkg *find_pkg(pkg_stack_t *pkglist, const char *pkg_name)
+struct pkg *find_pkg(pkg_list_t *pkg_db, const char *pkg_name)
 {
         const struct pkg key = {.name = (char *)pkg_name};
-
-        return (struct pkg *)bsearch(&key, bds_vector_ptr(pkglist), bds_vector_size(pkglist), sizeof(key),
-                                     compar_pkg);
+        return (struct pkg *)bds_list_lsearch(pkg_db, &key, compar_pkg);
 }
 
-pkg_stack_t *load_pkglist(const char *pkgdb)
+pkg_list_t *load_pkg_db(const char *db_name)
 {
-        pkg_stack_t *pkglist = bds_vector_alloc(1, sizeof(struct pkg), (void (*)(void *))destroy_pkg);
+        pkg_list_t *pkg_db = bds_list_alloc(sizeof(struct pkg), (void (*)(void *))destroy_pkg);
 
-        char *pkglist_file = bds_string_dup_concat(3, user_config.depdir, "/", pkgdb);
-        FILE *fp           = fopen(pkglist_file, "r");
+        char *pkg_db_file = bds_string_dup_concat(3, user_config.depdir, "/", db_name);
+        FILE *fp           = fopen(pkg_db_file, "r");
 
         if (fp == NULL) {
 		// Does not exist
-		return pkglist;
+		return pkg_db;
         }
 
         char *line       = NULL;
@@ -78,7 +99,7 @@ pkg_stack_t *load_pkglist(const char *pkgdb)
                 }
 
                 struct pkg pkg = create_pkg(line);
-                bds_vector_append(pkglist, &pkg);
+		bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
 
         cycle:
                 free(line);
@@ -89,28 +110,29 @@ pkg_stack_t *load_pkglist(const char *pkgdb)
                 free(line);
         }
 
-        bds_vector_qsort(pkglist, compar_pkg);
-
         fclose(fp);
-        free(pkglist_file);
+        free(pkg_db_file);
 
-        return pkglist;
+        return pkg_db;
 }
 
-int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb)
+int write_pkg_db(const pkg_list_t *pkg_db, const char *db_name)
 {
-        char *pkglist_file = bds_string_dup_concat(3, user_config.depdir, "/", pkgdb);
-        char *tmp_file     = bds_string_dup_concat(3, user_config.depdir, "/.", pkgdb);
+        char *pkg_db_file = bds_string_dup_concat(3, user_config.depdir, "/", db_name);
+        char *tmp_file     = bds_string_dup_concat(3, user_config.depdir, "/.", db_name);
         FILE *fp           = fopen(tmp_file, "w");
 
         if (fp == NULL) {
                 return 1;
         }
 
-        const struct pkg *p = (const struct pkg *)bds_vector_ptr(pkglist);
+        struct bds_list_node *node = bds_list_begin((pkg_list_t *)pkg_db);
 
-        for (size_t i = 0; i < bds_vector_size(pkglist); ++i) {
-                fprintf(fp, "%s\n", p[i].name);
+	while( node != bds_list_end() ) {
+		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+                fprintf(fp, "%s\n", pkg->name);
+
+		node = bds_list_iterate(node);
         }
 
         if (fflush(fp) != 0) {
@@ -122,7 +144,7 @@ int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb)
                 return 3;
         }
 
-        if (rename(tmp_file, pkglist_file) != 0) {
+        if (rename(tmp_file, pkg_db_file) != 0) {
                 perror("rename");
                 return 4;
         }
@@ -130,36 +152,50 @@ int write_pkglist(const pkg_stack_t *pkglist, const char *pkgdb)
         return 0;
 }
 
-void print_pkglist(const pkg_stack_t *pkglist)
+void print_pkg_db(const pkg_list_t *pkg_db)
 {
-        const struct pkg *p = (const struct pkg *)bds_vector_ptr(pkglist);
+        struct bds_list_node *node = bds_list_begin((pkg_list_t *)pkg_db);
 
-        for (size_t i = 0; i < bds_vector_size(pkglist); ++i) {
-                printf("%s\n", p[i].name);
+	while( node != bds_list_end() ) {
+		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+                printf("%s\n", pkg->name);
+
+		node = bds_list_iterate(node);
         }
 }
 
-int add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
+int add_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 {
         struct pkg pkg = create_pkg(pkg_name);
-        bds_vector_append(pkglist, &pkg);
+	
+        bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
 
-        bds_vector_qsort(pkglist, compar_pkg);
-
-        return write_pkglist(pkglist, pkgdb);
+        return write_pkg_db(pkg_db, db_name);
 }
 
-int request_add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_name)
+int remove_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
+{
+	struct pkg pkg = { .name = (char *)pkg_name };
+
+	if( find_pkg(pkg_db, pkg_name) ) {
+		bds_list_remove(pkg_db, &pkg, compar_pkg);
+		return write_pkg_db(pkg_db, db_name);
+	}
+
+	return 0;
+}
+
+int request_add_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 {
         int rc = 0;
 
-        if (find_pkg(pkglist, pkg_name) != NULL) {
-                printf("package %s already present in %s\n", pkg_name, pkgdb);
+        if (find_pkg(pkg_db, pkg_name) != NULL) {
+                printf("package %s already present in %s\n", pkg_name, db_name);
                 rc = 1;
                 goto finish;
         }
 
-        printf("Add package %s to %s (y/n)? ", pkg_name, pkgdb);
+        printf("Add package %s to %s (y/n)? ", pkg_name, db_name);
 
         if (read_response() != 'y') {
                 printf("not adding package %s\n", pkg_name);
@@ -167,7 +203,7 @@ int request_add_pkg(pkg_stack_t *pkglist, const char *pkgdb, const char *pkg_nam
                 goto finish;
         }
 
-        rc = add_pkg(pkglist, pkgdb, pkg_name);
+        rc = add_pkg(pkg_db, db_name, pkg_name);
 
 finish:
         return rc;
@@ -183,18 +219,6 @@ int request_review_pkg(const char *pkg_name)
         }
 
         return review_pkg(pkg_name);
-}
-
-int request_reviewed_add(const char *pkgdb, const char *pkg_name)
-{
-        pkg_stack_t *reviewed = load_pkglist(pkgdb);
-
-        if (find_pkg(reviewed, pkg_name) == NULL) {
-                request_add_pkg(reviewed, pkgdb, pkg_name);
-        }
-        bds_vector_free(&reviewed);
-
-        return 0;
 }
 
 int review_pkg(const char *pkg_name)
