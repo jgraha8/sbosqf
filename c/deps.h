@@ -14,10 +14,7 @@ enum dep_file_status { DEP_FILE_NONE, DEP_FILE_EXISTS, DEP_FILE_NOT_FILE };
 enum dep_review { DEP_REVIEW_NONE, DEP_REVIEW, DEP_REVIEW_REQUEST };
 
 struct dep_info {
-	union {
-		char *value;
-		const char *value_const;
-	} pkg_name;
+	const char *pkg_name;
         string_vector_t *buildopts;
         bool is_meta;
 };

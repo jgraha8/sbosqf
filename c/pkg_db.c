@@ -46,7 +46,7 @@ void fini_pkg_db()
 
 int compar_pkg(const void *a, const void *b)
 {
-        return strcmp(((const struct pkg *)a)->name.value_const, ((const struct pkg *)b)->name.value_const);
+        return strcmp(((const struct pkg *)a)->name, ((const struct pkg *)b)->name);
 }
 
 struct pkg create_pkg(const char *name)
@@ -54,20 +54,20 @@ struct pkg create_pkg(const char *name)
         struct pkg pkg;
         memset(&pkg, 0, sizeof(pkg));
 
-        pkg.name.value = bds_string_dup(name);
+        pkg.name = bds_string_dup(name);
 
         return pkg;
 }
 
 void destroy_pkg(struct pkg *pkg)
 {
-        free(pkg->name.value);
+        free((char *)pkg->name);
         memset(pkg, 0, sizeof(*pkg));
 }
 
 struct pkg *find_pkg(pkg_list_t *pkg_db, const char *pkg_name)
 {
-        const struct pkg key = {.name.value_const = pkg_name};
+        const struct pkg key = {.name = pkg_name};
         return (struct pkg *)bds_list_lsearch(pkg_db, &key, compar_pkg);
 }
 
@@ -130,7 +130,7 @@ int write_pkg_db(const pkg_list_t *pkg_db, const char *db_name)
 
         for (node = bds_list_begin((pkg_list_t *)pkg_db); node != NULL; node = bds_list_iterate(node)) {
                 const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-                fprintf(fp, "%s\n", pkg->name.value_const);
+                fprintf(fp, "%s\n", pkg->name);
         }
 
         if (fflush(fp) != 0) {
@@ -156,7 +156,7 @@ void print_pkg_db(const pkg_list_t *pkg_db)
 
         for (node = bds_list_begin((pkg_list_t *)pkg_db); node != NULL; node = bds_list_iterate(node)) {
                 const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-                printf("%s\n", pkg->name.value_const);
+                printf("%s\n", pkg->name);
         }
 }
 
@@ -172,7 +172,7 @@ int add_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 
 int remove_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 {
-        struct pkg pkg = {.name.value_const = pkg_name};
+        struct pkg pkg = {.name = pkg_name};
 
         if (find_pkg(pkg_db, pkg_name)) {
                 bds_list_remove(pkg_db, &pkg, compar_pkg);

@@ -9,10 +9,7 @@ extern pkg_list_t *pkg_db_pkglist;
 extern pkg_list_t *pkg_db_reviewed;
 
 struct pkg {
-	union {
-		char *value;
-		const char *value_const;
-	} name;
+	const char *name;
         int marked; // Used for graph analyses
 };
 
