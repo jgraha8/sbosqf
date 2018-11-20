@@ -21,32 +21,32 @@
 #define BORDER2 "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
 #define BORDER3 "--------------------------------------------------------------------------------"
 
-pkg_list_t *pkg_db_pkglist = NULL;
+pkg_list_t *pkg_db_pkglist  = NULL;
 pkg_list_t *pkg_db_reviewed = NULL;
 
 static bool initd = false;
 void init_pkg_db()
 {
-	assert(pkg_db_pkglist = load_pkg_db(PKGLIST));
-	assert(pkg_db_reviewed = load_pkg_db(REVIEWED));
+        assert(pkg_db_pkglist = load_pkg_db(PKGLIST));
+        assert(pkg_db_reviewed = load_pkg_db(REVIEWED));
 
-	initd = true;
+        initd = true;
 }
 
 void fini_pkg_db()
 {
-	if( !initd )
-		return;
-	
-	bds_list_free(&pkg_db_pkglist);
-	bds_list_free(&pkg_db_reviewed);
+        if (!initd)
+                return;
 
-	initd = false;
+        bds_list_free(&pkg_db_pkglist);
+        bds_list_free(&pkg_db_reviewed);
+
+        initd = false;
 }
 
 int compar_pkg(const void *a, const void *b)
 {
-        return strcmp(((const struct pkg *)a)->name, ((const struct pkg *)b)->name);
+        return strcmp(((const struct pkg *)a)->name.value_const, ((const struct pkg *)b)->name.value_const);
 }
 
 struct pkg create_pkg(const char *name)
@@ -54,20 +54,20 @@ struct pkg create_pkg(const char *name)
         struct pkg pkg;
         memset(&pkg, 0, sizeof(pkg));
 
-        pkg.name = bds_string_dup(name);
+        pkg.name.value = bds_string_dup(name);
 
         return pkg;
 }
 
 void destroy_pkg(struct pkg *pkg)
 {
-        free(pkg->name);
+        free(pkg->name.value);
         memset(pkg, 0, sizeof(*pkg));
 }
 
 struct pkg *find_pkg(pkg_list_t *pkg_db, const char *pkg_name)
 {
-        const struct pkg key = {.name = (char *)pkg_name};
+        const struct pkg key = {.name.value_const = pkg_name};
         return (struct pkg *)bds_list_lsearch(pkg_db, &key, compar_pkg);
 }
 
@@ -76,11 +76,11 @@ pkg_list_t *load_pkg_db(const char *db_name)
         pkg_list_t *pkg_db = bds_list_alloc(sizeof(struct pkg), (void (*)(void *))destroy_pkg);
 
         char *pkg_db_file = bds_string_dup_concat(3, user_config.depdir, "/", db_name);
-        FILE *fp           = fopen(pkg_db_file, "r");
+        FILE *fp          = fopen(pkg_db_file, "r");
 
         if (fp == NULL) {
-		// Does not exist
-		return pkg_db;
+                // Does not exist
+                return pkg_db;
         }
 
         char *line       = NULL;
@@ -99,7 +99,7 @@ pkg_list_t *load_pkg_db(const char *db_name)
                 }
 
                 struct pkg pkg = create_pkg(line);
-		bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
+                bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
 
         cycle:
                 free(line);
@@ -119,20 +119,18 @@ pkg_list_t *load_pkg_db(const char *db_name)
 int write_pkg_db(const pkg_list_t *pkg_db, const char *db_name)
 {
         char *pkg_db_file = bds_string_dup_concat(3, user_config.depdir, "/", db_name);
-        char *tmp_file     = bds_string_dup_concat(3, user_config.depdir, "/.", db_name);
-        FILE *fp           = fopen(tmp_file, "w");
+        char *tmp_file    = bds_string_dup_concat(3, user_config.depdir, "/.", db_name);
+        FILE *fp          = fopen(tmp_file, "w");
 
         if (fp == NULL) {
                 return 1;
         }
 
-        struct bds_list_node *node = bds_list_begin((pkg_list_t *)pkg_db);
+	struct bds_list_node *node = NULL;
 
-	while( node != bds_list_end() ) {
-		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-                fprintf(fp, "%s\n", pkg->name);
-
-		node = bds_list_iterate(node);
+        for (node = bds_list_begin((pkg_list_t *)pkg_db); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+                fprintf(fp, "%s\n", pkg->name.value_const);
         }
 
         if (fflush(fp) != 0) {
@@ -154,35 +152,34 @@ int write_pkg_db(const pkg_list_t *pkg_db, const char *db_name)
 
 void print_pkg_db(const pkg_list_t *pkg_db)
 {
-        struct bds_list_node *node = bds_list_begin((pkg_list_t *)pkg_db);
+        struct bds_list_node *node = NULL;
 
-	while( node != bds_list_end() ) {
-		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-                printf("%s\n", pkg->name);
-
-		node = bds_list_iterate(node);
+        for (node = bds_list_begin((pkg_list_t *)pkg_db); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
+                printf("%s\n", pkg->name.value_const);
         }
 }
 
 int add_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 {
-        struct pkg pkg = create_pkg(pkg_name);
-	
-        bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
-
-        return write_pkg_db(pkg_db, db_name);
+	if( find_pkg(pkg_db, pkg_name) == NULL ) {
+		struct pkg pkg = create_pkg(pkg_name);		
+		bds_list_insert_sort(pkg_db, &pkg, compar_pkg);
+		return write_pkg_db(pkg_db, db_name);
+	}
+	return 0;
 }
 
 int remove_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
 {
-	struct pkg pkg = { .name = (char *)pkg_name };
+        struct pkg pkg = {.name.value_const = pkg_name};
 
-	if( find_pkg(pkg_db, pkg_name) ) {
-		bds_list_remove(pkg_db, &pkg, compar_pkg);
-		return write_pkg_db(pkg_db, db_name);
-	}
+        if (find_pkg(pkg_db, pkg_name)) {
+                bds_list_remove(pkg_db, &pkg, compar_pkg);
+                return write_pkg_db(pkg_db, db_name);
+        }
 
-	return 0;
+        return 0;
 }
 
 int request_add_pkg(pkg_list_t *pkg_db, const char *db_name, const char *pkg_name)
@@ -268,13 +265,10 @@ int review_pkg(const char *pkg_name)
                 BORDER1 "\n"
                         "%s\n" // package name
                 BORDER1 "\n"
-                        "\n"
-		BORDER2 "\n"
-                        "README\n"
-		BORDER2 "\n"
+                        "\n" BORDER2 "\n"
+                        "README\n" BORDER2 "\n"
                         "%s\n" // readme file
-                        "\n"
-		BORDER2 "\n"
+                        "\n" BORDER2 "\n"
                         "%s.info\n" // package name (info)
                 BORDER2 "\n"
                         "%s\n" // package info

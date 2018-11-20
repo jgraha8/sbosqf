@@ -6,35 +6,38 @@
 
 #include "pkg_db.h"
 
-typedef struct bds_vector string_stack_t;
-typedef struct bds_vector dep_stack_t;
-typedef struct bds_vector dep_info_stack_t;
+typedef struct bds_vector string_vector_t;
+typedef struct bds_vector dep_vector_t;
+typedef struct bds_vector dep_info_vector_t;
 
 enum dep_file_status { DEP_FILE_NONE, DEP_FILE_EXISTS, DEP_FILE_NOT_FILE };
 enum dep_review { DEP_REVIEW_NONE, DEP_REVIEW, DEP_REVIEW_REQUEST };
 
 struct dep_info {
-        char *pkg_name;
-        string_stack_t *buildopts;
+	union {
+		char *value;
+		const char *value_const;
+	} pkg_name;
+        string_vector_t *buildopts;
         bool is_meta;
 };
 
 struct dep {
         struct dep_info info;
-        dep_stack_t *required;
-        dep_stack_t *optional;
+        dep_vector_t *required;
+        dep_vector_t *optional;
 };
 
 struct dep_list {
         struct dep_info info;
-        dep_info_stack_t *dep_list;
+        dep_info_vector_t *dep_list;
 };
 
-typedef struct bds_vector dep_parents_stack_t;
+typedef struct bds_vector dep_parents_vector_t;
 
 struct dep_parents {
         struct dep_info info;
-        dep_info_stack_t *parents_list;
+        dep_info_vector_t *parents_list;
 };
 
 enum block_type { NO_BLOCK, REQUIRED_BLOCK, OPTIONAL_BLOCK, BUILDOPTS_BLOCK };
@@ -59,11 +62,11 @@ struct dep_parents *dep_parents_alloc(const char *pkg_name);
 
 void dep_parents_free(struct dep_parents **dp);
 
-dep_parents_stack_t *dep_parents_stack_alloc();
+dep_parents_vector_t *dep_parents_vector_alloc();
 
-void dep_parents_stack_free(dep_parents_stack_t **dps);
+void dep_parents_vector_free(dep_parents_vector_t **dps);
 
-struct dep_parents *dep_parents_stack_search(dep_parents_stack_t *dps, const char *pkg_name);
+struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dps, const char *pkg_name);
 
 struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional);
 

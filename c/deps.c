@@ -23,12 +23,14 @@ __attribute__((unused)) static int compar_string_list(const void *a, const void 
 
 static int compar_dep_info(const void *a, const void *b)
 {
-        return strcmp(((const struct dep_info *)a)->pkg_name, ((const struct dep_info *)b)->pkg_name);
+        return strcmp(((const struct dep_info *)a)->pkg_name.value_const,
+                      ((const struct dep_info *)b)->pkg_name.value_const);
 }
 
 static int compar_dep_info_list(const void *a, const void *b)
 {
-        return strcmp((*(const struct dep_info **)a)->pkg_name, (*(const struct dep_info **)b)->pkg_name);
+        return strcmp((*(const struct dep_info **)a)->pkg_name.value_const,
+                      (*(const struct dep_info **)b)->pkg_name.value_const);
 }
 
 static void free_string_list(char **str)
@@ -42,14 +44,14 @@ struct dep_info dep_info_ctor(const char *pkg_name)
         struct dep_info dep_info;
         memset(&dep_info, 0, sizeof(dep_info));
 
-        dep_info.pkg_name = bds_string_dup(pkg_name);
+        dep_info.pkg_name.value = bds_string_dup(pkg_name);
 
         return dep_info;
 }
 
 void dep_info_dtor(struct dep_info *dep_info)
 {
-        free(dep_info->pkg_name);
+        free(dep_info->pkg_name.value);
 
         if (dep_info->buildopts)
                 bds_vector_free(&dep_info->buildopts);
@@ -64,7 +66,7 @@ void dep_info_buildopts_init(struct dep_info *dep_info)
 
 struct dep_info dep_info_deep_copy(const struct dep_info *src)
 {
-        struct dep_info dep_info = dep_info_ctor(src->pkg_name);
+        struct dep_info dep_info = dep_info_ctor(src->pkg_name.value_const);
 
         dep_info.is_meta = src->is_meta;
 
@@ -126,7 +128,7 @@ void dep_optional_init(struct dep *dep)
 struct dep_list *dep_list_alloc(const char *pkg_name)
 {
         struct dep_list *dep_list = calloc(1, sizeof(*dep_list));
-	
+
         *(struct dep_info *)dep_list = dep_info_ctor(pkg_name);
         dep_list->dep_list = bds_vector_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
 
@@ -298,7 +300,7 @@ void __print_dep_sqf(const struct dep_info *dep_info)
         if (dep_info->is_meta)
                 return;
 
-        printf("%s", dep_info->pkg_name);
+        printf("%s", dep_info->pkg_name.value_const);
 
         if (dep_info->buildopts) {
                 const char **bopts     = (const char **)bds_vector_ptr(dep_info->buildopts);
@@ -327,7 +329,7 @@ void print_dep_sqf(const struct dep *dep)
         dep_list_free(&dep_list);
 }
 
-void __append_deps(const dep_stack_t *deps, dep_info_stack_t *dep_info_stack)
+void __append_deps(const dep_vector_t *deps, dep_info_vector_t *dep_info_vector)
 {
         if (!deps)
                 return;
@@ -336,15 +338,15 @@ void __append_deps(const dep_stack_t *deps, dep_info_stack_t *dep_info_stack)
         const struct dep **d_end  = d_iter + bds_vector_size(deps);
 
         for (; d_iter != d_end; ++d_iter) {
-                __append_deps((*d_iter)->required, dep_info_stack);
-                __append_deps((*d_iter)->optional, dep_info_stack);
+                __append_deps((*d_iter)->required, dep_info_vector);
+                __append_deps((*d_iter)->optional, dep_info_vector);
 
-                struct dep_info key = {.pkg_name = (*d_iter)->info.pkg_name};
+                const struct dep_info key = {.pkg_name.value_const = (*d_iter)->info.pkg_name.value_const};
 
-                if (bds_vector_lsearch(dep_info_stack, &key, compar_dep_info) == NULL) {
+                if (bds_vector_lsearch(dep_info_vector, &key, compar_dep_info) == NULL) {
 
                         struct dep_info dep_info = dep_info_deep_copy((struct dep_info *)(*d_iter));
-                        bds_vector_append(dep_info_stack, &dep_info);
+                        bds_vector_append(dep_info_vector, &dep_info);
                 }
         }
 }
@@ -374,13 +376,13 @@ struct dep_list *load_dep_list_from_dep(const struct dep *dep)
 
 void write_dep_list(FILE *fp, const struct dep_list *dep_list)
 {
-        fprintf(fp, "%s:", dep_list->info.pkg_name);
+        fprintf(fp, "%s:", dep_list->info.pkg_name.value_const);
 
         const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
         const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
 
         while (di_iter != di_end) {
-                fprintf(fp, " %s", di_iter->pkg_name);
+                fprintf(fp, " %s", di_iter->pkg_name.value_const);
 
                 ++di_iter;
         }
@@ -402,11 +404,11 @@ int write_depdb(bool recursive, bool optional)
                 rc = 1;
                 goto finish;
         }
-	struct bds_list_node *node = NULL;
-	
-	for( node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
-		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-		struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
+        struct bds_list_node *node = NULL;
+
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg     = (const struct pkg *)bds_list_object(node);
+                struct dep_list *dep_list = load_dep_list(pkg->name.value_const, recursive, optional);
                 if (dep_list == NULL) {
                         rc = 1;
                         goto finish;
@@ -455,23 +457,23 @@ void dep_parents_free(struct dep_parents **dp)
         *dp = NULL;
 }
 
-dep_parents_stack_t *dep_parents_stack_alloc()
+dep_parents_vector_t *dep_parents_vector_alloc()
 {
-        dep_parents_stack_t *dp_stack =
+        dep_parents_vector_t *dp_vector =
             bds_vector_alloc(1, sizeof(struct dep_parents *), (void (*)(void *))dep_parents_free);
-        return dp_stack;
+        return dp_vector;
 }
-void dep_parents_stack_free(dep_parents_stack_t **dp_stack)
+void dep_parents_vector_free(dep_parents_vector_t **dp_vector)
 {
-        if (*dp_stack == NULL)
+        if (*dp_vector == NULL)
                 return;
-        bds_vector_free(dp_stack);
+        bds_vector_free(dp_vector);
 }
 
-struct dep_parents *dep_parents_stack_search(dep_parents_stack_t *dp_stack, const char *pkg_name)
+struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dp_vector, const char *pkg_name)
 {
         struct dep_parents *key = dep_parents_alloc(pkg_name);
-        struct dep_parents **dp = (struct dep_parents **)bds_vector_lsearch(dp_stack, &key, compar_dep_info_list);
+        struct dep_parents **dp = (struct dep_parents **)bds_vector_lsearch(dp_vector, &key, compar_dep_info_list);
 
         dep_parents_free(&key);
 
@@ -494,18 +496,18 @@ int write_parentdb(bool recursive, bool optional)
                 goto finish;
         }
 
-        dep_parents_stack_t *dp_stack = dep_parents_stack_alloc();
-	struct bds_list_node *node = NULL;
-	
-        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
-		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
-                struct dep_parents *dp = dep_parents_alloc(pkg->name);
-                bds_vector_append(dp_stack, &dp);
-	}
+        dep_parents_vector_t *dp_vector = dep_parents_vector_alloc();
+        struct bds_list_node *node      = NULL;
 
-        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
-		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);		
-                struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg  = (const struct pkg *)bds_list_object(node);
+                struct dep_parents *dp = dep_parents_alloc(pkg->name.value_const);
+                bds_vector_append(dp_vector, &dp);
+        }
+
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg     = (const struct pkg *)bds_list_object(node);
+                struct dep_list *dep_list = load_dep_list(pkg->name.value_const, recursive, optional);
                 if (dep_list == NULL) {
                         continue;
                 }
@@ -515,21 +517,21 @@ int write_parentdb(bool recursive, bool optional)
                 const struct dep_info *di_iter  = NULL;
 
                 for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
-                        struct dep_parents *dp = dep_parents_stack_search(dp_stack, di_iter->pkg_name);
+                        struct dep_parents *dp = dep_parents_vector_search(dp_vector, di_iter->pkg_name.value_const);
                         assert(dp);
 
-                        struct dep_info parent = dep_info_ctor(dep_list->info.pkg_name);
+                        struct dep_info parent = dep_info_ctor(dep_list->info.pkg_name.value_const);
                         bds_vector_append(dp->parents_list, &parent);
                 }
                 dep_list_free(&dep_list);
         }
 
-        const struct dep_parents **dp_begin = (const struct dep_parents **)bds_vector_ptr(dp_stack);
-        const struct dep_parents **dp_end   = dp_begin + bds_vector_size(dp_stack);
+        const struct dep_parents **dp_begin = (const struct dep_parents **)bds_vector_ptr(dp_vector);
+        const struct dep_parents **dp_end   = dp_begin + bds_vector_size(dp_vector);
         const struct dep_parents **dp_iter  = NULL;
 
         for (dp_iter = dp_begin; dp_iter != dp_end; ++dp_iter) {
-                fprintf(fp, "%s:", (*dp_iter)->info.pkg_name);
+                fprintf(fp, "%s:", (*dp_iter)->info.pkg_name.value_const);
 
                 const struct dep_info *di_begin =
                     (const struct dep_info *)bds_vector_ptr((*dp_iter)->parents_list);
@@ -537,7 +539,7 @@ int write_parentdb(bool recursive, bool optional)
                 const struct dep_info *di_iter = NULL;
 
                 for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
-                        fprintf(fp, " %s", di_iter->pkg_name);
+                        fprintf(fp, " %s", di_iter->pkg_name.value_const);
                 }
                 fprintf(fp, "\n");
         }
@@ -545,8 +547,8 @@ int write_parentdb(bool recursive, bool optional)
 finish:
         if (fp)
                 fclose(fp);
-        if (dp_stack)
-                dep_parents_stack_free(&dp_stack);
+        if (dp_vector)
+                dep_parents_vector_free(&dp_vector);
 
         if (rc == 0) {
                 if (rename(tmpdb, depdb) != 0) {
@@ -629,15 +631,15 @@ int request_add_dep_file(const char *pkg_name, enum dep_review review)
                 return 1;
         }
 
-	switch(review) {
-	case DEP_REVIEW:
+        switch (review) {
+        case DEP_REVIEW:
                 review_pkg(pkg_name);
-		break;
-	case DEP_REVIEW_REQUEST:
+                break;
+        case DEP_REVIEW_REQUEST:
                 request_review_pkg(pkg_name);
-		break;
-	default:
-		break;
+                break;
+        default:
+                break;
         }
 
         printf("Add dependency file %s (y/n)? ", pkg_name);
@@ -684,7 +686,7 @@ int edit_dep_file(const char *pkg_name)
 
         const char *dep_file = find_dep_file(pkg_name);
         if (!dep_file) {
-		printf("dependency file %s not found: ", pkg_name);
+                printf("dependency file %s not found: ", pkg_name);
                 if (request_add_dep_file(pkg_name, DEP_REVIEW_REQUEST) != 0)
                         return 1;
         }
