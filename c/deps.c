@@ -13,7 +13,7 @@
 #include "deps.h"
 #include "filesystem.h"
 #include "pkg_db.h"
-#include "response.h"
+#include "input.h"
 #include "user_config.h"
 
 __attribute__((unused)) static int compar_string_list(const void *a, const void *b)
@@ -631,32 +631,75 @@ int request_add_dep_file(const char *pkg_name, enum dep_review review)
                 return 1;
         }
 
-        switch (review) {
-        case DEP_REVIEW:
-                review_pkg(pkg_name);
-                break;
-        case DEP_REVIEW_REQUEST:
-                request_review_pkg(pkg_name);
-                break;
-        default:
-                break;
-        }
+	char mesg[4096];
+	bds_string_copyf(mesg, 4096, "Menu options for package %s", pkg_name);
 
-        printf("Add dependency file %s (y/n)? ", pkg_name);
-        if (read_response() != 'y') {
-                printf("not adding dependency file %s\n", pkg_name);
+	int menu_items = MENU_REVIEW_PKG | MENU_ADD_PKG | MENU_EDIT_DEP;
 
-                if (unlink(dep_file) == -1)
-                        perror("unlink()");
+	bool added_reviewed=false;
+	while(1) {
+		int item = menu_display(menu_items, mesg);
+		if( item == MENU_ADD_PKG ) {
+			menu_items ^= MENU_ADD_PKG;
+			// Adding a dependency file implies it should be in the PKGLIST db
+			if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0)
+				return 1;
+		}
 
-                return 1;
-        }
+		if( item == MENU_ADD_REVIEWED ) {
+			menu_items ^= MENU_ADD_REVIEWED;
+			if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0)
+				return 1;
+			added_reviewed = true;
+		}
 
-        // Adding a dependency file implies it should be in the PKGLIST db
-        if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0)
-                return 1;
+		if( item == MENU_REVIEW_PKG ) {
+			review_pkg(pkg_name);
+			menu_items |= MENU_ADD_REVIEWED;
+			if( !added_reviewed )
+				added_reviewed = true;
+		}
 
-        return request_add_pkg(pkg_db_reviewed, REVIEWED, pkg_name);
+		if( item == MENU_EDIT_DEP ) {
+			edit_dep_file(pkg_name);
+		}
+
+		if( item == MENU_NONE )
+			break;
+	}
+
+		
+			
+			
+	
+
+        /* switch (review) { */
+        /* case DEP_REVIEW: */
+        /*         review_pkg(pkg_name); */
+        /*         break; */
+        /* case DEP_REVIEW_REQUEST: */
+        /*         request_review_pkg(pkg_name); */
+        /*         break; */
+        /* default: */
+        /*         break; */
+        /* } */
+
+        /* printf("Add dependency file %s (y/n)? ", pkg_name); */
+        /* if (read_response() != 'y') { */
+        /*         printf("not adding dependency file %s\n", pkg_name); */
+
+        /*         if (unlink(dep_file) == -1) */
+        /*                 perror("unlink()"); */
+
+        /*         return 1; */
+        /* } */
+
+        /* // Adding a dependency file implies it should be in the PKGLIST db */
+        /* if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0) */
+        /*         return 1; */
+
+        /* return request_add_pkg(pkg_db_reviewed, REVIEWED, pkg_name); */
+	return 0;
 }
 
 const char *find_dep_file(const char *pkg_name)

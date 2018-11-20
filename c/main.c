@@ -19,6 +19,7 @@
 #include "config.h"
 #include "deps.h"
 #include "filesystem.h"
+#include "input.h"
 #include "pkg_db.h"
 #include "user_config.h"
 
@@ -191,7 +192,7 @@ int main(int argc, char **argv)
                         rc = request_add_dep_file(pkg_name, DEP_REVIEW);
                 } else {
                         rc = review_pkg(pkg_name);
-		}
+                }
                 break;
         case ACTION_ADD:
                 rc = add_pkg(pkg_db_pkglist, PKGLIST, pkg_name);
@@ -200,7 +201,7 @@ int main(int argc, char **argv)
                 if ((rc = write_depdb(recursive, optional)) != 0)
                         break;
                 rc = write_parentdb(recursive, optional);
-		break;
+                break;
         case ACTION_EDIT:
                 rc = edit_dep_file(pkg_name);
                 break;
