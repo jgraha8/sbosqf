@@ -402,9 +402,9 @@ int write_depdb(bool recursive, bool optional)
                 rc = 1;
                 goto finish;
         }
-	struct bds_list_node *node = bds_list_begin(pkg_db_pkglist);
+	struct bds_list_node *node = NULL;
 	
-	while( node != bds_list_end() ) {
+	for( node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
 		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
 		struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
                 if (dep_list == NULL) {
@@ -413,8 +413,6 @@ int write_depdb(bool recursive, bool optional)
                 }
                 write_dep_list(fp, dep_list);
                 dep_list_free(&dep_list);
-
-                node = bds_list_iterate(node);
         }
 
 finish:
@@ -499,21 +497,17 @@ int write_parentdb(bool recursive, bool optional)
         dep_parents_stack_t *dp_stack = dep_parents_stack_alloc();
 	struct bds_list_node *node = NULL;
 	
-        for (node = bds_list_begin(pkg_db_pkglist); node != bds_list_end(); node = bds_list_iterate(node) ) {
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
 		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
                 struct dep_parents *dp = dep_parents_alloc(pkg->name);
                 bds_vector_append(dp_stack, &dp);
+	}
 
-		node = bds_list_iterate(node);
-        }
-
-        for (node = bds_list_begin(pkg_db_pkglist); node != bds_list_end(); node = bds_list_iterate(node) ) {
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node) ) {
 		const struct pkg *pkg = (const struct pkg *)bds_list_object(node);		
                 struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
                 if (dep_list == NULL) {
                         continue;
-                        /* rc = 2; */
-                        /* goto finish; */
                 }
 
                 const struct dep_info *di_begin = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
