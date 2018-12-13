@@ -1,5 +1,6 @@
 OPTIONAL:
 cracklib
+audit # Build time option
 
 BUILDOPTS:
 CRACKLIB=yes
