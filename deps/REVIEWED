@@ -37,6 +37,7 @@ avahi
 babel
 backports-abc
 backports-ssl-match-hostname
+barnyard2
 batinfo
 bfg
 bibletime
@@ -64,6 +65,7 @@ cunit
 cvsps
 cycler
 cyrus-imapd
+daq
 davfs2
 ddclient
 dehydrated
@@ -151,6 +153,7 @@ libdaemon
 libdbi
 libdbi-drivers
 libdmapsharing
+libdnet
 libdvdcss
 libev
 libfdk-aac
@@ -344,6 +347,7 @@ slurm
 smalltalk
 smpeg
 snappy
+snort
 snowballstemmer
 sourcenav
 speex

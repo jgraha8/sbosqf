@@ -62,6 +62,7 @@ cunit
 cvsps
 cycler
 cyrus-imapd
+daq
 davfs2
 ddclient
 dehydrated
@@ -147,6 +148,7 @@ libdaemon
 libdbi
 libdbi-drivers
 libdmapsharing
+libdnet
 libdvdcss
 libev
 libfdk-aac
@@ -336,6 +338,7 @@ slurm
 smalltalk
 smpeg
 snappy
+snort
 snowballstemmer
 sourcenav
 speex
