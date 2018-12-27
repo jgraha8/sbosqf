@@ -30,13 +30,14 @@ struct file_mmap *file_mmap(const char *path)
                 goto finish;
         }
 
-        char *data = (char *)mmap(NULL, sb.st_size + 1, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+	const size_t data_len = sb.st_size + 1;
+        char *data = (char *)mmap(NULL, data_len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
         if (data == NULL) {
                 perror("mmap()");
                 rc = 1;
                 goto finish;
         }
-        data[sb.st_size] = '\0';
+        data[data_len-1] = '\0';
 
 finish:
         if (fd)
@@ -44,11 +45,11 @@ finish:
 
         if (rc != 0) {
                 if (data)
-                        munmap(data, sb.st_size);
+                        munmap(data, data_len);
         } else {
                 assert((fm = malloc(sizeof(*fm))) != NULL);
                 fm->data     = data;
-                fm->data_len = sb.st_size;
+                fm->data_len = data_len;
         }
 
         return fm;
