@@ -28,54 +28,82 @@ int menu_display(int items, const char *mesg)
 
         assert(items >= 0);
 
+	int key=0;
+	
         struct menu_pair pair;
+        if (items & MENU_CREATE_DEP) {
+                pair.key   = ++key;
+                pair.value = MENU_CREATE_DEP;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Create default dep file\n\n", pair.key);		
+        }
+
         if (items & MENU_REVIEW_PKG) {
-                printf("\t(R)eview package\n\n");
-                pair.key   = 'R';
+                pair.key   = ++key;
                 pair.value = MENU_REVIEW_PKG;
                 bds_vector_append(actions, &pair);
+                printf("\t%d) Review package\n\n", pair.key);		
         }
-
-        if (items & MENU_ADD_PKG) {
-                printf("\t(A)dd package to database\n\n");
-                pair.key   = 'A';
-                pair.value = MENU_ADD_PKG;
-                bds_vector_append(actions, &pair);
-        }
-
-        if (items & MENU_ADD_REVIEWED) {
-                printf("\tA(D)d package to REVIEWED\n\n");
-                pair.key   = 'D';
-                pair.value = MENU_ADD_REVIEWED;
-                bds_vector_append(actions, &pair);
-        }
-
         if (items & MENU_EDIT_DEP) {
-                printf("\t(E)dit the dependency file\n\n");
-                pair.key   = 'E';
+                pair.key   = ++key;
                 pair.value = MENU_EDIT_DEP;
                 bds_vector_append(actions, &pair);
+                printf("\t%d) Edit dependency file\n\n", pair.key);		
+        }
+        if (items & MENU_REMOVE_DEP) {
+                pair.key   = ++key;
+                pair.value = MENU_REMOVE_DEP;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Remove dependency file\n\n", pair.key);		
+        }
+	
+        if (items & MENU_ADD_PKG) {
+                pair.key   = ++key;
+                pair.value = MENU_ADD_PKG;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Add package to PKGLIST\n\n", pair.key);
         }
 
-        printf("\t(Q)uit\n\n");
-        pair.key   = 'Q';
+        if (items & MENU_REMOVE_PKG) {
+                pair.key   = ++key;
+                pair.value = MENU_REMOVE_PKG;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Remove package from PKGLIST\n\n", pair.key);		
+        }
+	
+        if (items & MENU_ADD_REVIEWED) {
+                pair.key   = ++key;
+                pair.value = MENU_ADD_REVIEWED;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Add package to REVIEWED\n\n", pair.key);		
+        }
+
+        if (items & MENU_REMOVE_REVIEWED) {
+                pair.key   = ++key;
+                pair.value = MENU_REMOVE_REVIEWED;
+                bds_vector_append(actions, &pair);
+                printf("\t%d) Remove package from REVIEWED\n\n", pair.key);		
+        }
+	
+        pair.key   = ++key;
         pair.value = MENU_NONE;
         bds_vector_append(actions, &pair);
+        printf("\t%d) Quit\n\n", pair.key);	
 
-        printf("What do you want (");
+        printf("What do you want (1-%d)? ", key);
 
-        const struct menu_pair *p = (const struct menu_pair *)bds_vector_ptr(actions);
-        for (size_t i = 0; i < bds_vector_size(actions); ++i) {
-                if (i > 0) {
-                        putchar('/');
-                }
-                putchar(p[i].key);
-        }
-        printf(")? ");
+        /* const struct menu_pair *p = (const struct menu_pair *)bds_vector_ptr(actions); */
+        /* for (size_t i = 0; i < bds_vector_size(actions); ++i) { */
+        /*         if (i > 0) { */
+        /*                 putchar('/'); */
+        /*         } */
+        /*         putchar(p[i].key); */
+        /* } */
+        /* printf(")? "); */
 
-        struct menu_pair res = {.key = toupper(read_response())};
+        struct menu_pair res = {.key = read_response() - '0'};
 
-        p = bds_vector_lsearch(actions, &res, compar_pair);
+        const struct menu_pair *p = bds_vector_lsearch(actions, &res, compar_pair);
         if (p == NULL) {
                 bds_vector_free(&actions);
                 return menu_display(items, mesg);

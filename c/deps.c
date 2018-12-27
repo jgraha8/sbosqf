@@ -12,8 +12,8 @@
 #include "config.h"
 #include "deps.h"
 #include "filesystem.h"
-#include "pkg_db.h"
 #include "input.h"
+#include "pkg_db.h"
 #include "user_config.h"
 
 __attribute__((unused)) static int compar_string_list(const void *a, const void *b)
@@ -23,14 +23,12 @@ __attribute__((unused)) static int compar_string_list(const void *a, const void 
 
 static int compar_dep_info(const void *a, const void *b)
 {
-        return strcmp(((const struct dep_info *)a)->pkg_name,
-                      ((const struct dep_info *)b)->pkg_name);
+        return strcmp(((const struct dep_info *)a)->pkg_name, ((const struct dep_info *)b)->pkg_name);
 }
 
 static int compar_dep_info_list(const void *a, const void *b)
 {
-        return strcmp((*(const struct dep_info **)a)->pkg_name,
-                      (*(const struct dep_info **)b)->pkg_name);
+        return strcmp((*(const struct dep_info **)a)->pkg_name, (*(const struct dep_info **)b)->pkg_name);
 }
 
 static void free_string_list(char **str)
@@ -620,6 +618,89 @@ finish:
         return rp;
 }
 
+int display_dep_menu(const char *pkg_name)
+{
+        int menu_items;
+        const char *mesg = NULL;
+
+        do {
+		menu_items = MENU_NONE;
+		const char *dep_file;
+		
+                if ((dep_file=find_dep_file(pkg_name)) == NULL) {
+                        menu_items |= MENU_CREATE_DEP;
+                } else {
+                        menu_items |= MENU_EDIT_DEP | MENU_REVIEW_PKG | MENU_REMOVE_DEP;
+                }
+
+                if (find_pkg(pkg_db_pkglist, pkg_name)) {
+			assert(dep_file);
+			
+			menu_items |= MENU_REMOVE_PKG;
+                        if (find_pkg(pkg_db_reviewed, pkg_name)) {
+                                menu_items |= MENU_REMOVE_REVIEWED;
+                        } else {
+                                menu_items |= MENU_ADD_REVIEWED;
+                        }
+                } else {
+			if( dep_file ) 
+				menu_items |= MENU_ADD_PKG;
+                }
+
+                int item = menu_display(menu_items, mesg);
+
+                switch (item) {
+                case MENU_CREATE_DEP:
+                        if (create_default_dep_file(pkg_name) == NULL) {
+                                fprintf(stderr, "unable to create default dependency file for package %s\n",
+                                        pkg_name);
+                                return 1;
+                        }
+                        break;
+                case MENU_REVIEW_PKG:
+                        review_pkg(pkg_name);
+                        break;
+                case MENU_EDIT_DEP:
+                        edit_dep_file(pkg_name);
+                        break;
+                case MENU_REMOVE_DEP:
+                        remove_dep_file(pkg_name);
+                        break;
+                case MENU_ADD_PKG:
+                        if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0) {
+                                fprintf(stderr, "unable to add %s to PKGLIST\n", pkg_name);
+                                return 1;
+                        }
+                        break;
+		case MENU_REMOVE_PKG:
+                        if (remove_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0) {
+                                fprintf(stderr, "unable to remove %s from PKGLIST\n", pkg_name);
+                                return 1;
+                        }
+                        break;
+                case MENU_ADD_REVIEWED:
+                        if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
+                                fprintf(stderr, "unable to add %s to REVIEWED\n", pkg_name);
+                                return 1;
+                        }
+                        break;
+		case MENU_REMOVE_REVIEWED:
+                        if (remove_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
+                                fprintf(stderr, "unable to remove %s from REVIEWED\n", pkg_name);
+                                return 1;
+                        }
+                        break;
+		case MENU_NONE:
+			menu_items = MENU_NONE;
+			break;
+		default:
+			fprintf(stderr, "incorrect menu item\n");
+                }
+        } while (menu_items != MENU_NONE);
+
+	return 0;
+}
+
 int request_add_dep_file(const char *pkg_name, enum dep_review review)
 {
         const char *dep_file;
@@ -631,47 +712,42 @@ int request_add_dep_file(const char *pkg_name, enum dep_review review)
                 return 1;
         }
 
-	char mesg[4096];
-	bds_string_copyf(mesg, 4096, "Menu options for package %s", pkg_name);
+        char mesg[4096];
+        bds_string_copyf(mesg, 4096, "Menu options for package %s", pkg_name);
 
-	int menu_items = MENU_REVIEW_PKG | MENU_ADD_PKG | MENU_EDIT_DEP;
+        int menu_items = MENU_REVIEW_PKG | MENU_ADD_PKG | MENU_EDIT_DEP;
 
-	bool added_reviewed=false;
-	while(1) {
-		int item = menu_display(menu_items, mesg);
-		if( item == MENU_ADD_PKG ) {
-			menu_items ^= MENU_ADD_PKG;
-			// Adding a dependency file implies it should be in the PKGLIST db
-			if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0)
-				return 1;
-		}
+        bool added_reviewed = false;
+        while (1) {
+                int item = menu_display(menu_items, mesg);
+                if (item == MENU_ADD_PKG) {
+                        menu_items ^= MENU_ADD_PKG;
+                        // Adding a dependency file implies it should be in the PKGLIST db
+                        if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0)
+                                return 1;
+                }
 
-		if( item == MENU_ADD_REVIEWED ) {
-			menu_items ^= MENU_ADD_REVIEWED;
-			if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0)
-				return 1;
-			added_reviewed = true;
-		}
+                if (item == MENU_ADD_REVIEWED) {
+                        menu_items ^= MENU_ADD_REVIEWED;
+                        if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0)
+                                return 1;
+                        added_reviewed = true;
+                }
 
-		if( item == MENU_REVIEW_PKG ) {
-			review_pkg(pkg_name);
-			menu_items |= MENU_ADD_REVIEWED;
-			if( !added_reviewed )
-				added_reviewed = true;
-		}
+                if (item == MENU_REVIEW_PKG) {
+                        review_pkg(pkg_name);
+                        menu_items |= MENU_ADD_REVIEWED;
+                        if (!added_reviewed)
+                                added_reviewed = true;
+                }
 
-		if( item == MENU_EDIT_DEP ) {
-			edit_dep_file(pkg_name);
-		}
+                if (item == MENU_EDIT_DEP) {
+                        edit_dep_file(pkg_name);
+                }
 
-		if( item == MENU_NONE )
-			break;
-	}
-
-		
-			
-			
-	
+                if (item == MENU_NONE)
+                        break;
+        }
 
         /* switch (review) { */
         /* case DEP_REVIEW: */
@@ -699,7 +775,7 @@ int request_add_dep_file(const char *pkg_name, enum dep_review review)
         /*         return 1; */
 
         /* return request_add_pkg(pkg_db_reviewed, REVIEWED, pkg_name); */
-	return 0;
+        return 0;
 }
 
 const char *find_dep_file(const char *pkg_name)
