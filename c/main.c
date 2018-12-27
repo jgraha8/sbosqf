@@ -28,7 +28,7 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "CDNPRacehlopr";
+static const char *options_str            = "CDNPRachlmopr";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("check-installed", 'C'),
@@ -38,9 +38,9 @@ static const struct option long_options[] = {
     LONG_OPT("review", 'R'),
     LONG_OPT("add", 'a'),
     LONG_OPT("check-foreign-installed", 'c'),
-    LONG_OPT("edit", 'e'),
     LONG_OPT("help", 'h'),
     LONG_OPT("list", 'l'),
+    LONG_OPT("menu", 'm'),    
     LONG_OPT("optional", 'o'),
     LONG_OPT("print", 'p'),
     LONG_OPT("remove", 'r'),
@@ -72,10 +72,12 @@ enum action {
         ACTION_REVIEW,
         ACTION_ADD,
         ACTION_CREATEDB,
-        ACTION_EDIT,
+        ACTION_MENU,
         ACTION_LIST,
         ACTION_PRINT_TREE,
-        ACTION_REMOVE
+        ACTION_REMOVE,
+	ACTION_EDIT,
+	ACTION_MANAGE_DEP
 };
 
 struct action_struct {
@@ -136,6 +138,9 @@ int main(int argc, char **argv)
                 case 'R':
                         set_action(&as, ACTION_REVIEW, find_option(NULL, 'R'));
                         break;
+		case 'm':
+			set_action(&as, ACTION_MENU, find_option(NULL, 'm'));
+			break;
                 case 'a':
                         set_action(&as, ACTION_ADD, find_option(NULL, 'a'));
                         break;
@@ -203,11 +208,15 @@ int main(int argc, char **argv)
                 rc = write_parentdb(recursive, optional);
                 break;
         case ACTION_EDIT:
+		
                 rc = edit_dep_file(pkg_name);
                 break;
         case ACTION_REMOVE:
                 rc = remove_dep_file(pkg_name);
                 break;
+	case ACTION_MENU:
+		rc = display_dep_menu(pkg_name);
+		break;
         }
 
         destroy_user_config();
