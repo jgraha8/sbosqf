@@ -15,7 +15,7 @@
 #define MENU_REMOVE_REVIEWED (1<<7)
 #define MENU_ALL             0xFFFF
 
-int menu_display(int items, const char *mesg);
+int menu_display(int items, const char *title, const char *msg);
 char read_response();
 
 #endif

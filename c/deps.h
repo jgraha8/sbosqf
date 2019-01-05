@@ -79,8 +79,6 @@ struct dep_list *load_dep_list_from_dep(const struct dep *dep);
 
 int write_parentdb(bool recursive, bool optional);
 
-int request_add_dep_file(const char *pkg_name, enum dep_review review);
-
 const char *create_default_dep_file(const char *pkg_name);
 
 const char *find_dep_file(const char *pkg_name);
@@ -90,4 +88,8 @@ enum dep_file_status dep_file_status(const char *pkg_name);
 int edit_dep_file(const char *pkg_name);
 
 int remove_dep_file(const char *pkg_name);
+
+int perform_dep_action(const char *pkg_name, int action);
+
+int display_dep_menu(const char *pkg_name, const char *msg, int disabled_actions);
 #endif // __DEPS_H__

@@ -20,6 +20,7 @@
 #include "deps.h"
 #include "filesystem.h"
 #include "input.h"
+#include "msg_string.h"
 #include "pkg_db.h"
 #include "user_config.h"
 
@@ -40,7 +41,7 @@ static const struct option long_options[] = {
     LONG_OPT("check-foreign-installed", 'c'),
     LONG_OPT("help", 'h'),
     LONG_OPT("list", 'l'),
-    LONG_OPT("menu", 'm'),    
+    LONG_OPT("menu", 'm'),
     LONG_OPT("optional", 'o'),
     LONG_OPT("print", 'p'),
     LONG_OPT("remove", 'r'),
@@ -76,8 +77,8 @@ enum action {
         ACTION_LIST,
         ACTION_PRINT_TREE,
         ACTION_REMOVE,
-	ACTION_EDIT,
-	ACTION_MANAGE_DEP
+        ACTION_EDIT,
+        ACTION_MANAGE_DEP
 };
 
 struct action_struct {
@@ -138,9 +139,9 @@ int main(int argc, char **argv)
                 case 'R':
                         set_action(&as, ACTION_REVIEW, find_option(NULL, 'R'));
                         break;
-		case 'm':
-			set_action(&as, ACTION_MENU, find_option(NULL, 'm'));
-			break;
+                case 'm':
+                        set_action(&as, ACTION_MENU, find_option(NULL, 'm'));
+                        break;
                 case 'a':
                         set_action(&as, ACTION_ADD, find_option(NULL, 'a'));
                         break;
@@ -194,13 +195,13 @@ int main(int argc, char **argv)
         switch (as.action) {
         case ACTION_REVIEW:
                 if (find_dep_file(pkg_name) == NULL) {
-                        rc = request_add_dep_file(pkg_name, DEP_REVIEW);
+                        rc = display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
                 } else {
-                        rc = review_pkg(pkg_name);
+                        rc = perform_dep_action(pkg_name, MENU_REVIEW_PKG);
                 }
                 break;
         case ACTION_ADD:
-                rc = add_pkg(pkg_db_pkglist, PKGLIST, pkg_name);
+                rc = perform_dep_action(pkg_name, MENU_ADD_PKG);
                 break;
         case ACTION_CREATEDB:
                 if ((rc = write_depdb(recursive, optional)) != 0)
@@ -208,15 +209,14 @@ int main(int argc, char **argv)
                 rc = write_parentdb(recursive, optional);
                 break;
         case ACTION_EDIT:
-		
-                rc = edit_dep_file(pkg_name);
+                rc = perform_dep_action(pkg_name, MENU_EDIT_DEP);
                 break;
         case ACTION_REMOVE:
-                rc = remove_dep_file(pkg_name);
+                rc = perform_dep_action(pkg_name, MENU_REMOVE_DEP);
                 break;
-	case ACTION_MENU:
-		rc = display_dep_menu(pkg_name);
-		break;
+        case ACTION_MENU:
+                rc = display_dep_menu(pkg_name, NULL, 0);
+                break;
         }
 
         destroy_user_config();
