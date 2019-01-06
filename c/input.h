@@ -8,7 +8,7 @@
 #define MENU_CREATE_DEP      (1<<0)
 #define MENU_REVIEW_PKG      (1<<1)
 #define MENU_EDIT_DEP        (1<<2)
-#define MENU_REMOVE_DEP      (1<<3)
+#define MENU_DELETE_DEP      (1<<3)
 #define MENU_ADD_PKG         (1<<4)
 #define MENU_REMOVE_PKG      (1<<5)
 #define MENU_ADD_REVIEWED    (1<<6)

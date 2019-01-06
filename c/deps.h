@@ -66,6 +66,12 @@ struct dep_parents *dep_parents_alloc(const char *pkg_name);
 
 void dep_parents_free(struct dep_parents **dp);
 
+dep_info_vector_t *dep_info_vector_alloc();
+
+void dep_info_vector_free(dep_info_vector_t **div);
+
+void dep_info_vector_append(dep_info_vector_t *div, const struct dep_info *dep_info);
+
 struct dep_info *dep_info_vector_search(dep_info_vector_t *div, const char *pkg_name);
 
 dep_parents_vector_t *dep_parents_vector_alloc();
@@ -78,6 +84,8 @@ struct dep *load_dep_file(const char *pkg_name, struct process_options options);
 
 void write_dep_sqf(FILE *fp, const struct dep *dep, struct process_options options);
 void write_sqf(FILE *fp, const struct dep_list *dep_list, struct process_options options);
+void write_remove_sqf(FILE *fp, const struct dep_list *dep_list, struct process_options options);
+void write_remove_list(FILE *fp, const struct dep_list *dep_list, struct process_options options);
 
 int write_depdb(struct process_options options);
 
@@ -99,9 +107,12 @@ enum dep_file_status dep_file_status(const char *pkg_name);
 
 int edit_dep_file(const char *pkg_name);
 
-int remove_dep_file(const char *pkg_name);
+int delete_dep_file(const char *pkg_name);
 
 bool skip_installed(const char *pkg_name, struct process_options options);
+
+bool has_parent_installed(const char *pkg_name, struct process_options options,
+                          dep_info_vector_t *ignored_list, struct dep_info *parent_info);
 
 int perform_dep_action(const char *pkg_name, int action);
 

@@ -62,34 +62,30 @@ int menu_display(int items, const char *title, const char *msg)
                 bds_vector_append(actions, &pair);
                 printf("\t%d) Edit dependency file\n\n", pair.key);
         }
-        if (items & MENU_REMOVE_DEP) {
+        if (items & MENU_DELETE_DEP) {
                 pair.key   = ++key;
-                pair.value = MENU_REMOVE_DEP;
+                pair.value = MENU_DELETE_DEP;
                 bds_vector_append(actions, &pair);
-                printf("\t%d) Remove dependency file\n\n", pair.key);
+                printf("\t%d) Delete dependency file\n\n", pair.key);
         }
-
         if (items & MENU_ADD_PKG) {
                 pair.key   = ++key;
                 pair.value = MENU_ADD_PKG;
                 bds_vector_append(actions, &pair);
                 printf("\t%d) Add package to PKGLIST\n\n", pair.key);
         }
-
         if (items & MENU_REMOVE_PKG) {
                 pair.key   = ++key;
                 pair.value = MENU_REMOVE_PKG;
                 bds_vector_append(actions, &pair);
                 printf("\t%d) Remove package from PKGLIST\n\n", pair.key);
         }
-
         if (items & MENU_ADD_REVIEWED) {
                 pair.key   = ++key;
                 pair.value = MENU_ADD_REVIEWED;
                 bds_vector_append(actions, &pair);
                 printf("\t%d) Add package to REVIEWED\n\n", pair.key);
         }
-
         if (items & MENU_REMOVE_REVIEWED) {
                 pair.key   = ++key;
                 pair.value = MENU_REMOVE_REVIEWED;
