@@ -37,6 +37,13 @@ struct dep_parents {
         dep_info_vector_t *parents_list;
 };
 
+struct process_options {
+	bool recursive;
+	bool optional;
+	bool revdeps;
+	int check_installed;	
+};
+
 enum block_type { NO_BLOCK, REQUIRED_BLOCK, OPTIONAL_BLOCK, BUILDOPTS_BLOCK };
 
 struct dep_info dep_info_ctor(const char *pkg_name);
@@ -59,25 +66,30 @@ struct dep_parents *dep_parents_alloc(const char *pkg_name);
 
 void dep_parents_free(struct dep_parents **dp);
 
+struct dep_info *dep_info_vector_search(dep_info_vector_t *div, const char *pkg_name);
+
 dep_parents_vector_t *dep_parents_vector_alloc();
 
 void dep_parents_vector_free(dep_parents_vector_t **dps);
 
 struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dps, const char *pkg_name);
 
-struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional);
+struct dep *load_dep_file(const char *pkg_name, struct process_options options);
 
-void print_dep_sqf(const struct dep *dep);
+void write_dep_sqf(FILE *fp, const struct dep *dep, struct process_options options);
+void write_sqf(FILE *fp, const struct dep_list *dep_list, struct process_options options);
 
-void write_deplist(FILE *fp, const struct dep *dep);
+int write_depdb(struct process_options options);
 
-int write_depdb(bool recursive, bool optional);
-
-struct dep_list *load_dep_list(const char *pkg_name, bool recursive, bool optional);
+struct dep_list *load_dep_list(const char *pkg_name, struct process_options options);
 
 struct dep_list *load_dep_list_from_dep(const struct dep *dep);
 
-int write_parentdb(bool recursive, bool optional);
+void write_dep_list(FILE *fp, const struct dep_list *dep_list);
+
+struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options);
+
+int write_parentdb(struct process_options options);
 
 const char *create_default_dep_file(const char *pkg_name);
 
@@ -88,6 +100,8 @@ enum dep_file_status dep_file_status(const char *pkg_name);
 int edit_dep_file(const char *pkg_name);
 
 int remove_dep_file(const char *pkg_name);
+
+bool skip_installed(const char *pkg_name, struct process_options options);
 
 int perform_dep_action(const char *pkg_name, int action);
 

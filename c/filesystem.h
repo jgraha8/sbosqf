@@ -1,6 +1,9 @@
 #ifndef __FILESYSTEM_H__
 #define __FILESYSTEM_H__
 
+#define CHECK_INSTALLED     0x1
+#define CHECK_ANY_INSTALLED 0x2
+
 struct slack_pkg {
         char *name;
         char *version;

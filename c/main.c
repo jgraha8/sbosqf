@@ -29,20 +29,21 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "CDNPRachlmopr";
+static const char *options_str            = "CDNPRacehlmpr";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("check-installed", 'C'),
     LONG_OPT("database", 'D'),
     LONG_OPT("no-recursive", 'N'),
-    LONG_OPT("parents", 'P'),
+    LONG_OPT("revdeps", 'P'),
     LONG_OPT("review", 'R'),
     LONG_OPT("add", 'a'),
     LONG_OPT("check-foreign-installed", 'c'),
+    LONG_OPT("edit", 'e'),
     LONG_OPT("help", 'h'),
     LONG_OPT("list", 'l'),
     LONG_OPT("menu", 'm'),
-    LONG_OPT("optional", 'o'),
+/*    LONG_OPT("optional", 'o'), */
     LONG_OPT("print", 'p'),
     LONG_OPT("remove", 'r'),
     {0, 0, 0, 0}};
@@ -78,7 +79,8 @@ enum action {
         ACTION_PRINT_TREE,
         ACTION_REMOVE,
         ACTION_EDIT,
-        ACTION_MANAGE_DEP
+        ACTION_MANAGE_DEP,
+	ACTION_WRITE_SQF
 };
 
 struct action_struct {
@@ -104,12 +106,15 @@ static void print_help();
 
 int main(int argc, char **argv)
 {
-        bool process_parents   = false;
-        bool recursive         = true;
-        bool optional          = false;
+        struct process_options process_options;
         bool pkg_name_required = true;
+
         if (setvbuf(stdout, NULL, _IONBF, 0) != 0)
                 perror("setvbuf()");
+
+	memset(&process_options, 0, sizeof(process_options));
+	process_options.recursive = true;
+	process_options.optional = true;	
 
         init_user_config();
 
@@ -124,17 +129,17 @@ int main(int argc, char **argv)
 
                 switch (c) {
                 case 'C':
-                        user_config.check_installed |= CHECK_INSTALLED;
+                        process_options.check_installed |= CHECK_INSTALLED;
                         break;
                 case 'D':
                         set_action(&as, ACTION_CREATEDB, find_option(NULL, 'D'));
                         pkg_name_required = false;
                         break;
                 case 'N':
-                        recursive = false;
+                        process_options.recursive = false;
                         break;
                 case 'P':
-                        process_parents = true;
+                        process_options.revdeps = true;
                         break;
                 case 'R':
                         set_action(&as, ACTION_REVIEW, find_option(NULL, 'R'));
@@ -146,7 +151,7 @@ int main(int argc, char **argv)
                         set_action(&as, ACTION_ADD, find_option(NULL, 'a'));
                         break;
                 case 'c':
-                        user_config.check_installed |= CHECK_FOREIGN_INSTALLED;
+                        process_options.check_installed |= CHECK_ANY_INSTALLED;
                         break;
                 case 'e':
                         set_action(&as, ACTION_EDIT, find_option(NULL, 'e'));
@@ -157,9 +162,9 @@ int main(int argc, char **argv)
                 case 'l':
                         set_action(&as, ACTION_LIST, find_option(NULL, 'l'));
                         break;
-                case 'o':
-                        optional = true;
-                        break;
+                /* case 'o': */
+                /*         process_options.optional = true; */
+                /*         break; */
                 case 'p':
                         set_action(&as, ACTION_PRINT_TREE, find_option(NULL, 'p'));
                         break;
@@ -184,13 +189,9 @@ int main(int argc, char **argv)
 
         int rc = 0;
 
-        /* set_action(&action, ACTION_REVIEW, find_option(NULL, 'R')); */
-        /* set_action(&action, ACTION_ADD, find_option(NULL, 'a')); */
-        /* set_action(&action, ACTION_CREATEDB, find_option(NULL, 'd')); */
-        /* set_action(&action, ACTION_EDIT, find_option(NULL, 'e')); */
-        /* set_action(&action, ACTION_LIST, find_option(NULL, 'l')); */
-        /* set_action(&action, ACTION_PRINT_TREE, find_option(NULL, 'p')); */
-        /* set_action(&action, ACTION_REMOVE, find_option(NULL, 'r')); */
+	if( as.action == 0 ) {
+		as.action = ACTION_WRITE_SQF;
+	}
 
         switch (as.action) {
         case ACTION_REVIEW:
@@ -199,26 +200,75 @@ int main(int argc, char **argv)
                 } else {
                         rc = perform_dep_action(pkg_name, MENU_REVIEW_PKG);
                 }
-                break;
+                goto finish;
         case ACTION_ADD:
                 rc = perform_dep_action(pkg_name, MENU_ADD_PKG);
-                break;
+                goto finish;
         case ACTION_CREATEDB:
-                if ((rc = write_depdb(recursive, optional)) != 0)
+                if ((rc = write_depdb(process_options)) != 0)
                         break;
-                rc = write_parentdb(recursive, optional);
-                break;
+                rc = write_parentdb(process_options);
+                goto finish;
         case ACTION_EDIT:
                 rc = perform_dep_action(pkg_name, MENU_EDIT_DEP);
-                break;
+                goto finish;
         case ACTION_REMOVE:
                 rc = perform_dep_action(pkg_name, MENU_REMOVE_DEP);
-                break;
+                goto finish;
         case ACTION_MENU:
-                rc = display_dep_menu(pkg_name, NULL, 0);
-                break;
+                if (find_dep_file(pkg_name) == NULL) {
+                        rc = display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
+                } else {
+			rc = display_dep_menu(pkg_name, NULL, 0);
+		}
+                goto finish;
+        case ACTION_LIST:
+	case ACTION_WRITE_SQF: {
+                if (find_dep_file(pkg_name) == NULL) {
+                        rc = display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
+                }
+		struct dep_list *dep_list = NULL;		
+		if( process_options.revdeps ) {
+			dep_list = (struct dep_list *)load_dep_parents(pkg_name, process_options);
+		} else {
+			dep_list = load_dep_list(pkg_name, process_options);
+		}
+		
+                if (dep_list == NULL) {
+                        fprintf(stderr, "unable to load dependency list for %s\n", pkg_name);
+                        rc = 1;
+			goto finish;
+                }
+
+		if( as.action == ACTION_LIST ) {
+			write_dep_list(stdout, dep_list);
+			rc = 0;
+			goto finish;
+                }
+
+		char sqf[256];
+		if( process_options.revdeps ) {
+			bds_string_copyf(sqf, sizeof(sqf), "%s-revdeps.sqf", pkg_name);
+		} else {
+			bds_string_copyf(sqf, sizeof(sqf), "%s.sqf", pkg_name);
+		}
+		FILE *fp = fopen(sqf, "w");
+		if( fp == NULL ) {
+			fprintf(stderr, "unable to write sqf file %s\n", sqf);
+			rc = 1;
+			goto finish;
+		}	
+		write_sqf(fp, dep_list, process_options);
+		fclose(fp);
+		
+		rc = 0;
+                goto finish;		
+	}
+	default:
+		printf("action %d not handled\n", as.action);
         }
 
+finish:
         destroy_user_config();
         fini_pkg_db();
 

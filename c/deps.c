@@ -13,9 +13,9 @@
 #include "deps.h"
 #include "filesystem.h"
 #include "input.h"
+#include "msg_string.h"
 #include "pkg_db.h"
 #include "user_config.h"
-#include "msg_string.h"
 
 __attribute__((unused)) static int compar_string_list(const void *a, const void *b)
 {
@@ -155,7 +155,7 @@ void dep_list_free(struct dep_list **dep_list)
         *dep_list = NULL;
 }
 
-struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
+struct dep *load_dep_file(const char *pkg_name, struct process_options options)
 {
         static int level = 0;
 
@@ -169,7 +169,7 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
 
         if (fp == NULL) {
                 // TODO: if dep file doesn't exist request dependency file add and package addition
-		if( display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0) != 0 ) {
+                if (display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0) != 0) {
                         goto finish;
                 }
                 fp = fopen(dep_file, "r");
@@ -228,19 +228,22 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
                         goto cycle;
                 }
 
-                if (block_type == OPTIONAL_BLOCK && !optional)
+                if (block_type == OPTIONAL_BLOCK && !options.optional)
                         goto cycle;
 
                 /*
                  * Recursive processing will occur on meta packages since they act as "include" files.  We only
                  * check the recursive flag if the dependency file is not marked as a meta package.
                  */
-                if (!dep->info.is_meta && !recursive && level > 1)
+                if (!dep->info.is_meta && !options.recursive && level > 1)
                         goto finish;
 
                 switch (block_type) {
                 case REQUIRED_BLOCK: {
-                        struct dep *req_dep = load_dep_file(line, recursive, optional);
+			if( skip_installed(line, options) )
+				break;
+			
+                        struct dep *req_dep = load_dep_file(line, options);
                         if (req_dep == NULL) {
                                 fprintf(stderr, "%s required dependency file %s not found\n", pkg_name, line);
                                 exit(EXIT_FAILURE);
@@ -251,7 +254,8 @@ struct dep *load_dep_file(const char *pkg_name, bool recursive, bool optional)
                         bds_vector_append(dep->required, &req_dep);
                 } break;
                 case OPTIONAL_BLOCK: {
-                        struct dep *opt_dep = load_dep_file(line, recursive, optional);
+			
+                        struct dep *opt_dep = load_dep_file(line, options);
                         if (opt_dep == NULL) {
                                 fprintf(stderr, "%s optional dependency file %s not found\n", pkg_name, line);
                                 exit(EXIT_FAILURE);
@@ -293,39 +297,65 @@ finish:
         return dep;
 }
 
-void __print_dep_sqf(const struct dep_info *dep_info)
+void __write_dep_sqf(FILE *fp, const struct dep_info *dep_info)
 {
         if (dep_info->is_meta)
                 return;
 
-        printf("%s", dep_info->pkg_name);
+        fprintf(fp, "%s", dep_info->pkg_name);
 
         if (dep_info->buildopts) {
                 const char **bopts     = (const char **)bds_vector_ptr(dep_info->buildopts);
                 const char **bopts_end = bopts + bds_vector_size(dep_info->buildopts);
 
                 while (bopts != bopts_end) {
-                        printf(" %s", *bopts);
+                        fprintf(fp, " %s", *bopts);
                         ++bopts;
                 }
         }
-        printf("\n");
+        fprintf(fp, "\n");
 }
 
-void print_dep_sqf(const struct dep *dep)
+void write_dep_sqf(FILE *fp, const struct dep *dep, struct process_options options)
 {
         struct dep_list *dep_list = load_dep_list_from_dep(dep);
 
         const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
         const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
 
-        for (; di_iter != di_end; ++di_iter) {
-                __print_dep_sqf(di_iter);
-        }
-        __print_dep_sqf(&dep_list->info);
+	if( options.revdeps ) {
+		__write_dep_sqf(fp, &dep_list->info);
+	}
 
+        for (; di_iter != di_end; ++di_iter) {
+                __write_dep_sqf(fp, di_iter);
+        }
+
+	if( !options.revdeps ) {
+		__write_dep_sqf(fp, &dep_list->info);
+	}
         dep_list_free(&dep_list);
 }
+
+void write_sqf(FILE *fp, const struct dep_list *dep_list, struct process_options options)
+{
+        const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
+        const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
+
+	if( options.revdeps ) {
+		__write_dep_sqf(fp, &dep_list->info);
+	}
+        for (; di_iter != di_end; ++di_iter) {
+                __write_dep_sqf(fp, di_iter);
+        }
+	
+	if( !options.revdeps ) {
+		__write_dep_sqf(fp, &dep_list->info);
+	}
+
+
+}
+
 
 void __append_deps(const dep_vector_t *deps, dep_info_vector_t *dep_info_vector)
 {
@@ -349,9 +379,9 @@ void __append_deps(const dep_vector_t *deps, dep_info_vector_t *dep_info_vector)
         }
 }
 
-struct dep_list *load_dep_list(const char *pkg_name, bool recursive, bool optional)
+struct dep_list *load_dep_list(const char *pkg_name, struct process_options options)
 {
-        struct dep *dep = load_dep_file(pkg_name, recursive, optional);
+        struct dep *dep = load_dep_file(pkg_name, options);
         if (!dep)
                 return NULL;
 
@@ -373,7 +403,7 @@ struct dep_list *load_dep_list_from_dep(const struct dep *dep)
 }
 
 void write_dep_list(FILE *fp, const struct dep_list *dep_list)
-{	
+{
         fprintf(fp, "%s:", dep_list->info.pkg_name);
 
         const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
@@ -387,7 +417,7 @@ void write_dep_list(FILE *fp, const struct dep_list *dep_list)
         fprintf(fp, "\n");
 }
 
-int write_depdb(bool recursive, bool optional)
+int write_depdb(struct process_options options)
 {
         int rc = 0;
 
@@ -408,26 +438,26 @@ int write_depdb(bool recursive, bool optional)
                 const struct pkg *pkg     = (const struct pkg *)bds_list_object(node);
                 struct dep_list *dep_list = NULL;
 
-		while(1) {
-			if( find_dep_file(pkg->name) == NULL ) {
-				display_dep_menu(pkg->name, msg_dep_file_not_found(pkg->name), 0);
-				continue;
-			}
-			
-			if( find_pkg(pkg_db_reviewed, pkg->name) == NULL ) {
-				display_dep_menu(pkg->name, msg_pkg_not_reviewed(pkg->name), MENU_REMOVE_DEP);
-				continue;
-			}
+                while (1) {
+                        if (find_dep_file(pkg->name) == NULL) {
+                                display_dep_menu(pkg->name, msg_dep_file_not_found(pkg->name), 0);
+                                continue;
+                        }
 
-			dep_list = load_dep_list(pkg->name, recursive, optional);
-			break;
-		}
+                        if (find_pkg(pkg_db_reviewed, pkg->name) == NULL) {
+                                display_dep_menu(pkg->name, msg_pkg_not_reviewed(pkg->name), MENU_REMOVE_DEP);
+                                continue;
+                        }
+
+                        dep_list = load_dep_list(pkg->name, options);
+                        break;
+                }
 
                 if (dep_list == NULL) {
                         rc = 1;
                         goto finish;
                 }
-		
+
                 write_dep_list(fp, dep_list);
                 dep_list_free(&dep_list);
         }
@@ -472,6 +502,12 @@ void dep_parents_free(struct dep_parents **dp)
         *dp = NULL;
 }
 
+struct dep_info *dep_info_vector_search(dep_info_vector_t *div, const char *pkg_name)
+{
+	struct dep_info key = { .pkg_name = pkg_name };
+	return (struct dep_info *)bds_vector_lsearch(div, &key, compar_dep_info);
+}
+
 dep_parents_vector_t *dep_parents_vector_alloc()
 {
         dep_parents_vector_t *dp_vector =
@@ -495,9 +531,49 @@ struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dp_vector, c
         return *dp;
 }
 
-int write_parentdb(bool recursive, bool optional)
+struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options)
+{
+	struct dep_parents *dp = dep_parents_alloc(pkg_name);
+
+        struct bds_list_node *node      = NULL;
+
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg     = (const struct pkg *)bds_list_object(node);
+
+		if( strcmp(pkg->name, pkg_name) == 0 )
+			continue;
+		
+                struct dep_list *dep_list = load_dep_list(pkg->name, options);
+		assert(dep_list);
+                /* if (dep_list == NULL) { */
+                /*         continue; */
+                /* } */
+		
+		// Search the dependency list to see if package is present.
+		struct dep_info *di = NULL;
+		if( (di = dep_info_vector_search(dep_list->dep_list, pkg_name)) != NULL ) {
+			struct dep_info parent = dep_info_ctor(dep_list->info.pkg_name);
+			bds_vector_append(dp->parents_list, &parent);
+		}			
+                dep_list_free(&dep_list);
+        }
+	
+	return dp;
+}
+
+int write_parentdb(struct process_options options)
 {
         int rc = 0;
+        FILE *fp = NULL;
+	
+        dep_parents_vector_t *dp_vector = dep_parents_vector_alloc();
+        struct bds_list_node *node      = NULL;
+
+        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
+                const struct pkg *pkg  = (const struct pkg *)bds_list_object(node);
+                struct dep_parents *dp = load_dep_parents(pkg->name, options);
+                bds_vector_append(dp_vector, &dp);
+        }
 
         char tmpdb[4096];
         char depdb[4096];
@@ -505,43 +581,12 @@ int write_parentdb(bool recursive, bool optional)
         bds_string_copyf(tmpdb, sizeof(tmpdb), "%s/.%s", user_config.depdir, PARENTDB);
         bds_string_copyf(depdb, sizeof(depdb), "%s/%s", user_config.depdir, PARENTDB);
 
-        FILE *fp = fopen(tmpdb, "w");
-        if (fp == NULL) {
+        if ((fp = fopen(tmpdb, "w")) == NULL) {
                 rc = 1;
                 goto finish;
         }
-
-        dep_parents_vector_t *dp_vector = dep_parents_vector_alloc();
-        struct bds_list_node *node      = NULL;
-
-        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
-                const struct pkg *pkg  = (const struct pkg *)bds_list_object(node);
-                struct dep_parents *dp = dep_parents_alloc(pkg->name);
-                bds_vector_append(dp_vector, &dp);
-        }
-
-        for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
-                const struct pkg *pkg     = (const struct pkg *)bds_list_object(node);
-                struct dep_list *dep_list = load_dep_list(pkg->name, recursive, optional);
-                if (dep_list == NULL) {
-                        continue;
-                }
-
-                const struct dep_info *di_begin = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
-                const struct dep_info *di_end   = di_begin + bds_vector_size(dep_list->dep_list);
-                const struct dep_info *di_iter  = NULL;
-
-                for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
-                        struct dep_parents *dp = dep_parents_vector_search(dp_vector, di_iter->pkg_name);
-                        assert(dp);
-
-                        struct dep_info parent = dep_info_ctor(dep_list->info.pkg_name);
-                        bds_vector_append(dp->parents_list, &parent);
-                }
-                dep_list_free(&dep_list);
-        }
-
-        const struct dep_parents **dp_begin = (const struct dep_parents **)bds_vector_ptr(dp_vector);
+	
+	const struct dep_parents **dp_begin = (const struct dep_parents **)bds_vector_ptr(dp_vector);
         const struct dep_parents **dp_end   = dp_begin + bds_vector_size(dp_vector);
         const struct dep_parents **dp_iter  = NULL;
 
@@ -625,6 +670,9 @@ const char *create_default_dep_file(const char *pkg_name)
                 fprintf(fp, "%s\n", required[i]);
         }
 
+	fprintf(fp, "\nOPTIONAL:\n");
+	fprintf(fp, "\nBUILDOPTS:\n");
+
         rp = dep_file;
 finish:
         if (fp)
@@ -637,77 +685,74 @@ finish:
 
 int perform_dep_action(const char *pkg_name, int action)
 {
-	switch (action) {
-	case MENU_CREATE_DEP:
-		if (create_default_dep_file(pkg_name) == NULL) {
-			fprintf(stderr, "unable to create default dependency file for package %s\n",
-				pkg_name);
-			return 1;
-		}
-		return perform_dep_action(pkg_name, MENU_ADD_PKG);
-	case MENU_ADD_PKG:
-		if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0) {
-			fprintf(stderr, "unable to add %s to PKGLIST\n", pkg_name);
-			return 1;
-		}
-		break;
-	case MENU_REVIEW_PKG:
-		if( review_pkg(pkg_name) != 0 ) {
-			fprintf(stderr, "unable to review package %s\n", pkg_name);
-			return 1;
-		}
-		return perform_dep_action(pkg_name, MENU_ADD_REVIEWED);
-	case MENU_EDIT_DEP:
-		if( edit_dep_file(pkg_name) != 0 ) {
-			fprintf(stderr, "unable to edit %s dependency file\n", pkg_name);
-			return 1;
-		}
-		break;
-	case MENU_REMOVE_DEP:
-		if( remove_dep_file(pkg_name) != 0 ) {
-			fprintf(stderr, "unable to remove %s dependency file\n", pkg_name);
-			return 1;
-		}
-		break;
-	case MENU_ADD_REVIEWED:
-		if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
-			fprintf(stderr, "unable to add %s to REVIEWED\n", pkg_name);
-			return 1;
-		}
-		break;
-	case MENU_REMOVE_REVIEWED:
-		if (remove_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
-			fprintf(stderr, "unable to remove %s from REVIEWED\n", pkg_name);
-			return 1;
-		}
-		break;
-	case MENU_NONE:
-		break;
-	default:
-		fprintf(stderr, "incorrect menu item\n");
-		return 1;
-	}
+        switch (action) {
+        case MENU_CREATE_DEP:
+                if (create_default_dep_file(pkg_name) == NULL) {
+                        fprintf(stderr, "unable to create default dependency file for package %s\n", pkg_name);
+                        return 1;
+                }
+                return perform_dep_action(pkg_name, MENU_ADD_PKG);
+        case MENU_ADD_PKG:
+                if (add_pkg(pkg_db_pkglist, PKGLIST, pkg_name) != 0) {
+                        fprintf(stderr, "unable to add %s to PKGLIST\n", pkg_name);
+                        return 1;
+                }
+                break;
+        case MENU_REVIEW_PKG:
+                if (review_pkg(pkg_name) != 0) {
+                        fprintf(stderr, "unable to review package %s\n", pkg_name);
+                        return 1;
+                }
+                return perform_dep_action(pkg_name, MENU_ADD_REVIEWED);
+        case MENU_EDIT_DEP:
+                if (edit_dep_file(pkg_name) != 0) {
+                        fprintf(stderr, "unable to edit %s dependency file\n", pkg_name);
+                        return 1;
+                }
+                break;
+        case MENU_REMOVE_DEP:
+                if (remove_dep_file(pkg_name) != 0) {
+                        fprintf(stderr, "unable to remove %s dependency file\n", pkg_name);
+                        return 1;
+                }
+                break;
+        case MENU_ADD_REVIEWED:
+                if (add_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
+                        fprintf(stderr, "unable to add %s to REVIEWED\n", pkg_name);
+                        return 1;
+                }
+                break;
+        case MENU_REMOVE_REVIEWED:
+                if (remove_pkg(pkg_db_reviewed, REVIEWED, pkg_name) != 0) {
+                        fprintf(stderr, "unable to remove %s from REVIEWED\n", pkg_name);
+                        return 1;
+                }
+                break;
+        case MENU_NONE:
+                break;
+        default:
+                fprintf(stderr, "incorrect menu item\n");
+                return 1;
+        }
 
-	return 0;
-
+        return 0;
 }
 
 int display_dep_menu(const char *pkg_name, const char *msg, int disabled_options)
 {
         int menu_options;
 
-	char title[4096];
+        char title[4096];
 
-	bds_string_copyf(title, sizeof(title),
-			 "+----------------------------------------+\n"
-			 "+ Management Menu for Package %s\n"
-			 "+----------------------------------------+",
-			 pkg_name);
+        bds_string_copyf(title, sizeof(title), "+----------------------------------------+\n"
+                                               "+ Management Menu for Package %s\n"
+                                               "+----------------------------------------+",
+                         pkg_name);
 
         do {
-		menu_options = MENU_NONE;
-		const char *dep_file = NULL;
-		
+                menu_options         = MENU_NONE;
+                const char *dep_file = NULL;
+
                 if ((dep_file = find_dep_file(pkg_name)) == NULL) {
                         menu_options |= MENU_CREATE_DEP;
                 } else {
@@ -715,22 +760,20 @@ int display_dep_menu(const char *pkg_name, const char *msg, int disabled_options
                 }
 
                 if (find_pkg(pkg_db_pkglist, pkg_name)) {
-			assert(dep_file);
-			
                         if (find_pkg(pkg_db_reviewed, pkg_name)) {
                                 menu_options |= MENU_REMOVE_REVIEWED;
                         }
                 }
-		menu_options ^= (menu_options & disabled_options);
-		
-                int action = menu_options = menu_display(menu_options, title, msg);
-		perform_dep_action(pkg_name, action);
+                menu_options ^= (menu_options & disabled_options);
 
-		msg = NULL; // Only use external message on first pass
-		
+                int action = menu_options = menu_display(menu_options, title, msg);
+                perform_dep_action(pkg_name, action);
+
+                msg = NULL; // Only use external message on first pass
+
         } while (menu_options != MENU_NONE);
 
-	return 0;
+        return 0;
 }
 
 const char *find_dep_file(const char *pkg_name)
@@ -760,7 +803,7 @@ int edit_dep_file(const char *pkg_name)
 
         const char *dep_file = find_dep_file(pkg_name);
         if (!dep_file) {
-		return display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
+                return display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
         }
 
         bds_string_copyf(cmd, sizeof(cmd), "%s %s/%s", user_config.editor, user_config.depdir, pkg_name);
@@ -780,4 +823,15 @@ int remove_dep_file(const char *pkg_name)
         remove_pkg(pkg_db_reviewed, REVIEWED, pkg_name);
 
         return 0;
+}
+
+bool skip_installed(const char *pkg_name, struct process_options options)
+{
+	if( options.check_installed ) {
+		const char *check_tag = (options.check_installed & CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag );
+		if( is_pkg_installed(pkg_name, check_tag ) ) {
+			return true;
+		}
+	}
+	return false;
 }
