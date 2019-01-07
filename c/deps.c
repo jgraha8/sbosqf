@@ -323,7 +323,7 @@ void __write_dep_sqf(FILE *fp, const struct dep_info *dep_info)
 
 void write_dep_sqf(FILE *fp, const struct dep *dep, struct process_options options)
 {
-        struct dep_list *dep_list = load_dep_list_from_dep(dep);
+        struct dep_list *dep_list = create_dep_list(dep);
 
         const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
         const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
@@ -367,8 +367,7 @@ dep_info_vector_t *get_remove_list(const struct dep_list *dep_list, struct proce
 
         // First see if we can remove the
         if (has_parent_installed(dep_list->info.pkg_name, options, NULL, &parent_info)) {
-                fprintf(stderr, "[-] %s required by at least %s\n", dep_list->info.pkg_name,
-                        parent_info.pkg_name);
+                fprintf(stderr, "[-] %s required by at least %s\n", dep_list->info.pkg_name, parent_info.pkg_name);
                 dep_info_dtor(&parent_info);
                 return remove_list;
         }
@@ -384,10 +383,10 @@ dep_info_vector_t *get_remove_list(const struct dep_list *dep_list, struct proce
         const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
         const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
         for (; di_iter != di_end; ++di_iter) {
-		dep_info_vector_append(ignored_list, di_iter);
-	}
+                dep_info_vector_append(ignored_list, di_iter);
+        }
 
-        di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);	
+        di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
         for (; di_iter != di_end; ++di_iter) {
                 if (has_parent_installed(di_iter->pkg_name, options, ignored_list, &parent_info)) {
                         fprintf(stderr, "[-] %s required by at least %s\n", di_iter->pkg_name,
@@ -469,14 +468,14 @@ struct dep_list *load_dep_list(const char *pkg_name, struct process_options opti
         if (!dep)
                 return NULL;
 
-        struct dep_list *dep_list = load_dep_list_from_dep(dep);
+        struct dep_list *dep_list = create_dep_list(dep);
 
         dep_free(&dep);
 
         return dep_list;
 }
 
-struct dep_list *load_dep_list_from_dep(const struct dep *dep)
+struct dep_list *create_dep_list(const struct dep *dep)
 {
         struct dep_list *dep_list = dep_list_alloc_with_info((struct dep_info *)dep);
 
@@ -573,12 +572,22 @@ struct dep_parents *dep_parents_alloc(const char *pkg_name)
         return dp;
 }
 
+struct dep_parents *dep_parents_alloc2(const struct dep_info *info)
+{
+        struct dep_parents *dp = calloc(1, sizeof(*dp));
+
+        dp->info         = dep_info_deep_copy(info);
+        dp->parents_list = bds_vector_alloc(1, sizeof(struct dep_info), (void (*)(void *))dep_info_dtor);
+
+        return dp;
+}
+
 void dep_parents_free(struct dep_parents **dp)
 {
         if (*dp == NULL)
                 return;
 
-        dep_info_dtor((struct dep_info *)(*dp));
+        dep_info_dtor(&(*dp)->info);
         if ((*dp)->parents_list) {
                 bds_vector_free(&(*dp)->parents_list);
         }
@@ -612,6 +621,13 @@ struct dep_info *dep_info_vector_search(dep_info_vector_t *div, const char *pkg_
         return (struct dep_info *)bds_vector_lsearch(div, &key, compar_dep_info);
 }
 
+struct dep_info *dep_info_vector_begin(dep_info_vector_t *div) { return (struct dep_info *)bds_vector_ptr(div); }
+
+struct dep_info *dep_info_vector_end(dep_info_vector_t *div)
+{
+        return dep_info_vector_begin(div) + bds_vector_size(div);
+}
+
 dep_parents_vector_t *dep_parents_vector_alloc()
 {
         dep_parents_vector_t *dp_vector =
@@ -635,32 +651,62 @@ struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dp_vector, c
         return *dp;
 }
 
-struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options)
+struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options, bool include_pkg)
 {
-        struct dep_parents *dp = dep_parents_alloc(pkg_name);
+        // First load the dep file to see if it is a meta-package
+        struct process_options po = options;
+        po.recursive              = false;
+
+        struct dep *dep           = load_dep_file(pkg_name, po);
+        struct dep_list *dep_list = NULL;
+
+        struct dep_parents *dp = dep_parents_alloc2(&dep->info);
+
+        struct dep_info *di_iter, *di_begin;
+        struct dep_info *di_end;
+
+        if (dep->info.is_meta) {
+                dep_list = create_dep_list(dep);
+
+                di_begin = dep_info_vector_begin(dep_list->dep_list);
+                di_end   = dep_info_vector_end(dep_list->dep_list);
+        } else {
+                di_begin = &dep->info;
+                di_end   = di_begin + 1;
+        }
+
+	if( include_pkg ) {
+		for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
+			dep_info_vector_append(dp->parents_list, di_iter);
+		}
+	}
 
         struct bds_list_node *node = NULL;
 
         for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
                 const struct pkg *pkg = (const struct pkg *)bds_list_object(node);
 
-                if (strcmp(pkg->name, pkg_name) == 0)
-                        continue;
+                struct dep_list *pkg_dep_list = load_dep_list(pkg->name, options);
+                assert(pkg_dep_list);
 
-                struct dep_list *dep_list = load_dep_list(pkg->name, options);
-                assert(dep_list);
-                /* if (dep_list == NULL) { */
-                /*         continue; */
-                /* } */
+                for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
+                        if (strcmp(pkg->name, di_iter->pkg_name) == 0)
+                                continue;
 
-                // Search the dependency list to see if package is present.
-                struct dep_info *di = NULL;
-                if ((di = dep_info_vector_search(dep_list->dep_list, pkg_name)) != NULL) {
-                        struct dep_info parent = dep_info_ctor(dep_list->info.pkg_name);
-                        bds_vector_append(dp->parents_list, &parent);
+                        // Search the dependency list to see if package is present.
+                        if (dep_info_vector_search(pkg_dep_list->dep_list, di_iter->pkg_name) != NULL) {
+				if( dep_info_vector_search(dp->parents_list, pkg_dep_list->info.pkg_name) == NULL ) {
+					struct dep_info parent = dep_info_deep_copy(&pkg_dep_list->info);
+					dep_info_vector_append(dp->parents_list, &parent);
+				}
+                        }
                 }
-                dep_list_free(&dep_list);
+                dep_list_free(&pkg_dep_list);
         }
+        if (dep_list)
+                dep_list_free(&dep_list);
+
+        dep_free(&dep);
 
         return dp;
 }
@@ -675,7 +721,7 @@ int write_parentdb(struct process_options options)
 
         for (node = bds_list_begin(pkg_db_pkglist); node != NULL; node = bds_list_iterate(node)) {
                 const struct pkg *pkg  = (const struct pkg *)bds_list_object(node);
-                struct dep_parents *dp = load_dep_parents(pkg->name, options);
+                struct dep_parents *dp = load_dep_parents(pkg->name, options, false);
                 bds_vector_append(dp_vector, &dp);
         }
 
@@ -947,7 +993,7 @@ bool has_parent_installed(const char *pkg_name, struct process_options options, 
         if (parent_info)
                 dep_info_dtor(parent_info);
 
-        struct dep_list *revdeps = (struct dep_list *)load_dep_parents(pkg_name, options);
+        struct dep_list *revdeps = (struct dep_list *)load_dep_parents(pkg_name, options, false);
         if (revdeps == NULL)
                 return false;
 

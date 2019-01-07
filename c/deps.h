@@ -74,6 +74,10 @@ void dep_info_vector_append(dep_info_vector_t *div, const struct dep_info *dep_i
 
 struct dep_info *dep_info_vector_search(dep_info_vector_t *div, const char *pkg_name);
 
+struct dep_info *dep_info_vector_begin(dep_info_vector_t *div);
+
+struct dep_info *dep_info_vector_end(dep_info_vector_t *div);
+
 dep_parents_vector_t *dep_parents_vector_alloc();
 
 void dep_parents_vector_free(dep_parents_vector_t **dps);
@@ -91,11 +95,11 @@ int write_depdb(struct process_options options);
 
 struct dep_list *load_dep_list(const char *pkg_name, struct process_options options);
 
-struct dep_list *load_dep_list_from_dep(const struct dep *dep);
+struct dep_list *create_dep_list(const struct dep *dep);
 
 void write_dep_list(FILE *fp, const struct dep_list *dep_list);
 
-struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options);
+struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options, bool include_pkg);
 
 int write_parentdb(struct process_options options);
 
