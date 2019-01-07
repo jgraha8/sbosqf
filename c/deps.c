@@ -363,33 +363,37 @@ dep_info_vector_t *get_remove_list(const struct dep_list *dep_list, struct proce
 {
         dep_info_vector_t *remove_list = dep_info_vector_alloc();
 
-        const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
-        const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
-
         struct dep_info parent_info = dep_info_ctor(NULL);
 
         // First see if we can remove the
         if (has_parent_installed(dep_list->info.pkg_name, options, NULL, &parent_info)) {
-                fprintf(stdout, "[WARN] %s required by at least %s\n", dep_list->info.pkg_name,
+                fprintf(stderr, "[-] %s required by at least %s\n", dep_list->info.pkg_name,
                         parent_info.pkg_name);
                 dep_info_dtor(&parent_info);
                 return remove_list;
         }
         dep_info_dtor(&parent_info);
 
-        fprintf(stdout, "[+] %s\n", dep_list->info.pkg_name);
+        fprintf(stderr, "[+] %s\n", dep_list->info.pkg_name);
         dep_info_vector_append(remove_list, &dep_list->info);
 
-        // Create ignored list which contains only the package we are tring to remove
+        // Create ignored list which contains the package we are tring to remove and any of its dependencies
         dep_info_vector_t *ignored_list = dep_info_vector_alloc();
         dep_info_vector_append(ignored_list, &dep_list->info);
 
+        const struct dep_info *di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);
+        const struct dep_info *di_end  = di_iter + bds_vector_size(dep_list->dep_list);
+        for (; di_iter != di_end; ++di_iter) {
+		dep_info_vector_append(ignored_list, di_iter);
+	}
+
+        di_iter = (const struct dep_info *)bds_vector_ptr(dep_list->dep_list);	
         for (; di_iter != di_end; ++di_iter) {
                 if (has_parent_installed(di_iter->pkg_name, options, ignored_list, &parent_info)) {
-                        fprintf(stdout, "[-] %s required by at least %s\n", di_iter->pkg_name,
+                        fprintf(stderr, "[-] %s required by at least %s\n", di_iter->pkg_name,
                                 parent_info.pkg_name);
                 } else {
-                        fprintf(stdout, "[+] %s\n", di_iter->pkg_name);
+                        fprintf(stderr, "[+] %s\n", di_iter->pkg_name);
                         dep_info_vector_append(remove_list, di_iter);
                 }
                 dep_info_dtor(&parent_info);
