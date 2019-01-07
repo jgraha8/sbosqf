@@ -93,6 +93,7 @@ flite
 fltk
 fswatch
 ftgl
+functools-lru-cache
 futures
 gcalctool
 gcompris
@@ -139,6 +140,7 @@ irrlicht
 jbig2dec
 jdk
 json-glib
+kiwisolver
 krb5
 lablgtk
 lame
@@ -310,6 +312,7 @@ python-requests
 python-urllib3
 python2-sip
 python3
+python3-django
 python3-sip
 pytz
 pyudev
@@ -333,8 +336,10 @@ rsnapshot
 rtmpdump
 runc
 rxvt-unicode
+sbopkg-updates
 schroedinger
 scratch
+setuptools-scm
 shadow
 shiboken
 shorewall
@@ -360,6 +365,7 @@ sqliteodbc
 squeak-vm
 sshfs-fuse
 steam
+subprocess32
 sudo
 suitesparse
 supertux

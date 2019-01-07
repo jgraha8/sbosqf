@@ -3,16 +3,10 @@ libxkbcommon
 libinput
 
 OPTIONAL:
--unixodbc
--freetds
-OpenAL
--libwbp
+libwebp 
 opus
-snappy
--wayland
--openvg
-libinput
 pcre2
+snappy
 
 BUILDOPTS:
 -DOCS=yes

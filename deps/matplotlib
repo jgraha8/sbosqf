@@ -1,15 +1,21 @@
 REQUIRED:
 numpy
 python-dateutil
-pytz
-tornado
 pyparsing
+pytz
 cycler
+six
+functools-lru-cache
+subprocess32
+kiwisolver
+tornado
 
 OPTIONAL:
--nose
+-pytest
 -mock
+-ffmpeg
+-Inkscape
 
 BUILDOPTS:
--DISABLE_TESTS=no
--DISABLE_TK_TESTS=no
+ENABLE_TESTS=no
+

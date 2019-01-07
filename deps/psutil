@@ -1,7 +1,9 @@
 # See SBo README for additional information
 
 OPTIONAL:
--python3
+python3
+-mock
+-ipaddress
 
 BUILDOPTS:
--PYTHON3=yes
+PYTHON3=yes

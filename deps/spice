@@ -1,5 +1,5 @@
 REQUIRED:
-celt051
+opus
 pyparsing
 six
 spice-protocol
@@ -9,4 +9,3 @@ OPTIONAL:
 gst-libav
 gst-plugins-bad # (with x264 support)
 -libcacard # (smartcard support)
-opus

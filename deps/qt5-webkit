@@ -1,2 +1,6 @@
 REQUIRED:
 qt5
+
+OPTIONAL:
+libwebp
+
