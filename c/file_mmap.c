@@ -31,13 +31,19 @@ struct file_mmap *file_mmap(const char *path)
         }
 
 	const size_t data_len = sb.st_size + 1;
-        char *data = (char *)mmap(NULL, data_len, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
-        if (data == NULL) {
-                perror("mmap()");
-                rc = 1;
-                goto finish;
-        }
-        data[data_len-1] = '\0';
+	char *data = NULL;
+
+	if( data_len == 1 ) {
+		data = malloc(1);
+	} else {
+		data = (char *)mmap(NULL, 4096 * ((data_len + 4095)/4096), PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+		if (data == MAP_FAILED) {
+			perror("mmap()");
+			rc = 1;
+			goto finish;
+		}
+	}
+	data[data_len-1] = '\0';
 
 finish:
         if (fd)
@@ -45,7 +51,7 @@ finish:
 
         if (rc != 0) {
                 if (data)
-                        munmap(data, data_len);
+                        munmap(data, 4096*((data_len+4095)/4096));
         } else {
                 assert((fm = malloc(sizeof(*fm))) != NULL);
                 fm->data     = data;
@@ -61,10 +67,14 @@ int file_munmap(struct file_mmap **fm)
         if (*fm == NULL)
                 return 0;
 
-        if (munmap((*fm)->data, (*fm)->data_len) == -1) {
-                perror("munmap()");
-                rc = 1;
-                goto finish;
+	if( (*fm)->data_len == 1 ) {
+		free((*fm)->data);
+	} else {
+		if (munmap((*fm)->data, (*fm)->data_len) == -1) {
+			perror("munmap()");
+			rc = 1;
+			goto finish;
+		}
         }
 
 finish:
