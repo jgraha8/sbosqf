@@ -255,7 +255,7 @@ int main(int argc, char **argv)
 		struct dep_list *dep_list = NULL;		
 		if( process_options.revdeps ) {
 			assert( as.action != ACTION_REMOVE_PKG );
-			dep_list = (struct dep_list *)load_dep_parents(pkg_name, process_options, true);
+			dep_list = (struct dep_list *)load_dep_parents(pkg_name, process_options, false);
 		} else {
 			dep_list = load_dep_list(pkg_name, process_options);
 		}
