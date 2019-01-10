@@ -228,3 +228,80 @@ bool is_pkg_installed(const char *pkg_name, const char *tag)
 
         return rc;
 }
+
+static int __search_sbo_repo(const char *pathname, const char *pkg_name, struct bds_vector *pkg_list)
+{
+        int rc           = 0;
+        static int level = 0;
+
+        DIR *dp               = NULL;
+        struct dirent *dirent = NULL;
+
+        ++level;
+        assert(level >= 1);
+
+        if (level > 2) {
+                goto finish;
+        }
+
+        dp = opendir(pathname);
+        if (dp == NULL) {
+                rc = 1;
+                goto finish;
+        }
+
+        while ((dirent = readdir(dp)) != NULL) {
+                if (dirent->d_type != DT_DIR)
+                        continue;
+
+                if (strcmp(dirent->d_name, ".") == 0 || strcmp(dirent->d_name, "..") == 0)
+                        continue;
+
+                if (level == 1) {
+                        char *next_dir = bds_string_dup_concat(3, pathname, "/", dirent->d_name);
+                        rc             = __search_sbo_repo(next_dir, pkg_name, pkg_list);
+                        free(next_dir);
+                        if (rc != 0) {
+                                goto finish;
+                        }
+                } else {
+                        char d_name[256];
+                        strncpy(d_name, dirent->d_name, 255);
+
+                        if (bds_string_contains(bds_string_tolower(d_name), pkg_name)) {
+                                char *d = bds_string_rfind(pathname, "/");
+                                assert(d);
+
+                                char *p = bds_string_dup_concat(3, d + 1, "/", dirent->d_name);
+                                bds_vector_append(pkg_list, &p);
+                        }
+                }
+        }
+
+finish:
+        if (dp)
+                closedir(dp);
+        --level;
+
+        return rc;
+}
+
+void free_string(void *str) { free(*(char **)str); }
+
+int search_sbo_repo(const char *sbo_repo, const char *pkg_name, struct bds_vector **pkg_list)
+{
+        *pkg_list = NULL;
+
+        char *__pkg_name              = bds_string_tolower(bds_string_dup(pkg_name));
+        struct bds_vector *__pkg_list = bds_vector_alloc(1, sizeof(char *), free_string);
+
+        int rc = 0;
+        if ((rc = __search_sbo_repo(sbo_repo, __pkg_name, __pkg_list)) != 0) {
+                bds_vector_free(&__pkg_list);
+        } else {
+                *pkg_list = __pkg_list;
+        }
+        free(__pkg_name);
+
+        return rc;
+}

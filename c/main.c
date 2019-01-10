@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #include <libbds/bds_string.h>
+#include <libbds/bds_vector.h>
 
 #include "config.h"
 #include "deps.h"
@@ -29,7 +30,7 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "CDNPRacdehlmpru";
+static const char *options_str            = "CDNPRSacdehlmpru";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("check-installed", 'C'),
@@ -37,6 +38,7 @@ static const struct option long_options[] = {
     LONG_OPT("no-recursive", 'N'),
     LONG_OPT("revdeps", 'P'),
     LONG_OPT("review", 'R'),
+    LONG_OPT("search-pkg", 'S'),
     LONG_OPT("add", 'a'),
     LONG_OPT("check-foreign-installed", 'c'),
     LONG_OPT("delete", 'd'),    
@@ -46,7 +48,8 @@ static const struct option long_options[] = {
     LONG_OPT("menu", 'm'),
 /*    LONG_OPT("optional", 'o'), */
     LONG_OPT("print", 'p'),
-    LONG_OPT("remove", 'r'),    
+    LONG_OPT("remove", 'r'),
+    LONG_OPT("search", 's'),
     LONG_OPT("uninstall", 'u'),
     {0, 0, 0, 0}};
 
@@ -83,6 +86,8 @@ enum action {
         ACTION_MANAGE_DEP,
 	ACTION_WRITE_SQF,
 	ACTION_REMOVE_PKG,
+	ACTION_SEARCH_PKG,
+	ACTION_SEARCH_DEP
 };
 
 struct action_struct {
@@ -156,6 +161,9 @@ int main(int argc, char **argv)
                 case 'R':
                         set_action(&as, ACTION_REVIEW, find_option(NULL, 'R'));
                         break;
+                case 'S':
+                        set_action(&as, ACTION_SEARCH_PKG, find_option(NULL, 'S'));
+                        break;
                 case 'm':
                         set_action(&as, ACTION_MENU, find_option(NULL, 'm'));
                         break;
@@ -190,6 +198,9 @@ int main(int argc, char **argv)
 				process_options.revdeps = false;
 			}
                         set_action(&as, ACTION_REMOVE_PKG, find_option(NULL, 'r'));
+                        break;
+                case 's':
+                        set_action(&as, ACTION_SEARCH_DEP, find_option(NULL, 's'));
                         break;
                 default:
                         abort();
@@ -299,6 +310,19 @@ int main(int argc, char **argv)
 		fclose(fp);
 		
 		rc = 0;
+	}
+		break;
+	case ACTION_SEARCH_PKG: {
+		struct bds_vector *pkg_list;
+		
+		rc = search_sbo_repo(user_config.sbopkg_repo, pkg_name, &pkg_list);
+		if( rc == 0 && pkg_list ) {
+			for( size_t i=0; i < bds_vector_size(pkg_list); ++i ) {
+				printf("%s\n", *(char **)bds_vector_get(pkg_list, i));
+			}
+		}
+		if( pkg_list )
+			bds_vector_free(&pkg_list);
 	}
 		break;
 	default:
