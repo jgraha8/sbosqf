@@ -653,11 +653,7 @@ struct dep_parents *dep_parents_vector_search(dep_parents_vector_t *dp_vector, c
 
 struct dep_parents *load_dep_parents(const char *pkg_name, struct process_options options, bool include_pkg)
 {
-        // First load the dep file to see if it is a meta-package
-        struct process_options po = options;
-        po.recursive              = false;
-
-        struct dep *dep           = load_dep_file(pkg_name, po);
+        struct dep *dep           = load_dep_file(pkg_name, options);
         struct dep_list *dep_list = NULL;
 
         struct dep_parents *dp = dep_parents_alloc2(&dep->info);
@@ -676,7 +672,7 @@ struct dep_parents *load_dep_parents(const char *pkg_name, struct process_option
         }
 
 	if( include_pkg ) {
-		for (di_iter = di_begin; di_iter != di_end; ++di_iter) {
+		for (di_iter = di_end - 1; di_iter >= di_begin; --di_iter) {
 			dep_info_vector_append(dp->parents_list, di_iter);
 		}
 	}
@@ -848,12 +844,44 @@ int perform_dep_action(const char *pkg_name, int action)
                         return 1;
                 }
                 break;
-        case MENU_REVIEW_PKG:
-                if (review_pkg(pkg_name) != 0) {
-                        fprintf(stderr, "unable to review package %s\n", pkg_name);
-                        return 1;
-                }
+        case MENU_REVIEW_PKG: {
+		struct process_options po;
+		memset(&po, 0, sizeof(po));
+		po.optional = true;
+
+		struct dep *dep = load_dep_file(pkg_name, po);
+		assert(dep);
+		
+		if( dep->info.is_meta ) {
+			struct dep_list *dep_list = create_dep_list(dep);
+			dep_free(&dep);
+			
+			for( struct dep_info *di_iter = dep_info_vector_begin(dep_list->dep_list);
+			     di_iter != dep_info_vector_end(dep_list->dep_list);
+			     ++di_iter ) {
+				if (review_pkg(di_iter->pkg_name) != 0) {
+					fprintf(stderr, "unable to review package %s\n", di_iter->pkg_name);
+					dep_list_free(&dep_list);
+					return 1;					
+				}
+				int rc;
+				if( (rc = perform_dep_action(di_iter->pkg_name, MENU_ADD_REVIEWED)) != 0 ) {
+					dep_list_free(&dep_list);
+					return 1;
+				}
+			}
+			dep_list_free(&dep_list);
+			break;
+		}
+		
+		if (review_pkg(pkg_name) != 0) {
+			fprintf(stderr, "unable to review package %s\n", pkg_name);
+			dep_free(&dep);
+			return 1;
+		}
+
                 return perform_dep_action(pkg_name, MENU_ADD_REVIEWED);
+	}
         case MENU_EDIT_DEP:
                 if (edit_dep_file(pkg_name) != 0) {
                         fprintf(stderr, "unable to edit %s dependency file\n", pkg_name);
