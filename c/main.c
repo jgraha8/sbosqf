@@ -226,11 +226,7 @@ int main(int argc, char **argv)
 
         switch (as.action) {
         case ACTION_REVIEW:
-                if (find_dep_file(pkg_name) == NULL) {
-                        rc = display_dep_menu(pkg_name, msg_dep_file_not_found(pkg_name), 0);
-                } else {
-                        rc = perform_dep_action(pkg_name, MENU_REVIEW_PKG);
-                }
+		rc = perform_dep_action(pkg_name, MENU_REVIEW_PKG);
                 break;
         case ACTION_ADD:
                 rc = perform_dep_action(pkg_name, MENU_ADD_PKG);

@@ -281,8 +281,11 @@ int review_pkg(const char *pkg_name)
                 BORDER1 "\n",
                 pkg_name);
 
-        if (dep)
+        if (dep) {
                 fprintf(fp, "%s\n\n", dep->data);
+	} else {
+		fprintf(fp, "%s dependency file not found\n\n", pkg_name);
+	}
 
 finish:
         if (fp)
