@@ -1,7 +1,8 @@
 REQUIRED:
 
 OPTIONAL:
+mod_wsgi-metrics
 
 BUILDOPTS:
 PYTHON3=yes
-
+ENABLE_EXPRESS=yes

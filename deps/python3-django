@@ -1,0 +1,8 @@
+REQUIRED:
+python3
+pytz
+
+OPTIONAL:
+python-mysqlclient # If using mysql backends
+
+BUILDOPTS:
