@@ -13,8 +13,8 @@ struct user_config {
 
 extern struct user_config user_config;
 
-void init_user_config();
-void destroy_user_config();
+void user_config_init();
+void user_config_destroy();
 // void destoy_user_config(struct user_config *user_config);
 
 #endif

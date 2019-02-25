@@ -7,9 +7,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <libbds/bds_string.h>
+
 #include "config.h"
 #include "user_config.h"
-#include <libbds/bds_string.h>
+
 
 struct user_config user_config;
 
@@ -26,7 +28,7 @@ static char *strip_quotes(char *str)
 static struct user_config default_user_config();
 static void load_user_config();
 
-void init_user_config()
+void user_config_init()
 {
         user_config = default_user_config();
         load_user_config();
@@ -37,7 +39,7 @@ void init_user_config()
 /* 	destoy_user_config(&user_config); */
 /* } */
 
-void destroy_user_config()
+void user_config_destroy()
 {
         free(user_config.sbopkg_repo);
         free(user_config.depdir);

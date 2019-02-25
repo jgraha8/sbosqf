@@ -20,7 +20,7 @@
 
 // Parameters
 #define CONFIG ".sbopkg-dep2sqf"
-#define SBOPKG_REPO "/var/lib/sbopkg/SBo"
+#define SBOPKG_REPO "/var/lib/sbopkg/compukix"
 #define SBO_TAG "_SBo"
 #define PKGLIST "PKGLIST"
 #define REVIEWED "REVIEWED"
@@ -28,7 +28,7 @@
 #define DEPDB "DEPDB"
 
 // Environment
-#define PAGER "less -r"
+#define PAGER "more"
 #define EDITOR "vi"
 
 #endif // __CONFIG_H__
