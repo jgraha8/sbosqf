@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <libbds/bds_queue.h>
+
 #include "file_mmap.h"
 #include "pkg.h"
 #include "pkg_util.h"
@@ -22,27 +24,19 @@
 #define BORDER2 "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
 #define BORDER3 "--------------------------------------------------------------------------------"
 
-static void free_string_ptr(char **str)
-{
-        if (*str == NULL)
-                return;
-        free(*str);
-        *str = NULL;
-}
-
-int compar_pkg_list(const void *a, const void *b)
+int pkg_graph_compar(const void *a, const void *b)
 {
         const struct pkg *pa = *(const struct pkg **)a;
         const struct pkg *pb = *(const struct pkg **)b;
 
-	if( pa->name == pb->name )
-		return 0;
+        if (pa->name == pb->name)
+                return 0;
 
-	if( pa->name == NULL )
-		return 1;
-	if( pb->name == NULL )
-		return -1;
-	
+        if (pa->name == NULL)
+                return 1;
+        if (pb->name == NULL)
+                return -1;
+
         return strcmp(pa->name, pb->name);
 }
 
@@ -97,13 +91,13 @@ void pkg_free(struct pkg **pkg)
 
 struct pkg *pkg_clone_nodep(const struct pkg *pkg)
 {
-	struct pkg *new_pkg = pkg_alloc(pkg->name);
+        struct pkg *new_pkg = pkg_alloc(pkg->name);
 
-	if( pkg->sbo_dir)
-		new_pkg->sbo_dir = bds_string_dup(pkg->sbo_dir);
-	new_pkg->info_crc = pkg->info_crc;
+        if (pkg->sbo_dir)
+                new_pkg->sbo_dir = bds_string_dup(pkg->sbo_dir);
+        new_pkg->info_crc        = pkg->info_crc;
 
-	return new_pkg;
+        return new_pkg;
 }
 
 void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir) { pkg->sbo_dir = bds_string_dup(sbo_dir); }
@@ -128,10 +122,10 @@ int pkg_set_info_crc(struct pkg *pkg)
 void pkg_append_required(struct pkg *pkg, struct pkg *req)
 {
         if (pkg->dep.required == NULL) {
-                pkg->dep.required = pkg_list_alloc_reference();
+                pkg->dep.required = pkg_graph_alloc_reference();
         }
 
-        if (pkg_list_lsearch(pkg->dep.required, req->name))
+        if (pkg_graph_lsearch(pkg->dep.required, req->name))
                 return;
 
         bds_vector_append(pkg->dep.required, &req);
@@ -140,10 +134,10 @@ void pkg_append_required(struct pkg *pkg, struct pkg *req)
 void pkg_append_parent(struct pkg *pkg, struct pkg *parent)
 {
         if (pkg->dep.parents == NULL) {
-                pkg->dep.parents = pkg_list_alloc_reference();
+                pkg->dep.parents = pkg_graph_alloc_reference();
         }
 
-        if (pkg_list_lsearch(pkg->dep.parents, parent->name))
+        if (pkg_graph_lsearch(pkg->dep.parents, parent->name))
                 return;
 
         bds_vector_append(pkg->dep.parents, &parent);
@@ -157,53 +151,53 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt)
         bds_vector_append(pkg->dep.buildopts, &bopt);
 }
 
-pkg_list_t *pkg_list_alloc_reference() { return bds_vector_alloc(1, sizeof(struct pkg *), NULL); }
-pkg_list_t *pkg_list_alloc() { return bds_vector_alloc(1, sizeof(struct pkg *), (void (*)(void *))pkg_free); }
+pkg_graph_t *pkg_graph_alloc_reference() { return bds_vector_alloc(1, sizeof(struct pkg *), NULL); }
+pkg_graph_t *pkg_graph_alloc() { return bds_vector_alloc(1, sizeof(struct pkg *), (void (*)(void *))pkg_free); }
 
-void pkg_list_free(pkg_list_t **pl) { bds_vector_free(pl); }
+void pkg_graph_free(pkg_graph_t **pl) { bds_vector_free(pl); }
 
-void pkg_list_append(pkg_list_t *pl, struct pkg *pkg) { bds_vector_append(pl, &pkg); }
+void pkg_graph_append(pkg_graph_t *pl, struct pkg *pkg) { bds_vector_append(pl, &pkg); }
 
-int pkg_list_remove(pkg_list_t *pl, const char *pkg_name)
+int pkg_graph_remove(pkg_graph_t *pl, const char *pkg_name)
 {
-	struct pkg key = { .name = (char *)pkg_name };
-	struct pkg *keyp = &key;
-	
-	struct pkg **pkgp = (struct pkg **)bds_vector_lsearch(pl, &keyp, compar_pkg_list);
-	if( pkgp == NULL )
-		return 1;
+        struct pkg key = {.name = (char *)pkg_name};
+        struct pkg *keyp = &key;
 
-	pkg_destroy(*pkgp);
-	bds_vector_qsort(pl, compar_pkg_list);
+        struct pkg **pkgp = (struct pkg **)bds_vector_lsearch(pl, &keyp, pkg_graph_compar);
+        if (pkgp == NULL)
+                return 1;
 
-	return 0;
+        pkg_destroy(*pkgp);
+        bds_vector_qsort(pl, pkg_graph_compar);
+
+        return 0;
 }
 
-struct pkg *pkg_list_lsearch(pkg_list_t *pl, const char *name)
+struct pkg *pkg_graph_lsearch(pkg_graph_t *pl, const char *name)
 {
         const struct pkg key = {.name = (char *)name};
         const struct pkg *keyp = &key;
 
-        struct pkg **pkgp = (struct pkg **)bds_vector_lsearch(pl, &keyp, compar_pkg_list);
+        struct pkg **pkgp = (struct pkg **)bds_vector_lsearch(pl, &keyp, pkg_graph_compar);
         if (pkgp)
                 return *pkgp;
 
         return NULL;
 }
 
-struct pkg *pkg_list_bsearch(pkg_list_t *pl, const char *name)
+struct pkg *pkg_graph_bsearch(pkg_graph_t *pl, const char *name)
 {
         const struct pkg key = {.name = (char *)name};
         const struct pkg *keyp = &key;
 
-        struct pkg **pkgp = (struct pkg **)bds_vector_bsearch(pl, &keyp, compar_pkg_list);
+        struct pkg **pkgp = (struct pkg **)bds_vector_bsearch(pl, &keyp, pkg_graph_compar);
         if (pkgp)
                 return *pkgp;
 
         return NULL;
 }
 
-static int __load_sbo(pkg_list_t *pkg_list, const char *cur_path)
+static int __load_sbo(pkg_graph_t *pkg_graph, const char *cur_path)
 {
         static char sbo_dir[4096];
         static int level = 0;
@@ -229,7 +223,7 @@ static int __load_sbo(pkg_list_t *pkg_list, const char *cur_path)
                 if (level == 1) {
                         if (dirent->d_type == DT_DIR) {
                                 char *next_dir = bds_string_dup_concat(3, cur_path, "/", dirent->d_name);
-                                rc             = __load_sbo(pkg_list, next_dir);
+                                rc             = __load_sbo(pkg_graph, next_dir);
                                 free(next_dir);
                                 if (rc != 0)
                                         goto finish;
@@ -254,7 +248,7 @@ static int __load_sbo(pkg_list_t *pkg_list, const char *cur_path)
 
                                 pkg_init_sbo_dir(pkg, sbo_dir);
                                 pkg_set_info_crc(pkg);
-                                pkg_list_append(pkg_list, pkg);
+                                pkg_graph_append(pkg_graph, pkg);
                         }
                 }
         }
@@ -267,17 +261,17 @@ finish:
         return rc;
 }
 
-pkg_list_t *pkg_load_sbo()
+pkg_graph_t *pkg_load_sbo()
 {
-        pkg_list_t *pkg_list = pkg_list_alloc();
+        pkg_graph_t *pkg_graph = pkg_graph_alloc();
 
-        if (__load_sbo(pkg_list, user_config.sbopkg_repo) != 0) {
-                pkg_list_free(&pkg_list);
+        if (__load_sbo(pkg_graph, user_config.sbopkg_repo) != 0) {
+                pkg_graph_free(&pkg_graph);
                 return NULL;
         }
-        bds_vector_qsort(pkg_list, compar_pkg_list);
+        bds_vector_qsort(pkg_graph, pkg_graph_compar);
 
-        return pkg_list;
+        return pkg_graph;
 }
 
 static bool file_exists(const char *filen)
@@ -291,7 +285,6 @@ static bool file_exists(const char *filen)
                 return false;
 
         return true;
-
 }
 
 bool pkg_db_exists()
@@ -299,7 +292,7 @@ bool pkg_db_exists()
         char db_file[MAX_LINE];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-	return file_exists(db_file);
+        return file_exists(db_file);
 }
 
 bool pkg_reviewed_exists()
@@ -310,46 +303,46 @@ bool pkg_reviewed_exists()
         return file_exists(db_file);
 }
 
-static int __create_db(const char *db_file, pkg_list_t *pkg_list, bool write_sbo_dir)
+static int __create_db(const char *db_file, pkg_graph_t *pkg_graph, bool write_sbo_dir)
 {
         FILE *fp = fopen(db_file, "w");
         assert(fp);
-	
-        for (size_t i = 0; i < bds_vector_size(pkg_list); ++i) {
-                struct pkg *pkg = *(struct pkg **)bds_vector_get(pkg_list, i);
 
-		if( pkg->name == NULL ) /* Package has been removed */
-			continue;
+        for (size_t i = 0; i < bds_vector_size(pkg_graph); ++i) {
+                struct pkg *pkg = *(struct pkg **)bds_vector_get(pkg_graph, i);
 
-		fprintf(fp, "%s:0x%x", pkg->name, pkg->info_crc);
-		if( write_sbo_dir)
-			fprintf(fp, ":%s", pkg->sbo_dir + strlen(user_config.sbopkg_repo) + 1);
-		fprintf(fp, "\n");
+                if (pkg->name == NULL) /* Package has been removed */
+                        continue;
+
+                fprintf(fp, "%s:0x%x", pkg->name, pkg->info_crc);
+                if (write_sbo_dir)
+                        fprintf(fp, ":%s", pkg->sbo_dir + strlen(user_config.sbopkg_repo) + 1);
+                fprintf(fp, "\n");
         }
         fclose(fp);
 
-	return 0;
+        return 0;
 }
 
-int pkg_create_db(pkg_list_t *pkg_list)
+int pkg_create_db(pkg_graph_t *pkg_graph)
 {
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-	return __create_db(db_file, pkg_list, true);
+        return __create_db(db_file, pkg_graph, true);
 }
 
-int pkg_create_reviewed(pkg_list_t *pkg_list)
+int pkg_create_reviewed(pkg_graph_t *pkg_graph)
 {
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
 
-	return __create_db(db_file, pkg_list, false);
+        return __create_db(db_file, pkg_graph, false);
 }
 
-static pkg_list_t *__load_db(const char *db_file, bool read_sbo_dir)
+static pkg_graph_t *__load_db(const char *db_file, bool read_sbo_dir)
 {
-        pkg_list_t *pkg_list = pkg_list_alloc();
+        pkg_graph_t *pkg_graph = pkg_graph_alloc();
 
         FILE *fp = fopen(db_file, "r");
         assert(fp);
@@ -370,31 +363,30 @@ static pkg_list_t *__load_db(const char *db_file, bool read_sbo_dir)
                 char **tok     = NULL;
 
                 bds_string_tokenize(line, ":", &num_tok, &tok);
-		if( read_sbo_dir ) {
-			assert(num_tok == 3);
-		} else {
-			assert(num_tok == 2);
-		}
+                if (read_sbo_dir) {
+                        assert(num_tok == 3);
+                } else {
+                        assert(num_tok == 2);
+                }
 
                 struct pkg *pkg = pkg_alloc(tok[0]);
 
                 pkg->info_crc = strtol(tok[1], NULL, 16);
 
-		if( read_sbo_dir ) {
-			bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[2]);
-			pkg_init_sbo_dir(pkg, sbo_dir);
-		}
-                pkg_list_append(pkg_list, pkg);
+                if (read_sbo_dir) {
+                        bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[2]);
+                        pkg_init_sbo_dir(pkg, sbo_dir);
+                }
+                pkg_graph_append(pkg_graph, pkg);
 
                 free(tok);
         }
         fclose(fp);
 
-        return pkg_list;
+        return pkg_graph;
 }
 
-
-pkg_list_t *pkg_load_db()
+pkg_graph_t *pkg_load_db()
 {
         if (!pkg_db_exists())
                 return NULL;
@@ -402,10 +394,10 @@ pkg_list_t *pkg_load_db()
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-	return __load_db(db_file, true);
+        return __load_db(db_file, true);
 }
 
-pkg_list_t *pkg_load_reviewed()
+pkg_graph_t *pkg_load_reviewed()
 {
         if (!pkg_reviewed_exists())
                 return NULL;
@@ -413,31 +405,30 @@ pkg_list_t *pkg_load_reviewed()
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
 
-	return __load_db(db_file, false);
+        return __load_db(db_file, false);
 }
 
-int pkg_load_dep(pkg_list_t *pkg_list, const char *pkg_name, struct pkg_options options)
+int pkg_load_dep(pkg_graph_t *pkg_graph, const char *pkg_name, struct pkg_options options)
 {
-        return load_dep_file(pkg_list, pkg_name, options);
+        return load_dep_file(pkg_graph, pkg_name, options);
 }
 
-int pkg_load_revdeps(pkg_list_t *pkg_list, struct pkg_options options)
+int pkg_load_revdeps(pkg_graph_t *pkg_graph, struct pkg_options options)
 {
-	options.revdeps = true;
-	
-	// We load deps for all packages
-	for( size_t i=0; i<bds_vector_size(pkg_list); ++i ) {
-		struct pkg *pkg = *(struct pkg **)bds_vector_get(pkg_list, i);
-		
-		if( pkg->name == NULL )
-			continue;
+        options.revdeps = true;
 
-		if( load_dep_file(pkg_list, pkg->name, options) != 0 )
-			return 1;
-	}
+        // We load deps for all packages
+        for (size_t i = 0; i < bds_vector_size(pkg_graph); ++i) {
+                struct pkg *pkg = *(struct pkg **)bds_vector_get(pkg_graph, i);
 
-	return 0;
-	
+                if (pkg->name == NULL)
+                        continue;
+
+                if (load_dep_file(pkg_graph, pkg->name, options) != 0)
+                        return 1;
+        }
+
+        return 0;
 }
 
 int pkg_review(struct pkg *pkg)
@@ -516,4 +507,96 @@ finish:
                 file_munmap(&dep);
 
         return 0;
+}
+
+struct pkg_node pkg_node_create(struct pkg *pkg, int dist)
+{
+        struct pkg_node node = {.pkg = pkg, .dist = dist};
+        return node;
+}
+
+void pkg_node_destroy(struct pkg_node *node) { memset(node, 0, sizeof(*node)); }
+
+int pkg_node_compar(const void *a, const void *b)
+{
+        return strcmp(((const struct pkg_node *)a)->pkg->name, ((const struct pkg_node *)b)->pkg->name);
+}
+
+struct pkg *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
+                               int max_dist)
+{
+        memset(iter, 0, sizeof(*iter));
+
+        iter->type     = type;
+        iter->max_dist = max_dist;
+
+        iter->graph = (type == ITERATOR_REQUIRED ? pkg->dep.required : pkg->dep.parents);
+        if (iter->graph == NULL)
+                return NULL;
+
+        if (bds_vector_size(iter->graph) == 0)
+                return NULL;
+
+        iter->graph_index = 0;
+        iter->graph_pkgp  = (struct pkg **)bds_vector_get(iter->graph, 0);
+
+        iter->next_queue = bds_queue_alloc(1, sizeof(struct pkg_node), (void (*)(void *))pkg_node_destroy);
+        bds_queue_set_autoresize(iter->next_queue, true);
+
+        iter->pkg_node = pkg_node_create(pkg, 0);
+
+        if (iter->max_dist < 0 || iter->pkg_node.dist + 1 < iter->max_dist) {
+                struct pkg_node next_node = pkg_node_create(iter->graph_pkgp[0], iter->pkg_node.dist + 1);
+                bds_queue_push(iter->next_queue, &next_node);
+        }
+
+        return *iter->graph_pkgp;
+}
+
+struct pkg *pkg_iterator_current(struct pkg_iterator *iter) { return iter->graph_pkgp[iter->graph_index]; }
+struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter) { return &iter->pkg_node; }
+
+struct pkg *pkg_iterator_next(struct pkg_iterator *iter)
+{
+        ++iter->graph_index;
+        if (iter->graph_index == bds_vector_size(iter->graph)) {
+                // Setup new pkg
+                while (1) {
+                        if (bds_queue_pop(iter->next_queue, &iter->pkg_node) == NULL)
+                                return NULL;
+
+                        if (iter->max_dist >= 0)
+                                assert(iter->pkg_node.dist + 1 <= iter->max_dist);
+
+                        iter->graph = (iter->type == ITERATOR_REQUIRED ? iter->pkg_node.pkg->dep.required
+                                                                       : iter->pkg_node.pkg->dep.parents);
+                        if (iter->graph == NULL)
+                                continue;
+                        if (bds_vector_size(iter->graph) == 0)
+                                continue;
+
+                        iter->graph_index = 0;
+                        iter->graph_pkgp  = (struct pkg **)bds_vector_get(iter->graph, 0);
+                        break;
+                }
+        }
+
+        if (iter->max_dist < 0 || iter->pkg_node.dist + 1 < iter->max_dist) {
+                struct pkg_node next_node =
+                    pkg_node_create(iter->graph_pkgp[iter->graph_index], iter->pkg_node.dist + 1);
+                // if (bds_queue_lsearch(iter->next_queue, &next_node, pkg_node_compar) == NULL) {
+                bds_queue_push(iter->next_queue, &next_node);
+
+                // }
+        }
+
+        return iter->graph_pkgp[iter->graph_index];
+}
+
+void pkg_iterator_destroy(struct pkg_iterator *iter)
+{
+        if (iter->next_queue)
+                bds_queue_free(&iter->next_queue);
+
+        memset(iter, 0, sizeof(*iter));
 }

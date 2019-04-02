@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 
+#include <libbds/bds_queue.h>
+#include <libbds/bds_stack.h>
 #include <libbds/bds_vector.h>
 
 #include "pkg.h"
@@ -8,88 +10,107 @@
 #include "config.h"
 #include "user_config.h"
 
+struct pkg_pair {
+	struct pkg *pkg;
+	struct pkg *rel;
+};
+
+#define PKG(p) (((const struct pkg_pair *)p)->pkg->name)
+#define REL(p) (((const struct pkg_pair *)p)->rel->name)
+
+int compar_pkg_pair(const void *a, const void *b)
+{
+	int rc = 0;
+	if( (rc = strcmp(PKG(a),PKG(b))) != 0 )
+		return rc;
+	return strcmp(REL(a), REL(b));
+}
+
+int write_graph(struct pkg *pkg, enum pkg_iterator_type type, int max_dist)
+{
+        FILE *fp = fopen("graph.dot", "w");
+
+        fprintf(fp, "digraph G {\n");
+
+        struct pkg_iterator iter;
+
+
+	struct bds_stack *pair_stack = bds_stack_alloc(1, sizeof(struct pkg_pair), NULL);
+
+        for (struct pkg *p = pkg_iterator_begin(&iter, pkg, type, max_dist); p != NULL;
+             p             = pkg_iterator_next(&iter)) {
+
+                struct pkg_node *pkg_node = pkg_iterator_node(&iter);
+
+		struct pkg_pair pair = { .pkg = pkg_node->pkg, .rel = p };
+
+                if (bds_stack_lsearch(pair_stack, &pair, compar_pkg_pair) == NULL)
+                        bds_stack_push(pair_stack, &pair);
+        }
+        pkg_iterator_destroy(&iter);
+
+
+	struct pkg_pair pair;
+
+	while( bds_stack_pop(pair_stack, &pair) ) {
+		if( type == ITERATOR_REQUIRED ) {
+			fprintf(fp, "\"%s\"->\"%s\";\n", pair.pkg->name, pair.rel->name);
+		} else {
+			fprintf(fp, "\"%s\"->\"%s\";\n", pair.rel->name, pair.pkg->name);
+		}
+	}
+	bds_stack_free(&pair_stack);
+
+        fprintf(fp, "}\n");
+        fclose(fp);
+
+        return 0;
+}
+
 void print_revdeps(struct pkg *pkg, struct pkg_options options)
 {
-        static pkg_list_t *parents_list = NULL;
-        static bool initd               = false;
-        static int level                = 0;
 
-        if (pkg->dep.parents == NULL)
-                return;
+        struct pkg_iterator iter;
 
-        ++level;
+        for (struct pkg *p = pkg_iterator_begin(&iter, pkg, ITERATOR_REQUIRED, -1); p != NULL;
+             p             = pkg_iterator_next(&iter)) {
 
-        if (!initd) {
-                parents_list = pkg_list_alloc_reference();
-                initd        = true;
+                printf("%s:%d ", p->name, iter.pkg_node.dist + 1);
         }
-
-        for (size_t i = 0; i < bds_vector_size(pkg->dep.parents); ++i) {
-                struct pkg *p = *(struct pkg **)bds_vector_get(pkg->dep.parents, i);
-
-                if (bds_vector_lsearch(parents_list, &p, compar_pkg_list) == NULL) {
-                        bds_vector_append(parents_list, &p);
-                /* } */
-
-                /* if( options.recursive ) { */
-                /* 	for (size_t i = 0; i < bds_vector_size(pkg->dep.parents); ++i) { */
-                /* 		struct pkg *p = *(struct pkg **)bds_vector_get(pkg->dep.parents, i); */
-			print_revdeps(p, options);
-		}
-        }
-
-        if (level == 1) {
-                for (size_t i = 0; i < bds_vector_size(parents_list); ++i) {
-                        struct pkg *p = *(struct pkg **)bds_vector_get(parents_list, i);
-
-                        printf("%s ", p->name);
-                }
-
-                pkg_list_free(&parents_list);
-                initd = false;
-        }
-
-        --level;
+        pkg_iterator_destroy(&iter);
 }
 
 int main(int argc, char **argv)
 {
-        pkg_list_t *pkg_list       = NULL;
+        pkg_graph_t *pkg_graph     = NULL;
         struct pkg_options options = pkg_options_default();
 
         user_config_init();
 
-        if ((pkg_list = pkg_load_db()) == NULL) {
-                pkg_list = pkg_load_sbo();
-                pkg_create_db(pkg_list);
+        if ((pkg_graph = pkg_load_db()) == NULL) {
+                pkg_graph = pkg_load_sbo();
+                pkg_create_db(pkg_graph);
         }
 
-        /* for( size_t i=0; i<bds_vector_size(pkg_list); ++i ) { */
-        /* 	struct pkg *pkg = *(struct pkg **)bds_vector_get(pkg_list,i); */
+        options.recursive = false;
+        pkg_load_revdeps(pkg_graph, options);
 
-        /* 	printf("pkg: name = %s, info_crc = 0x%x\n", pkg->name, pkg->info_crc); */
-        /* } */
+        struct pkg *pkg = pkg_graph_bsearch(pkg_graph, "ffmpeg");
 
-        //        pkg_load_dep(pkg_list, "virt-manager", options);
+        pkg_graph_t *reviewed = pkg_graph_alloc_reference();
 
-        pkg_load_revdeps(pkg_list, options);
-
-        struct pkg *pkg = pkg_list_bsearch(pkg_list, "libvirt");
-
-        pkg_review(pkg);
-
-        pkg_list_t *reviewed_list = pkg_list_alloc_reference();
-
-        pkg_list_append(reviewed_list, pkg);
-        pkg_create_reviewed(reviewed_list);
+        pkg_graph_append(reviewed, pkg);
+        pkg_create_reviewed(reviewed);
 
         printf("%s revdeps:", pkg->name);
 
         print_revdeps(pkg, options);
         printf("\n");
 
-        pkg_list_free(&pkg_list);
-        pkg_list_free(&reviewed_list);
+	write_graph(pkg, ITERATOR_PARENTS, 2);
+
+        pkg_graph_free(&pkg_graph);
+        pkg_graph_free(&reviewed);
         user_config_destroy();
 
         return 0;

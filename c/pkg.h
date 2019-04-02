@@ -11,12 +11,12 @@
 #define PKG_CHECK_INSTALLED     0x1
 #define PKG_CHECK_ANY_INSTALLED 0x2
 
-typedef struct bds_vector pkg_list_t;
+typedef struct bds_vector pkg_graph_t;
 typedef struct bds_vector buildopts_t;
 
 struct pkg_dep {
-        pkg_list_t *required;
-	pkg_list_t *parents;
+        pkg_graph_t *required;
+	pkg_graph_t *parents;
         buildopts_t *buildopts;
         bool is_meta;
 };
@@ -29,13 +29,17 @@ struct pkg {
         // struct pkg_sbo *sbo;
 };
 
+struct pkg_node {
+        struct pkg *pkg;
+        int dist;
+};
+
 struct pkg_options {
 	bool recursive;
 	bool optional;
 	bool revdeps;
 	int check_installed;	
 };
-
 
 struct pkg_options pkg_options_default();
 
@@ -57,31 +61,54 @@ void pkg_append_parent(struct pkg *pkg, struct pkg *parent);
 
 void pkg_append_buildopts(struct pkg *pkg, char *bopt);
 
-pkg_list_t *pkg_list_alloc_reference();
-pkg_list_t *pkg_list_alloc();
-void pkg_list_free(pkg_list_t **pl);
-void pkg_list_append(pkg_list_t *pl, struct pkg *pkg);
-int pkg_list_remove(pkg_list_t *pl, const char *pkg_name);
-struct pkg *pkg_list_lsearch(pkg_list_t *pl, const char *name);
-struct pkg *pkg_list_bsearch(pkg_list_t *pl, const char *name);
-
-pkg_list_t *pkg_load_sbo();
+pkg_graph_t *pkg_graph_alloc_reference();
+pkg_graph_t *pkg_graph_alloc();
+void pkg_graph_free(pkg_graph_t **pl);
+void pkg_graph_append(pkg_graph_t *pl, struct pkg *pkg);
+int pkg_graph_remove(pkg_graph_t *pl, const char *pkg_name);
+struct pkg *pkg_graph_lsearch(pkg_graph_t *pl, const char *name);
+struct pkg *pkg_graph_bsearch(pkg_graph_t *pl, const char *name);
+int pkg_graph_compar(const void *a, const void *b);
+pkg_graph_t *pkg_load_sbo();
 
 bool pkg_db_exists();
 bool pkg_reviewed_exists();
 
-pkg_list_t *pkg_load_db();
-pkg_list_t *pkg_load_reviewed();
+pkg_graph_t *pkg_load_db();
+pkg_graph_t *pkg_load_reviewed();
 
-int pkg_create_db(pkg_list_t *pkg_list);
-int pkg_create_reviewed(pkg_list_t *pkg_list);
+int pkg_create_db(pkg_graph_t *pkg_graph);
+int pkg_create_reviewed(pkg_graph_t *pkg_graph);
 
-int pkg_load_dep(pkg_list_t *pkg_list, const char *pkg_name, struct pkg_options options);
-int pkg_load_revdeps(pkg_list_t *pkg_list, struct pkg_options options);
+int pkg_load_dep(pkg_graph_t *pkg_graph, const char *pkg_name, struct pkg_options options);
+int pkg_load_revdeps(pkg_graph_t *pkg_graph, struct pkg_options options);
 
 int pkg_review(struct pkg *pkg);
 
-int compar_pkg_list(const void *a, const void *b);
+struct pkg_node pkg_node_create(struct pkg *pkg, int dist);
+void pkg_node_destroy(struct pkg_node *pkg_node);
+
+int pkg_node_compar(const void *a, const void *b);
+
+enum pkg_iterator_type { ITERATOR_REQUIRED, ITERATOR_PARENTS };
+
+struct pkg_iterator {
+        enum pkg_iterator_type type;
+        struct pkg_node pkg_node;
+        pkg_graph_t *graph;
+        int graph_index;
+        struct pkg **graph_pkgp;
+        struct bds_queue *next_queue;
+        int max_dist;
+};
+
+struct pkg *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
+                               int max_dist);
+struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter);
+struct pkg *pkg_iterator_current(struct pkg_iterator *iter);
+struct pkg *pkg_iterator_next(struct pkg_iterator *iter);
+void pkg_iterator_destroy(struct pkg_iterator *iter);
+
 #endif
 
 /* typedef struct bds_vector dep_list_t; */
