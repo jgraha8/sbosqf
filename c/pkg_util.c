@@ -4,6 +4,7 @@
 #include <libbds/bds_queue.h>
 #include <libbds/bds_string.h>
 
+#include "file_mmap.h"
 #include "pkg_util.h"
 #include "sbo.h"
 #include "slack_pkg.h"
@@ -61,7 +62,68 @@ bool skip_installed(const char *pkg_name, struct pkg_options options)
         return false;
 }
 
-int __load_dep(struct bds_queue *node_queue, pkg_graph_t *pkg_graph, struct pkg_options options)
+static bool skip_dep_line(char *line)
+{
+        // Trim newline
+        char *c = line;
+        while (*c) {
+                if (*c == '\n' || *c == '\t' || *c == '\\') {
+                        *c = ' ';
+                }
+                ++c;
+        }
+
+        // Trim comments
+        c = bds_string_find(line, "#");
+        if (c) {
+                *c = '\0';
+        }
+
+        if (*bds_string_atrim(line) == '\0') {
+                return true;
+        }
+
+        if (*line == '-') {
+                return true;
+        }
+
+        return false;
+}
+
+bool is_meta_pkg(const char *pkg_name)
+{
+        bool is_meta = false;
+
+        // Load meta pkg dep file
+        char dep_file[2048];
+        struct file_mmap *dep = NULL;
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+        if ((dep = file_mmap(dep_file)) == NULL)
+                return false;
+
+        char *line     = dep->data;
+        char *line_end = NULL;
+
+        while ((line_end = bds_string_find(line, "\n"))) {
+                *line_end = '\0';
+
+                if (skip_dep_line(line))
+                        goto cycle;
+
+                if (strcmp(line, "METAPKG") == 0) {
+                        is_meta = true;
+                        break;
+                }
+        cycle:
+                line = line_end + 1;
+        }
+        file_munmap(&dep);
+
+        return is_meta;
+}
+
+int __load_dep(struct bds_queue *node_queue, struct pkg_graph *pkg_graph, struct pkg_options options)
 {
         int rc = 0;
 
@@ -98,31 +160,12 @@ int __load_dep(struct bds_queue *node_queue, pkg_graph_t *pkg_graph, struct pkg_
                 while (getline(&line, &num_line, fp) != -1) {
                         assert(line);
 
-                        // Trim newline
-                        char *c = line;
-                        while (*c) {
-                                if (*c == '\n' || *c == '\t' || *c == '\\') {
-                                        *c = ' ';
-                                }
-                                ++c;
-                        }
-
-                        // Trim comments
-                        c = bds_string_find(line, "#");
-                        if (c) {
-                                *c = '\0';
-                        }
-
-                        if (*bds_string_atrim(line) == '\0') {
+                        if (skip_dep_line(line))
                                 goto cycle;
-                        }
-
-                        if (*line == '-') {
-                                goto cycle;
-                        }
 
                         if (strcmp(line, "METAPKG") == 0) {
-                                pkg->dep.is_meta = true;
+                                // pkg->dep.is_meta = true;
+                                assert(pkg->dep.is_meta);
                                 goto cycle;
                         }
 
@@ -160,8 +203,7 @@ int __load_dep(struct bds_queue *node_queue, pkg_graph_t *pkg_graph, struct pkg_
                                 if (skip_installed(line, options))
                                         break;
 
-                                // assert(load_dep_file(pkg_graph, line, options) == 0);
-                                struct pkg *req = pkg_graph_bsearch(pkg_graph, line);
+                                struct pkg *req = pkg_graph_search(pkg_graph, line);
                                 assert(req);
 
                                 struct pkg_node new_node = pkg_node_create(req, dist + 1);
@@ -197,20 +239,22 @@ int __load_dep(struct bds_queue *node_queue, pkg_graph_t *pkg_graph, struct pkg_
                         fclose(fp);
                 free(dep_file);
 
-		pkg_node_destroy(&pkg_node);
+                pkg_node_destroy(&pkg_node);
         }
 
         return rc;
 }
 
-int load_dep_file(pkg_graph_t *pkg_graph, const char *pkg_name, struct pkg_options options)
+int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
 {
-        struct pkg *pkg = pkg_graph_bsearch(pkg_graph, pkg_name);
+        struct pkg *pkg = pkg_graph_search(pkg_graph, pkg_name);
         if (pkg == NULL)
                 return 1;
 
         struct bds_queue *node_queue = bds_queue_alloc(1, sizeof(struct pkg_node), NULL);
-        struct pkg_node pkg_node = pkg_node_create(pkg, 0);
+        bds_queue_set_autoresize(node_queue, true);
+	
+        struct pkg_node pkg_node     = pkg_node_create(pkg, 0);
 
         bds_queue_push(node_queue, &pkg_node);
 
