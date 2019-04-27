@@ -36,12 +36,12 @@ int write_graph(struct pkg *pkg, enum pkg_iterator_type type, int max_dist)
 
         struct bds_stack *pair_stack = bds_stack_alloc(1, sizeof(struct pkg_pair), NULL);
 
-        for (struct pkg *p = pkg_iterator_begin(&iter, pkg, type, max_dist); p != NULL;
-             p             = pkg_iterator_next(&iter)) {
+        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, type, max_dist); node != NULL;
+             node                  = pkg_iterator_next(&iter)) {
 
-                struct pkg_node *pkg_node = pkg_iterator_node(&iter);
+                struct pkg_node *cur_node = pkg_iterator_current(&iter);
 
-                struct pkg_pair pair = {.pkg = pkg_node->pkg, .rel = p};
+                struct pkg_pair pair = {.pkg = cur_node->pkg, .rel = node->pkg};
 
                 if (bds_stack_lsearch(pair_stack, &pair, compar_pkg_pair) == NULL)
                         bds_stack_push(pair_stack, &pair);
@@ -70,10 +70,10 @@ void print_revdeps(struct pkg *pkg, struct pkg_options options)
 
         struct pkg_iterator iter;
 
-        for (struct pkg *p = pkg_iterator_begin(&iter, pkg, ITERATOR_PARENTS, -1); p != NULL;
-             p             = pkg_iterator_next(&iter)) {
+        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, ITERATOR_PARENTS, -1); node != NULL;
+             node                  = pkg_iterator_next(&iter)) {
 
-                printf("%s:%d ", p->name, iter.pkg_node.dist + 1);
+                printf("%s:%d ", node->pkg->name, node->dist);
         }
         pkg_iterator_destroy(&iter);
 }
@@ -83,10 +83,10 @@ void print_deps(struct pkg *pkg, struct pkg_options options)
 
         struct pkg_iterator iter;
 
-        for (struct pkg *p = pkg_iterator_begin(&iter, pkg, ITERATOR_REQUIRED, -1); p != NULL;
-             p             = pkg_iterator_next(&iter)) {
+        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, ITERATOR_REQUIRED, -1); node != NULL;
+             node                  = pkg_iterator_next(&iter)) {
 
-                printf("%s:%d ", p->name, iter.pkg_node.dist + 1);
+                printf("%s:%d ", node->pkg->name, node->dist);
         }
         pkg_iterator_destroy(&iter);
 }
@@ -106,11 +106,11 @@ int main(int argc, char **argv)
         }
 
         options.recursive = true;
-	
-	pkg_load_dep(pkg_graph, "meta2", options);	
+
+        pkg_load_dep(pkg_graph, "meta3", options);
         pkg_load_revdeps(pkg_graph, options);
 
-        struct pkg *pkg        = pkg_graph_search(pkg_graph, "meta2");
+        struct pkg *pkg        = pkg_graph_search(pkg_graph, "meta3");
         pkg_vector_t *reviewed = pkg_vector_alloc_reference();
 
         if (pkg_review(pkg) == 0) {
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
                 pkg_create_reviewed(reviewed);
         }
 
-        printf("%s revdeps:", pkg->name);
+        printf("%s deps:", pkg->name);
 
         print_deps(pkg, options);
         printf("\n");

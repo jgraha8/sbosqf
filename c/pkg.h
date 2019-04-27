@@ -114,6 +114,7 @@ enum pkg_iterator_type { ITERATOR_REQUIRED, ITERATOR_PARENTS };
 struct pkg_iterator {
         enum pkg_iterator_type type;
         struct pkg_node pkg_node;
+        struct pkg_node cur_node;	
         pkg_vector_t *pkgs;
         int pkgs_index;
         struct pkg **pkgp;
@@ -121,11 +122,11 @@ struct pkg_iterator {
         int max_dist;
 };
 
-struct pkg *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
+struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
                                int max_dist);
 struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter);
-struct pkg *pkg_iterator_current(struct pkg_iterator *iter);
-struct pkg *pkg_iterator_next(struct pkg_iterator *iter);
+struct pkg_node *pkg_iterator_current(struct pkg_iterator *iter);
+struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter);
 void pkg_iterator_destroy(struct pkg_iterator *iter);
 
 #endif

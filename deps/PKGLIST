@@ -18,7 +18,10 @@ Pygments
 PythonQt
 SDL2
 SDL2_image
+SDL2_mixer
+SDL2_net
 SDL_Pango
+SDL_sound
 SFML
 SoQt
 Sphinx
@@ -50,6 +53,7 @@ ccid
 celt
 celt051
 cfengine
+chocolate-doom
 chrpath
 color-theme
 colordiff
@@ -76,6 +80,7 @@ docker
 docker-proxy
 docutils
 dos2unix
+dosbox
 drupal
 enca
 engauge

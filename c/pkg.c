@@ -599,8 +599,13 @@ int pkg_node_compar(const void *a, const void *b)
         return strcmp(((const struct pkg_node *)a)->pkg->name, ((const struct pkg_node *)b)->pkg->name);
 }
 
-struct pkg *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
-                               int max_dist)
+static int next_node_dist(struct pkg_node node)
+{
+	return node.dist + (node.pkg->dep.is_meta ? 0 : 1 );
+}
+
+struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum pkg_iterator_type type,
+				    int max_dist)
 {
         memset(iter, 0, sizeof(*iter));
 
@@ -614,60 +619,70 @@ struct pkg *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg *pkg, enum 
         if (bds_vector_size(iter->pkgs) == 0)
                 return NULL;
 
-        iter->pkgs_index = 0;
+        iter->pkgs_index = -1;
         iter->pkgp  = (struct pkg **)bds_vector_get(iter->pkgs, 0);
 
         iter->next_queue = bds_queue_alloc(1, sizeof(struct pkg_node), (void (*)(void *))pkg_node_destroy);
         bds_queue_set_autoresize(iter->next_queue, true);
 
-        iter->pkg_node = pkg_node_create(pkg, 0);
+        iter->cur_node = pkg_node_create(pkg, 0);
 
-        if (iter->max_dist < 0 || iter->pkg_node.dist + 1 < iter->max_dist) {
-                struct pkg_node next_node = pkg_node_create(iter->pkgp[0], iter->pkg_node.dist + 1);
-                bds_queue_push(iter->next_queue, &next_node);
-        }
-
-        return *iter->pkgp;
+        return pkg_iterator_next(iter);
 }
 
-struct pkg *pkg_iterator_current(struct pkg_iterator *iter) { return iter->pkgp[iter->pkgs_index]; }
+struct pkg_node *pkg_iterator_current(struct pkg_iterator *iter) { return &iter->cur_node; }
 struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter) { return &iter->pkg_node; }
 
-struct pkg *pkg_iterator_next(struct pkg_iterator *iter)
+enum pkg_color {
+	COLOR_WHITE=0, // 
+	COLOR_GREY,
+	COLOR_BLACK
+};
+
+struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter)
 {
         ++iter->pkgs_index;
         if (iter->pkgs_index == bds_vector_size(iter->pkgs)) {
                 // Setup new pkg
                 while (1) {
-                        if (bds_queue_pop(iter->next_queue, &iter->pkg_node) == NULL)
+                        if (bds_queue_pop(iter->next_queue, &iter->cur_node) == NULL)
                                 return NULL;
 
                         if (iter->max_dist >= 0)
-                                assert(iter->pkg_node.dist + 1 <= iter->max_dist);
-
-                        iter->pkgs = (iter->type == ITERATOR_REQUIRED ? iter->pkg_node.pkg->dep.required
-                                                                       : iter->pkg_node.pkg->dep.parents);
+                                assert(next_node_dist(iter->cur_node) <= iter->max_dist);
+			
+                        iter->pkgs = (iter->type == ITERATOR_REQUIRED ? iter->cur_node.pkg->dep.required
+                                                                       : iter->cur_node.pkg->dep.parents);
                         if (iter->pkgs == NULL)
                                 continue;
                         if (bds_vector_size(iter->pkgs) == 0)
                                 continue;
-
+			
                         iter->pkgs_index = 0;
                         iter->pkgp  = (struct pkg **)bds_vector_get(iter->pkgs, 0);
                         break;
                 }
         }
 
-        if (iter->max_dist < 0 || iter->pkg_node.dist + 1 < iter->max_dist) {
+	const int next_dist = next_node_dist(iter->cur_node);
+	
+        if (iter->max_dist < 0 || next_dist < iter->max_dist) {
                 struct pkg_node next_node =
-                    pkg_node_create(iter->pkgp[iter->pkgs_index], iter->pkg_node.dist + 1);
+                    pkg_node_create(iter->pkgp[iter->pkgs_index], next_dist);
                 // if (bds_queue_lsearch(iter->next_queue, &next_node, pkg_node_compar) == NULL) {
                 bds_queue_push(iter->next_queue, &next_node);
 
                 // }
         }
 
-        return iter->pkgp[iter->pkgs_index];
+	pkg_node_destroy(&iter->pkg_node);
+	iter->pkg_node = pkg_node_create(iter->pkgp[iter->pkgs_index], next_dist);
+	
+        // Skip meta pkgs	
+	if( iter->pkg_node.pkg->dep.is_meta ) {
+		pkg_iterator_next(iter);
+	}
+        return &iter->pkg_node;
 }
 
 void pkg_iterator_destroy(struct pkg_iterator *iter)
