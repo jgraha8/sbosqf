@@ -10,12 +10,8 @@
 #include "config.h"
 #include "user_config.h"
 
-struct pkg_pair {
-        struct pkg *pkg;
-        struct pkg *rel;
-};
-
-#define PKG(p) (((const struct pkg_pair *)p)->pkg->name)
+#if 0
+#define NODE(p) (((const struct pkg_pair *)p)->pkg->name)
 #define REL(p) (((const struct pkg_pair *)p)->rel->name)
 
 int compar_pkg_pair(const void *a, const void *b)
@@ -26,38 +22,72 @@ int compar_pkg_pair(const void *a, const void *b)
         return strcmp(REL(a), REL(b));
 }
 
-int write_graph(struct pkg *pkg, enum pkg_iterator_type type, int max_dist)
+#endif
+
+const char *node_style(const struct pkg_node *node)
 {
-        FILE *fp = fopen("graph.dot", "w");
+	static const char *no_style = "";
+	static const char *meta_style = " [style=dashed]";
 
+	if( node->pkg.dep.is_meta )
+		return meta_style;
+	return no_style;
+}
+
+void insert_node(pkg_nodes_t *node_list, struct pkg_node *node)
+{
+	if( pkg_nodes_bsearch(node_list, node->pkg.name) )
+		return;
+
+	pkg_nodes_insert_sort(node_list, node);
+}
+
+void write_node_list(FILE *fp, const pkg_nodes_t *node_list)
+{
+	const size_t n = pkg_nodes_size(node_list);
+
+	for( size_t i=0; i<n; ++i ) {
+		const struct pkg_node *node = pkg_nodes_get_const(node_list, i);
+		if( node->pkg.dep.is_meta )
+			fprintf(fp, "\t\"%s\"%s;\n", node->pkg.name, node_style(node));
+	}
+}
+
+int write_graph(struct pkg_graph *pkg_graph, const char *pkg_name, pkg_iterator_flags_t flags, int max_dist)
+{
+	if( pkg_graph_search(pkg_graph, pkg_name) == NULL)
+		return -1;
+
+	flags |= PKG_ITER_REQ_NEAREST;
+
+	pkg_nodes_t *node_list = pkg_nodes_alloc_reference();	
+	
+	FILE *fp = fopen("graph.dot", "w");
         fprintf(fp, "digraph G {\n");
-
+	
         struct pkg_iterator iter;
+        for (struct pkg_node *edge_node   = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist);
+             edge_node != NULL; edge_node = pkg_iterator_next(&iter)) {
 
-        struct bds_stack *pair_stack = bds_stack_alloc(1, sizeof(struct pkg_pair), NULL);
+                struct pkg_node *node = pkg_iterator_node(&iter);
+                if (node == NULL)
+                        continue;
 
-        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, type, max_dist); node != NULL;
-             node                  = pkg_iterator_next(&iter)) {
+		if( flags & PKG_ITER_REVDEPS ) {
+			fprintf(fp, "\t\"%s\" -> \"%s\";\n", edge_node->pkg.name, node->pkg.name);
+		} else {
+			fprintf(fp, "\t\"%s\" -> \"%s\";\n", node->pkg.name, edge_node->pkg.name);
+		}
 
-                struct pkg_node *cur_node = pkg_iterator_current(&iter);
-
-                struct pkg_pair pair = {.pkg = cur_node->pkg, .rel = node->pkg};
-
-                if (bds_stack_lsearch(pair_stack, &pair, compar_pkg_pair) == NULL)
-                        bds_stack_push(pair_stack, &pair);
+		insert_node(node_list, node);
+		insert_node(node_list, edge_node);
         }
         pkg_iterator_destroy(&iter);
 
-        struct pkg_pair pair;
+	fprintf(fp, "\n");
 
-        while (bds_stack_pop(pair_stack, &pair)) {
-                if (type == ITERATOR_REQUIRED) {
-                        fprintf(fp, "\"%s\"->\"%s\";\n", pair.pkg->name, pair.rel->name);
-                } else {
-                        fprintf(fp, "\"%s\"->\"%s\";\n", pair.rel->name, pair.pkg->name);
-                }
-        }
-        bds_stack_free(&pair_stack);
+	write_node_list(fp, node_list);
+	pkg_nodes_free(&node_list);
 
         fprintf(fp, "}\n");
         fclose(fp);
@@ -65,52 +95,68 @@ int write_graph(struct pkg *pkg, enum pkg_iterator_type type, int max_dist)
         return 0;
 }
 
-void print_revdeps(struct pkg *pkg, struct pkg_options options)
+
+int __print_deps(struct pkg_graph *pkg_graph, const char *pkg_name, pkg_iterator_flags_t flags, int dist)
 {
 
         struct pkg_iterator iter;
 
-        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, ITERATOR_PARENTS, -1); node != NULL;
+	printf("%s -> ", pkg_name);
+        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, dist); node != NULL;
              node                  = pkg_iterator_next(&iter)) {
+               if( node->pkg.dep.is_meta )
+			continue;
 
-                printf("%s:%d ", node->pkg->name, node->dist);
+		if( strcmp(pkg_name, node->pkg.name) == 0 )
+			continue;
+		
+		printf("%s:%d ", node->pkg.name, node->dist);
         }
+	printf("\n");
         pkg_iterator_destroy(&iter);
+
+	return 0;
 }
 
-void print_deps(struct pkg *pkg, struct pkg_options options)
+int print_revdeps(struct pkg_graph *pkg_graph, const char *pkg_name, int dist)
 {
-
-        struct pkg_iterator iter;
-
-        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg, ITERATOR_REQUIRED, -1); node != NULL;
-             node                  = pkg_iterator_next(&iter)) {
-
-                printf("%s:%d ", node->pkg->name, node->dist);
-        }
-        pkg_iterator_destroy(&iter);
+	return __print_deps(pkg_graph, pkg_name, PKG_ITER_REVDEPS, dist);
 }
+
+int print_deps(struct pkg_graph *pkg_graph, const char *pkg_name)
+{
+	return __print_deps(pkg_graph, pkg_name, PKG_ITER_DEPS, -1);
+}
+
 
 int main(int argc, char **argv)
 {
         struct pkg_graph *pkg_graph = pkg_graph_alloc();
         struct pkg_options options  = pkg_options_default();
 
-        pkg_vector_t *sbo_pkgs = pkg_graph_sbo_pkgs(pkg_graph);
+        pkg_nodes_t *sbo_pkgs = pkg_graph_sbo_pkgs(pkg_graph);
 
         user_config_init();
 
-        if (pkg_load_db(sbo_pkgs) != 0) {
-                assert(pkg_load_sbo(sbo_pkgs) == 0);
+        if (!pkg_db_exists()) {
+                pkg_load_sbo(sbo_pkgs);
                 pkg_create_db(sbo_pkgs);
+                pkg_create_default_deps(sbo_pkgs);
+        } else {
+                pkg_load_db(sbo_pkgs);
         }
 
         options.recursive = true;
-
+	options.revdeps = true;
+	
+        pkg_load_all_deps(pkg_graph, options);	
         pkg_load_dep(pkg_graph, "meta3", options);
-        pkg_load_revdeps(pkg_graph, options);
+        /* pkg_load_dep(pkg_graph, "virt-manager", options);	 */
 
-        struct pkg *pkg        = pkg_graph_search(pkg_graph, "meta3");
+
+	print_revdeps(pkg_graph, "colord", 1);
+#if 0
+        struct pkg *pkg        = pkg_graph_search(pkg_graph, "virt-manager");
         pkg_vector_t *reviewed = pkg_vector_alloc_reference();
 
         if (pkg_review(pkg) == 0) {
@@ -123,10 +169,15 @@ int main(int argc, char **argv)
         print_deps(pkg, options);
         printf("\n");
 
-        write_graph(pkg, ITERATOR_REQUIRED, -1);
+#endif
 
-        pkg_graph_free(&pkg_graph);
+        write_graph(pkg_graph, "ffmpeg", PKG_ITER_REVDEPS, -1);
+	print_deps(pkg_graph, "virt-manager");
+
+#if 0	
         pkg_vector_free(&reviewed);
+#endif
+        pkg_graph_free(&pkg_graph);
         user_config_destroy();
 
         return 0;

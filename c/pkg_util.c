@@ -1,5 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include <libbds/bds_queue.h>
 #include <libbds/bds_string.h>
@@ -123,146 +126,171 @@ bool is_meta_pkg(const char *pkg_name)
         return is_meta;
 }
 
-int __load_dep(struct bds_queue *node_queue, struct pkg_graph *pkg_graph, struct pkg_options options)
+int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pkg_options options)
 {
         int rc = 0;
 
-        struct pkg_node pkg_node;
+        char *line      = NULL;
+        size_t num_line = 0;
+        char *dep_file  = NULL;
+        FILE *fp        = NULL;
 
-        while (rc == 0 && bds_queue_pop(node_queue, &pkg_node)) {
-                char *line      = NULL;
-                size_t num_line = 0;
-                char *dep_file  = NULL;
-                FILE *fp        = NULL;
+        struct pkg *pkg = &pkg_node->pkg;
+        int dist        = pkg_node->dist;
 
-                struct pkg *pkg = pkg_node.pkg;
-                int dist        = pkg_node.dist;
+        dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg->name);
+        fp       = fopen(dep_file, "r");
 
-                dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg->name);
-                fp       = fopen(dep_file, "r");
+        if (fp == NULL) {
+                // Create the default dep file (don't ask just do it)
+                if (create_default_dep(pkg) == NULL) {
+                        rc = 1;
+                        goto finish;
+                }
 
+                fp = fopen(dep_file, "r");
                 if (fp == NULL) {
-                        // Create the default dep file (don't ask just do it)
-                        if (create_default_dep(pkg) == NULL) {
-                                rc = 1;
-                                goto finish;
-                        }
-
-                        fp = fopen(dep_file, "r");
-                        if (fp == NULL) {
-                                rc = 1;
-                                goto finish;
-                        }
+                        rc = 1;
+                        goto finish;
                 }
-
-                enum block_type block_type = NO_BLOCK;
-
-                while (getline(&line, &num_line, fp) != -1) {
-                        assert(line);
-
-                        if (skip_dep_line(line))
-                                goto cycle;
-
-                        if (strcmp(line, "METAPKG") == 0) {
-                                // pkg->dep.is_meta = true;
-                                assert(pkg->dep.is_meta);
-                                goto cycle;
-                        }
-
-                        if (strcmp(line, "REQUIRED:") == 0) {
-                                block_type = REQUIRED_BLOCK;
-                                goto cycle;
-                        }
-
-                        if (strcmp(line, "OPTIONAL:") == 0) {
-                                block_type = OPTIONAL_BLOCK;
-                                goto cycle;
-                        }
-
-                        if (strcmp(line, "BUILDOPTS:") == 0) {
-                                block_type = BUILDOPTS_BLOCK;
-                                goto cycle;
-                        }
-
-                        if (block_type == OPTIONAL_BLOCK && !options.optional)
-                                goto cycle;
-
-                        /*
-                         * Recursive processing will occur on meta packages since they act as "include" files.  We
-                         * only
-                         * check the recursive flag if the dependency file is not marked as a meta package.
-                         */
-                        if (!pkg->dep.is_meta && !options.recursive && dist > 0)
-                                goto finish;
-
-                        switch (block_type) {
-                        case OPTIONAL_BLOCK:
-                                if (!options.optional)
-                                        break;
-                        case REQUIRED_BLOCK: {
-                                if (skip_installed(line, options))
-                                        break;
-
-                                struct pkg *req = pkg_graph_search(pkg_graph, line);
-                                assert(req);
-
-                                struct pkg_node new_node = pkg_node_create(req, dist + 1);
-                                bds_queue_push(node_queue, &new_node);
-
-                                if (options.revdeps)
-                                        pkg_append_parent(req, pkg);
-                                pkg_append_required(pkg, req);
-
-                        } break;
-                        case BUILDOPTS_BLOCK: {
-                                char *buildopt = bds_string_dup(bds_string_atrim(line));
-                                pkg_append_buildopts(pkg, buildopt);
-                        } break;
-                        default:
-                                fprintf(stderr, "%s(%d): badly formatted dependency file %s\n", __FILE__, __LINE__,
-                                        dep_file);
-                                exit(EXIT_FAILURE);
-                        }
-
-                cycle:
-                        free(line);
-                        line     = NULL;
-                        num_line = 0;
-                }
-
-        finish:
-                if (line != NULL) {
-                        free(line);
-                }
-
-                if (fp)
-                        fclose(fp);
-                free(dep_file);
-
-                pkg_node_destroy(&pkg_node);
         }
 
+        pkg_node->color = COLOR_BLACK;
+
+        enum block_type block_type = NO_BLOCK;
+
+        while (getline(&line, &num_line, fp) != -1) {
+                assert(line);
+
+                if (skip_dep_line(line))
+                        goto cycle;
+
+                if (strcmp(line, "METAPKG") == 0) {
+                        // pkg->dep.is_meta = true;
+                        assert(pkg->dep.is_meta);
+                        goto cycle;
+                }
+
+                if (strcmp(line, "REQUIRED:") == 0) {
+                        block_type = REQUIRED_BLOCK;
+                        goto cycle;
+                }
+
+                if (strcmp(line, "OPTIONAL:") == 0) {
+                        block_type = OPTIONAL_BLOCK;
+                        goto cycle;
+                }
+
+                if (strcmp(line, "BUILDOPTS:") == 0) {
+                        block_type = BUILDOPTS_BLOCK;
+                        goto cycle;
+                }
+
+                if (block_type == OPTIONAL_BLOCK && !options.optional)
+                        goto cycle;
+
+                /*
+                 * Recursive processing will occur on meta packages since they act as "include" files.  We
+                 * only
+                 * check the recursive flag if the dependency file is not marked as a meta package.
+                 */
+                if (!pkg->dep.is_meta && !options.recursive) /*  && dist > 0) */
+                        goto finish;
+
+                switch (block_type) {
+                case OPTIONAL_BLOCK:
+                        if (!options.optional)
+                                break;
+                case REQUIRED_BLOCK: {
+                        if (skip_installed(line, options))
+                                break;
+
+                        struct pkg_node *req = pkg_graph_search(pkg_graph, line);
+                        assert(req);
+
+                        /* struct pkg_node new_node = pkg_node_create(&req->pkg, dist + 1); */
+                        /* bds_queue_push(node_queue, &new_node); */
+
+                        if (options.revdeps)
+                                pkg_append_parent(&req->pkg, pkg);
+                        pkg_append_required(pkg, &req->pkg);
+
+                        if (req->color == COLOR_WHITE)
+                                __load_dep(pkg_graph, req, options);
+
+                } break;
+                case BUILDOPTS_BLOCK: {
+                        char *buildopt = bds_string_dup(bds_string_atrim(line));
+                        pkg_append_buildopts(pkg, buildopt);
+                } break;
+                default:
+                        fprintf(stderr, "%s(%d): badly formatted dependency file %s\n", __FILE__, __LINE__,
+                                dep_file);
+                        exit(EXIT_FAILURE);
+                }
+
+        cycle:
+                free(line);
+                line     = NULL;
+                num_line = 0;
+        }
+
+finish:
+        if (line != NULL) {
+                free(line);
+        }
+
+        if (fp)
+                fclose(fp);
+        free(dep_file);
+
+        /* pkg_node_destroy(&pkg_node); */
         return rc;
 }
 
 int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
 {
-        struct pkg *pkg = pkg_graph_search(pkg_graph, pkg_name);
-        if (pkg == NULL)
+        struct pkg_node *pkg_node = pkg_graph_search(pkg_graph, pkg_name);
+        if (pkg_node == NULL)
                 return 1;
 
-        struct bds_queue *node_queue = bds_queue_alloc(1, sizeof(struct pkg_node), NULL);
-        bds_queue_set_autoresize(node_queue, true);
-	
-        struct pkg_node pkg_node     = pkg_node_create(pkg, 0);
+        pkg_graph_clear_markers(pkg_graph);
 
-        bds_queue_push(node_queue, &pkg_node);
+        /* struct bds_queue *node_queue = bds_queue_alloc(1, sizeof(struct pkg_node), NULL); */
+        /* bds_queue_set_autoresize(node_queue, true); */
 
-        int rc = __load_dep(node_queue, pkg_graph, options);
+        /* struct pkg_node pkg_node     = pkg_node_create(pkg, 0); */
 
-        bds_queue_free(&node_queue);
+        /* bds_queue_push(node_queue, &pkg_node); */
+
+        int rc = __load_dep(pkg_graph, pkg_node, options);
+
+        /* bds_queue_free(&node_queue); */
 
         return rc;
+}
+
+bool file_exists(const char *pathname)
+{
+        struct stat sb;
+
+        if (stat(pathname, &sb) == -1)
+                return false;
+
+        if (!S_ISREG(sb.st_mode))
+                return false;
+
+        return true;
+	
+}
+
+bool dep_file_exists(const char *pkg_name)
+{
+        char dep_file[4096];
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+
+        return file_exists(dep_file);
 }
 
 const char *create_default_dep(struct pkg *pkg)
