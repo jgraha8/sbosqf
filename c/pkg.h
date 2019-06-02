@@ -50,7 +50,8 @@ struct pkg {
         struct pkg_dep dep;
         uint32_t info_crc; /// CRC of README and REQUIRED list in .info
         // struct pkg_sbo *sbo;
-	bool owner;
+	bool parent_installed;
+	bool for_removal;
 };
 
 struct pkg_node {
@@ -70,21 +71,29 @@ void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir);
 
 int pkg_set_info_crc(struct pkg *pkg);
 
-void pkg_append_required(struct pkg *pkg, struct pkg *req);
+void pkg_insert_required(struct pkg *pkg, struct pkg_node *req_node);
 
-void pkg_append_parent(struct pkg *pkg, struct pkg *parent);
+struct pkg *pkg_bsearch_required(struct pkg *pkg, const char *req_name);
+
+void pkg_insert_parent(struct pkg *pkg, struct pkg_node *parent_node);
+
+struct pkg *pkg_bsearch_parent(struct pkg *pkg, const char *parent_name);
 
 void pkg_append_buildopts(struct pkg *pkg, char *bopt);
+
+size_t pkg_buildopts_size(const struct pkg *pkg);
+const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
 struct pkg_node *pkg_node_alloc(const char *name);
 
 void pkg_node_free(struct pkg_node **pkg_node);
 
 struct pkg_options {
+        int check_installed;
         bool recursive;
         bool optional;
         bool revdeps;
-        int check_installed;
+	bool deep;
 };
 
 struct pkg_options pkg_options_default();
@@ -108,8 +117,8 @@ void pkg_graph_clear_markers(struct pkg_graph *pkg_graph);
 bool pkg_db_exists();
 bool pkg_reviewed_exists();
 
-int pkg_create_db(pkg_nodes_t *pkgs);
-int pkg_create_reviewed(pkg_nodes_t *pkgs);
+int pkg_write_db(pkg_nodes_t *pkgs);
+int pkg_write_reviewed(pkg_nodes_t *pkgs);
 
 int pkg_create_default_deps(pkg_nodes_t *pkgs);
 
@@ -127,9 +136,11 @@ void pkg_node_destroy(struct pkg_node *pkg_node);
 
 int pkg_node_compar(const void *a, const void *b);
 
-#define PKG_ITER_DEPS        0x0
-#define PKG_ITER_REVDEPS     0x1
-#define PKG_ITER_REQ_NEAREST 0x2
+#define PKG_ITER_DEPS          0x00
+#define PKG_ITER_REVDEPS       0x01
+#define PKG_ITER_REQ_NEAREST   0x02
+#define PKG_ITER_FORW          0x04
+#define PKG_ITER_METAPKG_DIST  0x08
 
 typedef int pkg_iterator_flags_t;
 
@@ -143,6 +154,7 @@ struct pkg_iterator {
         // int pkgs_index;
         // struct pkg **pkgp;
         struct bds_stack *visit_nodes;
+	struct pkg_node *(*next)(struct pkg_iterator *iter);
         int max_dist;
 };
 

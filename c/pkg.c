@@ -47,6 +47,7 @@ struct pkg_options pkg_options_default()
 
         options.recursive = true;
         options.optional  = true;
+        options.deep      = true;
 
         return options;
 }
@@ -119,28 +120,51 @@ int pkg_set_info_crc(struct pkg *pkg)
         return 0;
 }
 
-void pkg_append_required(struct pkg *pkg, struct pkg *req)
+static void __pkg_insert_dep(pkg_nodes_t **pkg_list, struct pkg_node *dep_node)
 {
-        if (pkg->dep.required == NULL) {
-                pkg->dep.required = pkg_nodes_alloc_reference();
+        if (*pkg_list == NULL) {
+                *pkg_list = pkg_nodes_alloc_reference();
         }
 
-        if (pkg_nodes_lsearch(pkg->dep.required, req->name))
+        if (pkg_nodes_bsearch(*pkg_list, dep_node->pkg.name))
                 return;
 
-        bds_vector_append(pkg->dep.required, &req);
+        pkg_nodes_insert_sort(*pkg_list, dep_node);
 }
 
-void pkg_append_parent(struct pkg *pkg, struct pkg *parent)
+void pkg_insert_required(struct pkg *pkg, struct pkg_node *req_node)
 {
-        if (pkg->dep.parents == NULL) {
-                pkg->dep.parents = pkg_nodes_alloc_reference();
-        }
+        __pkg_insert_dep(&pkg->dep.required, req_node);
+        //        bds_vector_append(pkg->dep.required, &req);
+}
 
-        if (pkg_nodes_lsearch(pkg->dep.parents, parent->name))
-                return;
+void pkg_insert_parent(struct pkg *pkg, struct pkg_node *parent_node)
+{
+        __pkg_insert_dep(&pkg->dep.parents, parent_node);
+        //        bds_vector_append(pkg->dep.required, &req);
+}
 
-        bds_vector_append(pkg->dep.parents, &parent);
+struct pkg *__pkg_bsearch_dep(pkg_nodes_t *pkg_list, const char *dep_name)
+{
+        if (pkg_list == NULL)
+                return NULL;
+
+        struct pkg_node *node = pkg_nodes_bsearch(pkg_list, dep_name);
+
+        if (node == NULL)
+                return NULL;
+
+        return &node->pkg;
+}
+
+struct pkg *pkg_bsearch_required(struct pkg *pkg, const char *req_name)
+{
+        return __pkg_bsearch_dep(pkg->dep.required, req_name);
+}
+
+struct pkg *pkg_bsearch_parent(struct pkg *pkg, const char *parent_name)
+{
+        return __pkg_bsearch_dep(pkg->dep.parents, parent_name);
 }
 
 void pkg_append_buildopts(struct pkg *pkg, char *bopt)
@@ -149,6 +173,26 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt)
                 pkg->dep.buildopts = bds_vector_alloc(1, sizeof(char *), (void (*)(void *))free_string_ptr);
         }
         bds_vector_append(pkg->dep.buildopts, &bopt);
+}
+
+size_t pkg_buildopts_size(const struct pkg *pkg)
+{
+        if (pkg->dep.buildopts == NULL)
+                return 0;
+
+        return bds_vector_size(pkg->dep.buildopts);
+}
+
+const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
+{
+        if (pkg->dep.buildopts == NULL)
+                return 0;
+
+        const char **bp = (const char **)bds_vector_get(pkg->dep.buildopts, i);
+        if (bp == NULL)
+                return NULL;
+
+        return *bp;
 }
 
 /*
@@ -187,21 +231,17 @@ pkg_nodes_t *pkg_nodes_alloc()
 
 void pkg_nodes_free(pkg_nodes_t **pl) { bds_vector_free(pl); }
 
-
 const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i)
 {
-	struct pkg_node **nodep = (struct pkg_node **)bds_vector_get(nodes, i);
-	
-	if( nodep == NULL )
-		return NULL;
-	
-	return *nodep;
+        const struct pkg_node **nodep = (const struct pkg_node **)bds_vector_get((pkg_nodes_t *)nodes, i);
+
+        if (nodep == NULL)
+                return NULL;
+
+        return *nodep;
 }
 
-size_t pkg_nodes_size(const pkg_nodes_t *nodes)
-{
-	return bds_vector_size(nodes);
-}
+size_t pkg_nodes_size(const pkg_nodes_t *nodes) { return bds_vector_size(nodes); }
 
 void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg_node) { bds_vector_append(pl, &pkg_node); }
 
@@ -328,7 +368,7 @@ struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_n
 
 void pkg_node_clear_markers(struct pkg_node *pkg_node)
 {
-        pkg_node->dist       = 0;
+        pkg_node->dist       = -1;
         pkg_node->color      = COLOR_WHITE;
         pkg_node->edge_index = 0;
 }
@@ -452,7 +492,7 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_di
                 if (pkg_node->pkg.name == NULL) /* Package has been removed */
                         continue;
 
-                fprintf(fp, "%s:0x%x", pkg_node->pkg.name, pkg_node->pkg.info_crc);
+                fprintf(fp, "%s:%x", pkg_node->pkg.name, pkg_node->pkg.info_crc);
                 if (write_sbo_dir)
                         fprintf(fp, ":%s", pkg_node->pkg.sbo_dir + strlen(user_config.sbopkg_repo) + 1);
                 fprintf(fp, "\n");
@@ -462,7 +502,7 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_di
         return 0;
 }
 
-int pkg_create_db(pkg_nodes_t *pkgs)
+int pkg_write_db(pkg_nodes_t *pkgs)
 {
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
@@ -470,7 +510,7 @@ int pkg_create_db(pkg_nodes_t *pkgs)
         return __create_db(db_file, pkgs, true);
 }
 
-int pkg_create_reviewed(pkg_nodes_t *pkgs)
+int pkg_write_reviewed(pkg_nodes_t *pkgs)
 {
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
@@ -480,13 +520,19 @@ int pkg_create_reviewed(pkg_nodes_t *pkgs)
 
 int pkg_create_default_deps(pkg_nodes_t *pkgs)
 {
+        printf("creating default dependency files...\n");
         for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
 
                 if (dep_file_exists(pkg_node->pkg.name))
                         continue;
 
-                create_default_dep(&pkg_node->pkg);
+                const char *dep_file = NULL;
+                if ((dep_file = create_default_dep_verbose(&pkg_node->pkg)) != NULL) {
+                        printf("  created %s\n", dep_file);
+                } else {
+                        fprintf(stderr, "  unable to create %s dependency file\n", pkg_node->pkg.name);
+                }
         }
         return 0;
 }
@@ -615,7 +661,7 @@ int pkg_review(struct pkg *pkg)
 
         bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
         if ((dep = file_mmap(file_name)) == NULL) {
-                create_default_dep(pkg);
+                create_default_dep_verbose(pkg);
                 assert(dep = file_mmap(file_name));
         }
 
@@ -636,7 +682,7 @@ int pkg_review(struct pkg *pkg)
 
         fprintf(fp,
                 BORDER1 "\n"
-                        "%s\n" // package name
+                        "%s (dependency file)\n" // package name
                 BORDER1 "\n",
                 pkg->name);
 
@@ -661,12 +707,6 @@ finish:
         return 0;
 }
 
-static int next_node_dist(pkg_iterator_flags_t iter_flags, const struct pkg_node *next_node,
-                          const struct pkg_node *cur_node)
-{
-        return !(iter_flags & PKG_ITER_REVDEPS ? next_node->pkg.dep.is_meta : cur_node->pkg.dep.is_meta);
-}
-
 static pkg_nodes_t *iterator_edge_nodes(const struct pkg_iterator *iter)
 {
         struct pkg_node *cur_node = iter->cur_node;
@@ -676,12 +716,15 @@ static pkg_nodes_t *iterator_edge_nodes(const struct pkg_iterator *iter)
         return (iter->flags & PKG_ITER_REVDEPS ? cur_node->pkg.dep.parents : cur_node->pkg.dep.required);
 }
 
+static struct pkg_node *__iterator_next_forward(struct pkg_iterator *iter);
+static struct pkg_node *__iterator_next_reverse(struct pkg_iterator *iter);
+
 struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg_graph *pkg_graph, const char *pkg_name,
                                     pkg_iterator_flags_t flags, int max_dist)
 {
         memset(iter, 0, sizeof(*iter));
 
-        iter->flags     = flags;
+        iter->flags    = flags;
         iter->max_dist = max_dist;
         iter->cur_node = pkg_graph_search(pkg_graph, pkg_name);
 
@@ -689,14 +732,119 @@ struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg_graph 
                 return NULL;
 
         pkg_graph_clear_markers(pkg_graph);
+
+        iter->visit_nodes     = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
         iter->cur_node->color = COLOR_GREY;
+        iter->cur_node->dist  = 0;
 
-        iter->visit_nodes = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
+        if (iter->flags & PKG_ITER_FORW) {
+                iter->next = __iterator_next_forward;
+                return iter->cur_node;
+        } else {
+                iter->next = __iterator_next_reverse;
 
-        return pkg_iterator_next(iter);
+                return iter->next(iter);
+        }
+        return iter->next(iter);
 }
 
-struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter)
+static void set_next_node_dist(const struct pkg_iterator *iter, struct pkg_node *next_node)
+{
+        int incr = 1;
+        if ((iter->flags & PKG_ITER_METAPKG_DIST) == 0) {
+                incr = !(iter->flags & PKG_ITER_REVDEPS ? next_node->pkg.dep.is_meta
+                                                        : iter->cur_node->pkg.dep.is_meta);
+        }
+
+        const int dist = iter->cur_node->dist + incr;
+
+        if (next_node->dist < 0) {
+                next_node->dist = dist;
+        } else {
+                /*
+                  Take the minimum distance
+                 */
+                if (dist < next_node->dist)
+                        next_node->dist = dist;
+        }
+}
+
+static struct pkg_node *get_next_edge_node(const struct pkg_iterator *iter, pkg_nodes_t *edge_nodes)
+{
+        struct pkg_node *next_node = NULL;
+
+        next_node = *(struct pkg_node **)bds_vector_get(edge_nodes, iter->cur_node->edge_index++);
+
+        if (next_node->color == COLOR_GREY) {
+                fprintf(stderr, "cyclic dependency found: %s <--> %s\n", iter->cur_node->pkg.name, next_node->pkg.name);
+                exit(EXIT_FAILURE); //return NULL;
+        }
+	set_next_node_dist(iter, next_node);
+	
+        return next_node;
+}
+
+
+static struct pkg_node *__iterator_next_reverse(struct pkg_iterator *iter)
+{
+        if (iter->cur_node == NULL)
+                return NULL;
+        assert(iter->cur_node->color == COLOR_GREY);
+
+        pkg_nodes_t *edge_nodes = iterator_edge_nodes(iter);
+
+        const bool at_max_dist     = (iter->max_dist >= 0 && iter->cur_node->dist == iter->max_dist);
+        const bool have_edge_nodes = (edge_nodes ? (iter->cur_node->edge_index >= 0 &&
+                                                    iter->cur_node->edge_index < bds_vector_size(edge_nodes))
+                                                 : false);
+
+        struct pkg_node *next_node = NULL;
+
+        if (!have_edge_nodes || at_max_dist) {
+                if (at_max_dist && (iter->flags & PKG_ITER_REQ_NEAREST)) {
+                        if (have_edge_nodes) {
+                                if ((next_node = get_next_edge_node(iter, edge_nodes)) == NULL)
+                                        return NULL;
+
+                                next_node->color = COLOR_BLACK;
+                                return next_node;
+                        }
+                }
+
+                next_node        = iter->cur_node;
+                next_node->color = COLOR_BLACK;
+                assert(next_node->dist >= 0);
+
+                iter->cur_node = NULL;
+                bds_stack_pop(iter->visit_nodes, &iter->cur_node);
+
+                return next_node;
+        }
+
+        // Traverse to edge node
+        while (iter->cur_node->edge_index < pkg_nodes_size(edge_nodes)) {
+
+                if ((next_node = get_next_edge_node(iter, edge_nodes)) == NULL)
+                        return NULL;
+
+                if (next_node->color == COLOR_BLACK && iter->flags & PKG_ITER_REQ_NEAREST) {
+                        return next_node;
+                }
+
+                if (next_node->color == COLOR_WHITE) {
+                        // Visit the node
+                        bds_stack_push(iter->visit_nodes, &iter->cur_node);
+
+                        next_node->color = COLOR_GREY;
+                        iter->cur_node = next_node;
+                        break;
+                }
+        }
+
+        return __iterator_next_reverse(iter);
+}
+
+static struct pkg_node *__iterator_next_forward(struct pkg_iterator *iter)
 {
 
         struct pkg_node *cur_node = iter->cur_node;
@@ -711,33 +859,13 @@ struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter)
             (edge_nodes ? (cur_node->edge_index < 0 || cur_node->edge_index == bds_vector_size(edge_nodes))
                         : true);
 
-        if (no_edge_nodes || at_max_dist) {
-                /*
-                  In the case that we are at_max_dist, update the edge index to ensure no more edge nodes are
-                  visited for the current node.
+        if (cur_node->color == COLOR_BLACK)
+                goto prev_node;
+        if (no_edge_nodes)
+                goto prev_node;
+        if (at_max_dist && (iter->flags & PKG_ITER_REQ_NEAREST) == 0)
+                goto prev_node;
 
-                  This shouldn't be needed since, the node will be marked COLOR_BLACK.
-                 */
-                cur_node->edge_index = -1;
-
-                if ((iter->flags & PKG_ITER_REQ_NEAREST) == 0 )
-                        assert(cur_node->color == COLOR_GREY);
-                cur_node->color = COLOR_BLACK;
-
-                struct pkg_node *leaf_node = cur_node;
-
-                /* Traverse backwards for the "previous node" */
-                iter->cur_node = NULL;
-                bds_stack_pop(iter->visit_nodes, &iter->cur_node);
-
-                return leaf_node;
-        }
-
-        /*
-          If visiting the edge nodes have been disabled we shouldn't reach here. Adding an assertion to enforce
-          this logic.
-         */
-        assert(cur_node->edge_index >= 0);
         while (cur_node->edge_index < bds_vector_size(edge_nodes)) {
 
                 struct pkg_node *next_node =
@@ -745,28 +873,40 @@ struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter)
 
                 bool visit_next = false;
                 if (next_node->color == COLOR_WHITE) {
-                        visit_next        = true;
-                        next_node->color = COLOR_GREY;
-                } else if ((iter->flags & PKG_ITER_REQ_NEAREST) && cur_node->color != COLOR_BLACK) {
                         visit_next = true;
-			/* Do not set color */
+                        if (at_max_dist && (iter->flags & PKG_ITER_REQ_NEAREST)) {
+                                next_node->color = COLOR_BLACK; /* Disable further processing of the node */
+                        } else {
+                                next_node->color = COLOR_GREY;
+                        }
                 }
 
                 if (visit_next) {
                         bds_stack_push(iter->visit_nodes, &cur_node);
                         /*
                           NOTE: We evaluate the next node distance here, but do not terminate based on the
-                          iterator's maximum distance. This is done on entry as the distance of the current node is
+                          iterator's maximum distance. This is done on entry as the distance of the current
+                          node is
                           used to determine if we should try to visit the edge nodes.
                          */
-                        next_node->dist = cur_node->dist + next_node_dist(iter->flags, next_node, cur_node);
-                        iter->cur_node  = next_node;
-                        break;
+                        set_next_node_dist(iter, next_node);
+                        iter->cur_node = next_node;
+
+                        return iter->cur_node;
                 }
         }
 
-        return pkg_iterator_next(iter);
+prev_node:
+        cur_node->color = COLOR_BLACK;
+
+        /* Traverse backwards for the "previous node" */
+        iter->cur_node = NULL;
+        bds_stack_pop(iter->visit_nodes, &iter->cur_node);
+
+        return __iterator_next_forward(iter);
 }
+
+struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter) { return iter->next(iter); }
 
 struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter) { return iter->cur_node; }
 

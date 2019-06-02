@@ -23,36 +23,6 @@ void free_string_ptr(char **str)
         *str = NULL;
 }
 
-/* static void destroy_dep_entry(struct dep_entry *de) { memset(de, 0, sizeof(*de)); } */
-
-/* static dep_queue_t *dep_queue_alloc() */
-/* { */
-/*         dep_queue_t *queue = bds_queue_alloc(1, sizeof(struct dep_entry), (void (*)(void *))destroy_dep_entry);
- */
-
-/*         bds_queue_set_autoresize(queue, true); */
-
-/*         return queue; */
-/* } */
-
-/* void dep_queue_free(dep_queue_t **queue) */
-/* { */
-/*         if (!(*queue)) */
-/*                 return; */
-
-/*         bds_queue_free(queue); */
-/* } */
-
-/* void dep_queue_push(dep_queue_t *queue, const struct dep_entry *entry) { bds_queue_push(queue, entry); } */
-
-/* int dep_queue_pop(dep_queue_t *queue, struct dep_entry *entry) */
-/* { */
-/*         if (bds_queue_pop(queue, entry) == NULL) */
-/*                 return 1; */
-
-/*         return 0; */
-/* } */
-
 bool skip_installed(const char *pkg_name, struct pkg_options options)
 {
         if (options.check_installed) {
@@ -130,20 +100,17 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
 {
         int rc = 0;
 
-        char *line      = NULL;
-        size_t num_line = 0;
-        char *dep_file  = NULL;
-        FILE *fp        = NULL;
+        char *line       = NULL;
+        size_t num_line  = 0;
+        char *dep_file   = NULL;
+        FILE *fp         = NULL;
 
-        struct pkg *pkg = &pkg_node->pkg;
-        int dist        = pkg_node->dist;
-
-        dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg->name);
+        dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg_node->pkg.name);
         fp       = fopen(dep_file, "r");
 
         if (fp == NULL) {
                 // Create the default dep file (don't ask just do it)
-                if (create_default_dep(pkg) == NULL) {
+                if (create_default_dep_verbose(&pkg_node->pkg) == NULL) {
                         rc = 1;
                         goto finish;
                 }
@@ -155,7 +122,7 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                 }
         }
 
-        pkg_node->color = COLOR_BLACK;
+        pkg_node->color = COLOR_GREY;
 
         enum block_type block_type = NO_BLOCK;
 
@@ -166,8 +133,7 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         goto cycle;
 
                 if (strcmp(line, "METAPKG") == 0) {
-                        // pkg->dep.is_meta = true;
-                        assert(pkg->dep.is_meta);
+                        assert(pkg_node->pkg.dep.is_meta);
                         goto cycle;
                 }
 
@@ -190,11 +156,10 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         goto cycle;
 
                 /*
-                 * Recursive processing will occur on meta packages since they act as "include" files.  We
-                 * only
+                 * Recursive processing will occur on meta packages since they act as "include" files. We only
                  * check the recursive flag if the dependency file is not marked as a meta package.
                  */
-                if (!pkg->dep.is_meta && !options.recursive) /*  && dist > 0) */
+                if (!pkg_node->pkg.dep.is_meta && !options.recursive)
                         goto finish;
 
                 switch (block_type) {
@@ -205,23 +170,28 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         if (skip_installed(line, options))
                                 break;
 
-                        struct pkg_node *req = pkg_graph_search(pkg_graph, line);
-                        assert(req);
+                        struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
-                        /* struct pkg_node new_node = pkg_node_create(&req->pkg, dist + 1); */
-                        /* bds_queue_push(node_queue, &new_node); */
+                        assert(req_node);
+                        if (req_node->color == COLOR_GREY) {
+                                fprintf(stderr, "error: load_dep: cyclic dependency found: %s <--> %s\n",
+                                        pkg_node->pkg.name, req_node->pkg.name);
+                                exit(EXIT_FAILURE);
+                        }
 
                         if (options.revdeps)
-                                pkg_append_parent(&req->pkg, pkg);
-                        pkg_append_required(pkg, &req->pkg);
+                                pkg_insert_parent(&req_node->pkg, pkg_node);
 
-                        if (req->color == COLOR_WHITE)
-                                __load_dep(pkg_graph, req, options);
+                        pkg_insert_required(&pkg_node->pkg, req_node);
+
+                        /* Avoid revisiting nodes more than once */
+                        if (req_node->color == COLOR_WHITE)
+                                __load_dep(pkg_graph, req_node, options);
 
                 } break;
                 case BUILDOPTS_BLOCK: {
                         char *buildopt = bds_string_dup(bds_string_atrim(line));
-                        pkg_append_buildopts(pkg, buildopt);
+                        pkg_append_buildopts(&pkg_node->pkg, buildopt);
                 } break;
                 default:
                         fprintf(stderr, "%s(%d): badly formatted dependency file %s\n", __FILE__, __LINE__,
@@ -236,6 +206,8 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
         }
 
 finish:
+        pkg_node->color = COLOR_BLACK;
+
         if (line != NULL) {
                 free(line);
         }
@@ -244,7 +216,6 @@ finish:
                 fclose(fp);
         free(dep_file);
 
-        /* pkg_node_destroy(&pkg_node); */
         return rc;
 }
 
@@ -255,17 +226,7 @@ int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_
                 return 1;
 
         pkg_graph_clear_markers(pkg_graph);
-
-        /* struct bds_queue *node_queue = bds_queue_alloc(1, sizeof(struct pkg_node), NULL); */
-        /* bds_queue_set_autoresize(node_queue, true); */
-
-        /* struct pkg_node pkg_node     = pkg_node_create(pkg, 0); */
-
-        /* bds_queue_push(node_queue, &pkg_node); */
-
         int rc = __load_dep(pkg_graph, pkg_node, options);
-
-        /* bds_queue_free(&node_queue); */
 
         return rc;
 }
@@ -281,7 +242,6 @@ bool file_exists(const char *pathname)
                 return false;
 
         return true;
-	
 }
 
 bool dep_file_exists(const char *pkg_name)
@@ -344,3 +304,152 @@ finish:
 
         return rp;
 }
+
+const char *create_default_dep_verbose(struct pkg *pkg)
+{
+        const char *dep_file = NULL;
+        if ((dep_file = create_default_dep(pkg)) != NULL) {
+                printf("  created %s\n", dep_file);
+        } else {
+                fprintf(stderr, "  unable to create %s dependency file\n", pkg->name);
+        }
+        return dep_file;
+}
+
+static void write_buildopts(FILE *fp, const struct pkg *pkg)
+{
+        const size_t n = pkg_buildopts_size(pkg);
+
+        for (size_t i = 0; i < n; ++i) {
+                fprintf(fp, " %s", pkg_buildopts_get_const(pkg, i));
+        }
+}
+
+void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
+{
+        struct pkg_iterator iter;
+
+        pkg_iterator_flags_t flags = 0;
+        int max_dist               = -1;
+
+        if (options.revdeps) {
+                flags = PKG_ITER_REVDEPS;
+                if (!options.deep)
+                        max_dist = 1;
+        } else {
+                flags = PKG_ITER_DEPS;
+        }
+
+        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist); node != NULL;
+             node                  = pkg_iterator_next(&iter)) {
+
+                if (node->pkg.dep.is_meta)
+                        continue;
+
+                if (options.check_installed) {
+                        const char *tag =
+                            (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
+                        if (slack_pkg_is_installed(node->pkg.name, tag))
+                                continue;
+                }
+
+                fprintf(fp, "%s", node->pkg.name);
+
+                if (fp != stdout) {
+                        write_buildopts(fp, &node->pkg);
+                        fprintf(fp, "\n");
+                }
+        }
+
+        pkg_iterator_destroy(&iter);
+}
+
+#if 0
+void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
+{
+        struct pkg_iterator deps_iter, revdeps_iter;
+
+        const char *tag = (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
+
+	// Walk the dep tree
+
+
+
+        for (struct pkg_node *dep_node  = pkg_iterator_begin(&deps_iter, pkg_graph, pkg_name, PKG_ITER_DEPS, -1);
+             dep_node != NULL; dep_node = pkg_iterator_next(&iter)) {
+		// Mark all packages for removal
+		dep_node->pkg.for_removal = true;
+	}
+
+	pkg_iterator_destroy(&deps_iter);
+
+        for (struct pkg_node *dep_node  = pkg_iterator_begin(&deps_iter, pkg_graph, pkg_name, PKG_ITER_DEPS, -1);
+             dep_node != NULL; dep_node = pkg_iterator_next(&deps_iter)) {
+
+		/*
+		  Check immediate parent packages to see if any are installed
+		*/
+                for (struct pkg_node *revdep_node =
+			     pkg_iterator_begin(&revdeps_iter, pkg_graph, dep_node->pkg.name, PKG_ITER_REVDEPS, 1);
+                     revdep_node != NULL; revdep_node = pkg_iterator_next(&revdesp_iter)) {
+
+			struct pkg_node *rnode =  pkg_iterator_node(&revdeps_iter);
+			
+			if( rnode == NULL ) {
+				assert( strcmp(rnode->pkg.name, dep_node->pkg.name) == 0 );
+				continue;
+			}
+			assert( dep_node == rnode );
+
+			if (!rnode->pkg.parent_installed) {
+                                if (!revdep_node->pkg.for_removal && slack_pkg_is_installed(revdep_node->pkg.name, tag)) {
+                                        printf("%s is required by at least %s\n", rnode->pkg.name,
+                                               revdep_node->pkg.name);
+                                        rnode->pkg.parent_installed = true;
+                                }
+                        }
+			
+		}
+
+		/*
+		  If a package has at least one parent installed
+		  whichi is not marked for removal, then unmark the
+		  package for removal.
+		 */
+		if( dep_node->pkg.parent_installed ) {
+			dep_node->pkg.for_removal = false;
+		
+		pkg_iterator_destroy(&revdeps_iter);
+	}
+                        if (node->pkg.dep.is_meta)
+                                continue;
+
+                        struct pkg_node *req_node = pkg_iterator_node(&iter);
+
+                        if (!req_node) {
+                                assert(strcmp(pkg_name, node->pkg.name) == 0);
+                                goto write_pkg;
+                        }
+
+                        if (!req_node->pkg.parent_installed) {
+                                if (slack_pkg_is_installed(node->pkg.name, tag)) {
+                                        printf("%s is required by at least %s\n", req_node->pkg.name,
+                                               node->pkg.name);
+                                        req_node->pkg.parent_installed = true;
+                                }
+                        }
+
+                write_pkg:
+                        if (!node->pkg.parent_installed) {
+                                fprintf(fp, "%s", node->pkg.name);
+                                if (fp != stdout) {
+                                        fprintf(fp, "\n");
+                                }
+                        }
+                }
+
+                pkg_iterator_destroy(&iter);
+
+                return 0;
+        }
+#endif

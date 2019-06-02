@@ -9,6 +9,7 @@ int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_
 bool file_exists(const char *pathname);
 bool dep_file_exists(const char *pkg_name);
 const char *create_default_dep(struct pkg *pkg);
+const char *create_default_dep_verbose(struct pkg *pkg);
 bool is_meta_pkg(const char *pkg_name);
 
 #endif
