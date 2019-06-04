@@ -150,7 +150,8 @@ struct pkg_iterator {
         pkg_iterator_flags_t flags;
         // struct pkg_node pkg_node;
         struct pkg_node *cur_node;
-        pkg_nodes_t *edge_nodes;
+	struct pkg_node *edge_node;
+	pkg_nodes_t *edge_nodes;
         // int pkgs_index;
         // struct pkg **pkgp;
         struct bds_stack *visit_nodes;
