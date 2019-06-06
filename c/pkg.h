@@ -28,7 +28,9 @@ void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg);
 void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg);
 int pkg_nodes_remove(pkg_nodes_t *pl, const char *pkg_name);
 struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name);
+const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char *name);
 struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pl, const char *name);
+const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pl, const char *name);
 int pkg_nodes_compar(const void *a, const void *b);
 
 enum pkg_color {
@@ -63,7 +65,11 @@ struct pkg_node {
 
 struct pkg pkg_create(const char *name);
 
+struct pkg *pkg_dup_nodep(const struct pkg *pkg_src);
+
 void pkg_destroy(struct pkg *pkg);
+
+
 
 void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src);
 
@@ -94,6 +100,7 @@ struct pkg_options {
         bool optional;
         bool revdeps;
 	bool deep;
+	bool reviewed_auto_add;
 };
 
 struct pkg_options pkg_options_default();
@@ -107,6 +114,7 @@ struct pkg_graph *pkg_graph_alloc();
 struct pkg_graph *pkg_graph_alloc_reference();
 void pkg_graph_free(struct pkg_graph **pkg_graph);
 pkg_nodes_t *pkg_graph_sbo_pkgs(struct pkg_graph *pkg_graph);
+pkg_nodes_t *pkg_graph_assign_sbo_pkgs(struct pkg_graph *pkg_graph, pkg_nodes_t *sbo_pkgs);
 pkg_nodes_t *pkg_graph_meta_pkgs(struct pkg_graph *pkg_graph);
 int pkg_graph_load_sbo(struct pkg_graph *pkg_graph);
 struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_name);
@@ -129,7 +137,9 @@ int pkg_load_sbo(pkg_nodes_t *pkgs);
 int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options);
 int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options);
 
-int pkg_review(struct pkg *pkg);
+int pkg_review(const struct pkg *pkg);
+int pkg_review_prompt(const struct pkg *pkg);
+int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs);
 
 struct pkg_node pkg_node_create(struct pkg *pkg, int dist);
 void pkg_node_destroy(struct pkg_node *pkg_node);

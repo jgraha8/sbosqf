@@ -100,10 +100,10 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
 {
         int rc = 0;
 
-        char *line       = NULL;
-        size_t num_line  = 0;
-        char *dep_file   = NULL;
-        FILE *fp         = NULL;
+        char *line      = NULL;
+        size_t num_line = 0;
+        char *dep_file  = NULL;
+        FILE *fp        = NULL;
 
         dep_file = bds_string_dup_concat(3, user_config.depdir, "/", pkg_node->pkg.name);
         fp       = fopen(dep_file, "r");
@@ -253,7 +253,7 @@ bool dep_file_exists(const char *pkg_name)
         return file_exists(dep_file);
 }
 
-const char *create_default_dep(struct pkg *pkg)
+const char *create_default_dep(const struct pkg *pkg)
 {
         if (pkg->sbo_dir == NULL)
                 return NULL;
@@ -305,7 +305,7 @@ finish:
         return rp;
 }
 
-const char *create_default_dep_verbose(struct pkg *pkg)
+const char *create_default_dep_verbose(const struct pkg *pkg)
 {
         const char *dep_file = NULL;
         if ((dep_file = create_default_dep(pkg)) != NULL) {
@@ -325,12 +325,41 @@ static void write_buildopts(FILE *fp, const struct pkg *pkg)
         }
 }
 
-void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
+void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+{
+	bool review_pkg = false;
+	struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
+	if( reviewed_node ) {
+		if( reviewed_node->pkg.info_crc != pkg->info_crc )
+			review_pkg = true;
+	} else {
+		review_pkg = true;
+	}
+	
+	if( review_pkg ) {
+		int rc = ( auto_add ? pkg_review(pkg) : pkg_review_prompt(pkg) );
+
+		if( rc == 0 ) {
+			*reviewed_pkgs_dirty = true;
+			if( reviewed_node ) {
+				pkg_copy_nodep(&reviewed_node->pkg, pkg);
+			} else {
+				struct pkg_node *pkg_node = pkg_node_alloc(pkg->name);
+				pkg_copy_nodep(&pkg_node->pkg, pkg);
+					
+				pkg_nodes_insert_sort(reviewed_pkgs, pkg_node);
+			}
+		}
+	}
+}
+
+
+void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
 {
         struct pkg_iterator iter;
 
         pkg_iterator_flags_t flags = 0;
-        int max_dist               = -1;
+        int max_dist               = (options.deep ? -1 : 1);
 
         if (options.revdeps) {
                 flags = PKG_ITER_REVDEPS;
@@ -353,13 +382,19 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
                                 continue;
                 }
 
+		check_reviewed_pkg(&node->pkg, options.reviewed_auto_add, reviewed_pkgs, reviewed_pkgs_dirty);
+
                 fprintf(fp, "%s", node->pkg.name);
+		if( fp == stdout )
+			fprintf(fp, " ");
 
                 if (fp != stdout) {
                         write_buildopts(fp, &node->pkg);
                         fprintf(fp, "\n");
                 }
         }
+	if( fp == stdout )
+		fprintf(fp, "\n");
 
         pkg_iterator_destroy(&iter);
 }

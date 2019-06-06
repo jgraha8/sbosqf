@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <libbds/bds_queue.h>
 #include <libbds/bds_stack.h>
 
 #include "file_mmap.h"
@@ -90,16 +91,18 @@ void pkg_destroy(struct pkg *pkg)
         memset(pkg, 0, sizeof(*pkg));
 }
 
-/* void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src) */
-/* { */
-/*         pkg_destroy(pkg_dst); */
+void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src)
+{
+        pkg_destroy(pkg_dst);
 
-/*         if (pkg_src->sbo_dir) */
-/*                 pkg_dst->sbo_dir = bds_string_dup(pkg_src->sbo_dir); */
-/*         pkg_dst->info_crc        = pkg_src->info_crc; */
+        pkg_dst->name = bds_string_dup(pkg_src->name);
 
-/*         return; */
-/* } */
+        if (pkg_src->sbo_dir)
+                pkg_dst->sbo_dir = bds_string_dup(pkg_src->sbo_dir);
+        pkg_dst->info_crc        = pkg_src->info_crc;
+
+        return;
+}
 
 void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir) { pkg->sbo_dir = bds_string_dup(sbo_dir); }
 
@@ -284,12 +287,17 @@ int pkg_nodes_remove(pkg_nodes_t *pl, const char *pkg_name)
 
 struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name)
 {
+        return (struct pkg_node *)pkg_nodes_lsearch_const((const pkg_nodes_t *)pl, name);
+}
+
+const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char *name)
+{
         struct pkg_node key;
         const struct pkg_node *keyp = &key;
 
         key.pkg.name = (char *)name;
 
-        struct pkg_node **pkgp = (struct pkg_node **)bds_vector_lsearch(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch(pl, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
@@ -298,12 +306,17 @@ struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name)
 
 struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pl, const char *name)
 {
+        return (struct pkg_node *)pkg_nodes_bsearch_const((const pkg_nodes_t *)pl, name);
+}
+
+const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pl, const char *name)
+{
         struct pkg_node key;
         const struct pkg_node *keyp = &key;
 
         key.pkg.name = (char *)name;
 
-        struct pkg_node **pkgp = (struct pkg_node **)bds_vector_bsearch(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch(pl, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
@@ -343,6 +356,15 @@ void pkg_graph_free(struct pkg_graph **pkg_graph)
 }
 
 pkg_nodes_t *pkg_graph_sbo_pkgs(struct pkg_graph *pkg_graph) { return pkg_graph->sbo_pkgs; }
+
+pkg_nodes_t *pkg_graph_assign_sbo_pkgs(struct pkg_graph *pkg_graph, pkg_nodes_t *sbo_pkgs)
+{
+        if (pkg_graph->sbo_pkgs)
+                pkg_nodes_free(&pkg_graph->sbo_pkgs);
+        pkg_graph->sbo_pkgs = sbo_pkgs;
+
+        return pkg_graph->sbo_pkgs;
+}
 
 pkg_nodes_t *pkg_graph_meta_pkgs(struct pkg_graph *pkg_graph) { return pkg_graph->meta_pkgs; }
 
@@ -520,7 +542,7 @@ int pkg_write_reviewed(pkg_nodes_t *pkgs)
 
 int pkg_create_default_deps(pkg_nodes_t *pkgs)
 {
-        printf("creating default dependency files...\n");
+        // printf("creating default dependency files...\n");
         for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
 
@@ -528,12 +550,70 @@ int pkg_create_default_deps(pkg_nodes_t *pkgs)
                         continue;
 
                 const char *dep_file = NULL;
-                if ((dep_file = create_default_dep_verbose(&pkg_node->pkg)) != NULL) {
-                        printf("  created %s\n", dep_file);
-                } else {
+                if ((dep_file = create_default_dep_verbose(&pkg_node->pkg)) == NULL) {
                         fprintf(stderr, "  unable to create %s dependency file\n", pkg_node->pkg.name);
                 }
         }
+        return 0;
+}
+
+int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
+{
+        size_t num_nodes = 0;
+
+        // printf("comparing new and previous package sets...\n");
+
+        struct bds_queue *updated_pkg_queue = bds_queue_alloc(1, sizeof(struct pkg), NULL);
+	bds_queue_set_autoresize(updated_pkg_queue, true);
+        struct bds_queue *added_pkg_queue   = bds_queue_alloc(1, sizeof(struct pkg), NULL);
+	bds_queue_set_autoresize(added_pkg_queue, true);	
+
+        num_nodes = pkg_nodes_size(new_pkgs);
+        for (size_t i = 0; i < num_nodes; ++i) {
+                const struct pkg_node *new_pkg = pkg_nodes_get_const(new_pkgs, i);
+
+                struct pkg_node *old_pkg = pkg_nodes_bsearch(old_pkgs, new_pkg->pkg.name);
+                if (old_pkg) {
+                        if (old_pkg->pkg.info_crc != new_pkg->pkg.info_crc) {
+                                bds_queue_push(updated_pkg_queue, &new_pkg->pkg);
+                                // printf("  %s updated\n", new_pkg->pkg.name);
+                        }
+                        old_pkg->color = COLOR_BLACK;
+                } else {
+                        bds_queue_push(added_pkg_queue, &new_pkg->pkg);
+                        // printf("  %s added\n", new_pkg->pkg.name);
+                }
+        }
+
+        struct pkg mod_pkg;
+
+        if (bds_queue_size(added_pkg_queue) > 0)
+                printf("Added:\n");
+        while (bds_queue_pop(added_pkg_queue, &mod_pkg)) {
+                printf("  [A] %s\n", mod_pkg.name);
+        }
+        bds_queue_free(&added_pkg_queue);
+
+        if (bds_queue_size(updated_pkg_queue) > 0)
+                printf("Updated:\n");
+        while (bds_queue_pop(updated_pkg_queue, &mod_pkg)) {
+                printf("  [U] %s\n", mod_pkg.name);
+        }
+        bds_queue_free(&updated_pkg_queue);
+
+        bool have_removed = false;
+        num_nodes         = pkg_nodes_size(old_pkgs);
+        for (size_t i = 0; i < num_nodes; ++i) {
+                const struct pkg_node *old_pkg = pkg_nodes_get_const(old_pkgs, i);
+                if (old_pkg->color == COLOR_WHITE) {
+                        if (!have_removed) {
+                                printf("Removed:\n");
+                                have_removed = true;
+                        }
+                        printf("  [R] %s\n", old_pkg->pkg.name);
+                }
+        }
+
         return 0;
 }
 
@@ -629,7 +709,7 @@ int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
         return 0;
 }
 
-int pkg_review(struct pkg *pkg)
+int pkg_review(const struct pkg *pkg)
 {
         const char *sbo_info = sbo_find_info(user_config.sbopkg_repo, pkg->name);
         if (!sbo_info) {
@@ -705,6 +785,48 @@ finish:
                 file_munmap(&dep);
 
         return 0;
+}
+
+static char read_response()
+{
+        char response[2048] = {0};
+
+        if (fgets(response, sizeof(response) - 1, stdin) == NULL) {
+                return -1;
+        }
+
+        char *c;
+
+        // Expect newline
+        if ((c = bds_string_rfind(response, "\n"))) {
+                *c = '\0';
+        } else {
+                return -1;
+        }
+
+        // Expect only one character
+        if (response[1])
+                return -1;
+
+        return response[0];
+}
+
+int pkg_review_prompt(const struct pkg *pkg)
+{
+        if (pkg_review(pkg) != 0)
+                return -1;
+
+        while (1) {
+                printf("\nAdd package to REVIEWED? (y/n)");
+                char r = 0;
+                if ((r = read_response()) < 0) {
+                        continue;
+                }
+                if (r == 'y')
+                        return 0;
+                if (r == 'n')
+                        return 1;
+        }
 }
 
 static pkg_nodes_t *iterator_edge_nodes(const struct pkg_iterator *iter)

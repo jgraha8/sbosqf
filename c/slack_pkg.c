@@ -11,7 +11,7 @@
 
 #define SLACK_PKGDB "/var/log/packages"
 
-struct slack_pkg slack_pkg_parse(const char *pkgdb_entry)
+struct slack_pkg slack_pkg_parse(const char *packages_entry)
 {
         int rc = 0;
         struct slack_pkg slack_pkg;
@@ -21,7 +21,7 @@ struct slack_pkg slack_pkg_parse(const char *pkgdb_entry)
         char *c = NULL;
         // Package format ex: apachetop-0.18.4-x86_64-1_cx
         // name-version-arch-build{tag}
-        slack_pkg.name = bds_string_dup(pkgdb_entry);
+        slack_pkg.name = bds_string_dup(packages_entry);
 
         if ((c = bds_string_rfind(slack_pkg.name, "-")) == NULL) {
                 rc = 1;
