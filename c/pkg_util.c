@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <libbds/bds_queue.h>
+#include <libbds/bds_stack.h>
 #include <libbds/bds_string.h>
 
 #include "file_mmap.h"
@@ -361,10 +362,11 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
         pkg_iterator_flags_t flags = 0;
         int max_dist               = (options.deep ? -1 : 1);
 
+	struct bds_stack *revdeps_pkgs = NULL;
+	
         if (options.revdeps) {
                 flags = PKG_ITER_REVDEPS;
-                if (!options.deep)
-                        max_dist = 1;
+		revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL);
         } else {
                 flags = PKG_ITER_DEPS;
         }
@@ -384,15 +386,33 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
 
 		check_reviewed_pkg(&node->pkg, options.reviewed_auto_add, reviewed_pkgs, reviewed_pkgs_dirty);
 
-                fprintf(fp, "%s", node->pkg.name);
-		if( fp == stdout )
-			fprintf(fp, " ");
+		if( options.revdeps ) {
+			bds_stack_push(revdeps_pkgs, &node->pkg);
+		} else {
+			fprintf(fp, "%s", node->pkg.name);
+			if( fp == stdout ) {
+				fprintf(fp, " ");
+			} else {
+				write_buildopts(fp, &node->pkg);
+				fprintf(fp, "\n");
+			}
+		}
+	}
 
-                if (fp != stdout) {
-                        write_buildopts(fp, &node->pkg);
-                        fprintf(fp, "\n");
-                }
-        }
+	if( options.revdeps ) {
+		struct pkg pkg;
+		while(bds_stack_pop(revdeps_pkgs, &pkg)) {
+			fprintf(fp, "%s", pkg.name);
+			if( fp == stdout ) {
+				fprintf(fp, " ");
+			} else {
+				write_buildopts(fp, &pkg);
+				fprintf(fp, "\n");
+			}
+			
+		}
+		bds_stack_free(&revdeps_pkgs);
+	}
 	if( fp == stdout )
 		fprintf(fp, "\n");
 

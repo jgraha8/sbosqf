@@ -48,7 +48,6 @@ struct pkg_options pkg_options_default()
 
         options.recursive = true;
         options.optional  = true;
-        options.deep      = true;
 
         return options;
 }
@@ -564,8 +563,9 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
         // printf("comparing new and previous package sets...\n");
 
         struct bds_queue *updated_pkg_queue = bds_queue_alloc(1, sizeof(struct pkg), NULL);
-	bds_queue_set_autoresize(updated_pkg_queue, true);
         struct bds_queue *added_pkg_queue   = bds_queue_alloc(1, sizeof(struct pkg), NULL);
+
+	bds_queue_set_autoresize(updated_pkg_queue, true);	
 	bds_queue_set_autoresize(added_pkg_queue, true);	
 
         num_nodes = pkg_nodes_size(new_pkgs);
@@ -576,12 +576,10 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                 if (old_pkg) {
                         if (old_pkg->pkg.info_crc != new_pkg->pkg.info_crc) {
                                 bds_queue_push(updated_pkg_queue, &new_pkg->pkg);
-                                // printf("  %s updated\n", new_pkg->pkg.name);
                         }
                         old_pkg->color = COLOR_BLACK;
                 } else {
                         bds_queue_push(added_pkg_queue, &new_pkg->pkg);
-                        // printf("  %s added\n", new_pkg->pkg.name);
                 }
         }
 
@@ -817,14 +815,14 @@ int pkg_review_prompt(const struct pkg *pkg)
                 return -1;
 
         while (1) {
-                printf("\nAdd package to REVIEWED? (y/n)");
+                printf("Add %s to REVIEWED ([y]/n)? ", pkg->name);
                 char r = 0;
                 if ((r = read_response()) < 0) {
                         continue;
                 }
-                if (r == 'y')
+                if (r == 'y' || r == 'Y' || r == '\0')
                         return 0;
-                if (r == 'n')
+                if (r == 'n' || r == 'N')
                         return 1;
         }
 }

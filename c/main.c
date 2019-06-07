@@ -28,11 +28,12 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "ckunpRsehlrg";
+static const char *options_str            = "ckdunpRsehlrg";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("check-installed", 'c'),         /* option */
     LONG_OPT("check-foreign-installed", 'k'), /* option */
+    LONG_OPT("deep", 'd'),                    /* option */
     LONG_OPT("update-pkgdb", 'u'),            /* action */
     LONG_OPT("no-recursive", 'n'),            /* option */
     LONG_OPT("revdeps", 'p'),                 /* option */
@@ -96,9 +97,14 @@ void set_action(struct action_struct *as, enum action value, const struct option
         as->option = option;
 }
 
-static void print_help();
-
 enum output_mode { OUTPUT_STDOUT = 1, OUTPUT_FILE };
+
+static void print_help();
+static int update_pkgdb(struct pkg_graph *pkg_graph);
+static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
+                         enum output_mode output_mode);
+static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
+static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
 
 int main(int argc, char **argv)
 {
@@ -110,7 +116,7 @@ int main(int argc, char **argv)
         pkg_nodes_t *sbo_pkgs          = NULL;
         struct pkg_options pkg_options = pkg_options_default();
 
-	pkg_options.reviewed_auto_add = true;
+        pkg_options.reviewed_auto_add = true;
 
         if (setvbuf(stdout, NULL, _IONBF, 0) != 0)
                 perror("setvbuf()");
@@ -132,6 +138,9 @@ int main(int argc, char **argv)
                         break;
                 case 'k':
                         pkg_options.check_installed |= PKG_CHECK_ANY_INSTALLED;
+                        break;
+                case 'd':
+                        pkg_options.deep = true;
                         break;
                 case 'u':
                         set_action(&as, ACTION_UPDATEDB, find_option(NULL, 'u'));
@@ -177,9 +186,8 @@ int main(int argc, char **argv)
                 }
         }
 
-        struct pkg_node *pkg_node;	
         const char *pkg_name = NULL;
-	
+
         if (pkg_name_required) {
                 if (argc - optind != 1) {
                         print_help();
@@ -191,16 +199,16 @@ int main(int argc, char **argv)
         pkg_graph = pkg_graph_alloc();
         sbo_pkgs  = pkg_graph_sbo_pkgs(pkg_graph);
 
-	if( create_graph ) {
-		if (!pkg_db_exists()) {
-			pkg_load_sbo(sbo_pkgs);
-			pkg_write_db(sbo_pkgs);
-			pkg_create_default_deps(sbo_pkgs);
-		} else {
-			pkg_load_db(sbo_pkgs);
-		}
-	}
-	
+        if (create_graph) {
+                if (!pkg_db_exists()) {
+                        pkg_load_sbo(sbo_pkgs);
+                        pkg_write_db(sbo_pkgs);
+                        pkg_create_default_deps(sbo_pkgs);
+                } else {
+                        pkg_load_db(sbo_pkgs);
+                }
+        }
+
         int rc = 0;
 
         if (as.action == 0) {
@@ -209,114 +217,18 @@ int main(int argc, char **argv)
 
         switch (as.action) {
         case ACTION_REVIEW:
-                pkg_options.recursive = false;
-                rc                    = pkg_load_dep(pkg_graph, pkg_name, pkg_options);
-                if (rc != 0)
-                        break;
-
-                pkg_node = pkg_graph_search(pkg_graph, pkg_name);
-                if (pkg_node == NULL) {
-                        fprintf(stderr, "package %s does not exist\n", pkg_name);
-                        rc = 1;
-                        break;
-                }
-
-                pkg_nodes_t *reviewed_pkgs = pkg_nodes_alloc();
-                bool reviewed_pkgs_dirty   = false;
-
-                if (pkg_reviewed_exists())
-                        rc = pkg_load_reviewed(reviewed_pkgs);
-
-                rc = pkg_review_prompt(&pkg_node->pkg);
-                if (rc == 0) {
-                        struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg_node->pkg.name);
-                        if (reviewed_node) {
-                                if (reviewed_node->pkg.info_crc != pkg_node->pkg.info_crc) {
-                                        reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
-                                        reviewed_pkgs_dirty         = true;
-                                }
-                        } else {
-                                // Create new node
-                                reviewed_node               = pkg_node_alloc(pkg_node->pkg.name);
-                                reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
-                                pkg_nodes_insert_sort(reviewed_pkgs, reviewed_node);
-                                reviewed_pkgs_dirty = true;
-                        }
-                        if (reviewed_pkgs_dirty)
-                                rc = pkg_write_reviewed(reviewed_pkgs);
-                }
-                pkg_nodes_free(&reviewed_pkgs);
-
+                rc = review_pkg(pkg_graph, pkg_name);
                 break;
-        case ACTION_UPDATEDB: {
-                pkg_nodes_t *new_sbo_pkgs  = pkg_nodes_alloc();
-
-                if ((rc = pkg_load_sbo(new_sbo_pkgs)) != 0)
-                        break;
-
-                rc = pkg_compar_sets(new_sbo_pkgs, sbo_pkgs);
-		sbo_pkgs = pkg_graph_assign_sbo_pkgs(pkg_graph, new_sbo_pkgs);
-		
-                if (rc != 0)
-                        break;
-
-                if ((rc = pkg_write_db(sbo_pkgs)) != 0)
-                        break;
-
-                rc = pkg_create_default_deps(sbo_pkgs);
-        } break;
+        case ACTION_UPDATEDB:
+                rc = update_pkgdb(pkg_graph);
+                break;
         case ACTION_EDIT_DEP:
                 fprintf(stderr, "option --edit is not yet implementated\n");
                 rc = 1;
                 break;
-        case ACTION_WRITE_SQF: {
-                rc = pkg_load_dep(pkg_graph, pkg_name, pkg_options);
-                if (rc != 0)
-                        break;
-                if (pkg_options.revdeps) {
-                        rc = pkg_load_all_deps(pkg_graph, pkg_options);
-                        if (rc != 0)
-                                break;
-                }
-
-                char sqf[256];
-                if (pkg_options.revdeps) {
-                        bds_string_copyf(sqf, sizeof(sqf), "%s-revdeps.sqf", pkg_name);
-                } else {
-                        bds_string_copyf(sqf, sizeof(sqf), "%s.sqf", pkg_name);
-                }
-
-                FILE *fp = NULL;
-                if (output_mode == OUTPUT_FILE) {
-                        fp = fopen(sqf, "w");
-                        if (fp == NULL) {
-                                fprintf(stderr, "unable to create sqf file %s\n", sqf);
-                                rc = 1;
-                                break;
-                        }
-                } else {
-                        fp = stdout;
-                }
-
-                pkg_nodes_t *reviewed_pkgs = pkg_nodes_alloc();
-                bool reviewed_pkgs_dirty   = false;
-
-                if (pkg_reviewed_exists())
-                        rc = pkg_load_reviewed(reviewed_pkgs);
-
-                if (rc == 0) {
-                        write_sqf(fp, pkg_graph, pkg_name, pkg_options, reviewed_pkgs, &reviewed_pkgs_dirty);
-                }
-
-                if (reviewed_pkgs_dirty) {
-                        rc = pkg_write_reviewed(reviewed_pkgs);
-                }
-                pkg_nodes_free(&reviewed_pkgs);
-
-                if (fp != stdout)
-                        fclose(fp);
+        case ACTION_WRITE_SQF:
+                rc = write_pkg_sqf(pkg_graph, pkg_name, pkg_options, output_mode);
                 break;
-        }
 #if 0
         case ACTION_WRITE_REMOVE_PKG: {
                 /*
@@ -376,27 +288,9 @@ int main(int argc, char **argv)
                 rc = 0;
         } break;
 #endif
-        case ACTION_SEARCH_PKG: {
-                if ((rc = pkg_load_db(sbo_pkgs)) != 0)
-                        break;
-
-                char *__pkg_name = bds_string_dup(pkg_name);
-
-                bds_string_tolower(__pkg_name);
-
-                size_t num_nodes = pkg_nodes_size(sbo_pkgs);
-                for (size_t i = 0; i < num_nodes; ++i) {
-                        char p[64];
-
-                        const struct pkg_node *node = pkg_nodes_get_const(sbo_pkgs, i);
-                        bds_string_copyf(p, sizeof(p), "%s", node->pkg.name);
-
-                        if (bds_string_contains(bds_string_tolower(p), __pkg_name)) {
-                                printf("%s\n", node->pkg.sbo_dir);
-                        }
-                }
-                free(__pkg_name);
-        } break;
+        case ACTION_SEARCH_PKG:
+                rc = search_pkg(sbo_pkgs, pkg_name);
+                break;
         default:
                 printf("action %d not handled\n", as.action);
         }
@@ -416,4 +310,180 @@ static void print_help()
         printf("Usage: %s [options] pkg\n"
                "Options:\n",
                PROGRAM_NAME);
+}
+
+static int update_pkgdb(struct pkg_graph *pkg_graph)
+{
+        int rc                    = 0;
+        pkg_nodes_t *sbo_pkgs     = pkg_graph_sbo_pkgs(pkg_graph);
+        pkg_nodes_t *new_sbo_pkgs = pkg_nodes_alloc();
+
+        if ((rc = pkg_load_sbo(new_sbo_pkgs)) != 0)
+                return rc;
+
+        rc       = pkg_compar_sets(new_sbo_pkgs, sbo_pkgs);
+        sbo_pkgs = pkg_graph_assign_sbo_pkgs(pkg_graph, new_sbo_pkgs);
+
+        if (rc != 0)
+                return rc;
+
+        if ((rc = pkg_write_db(sbo_pkgs)) != 0)
+                return rc;
+
+        return pkg_create_default_deps(sbo_pkgs);
+}
+
+static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name)
+{
+        int rc                     = 0;
+        pkg_nodes_t *reviewed_pkgs = NULL;
+        bool reviewed_pkgs_dirty   = false;
+
+        struct pkg_node *reviewed_node  = NULL;
+        const struct pkg_node *pkg_node = NULL;
+
+        struct pkg_options pkg_options = pkg_options_default();
+
+        pkg_options.recursive = false;
+
+        rc = pkg_load_dep(pkg_graph, pkg_name, pkg_options);
+        if (rc != 0)
+                return rc;
+
+        pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
+        if (pkg_node == NULL) {
+                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                rc = 1;
+                return rc;
+        }
+
+        reviewed_pkgs = pkg_nodes_alloc();
+        if (pkg_reviewed_exists()) {
+                rc = pkg_load_reviewed(reviewed_pkgs);
+                if (rc != 0)
+                        goto finish;
+        }
+
+        reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg_name);
+
+        if (reviewed_node && reviewed_node->pkg.info_crc == pkg_node->pkg.info_crc) {
+                rc = pkg_review(&pkg_node->pkg);
+        } else {
+                rc = pkg_review_prompt(&pkg_node->pkg);
+                if (rc == 0) {
+                        if (reviewed_node) {
+                                if (reviewed_node->pkg.info_crc != pkg_node->pkg.info_crc) {
+                                        reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
+                                        reviewed_pkgs_dirty         = true;
+                                }
+                        } else {
+                                reviewed_node               = pkg_node_alloc(pkg_node->pkg.name);
+                                reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
+                                pkg_nodes_insert_sort(reviewed_pkgs, reviewed_node);
+                                reviewed_pkgs_dirty = true;
+                        }
+                        if (reviewed_pkgs_dirty)
+                                rc = pkg_write_reviewed(reviewed_pkgs);
+                }
+        }
+finish:
+        if (reviewed_pkgs)
+                pkg_nodes_free(&reviewed_pkgs);
+
+        return rc;
+}
+
+static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
+                         enum output_mode output_mode)
+{
+        int rc = 0;
+        char sqf_file[256];
+        FILE *fp = NULL;
+
+        pkg_nodes_t *reviewed_pkgs = NULL;
+        bool reviewed_pkgs_dirty   = false;
+
+        rc = pkg_load_dep(pkg_graph, pkg_name, pkg_options);
+        if (rc != 0)
+                return rc;
+
+        if (pkg_options.revdeps) {
+                rc = pkg_load_all_deps(pkg_graph, pkg_options);
+                if (rc != 0)
+                        return rc;
+        }
+
+        if (pkg_options.revdeps) {
+                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-revdeps.sqf", pkg_name);
+        } else {
+                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s.sqf", pkg_name);
+        }
+
+        if (output_mode == OUTPUT_FILE) {
+                fp = fopen(sqf_file, "w");
+                if (fp == NULL) {
+                        fprintf(stderr, "unable to create %s\n", sqf_file);
+                        rc = 1;
+                        goto finish;
+                }
+        } else {
+                fp = stdout;
+        }
+
+        reviewed_pkgs = pkg_nodes_alloc();
+        if (pkg_reviewed_exists()) {
+                rc = pkg_load_reviewed(reviewed_pkgs);
+                if (rc != 0)
+                        goto finish;
+        }
+
+        write_sqf(fp, pkg_graph, pkg_name, pkg_options, reviewed_pkgs, &reviewed_pkgs_dirty);
+
+        if (reviewed_pkgs_dirty) {
+                rc = pkg_write_reviewed(reviewed_pkgs);
+        }
+
+finish:
+        if (reviewed_pkgs)
+                pkg_nodes_free(&reviewed_pkgs);
+
+        if (fp && fp != stdout)
+                fclose(fp);
+
+        return rc;
+}
+
+static int compar_string_ptr(const void *a, const void *b) { return strcmp(*(const char **)a, *(const char **)b); }
+static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name)
+{
+        size_t num_nodes            = 0;
+        struct bds_vector *results  = NULL;
+        size_t num_results          = 0;
+        char *__pkg_name            = NULL;
+        const size_t sbo_dir_offset = strlen(user_config.sbopkg_repo) + 1;
+
+        __pkg_name = bds_string_dup(pkg_name);
+        bds_string_tolower(__pkg_name);
+
+        results   = bds_vector_alloc(1, sizeof(const char *), free);
+        num_nodes = pkg_nodes_size(sbo_pkgs);
+        for (size_t i = 0; i < num_nodes; ++i) {
+                const struct pkg_node *node = pkg_nodes_get_const(sbo_pkgs, i);
+                char *sbo_dir               = bds_string_dup(node->pkg.sbo_dir + sbo_dir_offset);
+                char *p                     = bds_string_dup(node->pkg.name);
+                if (bds_string_contains(bds_string_tolower(p), __pkg_name)) {
+                        bds_vector_append(results, &sbo_dir);
+                }
+                free(p);
+        }
+        free(__pkg_name);
+
+        bds_vector_qsort(results, compar_string_ptr);
+
+        num_results = bds_vector_size(results);
+        for (size_t i = 0; i < num_results; ++i) {
+                printf("%s\n", *(const char **)bds_vector_get(results, i));
+        }
+
+        return 0;
 }

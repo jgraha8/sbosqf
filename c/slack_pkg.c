@@ -6,6 +6,7 @@
 #include <sys/types.h>
 
 #include <libbds/bds_string.h>
+#include <libbds/bds_vector.h>
 
 #include "slack_pkg.h"
 
@@ -69,19 +70,27 @@ void slack_pkg_destroy(struct slack_pkg *slack_pkg)
         memset(slack_pkg, 0, sizeof(*slack_pkg));
 }
 
-bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
+int compar_slack_pkg(const void *a, const void *b)
 {
+        return strcmp(((const struct slack_pkg *)a)->name, ((const struct slack_pkg *)b)->name);
+}
+
+__attribute__((destructor)) static void __fini();
+
+struct bds_vector *pkg_cache = NULL;
+
+static int init_pkg_cache()
+{
+        struct dirent *dirent = NULL;
         DIR *dp = opendir(SLACK_PKGDB);
         if (dp == NULL) {
                 perror("opendir");
-                return false;
+                return 1;
         }
 
-        bool rc               = false;
-        bool do_check         = true;
-        struct dirent *dirent = NULL;
+        pkg_cache = bds_vector_alloc(1, sizeof(struct slack_pkg), (void (*)(void *))slack_pkg_destroy);
 
-        while (do_check && (dirent = readdir(dp)) != NULL) {
+        while ((dirent = readdir(dp)) != NULL) {
                 if (dirent->d_type != DT_REG)
                         continue;
 
@@ -89,21 +98,52 @@ bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
                 if (slack_pkg.name == NULL)
                         continue;
 
-                if (strcmp(slack_pkg.name, pkg_name) == 0) {
-                        if (tag) {
-                                if (strcmp(slack_pkg.tag, tag) == 0) {
-                                        rc = true;
-                                }
-                        } else {
-                                rc = true;
-                        }
-                        do_check = false;
-                }
-                slack_pkg_destroy(&slack_pkg);
+                bds_vector_append(pkg_cache, &slack_pkg);
         }
 
         if (dp)
                 closedir(dp);
 
-        return rc;
+        bds_vector_qsort(pkg_cache, compar_slack_pkg);
+
+        return 0;
+}
+
+bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
+{
+        bool rc = false;
+
+        const struct slack_pkg *cache_pkg = NULL;
+        struct slack_pkg slack_pkg;
+
+        if (!pkg_cache) {
+                if (init_pkg_cache() != 0) {
+                        fprintf(stderr, "unable to create slackware package cache\n");
+                        return 1;
+                }
+        }
+
+        slack_pkg.name = bds_string_dup(pkg_name);
+        cache_pkg      = bds_vector_bsearch(pkg_cache, &slack_pkg, compar_slack_pkg);
+
+        if (!cache_pkg)
+                goto finish;
+
+        if (tag) {
+                if (strcmp(cache_pkg->tag, tag) == 0) {
+                        rc = true;
+                }
+        } else {
+                rc = true;
+        }
+
+finish:
+        free(slack_pkg.name);
+	return rc;
+}
+
+static void __fini()
+{
+        if (pkg_cache)
+                bds_vector_free(&pkg_cache);
 }
