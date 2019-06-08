@@ -109,9 +109,9 @@ static int init_pkg_cache()
         return 0;
 }
 
-bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
+const struct slack_pkg *slack_pkg_search_const(const char *pkg_name, const char *tag)
 {
-        bool rc = false;
+	struct slack_pkg *rp = NULL;
 
         const struct slack_pkg *cache_pkg = NULL;
         struct slack_pkg slack_pkg;
@@ -126,20 +126,27 @@ bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
         slack_pkg.name = bds_string_dup(pkg_name);
         cache_pkg      = bds_vector_bsearch(pkg_cache, &slack_pkg, compar_slack_pkg);
 
-        if (!cache_pkg)
+        if (cache_pkg == NULL)
                 goto finish;
 
         if (tag) {
                 if (strcmp(cache_pkg->tag, tag) == 0) {
-                        rc = true;
+			rp = cache_pkg;
                 }
         } else {
-                rc = true;
+		rp = cache_pkg;
         }
 
 finish:
         free(slack_pkg.name);
-	return rc;
+
+	return rp;
+}
+       
+
+bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
+{
+	return (slack_pkg_search_const(pkg_name, tag) != NULL );
 }
 
 static void __fini()

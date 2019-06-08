@@ -4,19 +4,19 @@
 #define DEPDIR "/var/lib/sbopkg-dep2sqf"
 #define PKGFILE
 
-#define BLACK "01;30"
-#define RED "01;31"
-#define GREEN "01;32"
-#define YELLOW "01;33"
-#define BLUE '01;34'
-#define MAGENTA "01;35"
-#define CYAN "01;36"
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
+#define YELLOW "\x1B[33m"
+#define BLUE "\x1B[34m"
+#define MAGENTA "\x1B[35m"
+#define CYAN "\x1B[36m"
+#define WHITE "\x1B[37m"
 
-#define COLOR_OK "\033[${GREEN}m"
-#define COLOR_INFO "\033[${YELLOW}m"
-#define COLOR_WARN "\033[${MAGENTA}m"
-#define COLOR_FAIL "\033[${RED}m"
-#define COLOR_END "\033[0m"
+#define COLOR_OK GREEN
+#define COLOR_INFO YELLOW
+#define COLOR_WARN MAGENTA
+#define COLOR_FAIL RED
+#define COLOR_END "\x1B[0m"
 
 // Parameters
 #define CONFIG ".sbopkg-dep2sqf"

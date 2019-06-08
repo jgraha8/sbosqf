@@ -109,9 +109,9 @@ char *sbo_load_readme(const char *sbo_dir, const char *pkg_name)
 	return readme;
 }
 
-const char *sbo_read_requires(const char *sbo_dir, const char *pkg_name)
+const char *read_info_string(const char *sbo_dir, const char *pkg_name, const char *key)
 {
-        static char sbo_requires[4096];
+        static char info_str[4096];
         const char *rp = NULL;
 
         char *info_file = bds_string_dup_concat(4, sbo_dir, "/", pkg_name, ".info");
@@ -121,11 +121,11 @@ const char *sbo_read_requires(const char *sbo_dir, const char *pkg_name)
                 goto finish;
         }
 
-        char *c = bds_string_find(info->data, "REQUIRES=");
+        char *c = bds_string_find(info->data, key);
         if (c == NULL) {
                 goto finish;
         }
-        char *str = c + strlen("REQUIRES=");
+        char *str = c + strlen(key);
 
 	// Find opening quote
 	assert(c = bds_string_find(str, "\""));
@@ -139,8 +139,8 @@ const char *sbo_read_requires(const char *sbo_dir, const char *pkg_name)
         while ((c = bds_string_find(str, "\\"))) {
                 *c = ' ';
         }
-        strncpy(sbo_requires, bds_string_atrim(str), 4096);
-        rp = sbo_requires;
+        strncpy(info_str, bds_string_atrim(str), sizeof(info_str));
+        rp = info_str;
 
 finish:
         if (info_file)
@@ -149,6 +149,16 @@ finish:
                 file_munmap(&info);
 
         return rp;
+}
+
+const char *sbo_read_requires(const char *sbo_dir, const char *pkg_name)
+{
+	return read_info_string(sbo_dir, pkg_name, "REQUIRES=");
+}
+
+const char *sbo_read_version(const char *sbo_dir, const char *pkg_name)
+{
+	return read_info_string(sbo_dir, pkg_name, "VERSION=");
 }
 
 

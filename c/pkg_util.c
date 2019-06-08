@@ -326,47 +326,48 @@ static void write_buildopts(FILE *fp, const struct pkg *pkg)
         }
 }
 
-void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *reviewed_pkgs,
+                        bool *reviewed_pkgs_dirty)
 {
-	bool review_pkg = false;
-	struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
-	if( reviewed_node ) {
-		if( reviewed_node->pkg.info_crc != pkg->info_crc )
-			review_pkg = true;
-	} else {
-		review_pkg = true;
-	}
-	
-	if( review_pkg ) {
-		int rc = ( auto_add ? pkg_review(pkg) : pkg_review_prompt(pkg) );
+        bool review_pkg                = false;
+        struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
+        if (reviewed_node) {
+                if (reviewed_node->pkg.info_crc != pkg->info_crc)
+                        review_pkg = true;
+        } else {
+                review_pkg = true;
+        }
 
-		if( rc == 0 ) {
-			*reviewed_pkgs_dirty = true;
-			if( reviewed_node ) {
-				pkg_copy_nodep(&reviewed_node->pkg, pkg);
-			} else {
-				struct pkg_node *pkg_node = pkg_node_alloc(pkg->name);
-				pkg_copy_nodep(&pkg_node->pkg, pkg);
-					
-				pkg_nodes_insert_sort(reviewed_pkgs, pkg_node);
-			}
-		}
-	}
+        if (review_pkg) {
+                int rc = (auto_add ? pkg_review(pkg) : pkg_review_prompt(pkg));
+
+                if (rc == 0) {
+                        *reviewed_pkgs_dirty = true;
+                        if (reviewed_node) {
+                                pkg_copy_nodep(&reviewed_node->pkg, pkg);
+                        } else {
+                                struct pkg_node *pkg_node = pkg_node_alloc(pkg->name);
+                                pkg_copy_nodep(&pkg_node->pkg, pkg);
+
+                                pkg_nodes_insert_sort(reviewed_pkgs, pkg_node);
+                        }
+                }
+        }
 }
 
-
-void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
+               pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
 {
         struct pkg_iterator iter;
 
         pkg_iterator_flags_t flags = 0;
         int max_dist               = (options.deep ? -1 : 1);
 
-	struct bds_stack *revdeps_pkgs = NULL;
-	
+        struct bds_stack *revdeps_pkgs = NULL;
+
         if (options.revdeps) {
-                flags = PKG_ITER_REVDEPS;
-		revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL);
+                flags        = PKG_ITER_REVDEPS;
+                revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL);
         } else {
                 flags = PKG_ITER_DEPS;
         }
@@ -384,37 +385,36 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
                                 continue;
                 }
 
-		check_reviewed_pkg(&node->pkg, options.reviewed_auto_add, reviewed_pkgs, reviewed_pkgs_dirty);
+                check_reviewed_pkg(&node->pkg, options.reviewed_auto_add, reviewed_pkgs, reviewed_pkgs_dirty);
 
-		if( options.revdeps ) {
-			bds_stack_push(revdeps_pkgs, &node->pkg);
-		} else {
-			fprintf(fp, "%s", node->pkg.name);
-			if( fp == stdout ) {
-				fprintf(fp, " ");
-			} else {
-				write_buildopts(fp, &node->pkg);
-				fprintf(fp, "\n");
-			}
-		}
-	}
+                if (options.revdeps) {
+                        bds_stack_push(revdeps_pkgs, &node->pkg);
+                } else {
+                        fprintf(fp, "%s", node->pkg.name);
+                        if (fp == stdout) {
+                                fprintf(fp, " ");
+                        } else {
+                                write_buildopts(fp, &node->pkg);
+                                fprintf(fp, "\n");
+                        }
+                }
+        }
 
-	if( options.revdeps ) {
-		struct pkg pkg;
-		while(bds_stack_pop(revdeps_pkgs, &pkg)) {
-			fprintf(fp, "%s", pkg.name);
-			if( fp == stdout ) {
-				fprintf(fp, " ");
-			} else {
-				write_buildopts(fp, &pkg);
-				fprintf(fp, "\n");
-			}
-			
-		}
-		bds_stack_free(&revdeps_pkgs);
-	}
-	if( fp == stdout )
-		fprintf(fp, "\n");
+        if (options.revdeps) {
+                struct pkg pkg;
+                while (bds_stack_pop(revdeps_pkgs, &pkg)) {
+                        fprintf(fp, "%s", pkg.name);
+                        if (fp == stdout) {
+                                fprintf(fp, " ");
+                        } else {
+                                write_buildopts(fp, &pkg);
+                                fprintf(fp, "\n");
+                        }
+                }
+                bds_stack_free(&revdeps_pkgs);
+        }
+        if (fp == stdout)
+                fprintf(fp, "\n");
 
         pkg_iterator_destroy(&iter);
 }
