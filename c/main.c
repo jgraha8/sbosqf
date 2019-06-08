@@ -105,7 +105,7 @@ void set_action(struct action_struct *as, enum action value, const struct option
 enum output_mode { OUTPUT_STDOUT = 1, OUTPUT_FILE };
 
 static void print_help();
-static int check_updates(struct pkg_graph *pkg_graph);
+static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int update_pkgdb(struct pkg_graph *pkg_graph);
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
                          enum output_mode output_mode);
@@ -117,6 +117,7 @@ static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
 int main(int argc, char **argv)
 {
         bool pkg_name_required       = true;
+        bool pkg_name_optional       = false;
         enum output_mode output_mode = OUTPUT_FILE;
         bool create_graph            = true;
 
@@ -189,6 +190,7 @@ int main(int argc, char **argv)
                 case 'U':
                         set_action(&as, ACTION_CHECK_UPDATES, find_option(NULL, 'U'));
                         pkg_name_required = false;
+                        pkg_name_optional = true;
                         break;
                 case 'u':
                         set_action(&as, ACTION_UPDATEDB, find_option(NULL, 'u'));
@@ -207,6 +209,15 @@ int main(int argc, char **argv)
                         exit(EXIT_FAILURE);
                 }
                 pkg_name = argv[optind];
+        } else {
+                if (pkg_name_optional) {
+                        if (argc - optind == 1) {
+                                pkg_name = argv[optind];
+                        } else if (argc - optind > 1) {
+                                print_help();
+                                exit(EXIT_FAILURE);
+                        }
+                }
         }
 
         pkg_graph = pkg_graph_alloc();
@@ -233,7 +244,7 @@ int main(int argc, char **argv)
                 rc = review_pkg(pkg_graph, pkg_name);
                 break;
         case ACTION_CHECK_UPDATES:
-                rc = check_updates(pkg_graph);
+                rc = check_updates(pkg_graph, pkg_name);
                 break;
         case ACTION_UPDATEDB:
                 rc = update_pkgdb(pkg_graph);
@@ -272,16 +283,22 @@ static void print_help()
                PROGRAM_NAME);
 }
 
-
-static int check_updates(struct pkg_graph *pkg_graph)
+static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
 {
-        const pkg_nodes_t *sbo_pkgs = pkg_graph_sbo_pkgs(pkg_graph);
-        const size_t num_nodes      = pkg_nodes_size(sbo_pkgs);
+        pkg_nodes_t *pkg_nodes = NULL;
+        if (pkg_name) {
+                pkg_nodes = pkg_nodes_alloc_reference();
+                pkg_nodes_append(pkg_nodes, pkg_graph_search(pkg_graph, pkg_name));
+        } else {
+                pkg_nodes = pkg_graph_sbo_pkgs(pkg_graph);
+        }
+
+        const size_t num_nodes = pkg_nodes_size(pkg_nodes);
 
         for (size_t i = 0; i < num_nodes; ++i) {
-                const struct pkg_node *node = pkg_nodes_get_const(sbo_pkgs, i);
-
+                const struct pkg_node *node       = pkg_nodes_get_const(pkg_nodes, i);
                 const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+
                 if (slack_pkg) {
                         const char *sbo_version = sbo_read_version(node->pkg.sbo_dir, node->pkg.name);
                         assert(sbo_version);
@@ -290,16 +307,19 @@ static int check_updates(struct pkg_graph *pkg_graph)
                         if (diff == 0)
                                 continue;
                         if (diff < 0) {
-                                printf(COLOR_OK "  [U]" COLOR_END " %-24s %-8s --> %s\n", node->pkg.name, slack_pkg->version,
-                                       sbo_version);
+                                printf(COLOR_OK "  [U]" COLOR_END " %-24s %-8s --> %s\n", node->pkg.name,
+                                       slack_pkg->version, sbo_version);
                         } else {
-                                printf(COLOR_WARN "  [D]" COLOR_END " %-24s %-8s --> %s\n", node->pkg.name, slack_pkg->version,
-                                       sbo_version);
+                                printf(COLOR_INFO "  [D]" COLOR_END " %-24s %-8s --> %s\n", node->pkg.name,
+                                       slack_pkg->version, sbo_version);
                         }
                 }
         }
+finish:
+        if (pkg_name)
+                pkg_nodes_free(&pkg_nodes);
 
-	return 0;
+        return 0;
 }
 
 static int update_pkgdb(struct pkg_graph *pkg_graph)
