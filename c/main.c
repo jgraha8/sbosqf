@@ -321,6 +321,55 @@ static void destroy_updated_pkg(struct updated_pkg *updated_pkg)
         memset(updated_pkg, 0, sizeof(*updated_pkg));
 }
 
+#define MIN(a,b) ( (a) < (b) ? (a) : (b) )
+
+static int compar_versions(const char *ver_a, const char *ver_b)
+{
+	char *__ver_a = bds_string_dup(ver_a);
+	char *__ver_b = bds_string_dup(ver_b);
+
+	size_t num_tok_a = 0;
+	char **ver_num_a = NULL;
+
+	size_t num_tok_b = 0;
+	char **ver_num_b = NULL;
+
+	int diff = 0;
+	
+	bds_string_tokenize(__ver_a, ".", &num_tok_a, &ver_num_a);
+	bds_string_tokenize(__ver_b, ".", &num_tok_b, &ver_num_b);
+
+	size_t num_tok = MIN(num_tok_a, num_tok_b);
+	for( size_t i = 0; i<num_tok; ++i ) {
+
+		//diff = strcmp(ver_num_a[i], ver_num_b[i]);
+		diff = atoi(ver_num_a[i]) - atoi(ver_num_b[i]);
+		if( diff == 0 )
+			continue;
+		
+		goto finish;
+	}
+
+	/* Version strings are the same thus far */
+	if( num_tok_a < num_tok_b ) {
+		diff = -(int)(num_tok_b - num_tok_a);
+	} else if( num_tok_a > num_tok_b ) {
+		diff = (int)(num_tok_a - num_tok_b);
+	} else {
+		diff = 0;
+	}
+	
+finish:
+	if( ver_num_a )
+		free(ver_num_a);
+	if( ver_num_b )
+		free(ver_num_b);
+
+	return diff;
+	
+}
+
+#if 0
 static int get_updated_pkgs(struct pkg_graph *pkg_graph, const char *pkg_name, struct bds_queue *updated_pkg_queue)
 {
         pkg_nodes_t *pkg_nodes = NULL;
@@ -360,16 +409,16 @@ static int get_updated_pkgs(struct pkg_graph *pkg_graph, const char *pkg_name, s
 
         return 0;
 }
+#endif
 
 static int get_updated_pkgs2(struct pkg_graph *pkg_graph, const char *pkg_name,
                              struct bds_queue *updated_pkg_queue)
 {
-        bool have_pkg = false; /* Used only for single package pkg_name */
-        struct updated_pkg updated_pkg;
-
+        bool have_pkg          = false; /* Used only for single package pkg_name */
         pkg_nodes_t *pkg_nodes = NULL;
+
         if (pkg_name) {
-                pkg_nodes                   = pkg_nodes_alloc_reference();
+                pkg_nodes             = pkg_nodes_alloc_reference();
                 struct pkg_node *node = pkg_graph_search(pkg_graph, pkg_name);
                 if (node == NULL)
                         goto finish;
@@ -385,14 +434,13 @@ static int get_updated_pkgs2(struct pkg_graph *pkg_graph, const char *pkg_name,
 
         for (ssize_t i = 0; i < num_slack_pkgs; ++i) {
 
+                struct updated_pkg updated_pkg;
+
                 const struct slack_pkg *slack_pkg = slack_pkg_get_const((size_t)i, user_config.sbo_tag);
                 if (slack_pkg == NULL)
                         continue; /* tag did not match */
 
                 const struct pkg_node *node = pkg_nodes_bsearch_const(pkg_nodes, slack_pkg->name);
-
-                struct updated_pkg updated_pkg;
-
                 if (node == NULL) {
                         if (pkg_name == NULL) { /* the package has been removed */
                                 updated_pkg.status            = PKG_REMOVED;
@@ -411,7 +459,7 @@ static int get_updated_pkgs2(struct pkg_graph *pkg_graph, const char *pkg_name,
                 const char *sbo_version = sbo_read_version(node->pkg.sbo_dir, node->pkg.name);
                 assert(sbo_version);
 
-                int diff = strcmp(slack_pkg->version, sbo_version);
+                int diff = compar_versions(slack_pkg->version, sbo_version);
                 if (diff == 0)
                         continue;
 
@@ -428,6 +476,7 @@ finish:
                         /* Check if it's installed */
                         const struct slack_pkg *slack_pkg = slack_pkg_search_const(pkg_name, user_config.sbo_tag);
                         if (slack_pkg) {
+                                struct updated_pkg updated_pkg;
                                 updated_pkg.status            = PKG_REMOVED;
                                 updated_pkg.node              = NULL;
                                 updated_pkg.name              = bds_string_dup(slack_pkg->name);
@@ -458,15 +507,15 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
         while (bds_queue_pop(updated_pkg_queue, &updated_pkg)) {
                 switch (updated_pkg.status) {
                 case PKG_UPDATED:
-                        printf(COLOR_OK "  [U]" COLOR_END " %-24s %-8s --> %s\n", updated_pkg.name,
+                        printf(COLOR_OK "%12s" COLOR_END " %-24s %-8s --> %s\n", "[upgraded]", updated_pkg.name,
                                updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 case PKG_DOWNGRADED:
-                        printf(COLOR_INFO "  [D]" COLOR_END " %-24s %-8s --> %s\n", updated_pkg.name,
+                        printf(COLOR_INFO "%12s" COLOR_END " %-24s %-8s --> %s\n", "[downgraded]", updated_pkg.name,
                                updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 default: /* PKG_REMOVED */
-                        printf(COLOR_FAIL "  [R]" COLOR_END " %-24s %-8s\n", updated_pkg.name,
+                        printf(COLOR_FAIL "%12s" COLOR_END " %-24s %-8s\n", "[removed]", updated_pkg.name,
                                updated_pkg.slack_pkg_version);
                 }
                 destroy_updated_pkg(&updated_pkg);
@@ -684,7 +733,7 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 
                         if (!parent_node->pkg.for_removal &&
                             slack_pkg_is_installed(parent_node->pkg.name, user_config.sbo_tag)) {
-                                printf("  %s required by at least %s\n", node->pkg.name, parent_node->pkg.name);
+                                printf(COLOR_FAIL "%12s" COLOR_END " %-24s <-- %s\n", "[required]", node->pkg.name, parent_node->pkg.name);
                                 node->pkg.for_removal = false;
                                 break;
                         }
