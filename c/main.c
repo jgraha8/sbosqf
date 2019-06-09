@@ -360,8 +360,11 @@ static int compar_versions(const char *ver_a, const char *ver_b)
 	}
 	
 finish:
+	free(__ver_a);
+	free(__ver_b);
 	if( ver_num_a )
 		free(ver_num_a);
+	
 	if( ver_num_b )
 		free(ver_num_b);
 
