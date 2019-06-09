@@ -111,7 +111,7 @@ static int init_pkg_cache()
 
 const struct slack_pkg *slack_pkg_search_const(const char *pkg_name, const char *tag)
 {
-	struct slack_pkg *rp = NULL;
+	const struct slack_pkg *rp = NULL;
 
         const struct slack_pkg *cache_pkg = NULL;
         struct slack_pkg slack_pkg;
@@ -119,7 +119,7 @@ const struct slack_pkg *slack_pkg_search_const(const char *pkg_name, const char 
         if (!pkg_cache) {
                 if (init_pkg_cache() != 0) {
                         fprintf(stderr, "unable to create slackware package cache\n");
-                        return 1;
+                        return NULL;
                 }
         }
 
@@ -148,6 +148,36 @@ bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
 {
 	return (slack_pkg_search_const(pkg_name, tag) != NULL );
 }
+
+ssize_t slack_pkg_size()
+{
+        if (!pkg_cache) {
+                if (init_pkg_cache() != 0) {
+                        fprintf(stderr, "unable to create slackware package cache\n");
+                        return -1;
+                }
+        }
+	return (ssize_t)bds_vector_size(pkg_cache);
+}
+
+const struct slack_pkg *slack_pkg_get_const(size_t i, const char *tag)
+{
+	if (!pkg_cache) {
+                if (init_pkg_cache() != 0) {
+                        fprintf(stderr, "unable to create slackware package cache\n");
+                        return NULL;
+                }
+        }
+
+	const struct slack_pkg *cache_pkg = (const struct slack_pkg *)bds_vector_get(pkg_cache, i);
+
+	if( tag )
+		if( strcmp(cache_pkg->tag, tag) != 0 )
+			return NULL;
+
+	return cache_pkg;
+}
+
 
 static void __fini()
 {

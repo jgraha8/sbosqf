@@ -14,4 +14,7 @@ struct slack_pkg slack_pkg_parse(const char *packages_entry);
 void slack_pkg_destroy(struct slack_pkg *slack_pkg);
 bool slack_pkg_is_installed(const char *pkg_name, const char *tag);
 const struct slack_pkg *slack_pkg_search_const(const char *pkg_name, const char *tag);
+ssize_t slack_pkg_size();
+const struct slack_pkg *slack_pkg_get_const(size_t i, const char *tag);
+
 #endif
