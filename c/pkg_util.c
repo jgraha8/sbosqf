@@ -10,6 +10,7 @@
 
 #include "file_mmap.h"
 #include "pkg_util.h"
+#include "pkg_ops.h"
 #include "sbo.h"
 #include "slack_pkg.h"
 #include "user_config.h"

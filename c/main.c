@@ -19,8 +19,9 @@
 #include <libbds/bds_vector.h>
 
 #include "config.h"
-#include "pkg.h"
+#include "pkg_graph.h"
 #include "pkg_util.h"
+#include "pkg_ops.h"
 #include "sbo.h"
 #include "slack_pkg.h"
 #include "user_config.h"

@@ -1,7 +1,7 @@
 #ifndef __PKG_UTIL_H__
 #define __PKG_UTIL_H__
 
-#include "pkg.h"
+#include "pkg_graph.h"
 
 void free_string_ptr(char **str);
 bool skip_installed(const char *pkg_name, struct pkg_options options);
