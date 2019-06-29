@@ -26,6 +26,12 @@
 #define REVIEWED "REVIEWED"
 #define PARENTDB "PARENTDB"
 #define DEPDB "DEPDB"
+#define PROGRAM_NAME "sbopkg-dep2sqf"
+
+// gnulib config
+#define _GL_INLINE         inline
+#define _GL_EXTERN_INLINE  extern inline
+#define _GL_ATTRIBUTE_PURE __attribute__((pure))
 
 // Environment
 #define PAGER "more"

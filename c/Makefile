@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:=-Wall -Wfatal-errors -Werror -O0 -g -I/usr/local/include
+CFLAGS:=-Wall -Wfatal-errors -Werror -O0 -g -I. -I/usr/local/include
 LDFLAGS:=-L/usr/local/lib 
 LIBS:=-lbds -lz #-lprofiler
 
@@ -10,10 +10,10 @@ LIBS:=-lbds -lz #-lprofiler
 # 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 
-sbopkg-dep2sqf: file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o main.o
+sbopkg-dep2sqf: c-ctype.o filevercmp.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o main.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
-test_pkg: file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o test_pkg.o
+test_pkg: c-ctype.o filevercmp.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o test_pkg.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 .PHONY: clean

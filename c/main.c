@@ -2,6 +2,18 @@
  * @file
  * @brief Main program file for sbopkg-dep2sqf
  *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
 
 #include <assert.h>
@@ -19,9 +31,10 @@
 #include <libbds/bds_vector.h>
 
 #include "config.h"
+#include "filevercmp.h"
 #include "pkg_graph.h"
-#include "pkg_util.h"
 #include "pkg_ops.h"
+#include "pkg_util.h"
 #include "sbo.h"
 #include "slack_pkg.h"
 #include "user_config.h"
@@ -288,7 +301,6 @@ int main(int argc, char **argv)
         return rc;
 }
 
-#define PROGRAM_NAME "sbopkg-dep2sqf"
 static void print_help()
 {
         printf("Usage: %s [options] pkg\n"
@@ -322,10 +334,12 @@ static void destroy_updated_pkg(struct updated_pkg *updated_pkg)
         memset(updated_pkg, 0, sizeof(*updated_pkg));
 }
 
-#define MIN(a,b) ( (a) < (b) ? (a) : (b) )
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 static int compar_versions(const char *ver_a, const char *ver_b)
 {
+        return filevercmp(ver_a, ver_b);
+#if 0	
 	char *__ver_a = bds_string_dup(ver_a);
 	char *__ver_b = bds_string_dup(ver_b);
 
@@ -370,7 +384,7 @@ finish:
 		free(ver_num_b);
 
 	return diff;
-	
+#endif
 }
 
 #if 0
@@ -515,8 +529,8 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
                                updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 case PKG_DOWNGRADED:
-                        printf(COLOR_INFO "%12s" COLOR_END " %-24s %-8s --> %s\n", "[downgraded]", updated_pkg.name,
-                               updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
+                        printf(COLOR_INFO "%12s" COLOR_END " %-24s %-8s --> %s\n", "[downgraded]",
+                               updated_pkg.name, updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 default: /* PKG_REMOVED */
                         printf(COLOR_FAIL "%12s" COLOR_END " %-24s %-8s\n", "[removed]", updated_pkg.name,
@@ -737,7 +751,8 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 
                         if (!parent_node->pkg.for_removal &&
                             slack_pkg_is_installed(parent_node->pkg.name, user_config.sbo_tag)) {
-                                printf(COLOR_FAIL "%12s" COLOR_END " %-24s <-- %s\n", "[required]", node->pkg.name, parent_node->pkg.name);
+                                printf(COLOR_FAIL "%12s" COLOR_END " %-24s <-- %s\n", "[required]", node->pkg.name,
+                                       parent_node->pkg.name);
                                 node->pkg.for_removal = false;
                                 break;
                         }
