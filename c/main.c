@@ -48,7 +48,7 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-static const char *options_str            = "acDdeghklnpRrsUu";
+static const char *options_str            = "acDdeghiklnpRrsUu";
 static const struct option long_options[] = {
     /* These options set a flag. */
     LONG_OPT("add-reviewed", 'a'),        /* option */
@@ -58,6 +58,7 @@ static const struct option long_options[] = {
     LONG_OPT("edit", 'e'),                /* action */
     LONG_OPT("graph", 'g'),               /* action */
     LONG_OPT("help", 'h'),                /* action */
+    LONG_OPT("show-info", 'i'),           /* action */
     LONG_OPT("check-any-installed", 'k'), /* option */
     LONG_OPT("list", 'l'),                /* option */
     LONG_OPT("no-recursive", 'n'),        /* option */
@@ -95,6 +96,7 @@ enum action {
         ACTION_CHECK_UPDATES,
         ACTION_UPDATEDB,
         ACTION_REVIEW,
+	ACTION_SHOW_INFO,
         ACTION_SEARCH_PKG,
         ACTION_EDIT_DEP,
         ACTION_HELP,
@@ -134,6 +136,7 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
                                 enum output_mode output_mode);
 static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
+static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
 
 int main(int argc, char **argv)
@@ -184,6 +187,9 @@ int main(int argc, char **argv)
                 case 'h':
                         print_help();
                         exit(0);
+                case 'i':
+                        set_action(&as, ACTION_SHOW_INFO, find_option(NULL, 'i'));
+                        break;
                 case 'k':
                         pkg_options.check_installed |= PKG_CHECK_ANY_INSTALLED;
                         break;
@@ -269,6 +275,9 @@ int main(int argc, char **argv)
         switch (as.action) {
         case ACTION_REVIEW:
                 rc = review_pkg(pkg_graph, pkg_name);
+                break;
+        case ACTION_SHOW_INFO:
+                rc = show_pkg_info(pkg_graph, pkg_name);
                 break;
         case ACTION_CHECK_UPDATES:
                 rc = check_updates(pkg_graph, pkg_name);
@@ -580,6 +589,18 @@ finish:
                 pkg_nodes_free(&reviewed_pkgs);
 
         return rc;
+}
+
+static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name)
+{
+        const struct pkg_node *pkg_node = NULL;
+
+        pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
+        if (pkg_node == NULL) {
+                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                return 1;
+        }
+	return pkg_show_info(&pkg_node->pkg);
 }
 
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,

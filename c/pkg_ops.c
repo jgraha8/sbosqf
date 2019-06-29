@@ -354,7 +354,7 @@ int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
         return 0;
 }
 
-int pkg_review(const struct pkg *pkg)
+static int __pkg_review(const struct pkg *pkg, bool include_dep)
 {
         const char *sbo_info = sbo_find_info(user_config.sbopkg_repo, pkg->name);
         if (!sbo_info) {
@@ -384,39 +384,40 @@ int pkg_review(const struct pkg *pkg)
         if (!info)
                 goto finish;
 
-        bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
-        if ((dep = file_mmap(file_name)) == NULL) {
-                create_default_dep_verbose(pkg);
-                assert(dep = file_mmap(file_name));
-        }
+	if( include_dep ) {
+		bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
+		if ((dep = file_mmap(file_name)) == NULL) {
+			create_default_dep_verbose(pkg);
+			assert(dep = file_mmap(file_name));
+		}
+	}
 
         // clang-format: off
         fprintf(fp,
                 BORDER1 "\n"
                         "%s\n" // package name
                 BORDER1 "\n"
-                        "\n" BORDER2 "\n"
-                        "README\n" BORDER2 "\n"
-                        "%s\n" // readme file
-                        "\n" BORDER2 "\n"
-                        "%s.info\n" // package name (info)
-                BORDER2 "\n"
+                        "\n"
                         "%s\n" // package info
+		BORDER2 "\n"
+                        "README\n"
+		BORDER2 "\n"
+                        "%s\n" // readme file
                         "\n",
-                pkg->name, readme->data, pkg->name, info->data);
+                pkg->name, info->data, readme->data);
 
-        fprintf(fp,
-                BORDER1 "\n"
-                        "%s (dependency file)\n" // package name
-                BORDER1 "\n",
-                pkg->name);
+	if( include_dep ) {
+		fprintf(fp,
+			BORDER2 "\n"
+                        "Dependency File\n" // package name
+			BORDER2 "\n");
 
-        if (dep) {
-                fprintf(fp, "%s\n\n", dep->data);
-        } else {
-                fprintf(fp, "%s dependency file not found\n\n", pkg->name);
-        }
-
+		if (dep) {
+			fprintf(fp, "%s\n\n", dep->data);
+		} else {
+			fprintf(fp, "%s dependency file not found\n\n", pkg->name);
+		}
+	}
 finish:
         if (fp)
                 if (pclose(fp) == -1) {
@@ -431,6 +432,10 @@ finish:
 
         return 0;
 }
+
+int pkg_review(const struct pkg *pkg) { return __pkg_review(pkg, true); }
+
+int pkg_show_info(const struct pkg *pkg) { return __pkg_review(pkg, false); }
 
 static char read_response()
 {
