@@ -71,6 +71,7 @@ static int __load_sbo(pkg_nodes_t *pkgs, const char *cur_path)
 
                                 struct pkg_node *pkg_node = pkg_node_alloc(dirent->d_name);
 
+                                pkg_init_version(&pkg_node->pkg, sbo_read_version(sbo_dir, pkg_node->pkg.name));
                                 pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
                                 pkg_set_info_crc(&pkg_node->pkg);
                                 pkg_nodes_append(pkgs, pkg_node);
@@ -124,7 +125,7 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_di
                 if (pkg_node->pkg.name == NULL) /* Package has been removed */
                         continue;
 
-                fprintf(fp, "%s:%x", pkg_node->pkg.name, pkg_node->pkg.info_crc);
+                fprintf(fp, "%s:%s:%x", pkg_node->pkg.name, pkg_node->pkg.version, pkg_node->pkg.info_crc);
                 if (write_sbo_dir)
                         fprintf(fp, ":%s", pkg_node->pkg.sbo_dir + strlen(user_config.sbopkg_repo) + 1);
                 fprintf(fp, "\n");
@@ -173,10 +174,14 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
 
         // printf("comparing new and previous package sets...\n");
 
-        struct bds_queue *updated_pkg_queue = bds_queue_alloc(1, sizeof(struct pkg), NULL);
-        struct bds_queue *added_pkg_queue   = bds_queue_alloc(1, sizeof(struct pkg), NULL);
+        struct bds_queue *upgraded_pkg_queue   = bds_queue_alloc(1, sizeof(struct pkg[2]), NULL);
+        struct bds_queue *downgraded_pkg_queue = bds_queue_alloc(1, sizeof(struct pkg[2]), NULL);
+        struct bds_queue *modified_pkg_queue   = bds_queue_alloc(1, sizeof(struct pkg), NULL);
+        struct bds_queue *added_pkg_queue      = bds_queue_alloc(1, sizeof(struct pkg), NULL);
 
-        bds_queue_set_autoresize(updated_pkg_queue, true);
+        bds_queue_set_autoresize(upgraded_pkg_queue, true);
+        bds_queue_set_autoresize(downgraded_pkg_queue, true);
+        bds_queue_set_autoresize(modified_pkg_queue, true);
         bds_queue_set_autoresize(added_pkg_queue, true);
 
         num_nodes = pkg_nodes_size(new_pkgs);
@@ -186,7 +191,16 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                 struct pkg_node *old_pkg = pkg_nodes_bsearch(old_pkgs, new_pkg->pkg.name);
                 if (old_pkg) {
                         if (old_pkg->pkg.info_crc != new_pkg->pkg.info_crc) {
-                                bds_queue_push(updated_pkg_queue, &new_pkg->pkg);
+                                int ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
+                                struct pkg updated_pkg[2] = {old_pkg->pkg, new_pkg->pkg};
+
+                                if (ver_diff == 0) {
+                                        bds_queue_push(modified_pkg_queue, &updated_pkg[0]);
+                                } else if (ver_diff < 0) {
+                                        bds_queue_push(upgraded_pkg_queue, &updated_pkg);
+                                } else {
+                                        bds_queue_push(downgraded_pkg_queue, &updated_pkg);
+                                }
                         }
                         old_pkg->color = COLOR_BLACK;
                 } else {
@@ -194,21 +208,42 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                 }
         }
 
+        struct pkg added_pkg;
         struct pkg mod_pkg;
+        struct pkg updated_pkg[2];
 
         if (bds_queue_size(added_pkg_queue) > 0)
                 printf("Added:\n");
-        while (bds_queue_pop(added_pkg_queue, &mod_pkg)) {
-                printf("  [A] %s\n", mod_pkg.name);
+        while (bds_queue_pop(added_pkg_queue, &added_pkg)) {
+                printf("  [A] %-24s %-8s\n", added_pkg.name, added_pkg.version);
         }
         bds_queue_free(&added_pkg_queue);
 
-        if (bds_queue_size(updated_pkg_queue) > 0)
-                printf("Updated:\n");
-        while (bds_queue_pop(updated_pkg_queue, &mod_pkg)) {
-                printf("  [U] %s\n", mod_pkg.name);
+        if (bds_queue_size(upgraded_pkg_queue) > 0) {
+                printf("Upgraded:\n");
+                while (bds_queue_pop(upgraded_pkg_queue, &updated_pkg)) {
+                        printf("  [U] %-24s %-8s --> %s\n", updated_pkg[0].name, updated_pkg[0].version,
+                               updated_pkg[1].version);
+                }
         }
-        bds_queue_free(&updated_pkg_queue);
+        bds_queue_free(&upgraded_pkg_queue);
+
+        if (bds_queue_size(downgraded_pkg_queue) > 0) {
+                printf("Downgraded:\n");
+                while (bds_queue_pop(downgraded_pkg_queue, &updated_pkg)) {
+                        printf("  [D] %-24s %-8s --> %s\n", updated_pkg[0].name, updated_pkg[0].version,
+                               updated_pkg[1].version);
+                }
+        }
+        bds_queue_free(&downgraded_pkg_queue);
+
+        if (bds_queue_size(modified_pkg_queue) > 0) {
+                printf("Modified:\n");
+                while (bds_queue_pop(modified_pkg_queue, &mod_pkg)) {
+                        printf("  [M] %-24s %-8s\n", mod_pkg.name, mod_pkg.version);
+                }
+        }
+        bds_queue_free(&modified_pkg_queue);
 
         bool have_removed = false;
         num_nodes         = pkg_nodes_size(old_pkgs);
@@ -219,7 +254,7 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                 printf("Removed:\n");
                                 have_removed = true;
                         }
-                        printf("  [R] %s\n", old_pkg->pkg.name);
+                        printf("  [R] %-24s %-8s\n", old_pkg->pkg.name, old_pkg->pkg.version);
                 }
         }
 
@@ -248,17 +283,18 @@ static int __load_db(pkg_nodes_t *pkgs, const char *db_file, bool read_sbo_dir)
 
                 bds_string_tokenize(line, ":", &num_tok, &tok);
                 if (read_sbo_dir) {
-                        assert(num_tok == 3);
+                        assert(num_tok == 4);
                 } else {
-                        assert(num_tok == 2);
+                        assert(num_tok == 3);
                 }
 
                 struct pkg_node *pkg_node = pkg_node_alloc(tok[0]);
 
-                pkg_node->pkg.info_crc = strtol(tok[1], NULL, 16);
+                pkg_init_version(&pkg_node->pkg, tok[1]);
+                pkg_node->pkg.info_crc = strtol(tok[2], NULL, 16);
 
                 if (read_sbo_dir) {
-                        bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[2]);
+                        bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[3]);
                         pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
                 }
                 pkg_nodes_append(pkgs, pkg_node);

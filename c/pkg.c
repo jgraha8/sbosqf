@@ -55,6 +55,8 @@ void pkg_destroy(struct pkg *pkg)
 {
         if (pkg->name)
                 free(pkg->name);
+        if (pkg->version)
+                free(pkg->version);
         if (pkg->sbo_dir)
                 free(pkg->sbo_dir);
 
@@ -76,6 +78,8 @@ void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src)
 
         pkg_dst->name = bds_string_dup(pkg_src->name);
 
+        if (pkg_src->version)
+                pkg_dst->version = bds_string_dup(pkg_src->version);
         if (pkg_src->sbo_dir)
                 pkg_dst->sbo_dir = bds_string_dup(pkg_src->sbo_dir);
         pkg_dst->info_crc        = pkg_src->info_crc;
@@ -83,7 +87,23 @@ void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src)
         return;
 }
 
-void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir) { pkg->sbo_dir = bds_string_dup(sbo_dir); }
+void pkg_init_version(struct pkg *pkg, const char *version)
+{
+        assert(pkg->version == NULL);
+        pkg->version = bds_string_dup(version);
+}
+void pkg_set_version(struct pkg *pkg, const char *version)
+{
+        assert(pkg->version != NULL);
+        free(pkg->version);
+        pkg->version = bds_string_dup(version);
+}
+
+void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir)
+{
+        assert(pkg->sbo_dir == NULL);
+        pkg->sbo_dir = bds_string_dup(sbo_dir);
+}
 
 int pkg_set_info_crc(struct pkg *pkg)
 {
@@ -176,7 +196,3 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
 
         return *bp;
 }
-
-
-
-

@@ -13,5 +13,6 @@ const char *create_default_dep_verbose(const struct pkg *pkg);
 bool is_meta_pkg(const char *pkg_name);
 void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
                pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty);
+int compar_versions(const char *ver_a, const char *ver_b);
 
 #endif

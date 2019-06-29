@@ -1,6 +1,5 @@
-/**
- * @file
- * @brief Main program file for sbopkg-dep2sqf
+/*
+ * Copyright (C) 2018-2019 Jason Graham <jgraham@compukix.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -14,6 +13,12 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file
+ * @brief Main program file for sbopkg-dep2sqf
+ *
  */
 
 #include <assert.h>
@@ -31,7 +36,6 @@
 #include <libbds/bds_vector.h>
 
 #include "config.h"
-#include "filevercmp.h"
 #include "pkg_graph.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
@@ -336,57 +340,6 @@ static void destroy_updated_pkg(struct updated_pkg *updated_pkg)
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-static int compar_versions(const char *ver_a, const char *ver_b)
-{
-        return filevercmp(ver_a, ver_b);
-#if 0	
-	char *__ver_a = bds_string_dup(ver_a);
-	char *__ver_b = bds_string_dup(ver_b);
-
-	size_t num_tok_a = 0;
-	char **ver_num_a = NULL;
-
-	size_t num_tok_b = 0;
-	char **ver_num_b = NULL;
-
-	int diff = 0;
-	
-	bds_string_tokenize(__ver_a, ".", &num_tok_a, &ver_num_a);
-	bds_string_tokenize(__ver_b, ".", &num_tok_b, &ver_num_b);
-
-	size_t num_tok = MIN(num_tok_a, num_tok_b);
-	for( size_t i = 0; i<num_tok; ++i ) {
-
-		//diff = strcmp(ver_num_a[i], ver_num_b[i]);
-		diff = atoi(ver_num_a[i]) - atoi(ver_num_b[i]);
-		if( diff == 0 )
-			continue;
-		
-		goto finish;
-	}
-
-	/* Version strings are the same thus far */
-	if( num_tok_a < num_tok_b ) {
-		diff = -(int)(num_tok_b - num_tok_a);
-	} else if( num_tok_a > num_tok_b ) {
-		diff = (int)(num_tok_a - num_tok_b);
-	} else {
-		diff = 0;
-	}
-	
-finish:
-	free(__ver_a);
-	free(__ver_b);
-	if( ver_num_a )
-		free(ver_num_a);
-	
-	if( ver_num_b )
-		free(ver_num_b);
-
-	return diff;
-#endif
-}
-
 #if 0
 static int get_updated_pkgs(struct pkg_graph *pkg_graph, const char *pkg_name, struct bds_queue *updated_pkg_queue)
 {
@@ -607,11 +560,13 @@ static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name)
                 if (rc == 0) {
                         if (reviewed_node) {
                                 if (reviewed_node->pkg.info_crc != pkg_node->pkg.info_crc) {
+                                        pkg_set_version(&reviewed_node->pkg, pkg_node->pkg.version);
                                         reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
                                         reviewed_pkgs_dirty         = true;
                                 }
                         } else {
-                                reviewed_node               = pkg_node_alloc(pkg_node->pkg.name);
+                                reviewed_node = pkg_node_alloc(pkg_node->pkg.name);
+                                pkg_init_version(&reviewed_node->pkg, pkg_node->pkg.version);
                                 reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
                                 pkg_nodes_insert_sort(reviewed_pkgs, reviewed_node);
                                 reviewed_pkgs_dirty = true;

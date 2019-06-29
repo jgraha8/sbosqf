@@ -9,8 +9,9 @@
 #include <libbds/bds_string.h>
 
 #include "file_mmap.h"
-#include "pkg_util.h"
+#include "filevercmp.h"
 #include "pkg_ops.h"
+#include "pkg_util.h"
 #include "sbo.h"
 #include "slack_pkg.h"
 #include "user_config.h"
@@ -419,6 +420,8 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
 
         pkg_iterator_destroy(&iter);
 }
+
+int compar_versions(const char *ver_a, const char *ver_b) { return filevercmp(ver_a, ver_b); }
 
 #if 0
 void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)

@@ -19,6 +19,8 @@
 #ifndef FILEVERCMP_H
 #define FILEVERCMP_H
 
+#include <config.h>
+
 /* Compare version strings:
 
    This function compares strings S1 and S2:

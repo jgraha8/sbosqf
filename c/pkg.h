@@ -1,7 +1,7 @@
-/**
- * @file
+/*
+ * Copyright (C) 2018-2019 Jason Graham <jgraham@compukix.net>
  *
- *
+ 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <https://www.gnu.org/licenses/>.
  */
+
+/**
+ * @file
+ *
+ *
+ */
+
 #ifndef __PKG_H__
 #define __PKG_H__
 
@@ -43,6 +50,7 @@ struct pkg_dep {
 
 struct pkg {
         char *name;
+	char *version;
         char *sbo_dir;
         struct pkg_dep dep;
         uint32_t info_crc; /// CRC of README and REQUIRED list in .info
@@ -56,6 +64,8 @@ struct pkg *pkg_dup_nodep(const struct pkg *pkg_src);
 void pkg_destroy(struct pkg *pkg);
 
 void pkg_copy_nodep(struct pkg *pkg_dst, const struct pkg *pkg_src);
+void pkg_init_version(struct pkg *pkg, const char *version);
+void pkg_set_version(struct pkg *pkg, const char *version);
 void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir);
 int pkg_set_info_crc(struct pkg *pkg);
 void pkg_insert_required(struct pkg *pkg, struct pkg_node *req_node);
