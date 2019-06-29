@@ -175,7 +175,10 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
 
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
-                        assert(req_node);
+			if( req_node == NULL ) {
+				fprintf(stderr, COLOR_WARN "[warning]" COLOR_END ": %s no longer in repository\n", line);
+				break;
+			}
                         if (req_node->color == COLOR_GREY) {
                                 fprintf(stderr, "error: load_dep: cyclic dependency found: %s <--> %s\n",
                                         pkg_node->pkg.name, req_node->pkg.name);

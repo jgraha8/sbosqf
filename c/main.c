@@ -96,7 +96,7 @@ enum action {
         ACTION_CHECK_UPDATES,
         ACTION_UPDATEDB,
         ACTION_REVIEW,
-	ACTION_SHOW_INFO,
+        ACTION_SHOW_INFO,
         ACTION_SEARCH_PKG,
         ACTION_EDIT_DEP,
         ACTION_HELP,
@@ -600,7 +600,7 @@ static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name)
                 fprintf(stderr, "package %s does not exist\n", pkg_name);
                 return 1;
         }
-	return pkg_show_info(&pkg_node->pkg);
+        return pkg_show_info(&pkg_node->pkg);
 }
 
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
@@ -688,7 +688,6 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 
         if ((rc = pkg_load_all_deps(pkg_graph, options)) != 0)
                 return rc;
-
         if ((rc = pkg_load_dep(pkg_graph, pkg_name, options)) != 0)
                 return rc;
 

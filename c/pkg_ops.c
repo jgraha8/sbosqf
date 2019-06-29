@@ -362,7 +362,6 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
         }
 
         FILE *fp = popen(user_config.pager, "w");
-
         if (!fp) {
                 perror("popen()");
                 return -1;
@@ -384,13 +383,13 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
         if (!info)
                 goto finish;
 
-	if( include_dep ) {
-		bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
-		if ((dep = file_mmap(file_name)) == NULL) {
-			create_default_dep_verbose(pkg);
-			assert(dep = file_mmap(file_name));
-		}
-	}
+        if (include_dep) {
+                bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
+                if ((dep = file_mmap(file_name)) == NULL) {
+                        create_default_dep_verbose(pkg);
+                        assert(dep = file_mmap(file_name));
+                }
+        }
 
         // clang-format: off
         fprintf(fp,
@@ -399,30 +398,30 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                 BORDER1 "\n"
                         "\n"
                         "%s\n" // package info
-		BORDER2 "\n"
-                        "README\n"
-		BORDER2 "\n"
+                BORDER2 "\n"
+                        "README\n" BORDER2 "\n"
                         "%s\n" // readme file
                         "\n",
                 pkg->name, info->data, readme->data);
 
-	if( include_dep ) {
-		fprintf(fp,
-			BORDER2 "\n"
-                        "Dependency File\n" // package name
-			BORDER2 "\n");
+        if (include_dep) {
+                fprintf(fp,
+                        BORDER2 "\n"
+                                "Dependency File\n" // package name
+                        BORDER2 "\n");
 
-		if (dep) {
-			fprintf(fp, "%s\n\n", dep->data);
-		} else {
-			fprintf(fp, "%s dependency file not found\n\n", pkg->name);
-		}
-	}
+                if (dep) {
+                        fprintf(fp, "%s\n\n", dep->data);
+                } else {
+                        fprintf(fp, "%s dependency file not found\n\n", pkg->name);
+                }
+        }
 finish:
-        if (fp)
+        if (fp) {
                 if (pclose(fp) == -1) {
                         perror("pclose()");
                 }
+        }
         if (readme)
                 file_munmap(&readme);
         if (info)
@@ -467,14 +466,29 @@ int pkg_review_prompt(const struct pkg *pkg)
                 return -1;
 
         while (1) {
-                printf("Add %s to REVIEWED ([y]/n)? ", pkg->name);
+                printf("Add %s to REVIEWED ([Y]es / [n]o / [d]efault / [e]dit / [q]uit)? ", pkg->name);
                 char r = 0;
                 if ((r = read_response()) < 0) {
                         continue;
                 }
-                if (r == 'y' || r == 'Y' || r == '\0')
+                if (r == 'y' || r == 'Y' || r == '\0') {
                         return 0;
-                if (r == 'n' || r == 'N')
+                }
+                if (r == 'n' || r == 'N') {
                         return 1;
+                }
+                if (r == 'd' || r == 'D') {
+                        // Reset to default dependency file
+                        assert(create_default_dep(pkg) != NULL);
+                        return pkg_review_prompt(pkg);
+                }
+                if (r == 'e' || r == 'E') {
+                        fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " editing not yet implemented\n");
+                        continue;
+                }
+                if (r == 'q' || r == 'Q') {
+                        fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " terminating upon user request\n");
+                        exit(EXIT_FAILURE);
+                }
         }
 }
