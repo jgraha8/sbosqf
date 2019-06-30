@@ -361,10 +361,14 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                 return -1;
         }
 
-        FILE *fp = popen(user_config.pager, "w");
-        if (!fp) {
-                perror("popen()");
-                return -1;
+        FILE *fp = stdout;
+
+        if (user_config.pager) {
+                fp = popen(user_config.pager, "w");
+                if (!fp) {
+                        perror("popen()");
+                        return -1;
+                }
         }
 
         char file_name[MAX_LINE];
@@ -391,6 +395,10 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                 }
         }
 
+        if (stdout != fp) {
+                assert(system("clear") == 0);
+        }
+
         // clang-format: off
         fprintf(fp,
                 BORDER1 "\n"
@@ -399,7 +407,8 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                         "\n"
                         "%s\n" // package info
                 BORDER2 "\n"
-                        "README\n" BORDER2 "\n"
+                        "README\n"
+		BORDER2 "\n"
                         "%s\n" // readme file
                         "\n",
                 pkg->name, info->data, readme->data);
@@ -417,7 +426,7 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                 }
         }
 finish:
-        if (fp) {
+        if (stdout != fp) {
                 if (pclose(fp) == -1) {
                         perror("pclose()");
                 }
@@ -483,8 +492,9 @@ int pkg_review_prompt(const struct pkg *pkg)
                         return pkg_review_prompt(pkg);
                 }
                 if (r == 'e' || r == 'E') {
-                        fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " editing not yet implemented\n");
-                        continue;
+                        if (0 != edit_dep_file(pkg->name))
+                                exit(EXIT_FAILURE);
+                        return pkg_review_prompt(pkg);
                 }
                 if (r == 'q' || r == 'Q') {
                         fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " terminating upon user request\n");

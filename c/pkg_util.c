@@ -1,13 +1,17 @@
 #include <assert.h>
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include <libbds/bds_queue.h>
 #include <libbds/bds_stack.h>
 #include <libbds/bds_string.h>
 
+#include "config.h"
 #include "file_mmap.h"
 #include "filevercmp.h"
 #include "pkg_ops.h"
@@ -175,10 +179,11 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
 
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
-			if( req_node == NULL ) {
-				fprintf(stderr, COLOR_WARN "[warning]" COLOR_END ": %s no longer in repository\n", line);
-				break;
-			}
+                        if (req_node == NULL) {
+                                fprintf(stderr, COLOR_WARN "[warning]" COLOR_END ": %s no longer in repository\n",
+                                        line);
+                                break;
+                        }
                         if (req_node->color == COLOR_GREY) {
                                 fprintf(stderr, "error: load_dep: cyclic dependency found: %s <--> %s\n",
                                         pkg_node->pkg.name, req_node->pkg.name);
@@ -515,3 +520,141 @@ void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_nam
                 return 0;
         }
 #endif
+const char *find_dep_file(const char *pkg_name)
+{
+        static char dep_file[4096];
+        struct stat sb;
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+
+        if (stat(dep_file, &sb) == 0) {
+                if (sb.st_mode & S_IFREG) {
+                        return dep_file;
+                } else if (sb.st_mode & S_IFDIR) {
+                        fprintf(stderr, "dependency file for package %s already exists as directory: %s\n",
+                                pkg_name, dep_file);
+                } else {
+                        fprintf(stderr, "dependency file for package %s already exists as non-standard file: %s\n",
+                                pkg_name, dep_file);
+                }
+        }
+        return NULL;
+}
+
+static void sigchld_handler(int signo) { fprintf(stderr, "caught signal %d\n", signo); }
+
+int edit_dep_file(const char *pkg_name)
+{
+        int rc = 0;
+        pid_t cpid;
+        struct sigaction sa;
+
+        memset(&sa, 0, sizeof(sa));
+
+        sa.sa_handler = SIG_IGN;
+        sa.sa_flags   = 0;
+        sigemptyset(&sa.sa_mask); // Not masking SIGINT and SIGQUIT since they will be ignored
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
+
+        sa.sa_handler = sigchld_handler;
+        // sa.sa_flags   = SA_NOCLDSTOP; // do not receive notification when child process6es stop or resume
+        sigaction(SIGCHLD, &sa, NULL);
+
+        cpid = fork();
+        if (-1 == cpid) {
+                fprintf(stderr, COLOR_FAIL "[error]" COLOR_END ": unable to fork editor process\n");
+                return 1;
+        }
+
+        if (cpid == 0) {
+                // Re-enable default signal handling
+                sa.sa_handler = SIG_DFL;
+                sa.sa_flags   = 0;
+                sigaction(SIGINT, &sa, NULL);
+                sigaction(SIGQUIT, &sa, NULL);
+
+                char *dep_file = NULL;
+                if (!find_dep_file(pkg_name)) {
+                        fprintf(stderr, "[error]" COLOR_END ": unable to find dependency file for %s\n", pkg_name);
+                        exit(EXIT_FAILURE);
+                }
+                dep_file = bds_string_dup(find_dep_file(pkg_name));
+
+                size_t num_tok;
+                char **tok;
+
+                char *editor = bds_string_dup(user_config.editor);
+                bds_string_tokenize(editor, " ", &num_tok, &tok);
+                assert(1 <= num_tok);
+
+                const size_t num_args = num_tok + 2;
+                char *args[num_args];
+
+                for (size_t i = 0; i < num_args - 2; ++i) {
+                        assert(0 < strlen(tok[i]));
+                        args[i] = tok[i];
+                }
+                args[num_args - 2] = dep_file;
+                args[num_args - 1] = NULL;
+
+                if (execvp(args[0], args) == -1) {
+                        perror("execvp()");
+                        rc = errno;
+                }
+
+                // We shouldn't get here, but if we do, clean-up (not really necessary, but good practice)
+                free(tok);
+                free(editor);
+
+                exit(rc);
+        }
+
+        while (1) {
+                pid_t pid;
+		int wstatus = 0;
+		
+                fprintf(stderr, "child wait loop...\n");
+                if ((pid = waitpid(cpid, &wstatus, WUNTRACED | WCONTINUED)) == -1) {
+                        perror("waitpid()");
+
+                        if (EINTR == errno) { // waitpid interrupted
+                                fprintf(stderr, "interrupted...\n");
+                                continue;
+                        }
+                        if (ECHILD == errno) { // child already exited
+                                fprintf(stderr, "child already exited...\n");
+                                rc = errno;
+                                break;
+                        }
+                }
+		
+                if (WIFSTOPPED(wstatus)) { // Child stopped
+                        fprintf(stderr, "child stopped...\n");
+                        continue;
+                }
+                if (WIFCONTINUED(wstatus)) { // Child resumed
+                        fprintf(stderr, "child resumed...\n");
+                        continue;
+                }
+                if (WIFSIGNALED(wstatus)) { // Child terminated
+                        fprintf(stderr, "child terminated by signal %d\n", WTERMSIG(wstatus));
+                        rc = 1;
+                        break;
+                }
+                if (WIFEXITED(wstatus)) { // Child exited normally
+                        rc = WEXITSTATUS(wstatus); // Exit status of child
+                        fprintf(stderr, "child exited with status %d\n", rc);
+                        break;
+                }
+        }
+
+	// Restore default signal handling
+        sa.sa_handler = SIG_DFL;
+        sa.sa_flags   = 0;
+        sigaction(SIGCHLD, &sa, NULL);
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
+
+        return rc;
+}

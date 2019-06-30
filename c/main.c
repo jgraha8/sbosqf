@@ -129,6 +129,7 @@ enum output_mode { OUTPUT_STDOUT = 1, OUTPUT_FILE };
 static void print_help();
 static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int update_pkgdb(struct pkg_graph *pkg_graph);
+static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
                          enum output_mode output_mode);
 static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
@@ -289,8 +290,7 @@ int main(int argc, char **argv)
                 rc = update_pkgdb(pkg_graph);
                 break;
         case ACTION_EDIT_DEP:
-                fprintf(stderr, "option --edit is not yet implementated\n");
-                rc = 1;
+		rc = edit_pkg_dep(pkg_graph, pkg_name);
                 break;
         case ACTION_WRITE_SQF:
                 rc = write_pkg_sqf(pkg_graph, pkg_name, pkg_options, output_mode);
@@ -601,6 +601,19 @@ static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name)
                 return 1;
         }
         return pkg_show_info(&pkg_node->pkg);
+}
+
+static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name)
+{
+        const struct pkg_node *pkg_node = NULL;
+
+        pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
+        if (pkg_node == NULL) {
+                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                return 1;
+        }
+        return edit_dep_file(pkg_node->pkg.name);
+	
 }
 
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,

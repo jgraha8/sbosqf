@@ -12,7 +12,6 @@
 #include "config.h"
 #include "user_config.h"
 
-
 struct user_config user_config;
 
 static char *strip_quotes(char *str)
@@ -44,7 +43,9 @@ void user_config_destroy()
         free(user_config.sbopkg_repo);
         free(user_config.depdir);
         free(user_config.sbo_tag);
-        free(user_config.pager);
+        if (user_config.pager) {
+                free(user_config.pager);
+        }
         free(user_config.editor);
 }
 
@@ -53,14 +54,16 @@ static struct user_config default_user_config()
         struct user_config cs = {.sbopkg_repo = bds_string_dup(SBOPKG_REPO),
                                  .depdir      = bds_string_dup(DEPDIR),
                                  .sbo_tag     = bds_string_dup(SBO_TAG),
-                                 .pager       = bds_string_dup(PAGER),
+                                 .pager       = NULL, /* bds_string_dup(PAGER), */
                                  .editor      = bds_string_dup(EDITOR)};
         return cs;
 }
 
 #define SET_CONFIG(c, field, value)                                                                               \
         {                                                                                                         \
-                free((c).field);                                                                                  \
+                if (NULL != (c).field) {                                                                          \
+                        free((c).field);                                                                          \
+                }                                                                                                 \
                 (c).field = bds_string_dup(value);                                                                \
         }
 

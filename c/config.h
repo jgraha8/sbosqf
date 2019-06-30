@@ -34,7 +34,7 @@
 #define _GL_ATTRIBUTE_PURE __attribute__((pure))
 
 // Environment
-#define PAGER "more"
+// #define PAGER "more"
 #define EDITOR "vi"
 
 #endif // __CONFIG_H__

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2018-2019 Jason Graham <jgraham@compukix.net>
  *
- 
+
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
  * published by the Free Software Foundation; either version 2 of the
@@ -50,13 +50,13 @@ struct pkg_dep {
 
 struct pkg {
         char *name;
-	char *version;
+        char *version;
         char *sbo_dir;
         struct pkg_dep dep;
         uint32_t info_crc; /// CRC of README and REQUIRED list in .info
-        // struct pkg_sbo *sbo;
-	bool parent_installed;
-	bool for_removal;
+                           // struct pkg_sbo *sbo;
+        bool parent_installed;
+        bool for_removal;
 };
 
 struct pkg pkg_create(const char *name);
@@ -80,19 +80,17 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt);
 size_t pkg_buildopts_size(const struct pkg *pkg);
 const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
-
 struct pkg_options {
         int check_installed;
         bool recursive;
         bool optional;
         bool revdeps;
-	bool deep;
-	bool reviewed_auto_add;
+        bool deep;
+        bool reviewed_auto_add;
 };
 
 struct pkg_options pkg_options_default();
 
 // pkg_nodes_t *pkg_load_sbo();
-
 
 #endif
