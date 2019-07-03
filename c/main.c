@@ -487,15 +487,15 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
         while (bds_queue_pop(updated_pkg_queue, &updated_pkg)) {
                 switch (updated_pkg.status) {
                 case PKG_UPDATED:
-                        printf(COLOR_OK "%12s" COLOR_END " %-24s %-8s --> %s\n", "[upgraded]", updated_pkg.name,
+                        printf(COLOR_OK "%4s" COLOR_END " %-24s %-8s --> %s\n", "[U]", updated_pkg.name,
                                updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 case PKG_DOWNGRADED:
-                        printf(COLOR_INFO "%12s" COLOR_END " %-24s %-8s --> %s\n", "[downgraded]",
+                        printf(COLOR_INFO "%4s" COLOR_END " %-24s %-8s --> %s\n", "[D]",
                                updated_pkg.name, updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 default: /* PKG_REMOVED */
-                        printf(COLOR_FAIL "%12s" COLOR_END " %-24s %-8s\n", "[removed]", updated_pkg.name,
+                        printf(COLOR_FAIL "%4s" COLOR_END " %-24s %-8s\n", "[R]", updated_pkg.name,
                                updated_pkg.slack_pkg_version);
                 }
                 destroy_updated_pkg(&updated_pkg);
