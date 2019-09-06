@@ -145,7 +145,7 @@ const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch_const(pl, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
@@ -164,7 +164,7 @@ const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pl, const char
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch_const(pl, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 

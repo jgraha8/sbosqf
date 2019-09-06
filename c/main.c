@@ -349,49 +349,8 @@ static void destroy_updated_pkg(struct updated_pkg *updated_pkg)
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
-#if 0
-static int get_updated_pkgs(struct pkg_graph *pkg_graph, const char *pkg_name, struct bds_queue *updated_pkg_queue)
-{
-        pkg_nodes_t *pkg_nodes = NULL;
-        if (pkg_name) {
-                pkg_nodes = pkg_nodes_alloc_reference();
-                pkg_nodes_append(pkg_nodes, pkg_graph_search(pkg_graph, pkg_name));
-        } else {
-                pkg_nodes = pkg_graph_sbo_pkgs(pkg_graph);
-        }
 
-        const size_t num_nodes = pkg_nodes_size(pkg_nodes);
-
-        for (size_t i = 0; i < num_nodes; ++i) {
-                const struct pkg_node *node       = pkg_nodes_get_const(pkg_nodes, i);
-                const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
-
-                if (slack_pkg) {
-                        struct updated_pkg updated_pkg;
-
-                        const char *sbo_version = sbo_read_version(node->pkg.sbo_dir, node->pkg.name);
-                        assert(sbo_version);
-
-                        int diff = strcmp(slack_pkg->version, sbo_version);
-                        if (diff == 0)
-                                continue;
-
-                        updated_pkg.status            = (diff < 0 ? PKG_UPDATED : PKG_DOWNGRADED);
-                        updated_pkg.node              = node;
-                        updated_pkg.slack_pkg_version = bds_string_dup(slack_pkg->version);
-                        updated_pkg.sbo_version       = bds_string_dup(sbo_version);
-                        bds_queue_push(updated_pkg_queue, &updated_pkg);
-                }
-        }
-
-        if (pkg_name)
-                pkg_nodes_free(&pkg_nodes);
-
-        return 0;
-}
-#endif
-
-static int get_updated_pkgs2(struct pkg_graph *pkg_graph, const char *pkg_name,
+static int get_updated_pkgs(struct pkg_graph *pkg_graph, const char *pkg_name,
                              struct bds_queue *updated_pkg_queue)
 {
         bool have_pkg          = false; /* Used only for single package pkg_name */
@@ -479,7 +438,7 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
 
         bds_queue_set_autoresize(updated_pkg_queue, true);
 
-        if ((rc = get_updated_pkgs2(pkg_graph, pkg_name, updated_pkg_queue)) != 0)
+        if ((rc = get_updated_pkgs(pkg_graph, pkg_name, updated_pkg_queue)) != 0)
                 goto finish;
 
         struct updated_pkg updated_pkg;

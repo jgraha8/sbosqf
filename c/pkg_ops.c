@@ -362,7 +362,6 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
         }
 
         FILE *fp = stdout;
-
         if (user_config.pager) {
                 fp = popen(user_config.pager, "w");
                 if (!fp) {
