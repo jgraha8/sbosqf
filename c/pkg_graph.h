@@ -28,12 +28,14 @@ pkg_nodes_t *pkg_nodes_alloc_reference();
 pkg_nodes_t *pkg_nodes_alloc();
 
 size_t pkg_nodes_size(const pkg_nodes_t *nodes);
+struct pkg_node *pkg_nodes_get(pkg_nodes_t *nodes, size_t i);
 const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i);
 
 void pkg_nodes_free(pkg_nodes_t **pl);
 void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg);
 void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg);
 int pkg_nodes_remove(pkg_nodes_t *pl, const char *pkg_name);
+void pkg_nodes_clear(pkg_nodes_t *pkg_nodes);
 struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name);
 const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char *name);
 struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pl, const char *name);

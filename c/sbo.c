@@ -8,13 +8,11 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #include <libbds/bds_string.h>
 
 #include "file_mmap.h"
 #include "sbo.h"
-
 
 const char *sbo_find_dir(const char *cur_path, const char *pkg_name)
 {

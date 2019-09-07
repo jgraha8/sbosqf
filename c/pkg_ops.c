@@ -468,36 +468,72 @@ static char read_response()
         return response[0];
 }
 
-int pkg_review_prompt(const struct pkg *pkg)
+/*
+ * Returns:
+ *   -1 on error
+ *    0 if dependency is to be added to REVIEWED
+ *    1 if dependency is to not be added to REVIEWED
+ */
+int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *dep_status)
 {
+	int rc = 0;
+	static int level = 0;
+	
         if (pkg_review(pkg) != 0)
                 return -1;
 
+	++level;
+	if( level == 1 ) {
+		*dep_status = 0;
+	}
+	
         while (1) {
-                printf("Add %s to REVIEWED ([Y]es / [n]o / [d]efault / [e]dit / [q]uit)? ", pkg->name);
+                printf("Add %s to REVIEWED ([Y]es / [n]o / [d]efault / [e]dit / [a]gain / [q]uit)? ", pkg->name);
                 char r = 0;
                 if ((r = read_response()) < 0) {
                         continue;
                 }
                 if (r == 'y' || r == 'Y' || r == '\0') {
-                        return 0;
+                        rc = 0;
+			break;
                 }
                 if (r == 'n' || r == 'N') {
-                        return 1;
+			rc = 1;
+			break;
                 }
                 if (r == 'd' || r == 'D') {
                         // Reset to default dependency file
                         assert(create_default_dep(pkg) != NULL);
-                        return pkg_review_prompt(pkg);
+			*dep_status |= PKG_DEP_REVERTED_DEFAULT;
+			if( *dep_status & return_on_modify_mask ) {
+				rc = 1;
+				break;
+			}
+                        rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
+			break;
                 }
                 if (r == 'e' || r == 'E') {
                         if (0 != edit_dep_file(pkg->name))
                                 exit(EXIT_FAILURE);
-                        return pkg_review_prompt(pkg);
+			*dep_status |= PKG_DEP_EDITED;
+			if( *dep_status & return_on_modify_mask ) {
+				rc = 1;
+				break;
+			}
+                        rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
+			break;
                 }
+		if (r == 'a' || r == 'A') {
+			rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
+			break;
+		}
                 if (r == 'q' || r == 'Q') {
                         fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " terminating upon user request\n");
                         exit(EXIT_FAILURE);
                 }
         }
+
+	--level;
+
+	return rc;
 }

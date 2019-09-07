@@ -23,7 +23,7 @@ int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_o
 int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options);
 
 int pkg_review(const struct pkg *pkg);
-int pkg_review_prompt(const struct pkg *pkg);
+int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *dep_status);
 int pkg_show_info(const struct pkg *pkg);
 int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs);
 

@@ -82,6 +82,11 @@ pkg_nodes_t *pkg_nodes_alloc()
 
 void pkg_nodes_free(pkg_nodes_t **pl) { bds_vector_free(pl); }
 
+struct pkg_node *pkg_nodes_get(pkg_nodes_t *nodes, size_t i)
+{
+	return (struct pkg_node *)pkg_nodes_get_const(nodes, i);
+}
+
 const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i)
 {
         const struct pkg_node **nodep = (const struct pkg_node **)bds_vector_get((pkg_nodes_t *)nodes, i);
@@ -116,55 +121,60 @@ void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg_node)
         }
 }
 
-int pkg_nodes_remove(pkg_nodes_t *pl, const char *pkg_name)
+int pkg_nodes_remove(pkg_nodes_t *pkg_nodes, const char *pkg_name)
 {
         struct pkg_node key;
         struct pkg_node *keyp = &key;
 
         key.pkg.name = (char *)pkg_name;
 
-        struct pkg_node **pkgp = (struct pkg_node **)bds_vector_lsearch(pl, &keyp, pkg_nodes_compar);
+        struct pkg_node **pkgp = (struct pkg_node **)bds_vector_lsearch(pkg_nodes, &keyp, pkg_nodes_compar);
         if (pkgp == NULL)
-                return 1;
+                return 1; /* Nothing removed */
 
-        pkg_node_destroy(*pkgp);
-        bds_vector_qsort(pl, pkg_nodes_compar);
+	size_t i = pkgp - (struct pkg_node **)bds_vector_ptr(pkg_nodes);
+	bds_vector_remove(pkg_nodes, i);
 
         return 0;
 }
 
-struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name)
+void pkg_nodes_clear(pkg_nodes_t *pkg_nodes)
 {
-        return (struct pkg_node *)pkg_nodes_lsearch_const((const pkg_nodes_t *)pl, name);
+	bds_vector_clear(pkg_nodes);
 }
 
-const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char *name)
+struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pkg_nodes, const char *name)
+{
+        return (struct pkg_node *)pkg_nodes_lsearch_const((const pkg_nodes_t *)pkg_nodes, name);
+}
+
+const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pkg_nodes, const char *name)
 {
         struct pkg_node key;
         const struct pkg_node *keyp = &key;
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch_const(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
         return NULL;
 }
 
-struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pl, const char *name)
+struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pkg_nodes, const char *name)
 {
-        return (struct pkg_node *)pkg_nodes_bsearch_const((const pkg_nodes_t *)pl, name);
+        return (struct pkg_node *)pkg_nodes_bsearch_const((const pkg_nodes_t *)pkg_nodes, name);
 }
 
-const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pl, const char *name)
+const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pkg_nodes, const char *name)
 {
         struct pkg_node key;
         const struct pkg_node *keyp = &key;
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch_const(pl, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 

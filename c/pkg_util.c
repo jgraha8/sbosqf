@@ -103,7 +103,7 @@ bool is_meta_pkg(const char *pkg_name)
         return is_meta;
 }
 
-int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pkg_options options)
+int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pkg_options options, pkg_nodes_t *visit_list, struct bds_stack *visit_path)
 {
         int rc = 0;
 
@@ -128,8 +128,9 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         goto finish;
                 }
         }
-
-        pkg_node->color = COLOR_GREY;
+        //pkg_node->color = COLOR_GREY;
+	pkg_nodes_insert_sort(visit_list, pkg_node);
+	bds_stack_push(visit_path, &pkg_node);
 
         enum block_type block_type = NO_BLOCK;
 
@@ -184,7 +185,8 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                                         line);
                                 break;
                         }
-                        if (req_node->color == COLOR_GREY) {
+                        //if (req_node->color == COLOR_GREY) {
+			if( bds_stack_lsearch(visit_path, &req_node, pkg_nodes_compar) ) {
                                 fprintf(stderr, "error: load_dep: cyclic dependency found: %s <--> %s\n",
                                         pkg_node->pkg.name, req_node->pkg.name);
                                 exit(EXIT_FAILURE);
@@ -196,8 +198,9 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         pkg_insert_required(&pkg_node->pkg, req_node);
 
                         /* Avoid revisiting nodes more than once */
-                        if (req_node->color == COLOR_WHITE)
-                                __load_dep(pkg_graph, req_node, options);
+			if( pkg_nodes_bsearch_const(visit_list, req_node->pkg.name) == NULL ) {
+				__load_dep(pkg_graph, req_node, options, visit_list, visit_path);
+			}
 
                 } break;
                 case BUILDOPTS_BLOCK: {
@@ -216,8 +219,10 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                 num_line = 0;
         }
 
+	struct pkg_node *last_node;	
 finish:
-        pkg_node->color = COLOR_BLACK;
+        //pkg_node->color = COLOR_BLACK;
+	assert( bds_stack_pop(visit_path, &last_node) && pkg_node == last_node );
 
         if (line != NULL) {
                 free(line);
@@ -236,8 +241,13 @@ int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_
         if (pkg_node == NULL)
                 return 1;
 
-        pkg_graph_clear_markers(pkg_graph);
-        int rc = __load_dep(pkg_graph, pkg_node, options);
+	struct bds_stack *visit_path = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
+	pkg_nodes_t *visit_list = pkg_nodes_alloc_reference();
+	
+        int rc = __load_dep(pkg_graph, pkg_node, options, visit_list, visit_path);
+	
+	bds_stack_free(&visit_path);
+	pkg_nodes_free(&visit_list);
 
         return rc;
 }
@@ -327,18 +337,27 @@ const char *create_default_dep_verbose(const struct pkg *pkg)
         return dep_file;
 }
 
-static void write_buildopts(FILE *fp, const struct pkg *pkg)
+static void write_buildopts(struct ostream *os, const struct pkg *pkg)
 {
         const size_t n = pkg_buildopts_size(pkg);
 
         for (size_t i = 0; i < n; ++i) {
-                fprintf(fp, " %s", pkg_buildopts_get_const(pkg, i));
+                ostream_printf(os, " %s", pkg_buildopts_get_const(pkg, i));
         }
 }
 
-void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *reviewed_pkgs,
-                        bool *reviewed_pkgs_dirty)
+/*
+ * Return:
+ *   -1   if error occurred
+ *    0   success / no errors
+ *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
+ */
+
+static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_auto_review auto_review, pkg_nodes_t *reviewed_pkgs,
+			      bool *reviewed_pkgs_dirty)
 {
+	int rc = 0;
+	
         bool review_pkg                = false;
         struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
         if (reviewed_node) {
@@ -349,9 +368,24 @@ void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *revie
         }
 
         if (review_pkg) {
-                int rc = (auto_add ? pkg_review(pkg) : pkg_review_prompt(pkg));
-
-                if (rc == 0) {
+		int rc_review = -1;
+		switch( auto_review ) {
+		case PKG_AUTO_REVIEW:
+			rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
+			break;
+		case PKG_AUTO_REVIEW_VERBOSE:
+			rc_review = pkg_review(pkg);
+			break;
+		default:
+			/* Use the dep status as the return code */
+			rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
+			if( rc_review < 0 ) { /* If an error occurs set error return code */
+				rc = -1;
+			}
+			break;
+		}
+		
+                if (rc_review == 0) { // Add-to-REVIEWED status
                         *reviewed_pkgs_dirty = true;
                         if (reviewed_node) {
                                 pkg_copy_nodep(&reviewed_node->pkg, pkg);
@@ -363,11 +397,20 @@ void check_reviewed_pkg(const struct pkg *pkg, bool auto_add, pkg_nodes_t *revie
                         }
                 }
         }
+
+	return rc;
 }
 
-void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
+/*
+ * Return:
+ *   -1   if error occurred
+ *    0   success / no errors
+ *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
+ */
+int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options, 
                pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
 {
+	int rc = 0;
         struct pkg_iterator iter;
 
         pkg_iterator_flags_t flags = 0;
@@ -395,17 +438,26 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
                                 continue;
                 }
 
-                check_reviewed_pkg(&node->pkg, options.reviewed_auto_add, reviewed_pkgs, reviewed_pkgs_dirty);
+		rc = check_reviewed_pkg(&node->pkg, options.auto_review, reviewed_pkgs, reviewed_pkgs_dirty);
+		if( rc < 0 ) {
+			goto finish;
+		}
+		if( rc > 0 ) {
+			// Package dependency file was edited (it may have been updated): reload the dep file and process the node
+			pkg_clear_required(&node->pkg);
+			pkg_load_dep(pkg_graph, node->pkg.name, options);
+			goto finish;
+		}
 
                 if (options.revdeps) {
                         bds_stack_push(revdeps_pkgs, &node->pkg);
                 } else {
-                        fprintf(fp, "%s", node->pkg.name);
-                        if (fp == stdout) {
-                                fprintf(fp, " ");
+			ostream_printf(os, "%s", node->pkg.name);
+			if (ostream_is_console_stream(os)) {
+                                ostream_printf(os, " ");
                         } else {
-                                write_buildopts(fp, &node->pkg);
-                                fprintf(fp, "\n");
+                                write_buildopts(os, &node->pkg);
+                                ostream_printf(os, "\n");
                         }
                 }
         }
@@ -413,20 +465,25 @@ void write_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, stru
         if (options.revdeps) {
                 struct pkg pkg;
                 while (bds_stack_pop(revdeps_pkgs, &pkg)) {
-                        fprintf(fp, "%s", pkg.name);
-                        if (fp == stdout) {
-                                fprintf(fp, " ");
+                        ostream_printf(os, "%s", pkg.name);
+                        if (ostream_is_console_stream(os)) {
+                                ostream_printf(os, " ");
                         } else {
-                                write_buildopts(fp, &pkg);
-                                fprintf(fp, "\n");
+                                write_buildopts(os, &pkg);
+                                ostream_printf(os, "\n");
                         }
                 }
-                bds_stack_free(&revdeps_pkgs);
         }
-        if (fp == stdout)
-                fprintf(fp, "\n");
+        if (ostream_is_console_stream(os))
+                ostream_printf(os, "\n");
 
+finish:
+	if( options.revdeps) {
+		bds_stack_free(&revdeps_pkgs);
+	}
         pkg_iterator_destroy(&iter);
+
+	return rc;
 }
 
 int compar_versions(const char *ver_a, const char *ver_b) { return filevercmp(ver_a, ver_b); }

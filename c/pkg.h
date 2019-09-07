@@ -34,6 +34,11 @@
 
 #define PKG_CHECK_INSTALLED 0x1
 #define PKG_CHECK_ANY_INSTALLED 0x2
+#define PKG_AUTO_REVIEW_ADD 0x1
+#define PKG_AUTO_REVIEW_QUIET 0x2
+
+#define PKG_DEP_REVERTED_DEFAULT 0x1
+#define PKG_DEP_EDITED           0x2
 
 typedef struct bds_vector pkg_nodes_t;
 typedef struct bds_vector buildopts_t;
@@ -69,10 +74,18 @@ void pkg_set_version(struct pkg *pkg, const char *version);
 void pkg_init_sbo_dir(struct pkg *pkg, const char *sbo_dir);
 int pkg_set_info_crc(struct pkg *pkg);
 void pkg_insert_required(struct pkg *pkg, struct pkg_node *req_node);
+void pkg_remove_required(struct pkg *pkg, struct pkg_node *req_node);
+/**
+ * @brief Clears all required package nodes from the package dependencies
+ *
+ * The required package nodes will also have the specified package
+ * removed from their parent nodes list.
+ */
+void pkg_clear_required(struct pkg *pkg);
 struct pkg *pkg_bsearch_required(struct pkg *pkg, const char *req_name);
 
 void pkg_insert_parent(struct pkg *pkg, struct pkg_node *parent_node);
-
+void pkg_remove_parent(struct pkg *pkg, struct pkg_node *parent_node );
 struct pkg *pkg_bsearch_parent(struct pkg *pkg, const char *parent_name);
 
 void pkg_append_buildopts(struct pkg *pkg, char *bopt);
@@ -80,13 +93,20 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt);
 size_t pkg_buildopts_size(const struct pkg *pkg);
 const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
+enum pkg_auto_review {
+	PKG_AUTO_REVIEW_DISABLED = 0,
+	PKG_AUTO_REVIEW,
+	PKG_AUTO_REVIEW_VERBOSE
+};
+
 struct pkg_options {
-        int check_installed;
-        bool recursive;
-        bool optional;
-        bool revdeps;
-        bool deep;
-        bool reviewed_auto_add;
+        int check_installed;               /* Bit flags for checking packages are already installed */
+	enum pkg_auto_review auto_review;  /* Selection for automatically add packages to the REVIEW database */
+        bool recursive;                    /* Recursive dep file parsing */
+        bool optional;                     /* Include optional packages in dep file parsing */
+        bool revdeps;                      /* Include reverse dependencies */
+        bool deep;                         /* Perform deep graph processing */
+	bool graph;
 };
 
 struct pkg_options pkg_options_default();
