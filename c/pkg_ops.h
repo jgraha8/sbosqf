@@ -5,10 +5,8 @@
 
 #include "pkg_graph.h"
 
-
 bool pkg_db_exists();
 bool pkg_reviewed_exists();
-
 
 int pkg_write_db(pkg_nodes_t *pkgs);
 int pkg_write_reviewed(pkg_nodes_t *pkgs);

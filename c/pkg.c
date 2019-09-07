@@ -26,8 +26,9 @@ struct pkg_options pkg_options_default()
         struct pkg_options options;
         memset(&options, 0, sizeof(options));
 
-        options.recursive = true;
-        options.optional  = true;
+        options.recursive   = true;
+        options.optional    = true;
+        options.review_type = PKG_REVIEW_ENABLED;
 
         return options;
 }
@@ -140,30 +141,30 @@ void pkg_insert_required(struct pkg *pkg, struct pkg_node *req_node)
         //        bds_vector_append(pkg->dep.required, &req);
 }
 
-void pkg_remove_required(struct pkg *pkg, struct pkg_node *req_node )
+void pkg_remove_required(struct pkg *pkg, struct pkg_node *req_node)
 {
-	pkg_nodes_remove(pkg->dep.required, req_node->pkg.name);
+        pkg_nodes_remove(pkg->dep.required, req_node->pkg.name);
 }
 
 void pkg_clear_required(struct pkg *pkg)
 {
-	if( pkg->dep.required == NULL )
-		return;
-	
-	const size_t num_req = pkg_nodes_size(pkg->dep.required);
+        if (pkg->dep.required == NULL)
+                return;
 
-	// Since we are removing the required packages from the specified package, those package nodes need to have
-	// the specified package removed from their parents list.
-	for( size_t i=0; i<num_req; ++i ) {
-		struct pkg_node *req_node = pkg_nodes_get(pkg->dep.required, i);
+        const size_t num_req = pkg_nodes_size(pkg->dep.required);
 
-		if( req_node->pkg.dep.parents == NULL )
-			continue;
-		
-		pkg_nodes_remove(req_node->pkg.dep.parents, pkg->name);
-	}
+        // Since we are removing the required packages from the specified package, those package nodes need to have
+        // the specified package removed from their parents list.
+        for (size_t i = 0; i < num_req; ++i) {
+                struct pkg_node *req_node = pkg_nodes_get(pkg->dep.required, i);
 
-	pkg_nodes_clear(pkg->dep.required);
+                if (req_node->pkg.dep.parents == NULL)
+                        continue;
+
+                pkg_nodes_remove(req_node->pkg.dep.parents, pkg->name);
+        }
+
+        pkg_nodes_clear(pkg->dep.required);
 }
 
 void pkg_insert_parent(struct pkg *pkg, struct pkg_node *parent_node)
@@ -172,13 +173,12 @@ void pkg_insert_parent(struct pkg *pkg, struct pkg_node *parent_node)
         //        bds_vector_append(pkg->dep.required, &req);
 }
 
-void pkg_remove_parent(struct pkg *pkg, struct pkg_node *parent_node )
+void pkg_remove_parent(struct pkg *pkg, struct pkg_node *parent_node)
 {
-	if( pkg->dep.parents == NULL )
-		return;
-	pkg_nodes_remove(pkg->dep.parents, parent_node->pkg.name);
+        if (pkg->dep.parents == NULL)
+                return;
+        pkg_nodes_remove(pkg->dep.parents, parent_node->pkg.name);
 }
-
 
 struct pkg *__pkg_bsearch_dep(pkg_nodes_t *pkg_list, const char *dep_name)
 {

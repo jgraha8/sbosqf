@@ -353,30 +353,37 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
 
-static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_auto_review auto_review, pkg_nodes_t *reviewed_pkgs,
+static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review_type, pkg_nodes_t *reviewed_pkgs,
 			      bool *reviewed_pkgs_dirty)
 {
 	int rc = 0;
-	
         bool review_pkg                = false;
-        struct pkg_node *reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
-        if (reviewed_node) {
-                if (reviewed_node->pkg.info_crc != pkg->info_crc)
-                        review_pkg = true;
-        } else {
-                review_pkg = true;
-        }
+	struct pkg_node *reviewed_node = NULL;
+	
+	if( review_type != PKG_REVIEW_DISABLED ) {
+		reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
+		if (reviewed_node) {
+			if (reviewed_node->pkg.info_crc != pkg->info_crc)
+				review_pkg = true;
+		} else {
+			review_pkg = true;
+		}
+	}
 
         if (review_pkg) {
 		int rc_review = -1;
-		switch( auto_review ) {
-		case PKG_AUTO_REVIEW:
+		switch( review_type ) {
+		case PKG_REVIEW_DISABLED:
+			fprintf(stderr, "internal error: review type should not be PKG_REVIEW_DISABLED\n");
+			abort();
+			break;
+		case PKG_REVIEW_AUTO:
 			rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
 			break;
-		case PKG_AUTO_REVIEW_VERBOSE:
+		case PKG_REVIEW_AUTO_VERBOSE:
 			rc_review = pkg_review(pkg);
 			break;
-		default:
+		default: // PKG_REVIEW_ENABLED
 			/* Use the dep status as the return code */
 			rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
 			if( rc_review < 0 ) { /* If an error occurs set error return code */
@@ -438,7 +445,7 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_n
                                 continue;
                 }
 
-		rc = check_reviewed_pkg(&node->pkg, options.auto_review, reviewed_pkgs, reviewed_pkgs_dirty);
+		rc = check_reviewed_pkg(&node->pkg, options.review_type, reviewed_pkgs, reviewed_pkgs_dirty);
 		if( rc < 0 ) {
 			goto finish;
 		}
