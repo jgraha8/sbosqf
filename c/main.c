@@ -66,6 +66,7 @@ enum action {
         ACTION_WRITE_REMOVE_SQF,
         ACTION_WRITE_SQF,
         ACTION_WRITE_UPDATE_SQF,
+	ACTION_MAKE_META,
 };
 
 struct action_struct {
@@ -185,6 +186,7 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
+static int make_meta_pkg(const pkg_nodes_t *sbo_pkgs, const char *meta_pkg_name, struct bds_vector *pkg_name_list);
 
 static int process_options(int argc, char **argv, const char *options_str, const struct option *long_options,
                            void (*__print_help)(void), struct pkg_options *pkg_options)
@@ -227,6 +229,9 @@ static int process_options(int argc, char **argv, const char *options_str, const
                 case 'n':
                         pkg_options->recursive = false;
                         break;
+		case 'o':
+			pkg_options->output_name = optarg;
+			break;
                 case 'p':
                         pkg_options->revdeps = true;
                         break;
@@ -250,6 +255,7 @@ static void cmd_create_print_help()
                "  -d, --deep\n"
                "  -h, --help\n"
                "  -l, --list\n"
+	       "  -o, --output\n"
                "  -n, --no-recursive\n"
                "  -p, --revdeps\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
@@ -257,7 +263,7 @@ static void cmd_create_print_help()
 
 static int cmd_create_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "aAibcCdhlnp";
+        static const char *options_str            = "aAibcCdhlo:np";
         static const struct option long_options[] = {                              /* These options set a flag. */
                                                      LONG_OPT("auto-review", 'a'), /* option */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
@@ -267,11 +273,21 @@ static int cmd_create_options(int argc, char **argv, struct pkg_options *options
                                                      LONG_OPT("deep", 'd'),                /* option */
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
+                                                     LONG_OPT("output", 'o'),						     
                                                      LONG_OPT("no-recursive", 'n'), /* option */
                                                      LONG_OPT("revdeps", 'p'),      /* option */
                                                      {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, cmd_create_print_help, options);
+        int rc = process_options(argc, argv, options_str, long_options, cmd_create_print_help, options);
+
+	if( rc >= 0 ) {
+		if( options->output_mode != PKG_OUTPUT_FILE && options->output_name ) {
+			mesg_error("options --list/-l and --output/-o are mutually exclusive\n");
+			return -1;
+		}
+	}
+	
+	return rc;
 }
 
 static void cmd_edit_print_help()
@@ -356,7 +372,7 @@ static int cmd_updatedb_options(int argc, char **argv, struct pkg_options *optio
 
 static void cmd_check_updates_print_help()
 {
-        printf("Usage: %s check_updates [option] [pkg]\n"
+        printf("Usage: %s check-updates [option] [pkg]\n"
                "Checks for updated packages.\n"
                "\n"
                "If a package name is not provided, then updates for all packages will be provided.\n"
@@ -374,11 +390,48 @@ static int cmd_check_updates_options(int argc, char **argv, struct pkg_options *
         return process_options(argc, argv, options_str, long_options, cmd_check_updates_print_help, options);
 }
 
+static void cmd_make_meta_print_help()
+{
+        printf("Usage: %s make-meta -o metapkg [options] pkgs...\n"
+               "Creates a meta package from a set of provided packages.\n"
+               "\n"
+               "NOTE: Option -o is required.\n"
+               "\n"
+               "Options:\n"
+	       "  -o, --output metapkg\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_make_meta_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "o:h";
+        static const struct option long_options[] = {LONG_OPT("output", 'o'), LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+	int rc = process_options(argc, argv, options_str, long_options, cmd_make_meta_print_help, options);
+
+	if( rc == 0 ) {
+		if( options->output_name == NULL ) {
+			mesg_error("Output metapkg not provided (option --output/-o\n");
+			rc = 1;
+		}
+	}
+
+	/* Check that the meta package provided does not already exist as a package in the repo */
+	
+
+        return rc;
+}
+
 int main(int argc, char **argv)
 {
+	int rc = 0;
+	
         struct pkg_graph *pkg_graph    = NULL;
         pkg_nodes_t *sbo_pkgs          = NULL;
         struct pkg_options pkg_options = pkg_options_default();
+	struct bds_vector *pkg_name_list = NULL;
+	bool process_args = true;
 
         if (setvbuf(stdout, NULL, _IONBF, 0) != 0)
                 perror("setvbuf()");
@@ -400,57 +453,95 @@ int main(int argc, char **argv)
                 --argc;
                 ++argv;
 
-                if (strcmp(argv[0], "create") == 0) {
+		const char *cmd = argv[0];
+                if (strcmp(cmd, "create") == 0) {
 
                         as.action = ACTION_WRITE_SQF;
                         num_opts  = cmd_create_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "edit") == 0) {
+                } else if (strcmp(cmd, "edit") == 0) {
 
                         as.action = ACTION_EDIT_DEP;
                         num_opts  = cmd_edit_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "help") == 0) {
+                } else if (strcmp(cmd, "help") == 0) {
 
                         print_help();
                         exit(EXIT_SUCCESS);
 
-                } else if (strcmp(argv[0], "info") == 0) {
+                } else if (strcmp(cmd, "info") == 0) {
 
                         as.action = ACTION_SHOW_INFO;
                         num_opts  = cmd_info_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "review") == 0) {
+                } else if (strcmp(cmd, "review") == 0) {
 
                         as.action = ACTION_REVIEW;
                         num_opts  = cmd_review_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "search") == 0) {
+                } else if (strcmp(cmd, "search") == 0) {
 
                         as.action = ACTION_SEARCH_PKG;
                         num_opts  = cmd_search_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "updatedb") == 0) {
+                } else if (strcmp(cmd, "updatedb") == 0) {
 
                         as.action         = ACTION_UPDATEDB;
                         pkg_name_required = false;
                         num_opts          = cmd_updatedb_options(argc, argv, &pkg_options);
 
-                } else if (strcmp(argv[0], "check-updates") == 0) {
+                } else if (strcmp(cmd, "check-updates") == 0) {
 
                         as.action         = ACTION_CHECK_UPDATES;
                         pkg_name_required = false;
                         pkg_name_optional = true;
                         num_opts          = cmd_check_updates_options(argc, argv, &pkg_options);
 
+                } else if (strcmp(cmd, "make-meta") == 0) {
+
+                        as.action         = ACTION_MAKE_META;
+                        pkg_name_required = false;
+                        pkg_name_optional = false;
+                        num_opts          = cmd_make_meta_options(argc, argv, &pkg_options);
+
+			if( num_opts < 0 )
+				abort();
+			
+			argc -= MAX(num_opts, 1);
+			argv += MAX(num_opts, 1);
+
+
+			if( argc == 0 ) {
+				mesg_error("no package names provided\n");
+				exit(EXIT_FAILURE);
+			}
+
+			pkg_name_list = bds_vector_alloc(argc, sizeof(char *), NULL);
+			for( int i=0; i<argc; ++i) {
+				if( !dep_file_exists(argv[i]) ) {
+					mesg_warn("dependency file %s does not exist: skipping\n", argv[i]);
+					continue;
+				}
+				bds_vector_append(pkg_name_list, &argv[i]);
+			}
+
+			process_args = false;
+			
                 } else {
 
-                        mesg_error("incorrect command provided: %s\n", argv[0]);
+                        mesg_error("incorrect command provided: %s\n", cmd);
                         exit(EXIT_FAILURE);
                 }
 
-                argc -= MAX(num_opts, 1);
-                argv += MAX(num_opts, 1);
+		if( num_opts < 0 ) {
+			mesg_error("unable to process command %s\n", cmd);
+			exit(EXIT_FAILURE);
+		}
+
+		if( process_args ) {
+			argc -= MAX(num_opts, 1);
+			argv += MAX(num_opts, 1);
+		}
         }
 
         const char *pkg_name = NULL;
@@ -484,8 +575,6 @@ int main(int argc, char **argv)
                         pkg_load_db(sbo_pkgs);
                 }
         }
-
-        int rc = 0;
 
         if (as.action == 0) {
                 as.action = ACTION_WRITE_SQF;
@@ -546,10 +635,21 @@ int main(int argc, char **argv)
                         mesg_error("unable to search for package %s\n", pkg_name);
                 }
                 break;
+	case ACTION_MAKE_META:
+		rc = make_meta_pkg(sbo_pkgs, pkg_options.output_name, pkg_name_list);
+		if( rc != 0 ) {
+			mesg_error("unable to make meta-package %s\n", pkg_options.output_name);
+		} else {
+			mesg_info("created meta-package %s\n", pkg_options.output_name);
+		}
+		break;
         default:
                 mesg_warn("action %d not handled\n", as.action);
         }
 
+	if(pkg_name_list) {
+		bds_vector_free(&pkg_name_list);
+	}
         if (pkg_graph) {
                 pkg_graph_free(&pkg_graph);
         }
@@ -846,12 +946,15 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, stru
                         return rc;
         }
 
-        if (pkg_options.revdeps) {
-                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-revdeps.sqf", pkg_name);
-        } else {
-                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s.sqf", pkg_name);
-        }
-
+	if( pkg_options.output_name ) {
+		bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
+	} else {
+		if (pkg_options.revdeps) {
+			bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-revdeps.sqf", pkg_name);
+		} else {
+			bds_string_copyf(sqf_file, sizeof(sqf_file), "%s.sqf", pkg_name);
+		}
+	}
         reviewed_pkgs = pkg_nodes_alloc();
         if (pkg_reviewed_exists()) {
                 rc = pkg_load_reviewed(reviewed_pkgs);
@@ -891,7 +994,8 @@ finish:
         if (reviewed_pkgs)
                 pkg_nodes_free(&reviewed_pkgs);
 
-        ostream_close(os);
+        if( os )
+		ostream_close(os);
 
         return rc;
 }
@@ -1043,4 +1147,37 @@ static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name)
         }
 
         return 0;
+}
+
+static int make_meta_pkg(const pkg_nodes_t *sbo_pkgs, const char *meta_pkg_name, struct bds_vector *pkg_name_list)
+{
+        char meta_pkg_path[4096];
+	const size_t num_pkgs = bds_vector_size(pkg_name_list);
+
+	if( 0 == num_pkgs ) {
+		mesg_warn("no packages provided for meta package %s\n", meta_pkg_name);
+		return 1;
+	}
+
+	// Check if the meta package conflicts with an existing package
+	if( pkg_nodes_bsearch_const(sbo_pkgs, meta_pkg_name) ) {
+		mesg_error("meta-package %s conflict with existing %s package\n", meta_pkg_name, meta_pkg_name);
+		return 1;
+	}
+	
+	bds_string_copyf(meta_pkg_path, sizeof(meta_pkg_path), "%s/%s", user_config.depdir, meta_pkg_name);
+
+        FILE *fp = fopen(meta_pkg_path, "w");
+        assert(fp);
+
+	fprintf(fp,
+		"METAPKG\n"
+		"REQUIRED:\n");
+	for( size_t i=0; i<num_pkgs; ++i ) {
+		fprintf(fp, "%s\n", *(const char **)bds_vector_get_const(pkg_name_list, i));
+	}
+	fclose(fp);
+
+	return 0;
+
 }

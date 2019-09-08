@@ -177,8 +177,8 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         if (!options.optional)
                                 break;
                 case REQUIRED_BLOCK: {
-                        if (skip_installed(line, options))
-                                break;
+                        //if (skip_installed(line, options))
+                        //        break;
 
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
@@ -375,7 +375,7 @@ static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review
                 int rc_review = -1;
                 switch (review_type) {
                 case PKG_REVIEW_DISABLED:
-                        fprintf(stderr, "internal error: review type should not be PKG_REVIEW_DISABLED\n");
+                        mesg_error("internal error: review type should not be PKG_REVIEW_DISABLED\n");
                         abort();
                         break;
                 case PKG_REVIEW_AUTO:
@@ -439,11 +439,13 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_n
                 if (node->pkg.dep.is_meta)
                         continue;
 
-                if (options.check_installed) {
+                if (options.check_installed && strcmp(node->pkg.name, pkg_name) != 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-                        if (slack_pkg_is_installed(node->pkg.name, tag))
+                        if (slack_pkg_is_installed(node->pkg.name, tag)) {
+				mesg_info("package %s is already installed: skipping\n", node->pkg.name);
                                 continue;
+			}
                 }
 
                 rc = check_reviewed_pkg(&node->pkg, options.review_type, reviewed_pkgs, reviewed_pkgs_dirty);
