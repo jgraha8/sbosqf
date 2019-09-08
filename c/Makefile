@@ -9,7 +9,7 @@ all: sbopkg-dep2sqf
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-sbopkg-dep2sqf: c-ctype.o filevercmp.o mesg.o ostream.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o main.o 
+sbopkg-dep2sqf: c-ctype.o filevercmp.o mesg.o ostream.o string_list.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o main.o 
 	$(CC) $(LDFLAGS) -o $@ $(LIBS) $^ 
 
 #test_pkg: c-ctype.o filevercmp.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o test_pkg.o
