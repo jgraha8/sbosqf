@@ -36,6 +36,7 @@
 #include <libbds/bds_vector.h>
 
 #include "config.h"
+#include "mesg.h"
 #include "pkg_graph.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
@@ -49,11 +50,8 @@
                 long_opt, no_argument, 0, opt                                                                     \
         }
 
-enum output_mode { OUTPUT_STDOUT = 1, OUTPUT_FILE };
-
 static bool pkg_name_required       = true;
 static bool pkg_name_optional       = false;
-static enum output_mode output_mode = OUTPUT_FILE;
 static bool create_graph            = true;
 
 enum action {
@@ -81,8 +79,8 @@ void set_action(struct action_struct *as, enum action value, const struct option
 
         if (as->action != ACTION_NONE && as->option != option) {
 
-                fprintf(stderr, "argument --%s/-%c conflicts with argument --%s/-%c\n", as->option->name,
-                        as->option->val, option->name, option->val);
+                mesg_error("argument --%s/-%c conflicts with argument --%s/-%c\n", as->option->name,
+                           as->option->val, option->name, option->val);
                 exit(EXIT_FAILURE);
         }
         as->action = value;
@@ -159,8 +157,8 @@ static void set_pkg_review_type(enum pkg_review_type *review_type, enum pkg_revi
                 prev_option = find_option(long_options, NULL, prio[*review_type].optval);
                 option      = find_option(long_options, NULL, prio[type_val].optval);
 
-                fprintf(stderr, "warning: option --%s/-%c conflicts with --%s/-%c", prev_option->name,
-                        prev_option->val, option->name, option->val);
+                mesg_warn("warning: option --%s/-%c conflicts with --%s/-%c", prev_option->name, prev_option->val,
+                          option->name, option->val);
         }
 
         if (prio[type_val].prio > prio[*review_type].prio) {
@@ -179,12 +177,11 @@ static void print_help();
 static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int update_pkgdb(struct pkg_graph *pkg_graph);
 static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name);
-static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                         enum output_mode output_mode);
-static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                                enum output_mode output_mode);
-static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                                enum output_mode output_mode);
+static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options);
+
+static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options);
+
+static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options);
 static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
@@ -212,6 +209,9 @@ static int process_options(int argc, char **argv, const char *options_str, const
                 case 'c':
                         pkg_options->check_installed |= PKG_CHECK_INSTALLED;
                         break;
+                case 'C':
+                        pkg_options->check_installed |= PKG_CHECK_ANY_INSTALLED;
+                        break;
                 case 'd':
                         pkg_options->deep = true;
                         break;
@@ -221,8 +221,8 @@ static int process_options(int argc, char **argv, const char *options_str, const
                 case 'h':
                         __print_help();
                         exit(0);
-                case 'k':
-                        pkg_options->check_installed |= PKG_CHECK_ANY_INSTALLED;
+                case 'l':
+                        pkg_options->output_mode = PKG_OUTPUT_STDOUT;
                         break;
                 case 'n':
                         pkg_options->recursive = false;
@@ -246,9 +246,10 @@ static void cmd_create_print_help()
                "  -A, --auto-review-verbose\n"
                "  -i, --ignore-review\n"
                "  -c, --check-installed\n"
+               "  -C, --check-any-installed\n"
                "  -d, --deep\n"
                "  -h, --help\n"
-               "  -k, --check-any-installed\n"
+               "  -l, --list\n"
                "  -n, --no-recursive\n"
                "  -p, --revdeps\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
@@ -256,17 +257,18 @@ static void cmd_create_print_help()
 
 static int cmd_create_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "aAibcdhknp";
+        static const char *options_str            = "aAibcCdhlnp";
         static const struct option long_options[] = {                              /* These options set a flag. */
                                                      LONG_OPT("auto-review", 'a'), /* option */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
                                                      LONG_OPT("ignore-review", 'i'),       /* option */
                                                      LONG_OPT("check-installed", 'c'),     /* option */
+                                                     LONG_OPT("check-any-installed", 'C'), /* option */
                                                      LONG_OPT("deep", 'd'),                /* option */
                                                      LONG_OPT("help", 'h'),
-                                                     LONG_OPT("check-any-installed", 'k'), /* option */
-                                                     LONG_OPT("no-recursive", 'n'),        /* option */
-                                                     LONG_OPT("revdeps", 'p'),             /* option */
+                                                     LONG_OPT("list", 'l'),
+                                                     LONG_OPT("no-recursive", 'n'), /* option */
+                                                     LONG_OPT("revdeps", 'p'),      /* option */
                                                      {0, 0, 0, 0}};
 
         return process_options(argc, argv, options_str, long_options, cmd_create_print_help, options);
@@ -288,6 +290,90 @@ static int cmd_edit_options(int argc, char **argv, struct pkg_options *options)
         return process_options(argc, argv, options_str, long_options, cmd_edit_print_help, options);
 }
 
+static void cmd_info_print_help()
+{
+        printf("Usage: %s info [option] pkg\n"
+               "Options:\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_info_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "h";
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+        return process_options(argc, argv, options_str, long_options, cmd_info_print_help, options);
+}
+
+static void cmd_review_print_help()
+{
+        printf("Usage: %s review [option] pkg\n"
+               "Options:\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_review_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "h";
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+        return process_options(argc, argv, options_str, long_options, cmd_review_print_help, options);
+}
+
+static void cmd_search_print_help()
+{
+        printf("Usage: %s search [option] pkg\n"
+               "Options:\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_search_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "h";
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+        return process_options(argc, argv, options_str, long_options, cmd_search_print_help, options);
+}
+
+static void cmd_updatedb_print_help()
+{
+        printf("Usage: %s updatedb [option]\n"
+               "Options:\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_updatedb_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "h";
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+        return process_options(argc, argv, options_str, long_options, cmd_updatedb_print_help, options);
+}
+
+static void cmd_check_updates_print_help()
+{
+        printf("Usage: %s check_updates [option] [pkg]\n"
+               "Checks for updated packages.\n"
+               "\n"
+               "If a package name is not provided, then updates for all packages will be provided.\n"
+               "\n"
+               "Options:\n"
+               "  -h, --help\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_check_updates_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "h";
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+
+        return process_options(argc, argv, options_str, long_options, cmd_check_updates_print_help, options);
+}
+
 int main(int argc, char **argv)
 {
         struct pkg_graph *pkg_graph    = NULL;
@@ -305,7 +391,7 @@ int main(int argc, char **argv)
           Get command
          */
         if (argc < 2) {
-                fprintf(stderr, "no command provided\n");
+                mesg_error("no command provided\n");
                 exit(EXIT_FAILURE);
         }
 
@@ -315,31 +401,51 @@ int main(int argc, char **argv)
                 ++argv;
 
                 if (strcmp(argv[0], "create") == 0) {
+
                         as.action = ACTION_WRITE_SQF;
                         num_opts  = cmd_create_options(argc, argv, &pkg_options);
-                } else if (strcmp(argv[0], "list") == 0) {
-                        as.action   = ACTION_WRITE_SQF;
-                        output_mode = OUTPUT_STDOUT;
-                        num_opts    = cmd_create_options(argc, argv, &pkg_options);
+
                 } else if (strcmp(argv[0], "edit") == 0) {
+
                         as.action = ACTION_EDIT_DEP;
                         num_opts  = cmd_edit_options(argc, argv, &pkg_options);
+
                 } else if (strcmp(argv[0], "help") == 0) {
+
                         print_help();
                         exit(EXIT_SUCCESS);
+
+                } else if (strcmp(argv[0], "info") == 0) {
+
+                        as.action = ACTION_SHOW_INFO;
+                        num_opts  = cmd_info_options(argc, argv, &pkg_options);
+
                 } else if (strcmp(argv[0], "review") == 0) {
+
                         as.action = ACTION_REVIEW;
-                        // cmd_review_options();
+                        num_opts  = cmd_review_options(argc, argv, &pkg_options);
+
+                } else if (strcmp(argv[0], "search") == 0) {
+
+                        as.action = ACTION_SEARCH_PKG;
+                        num_opts  = cmd_search_options(argc, argv, &pkg_options);
+
                 } else if (strcmp(argv[0], "updatedb") == 0) {
+
                         as.action         = ACTION_UPDATEDB;
                         pkg_name_required = false;
-                        // cmd_updatedb_options();
+                        num_opts          = cmd_updatedb_options(argc, argv, &pkg_options);
+
                 } else if (strcmp(argv[0], "check-updates") == 0) {
+
                         as.action         = ACTION_CHECK_UPDATES;
                         pkg_name_required = false;
                         pkg_name_optional = true;
+                        num_opts          = cmd_check_updates_options(argc, argv, &pkg_options);
+
                 } else {
-                        fprintf(stderr, "incorrect command provided: %s\n", argv[0]);
+
+                        mesg_error("incorrect command provided: %s\n", argv[0]);
                         exit(EXIT_FAILURE);
                 }
 
@@ -388,33 +494,60 @@ int main(int argc, char **argv)
         switch (as.action) {
         case ACTION_REVIEW:
                 rc = review_pkg(pkg_graph, pkg_name);
+                if (rc < 0) {
+                        mesg_error("unable to review package %s\n", pkg_name);
+                } else if (rc > 0) {
+                        mesg_warn("package %s not added to REVIEWED\n", pkg_name);
+                }
                 break;
         case ACTION_SHOW_INFO:
                 rc = show_pkg_info(pkg_graph, pkg_name);
+                if (rc != 0) {
+                        mesg_error("unable to show package %s\n", pkg_name);
+                }
                 break;
         case ACTION_CHECK_UPDATES:
                 rc = check_updates(pkg_graph, pkg_name);
+                if (rc != 0) {
+                        if (pkg_name) {
+                                mesg_error("unable to check updates for package %s\n", pkg_name);
+                        } else {
+                                mesg_error("unable to check updates\n");
+                        }
+                }
                 break;
         case ACTION_WRITE_UPDATE_SQF:
-                rc = write_pkg_update_sqf(pkg_graph, pkg_name, pkg_options, output_mode);
+                rc = write_pkg_update_sqf(pkg_graph, pkg_name, pkg_options);
                 break;
         case ACTION_UPDATEDB:
                 rc = update_pkgdb(pkg_graph);
+                if (rc != 0) {
+                        mesg_error("unable to update package database\n");
+                }
                 break;
         case ACTION_EDIT_DEP:
                 rc = edit_pkg_dep(pkg_graph, pkg_name);
+                if (rc != 0) {
+                        mesg_error("unable to edit package dependency file %s\n", pkg_name);
+                }
                 break;
         case ACTION_WRITE_SQF:
-                rc = write_pkg_sqf(pkg_graph, pkg_name, pkg_options, output_mode);
+                rc = write_pkg_sqf(pkg_graph, pkg_name, pkg_options);
+                if (rc != 0) {
+                        mesg_error("unable to create dependency list for package %s\n", pkg_name);
+                }
                 break;
         case ACTION_WRITE_REMOVE_SQF:
-                rc = write_pkg_remove_sqf(pkg_graph, pkg_name, pkg_options, output_mode);
+                rc = write_pkg_remove_sqf(pkg_graph, pkg_name, pkg_options);
                 break;
         case ACTION_SEARCH_PKG:
                 rc = search_pkg(sbo_pkgs, pkg_name);
+                if (rc != 0) {
+                        mesg_error("unable to search for package %s\n", pkg_name);
+                }
                 break;
         default:
-                printf("action %d not handled\n", as.action);
+                mesg_warn("action %d not handled\n", as.action);
         }
 
         if (pkg_graph) {
@@ -430,8 +563,7 @@ static void print_help()
 {
         printf("Usage: %s command [options] [args]\n"
                "Commands:\n"
-               "  create [options] pkg       create pkg sqf file\n"
-               "  list [options] pkg         list pkg dependencies\n"
+               "  create [options] pkg       create package dependency list or file\n"
                "  updatedb                   update the package database\n"
                "  check-updates [pkg]        check for updates\n"
                "  help                       show this information\n"
@@ -563,16 +695,19 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
         while (bds_queue_pop(updated_pkg_queue, &updated_pkg)) {
                 switch (updated_pkg.status) {
                 case PKG_UPDATED:
-                        printf(COLOR_OK "%4s" COLOR_END " %-24s %-8s --> %s\n", "[U]", updated_pkg.name,
-                               updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
+                        mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[U]", updated_pkg.name,
+                                      updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
+                        /*                        printf(COLOR_OK "%4s" COLOR_END " %-24s %-8s --> %s\n", "[U]",
+                           updated_pkg.name,
+                                                  updated_pkg.slack_pkg_version, updated_pkg.sbo_version); */
                         break;
                 case PKG_DOWNGRADED:
-                        printf(COLOR_INFO "%4s" COLOR_END " %-24s %-8s --> %s\n", "[D]", updated_pkg.name,
-                               updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
+                        mesg_info_label("%4s", " %-24s %-8s --> %s\n", "[D]", updated_pkg.name,
+                                        updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
                         break;
                 default: /* PKG_REMOVED */
-                        printf(COLOR_FAIL "%4s" COLOR_END " %-24s %-8s\n", "[R]", updated_pkg.name,
-                               updated_pkg.slack_pkg_version);
+                        mesg_error_label("%4s", " %-24s %-8s\n", "[R]", updated_pkg.name,
+                                         updated_pkg.slack_pkg_version);
                 }
                 destroy_updated_pkg(&updated_pkg);
         }
@@ -624,7 +759,7 @@ static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name)
 
         pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
         if (pkg_node == NULL) {
-                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                mesg_error("package %s does not exist\n", pkg_name);
                 rc = 1;
                 return rc;
         }
@@ -674,7 +809,7 @@ static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name)
 
         pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
         if (pkg_node == NULL) {
-                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                mesg_error("package %s does not exist\n", pkg_name);
                 return 1;
         }
         return pkg_show_info(&pkg_node->pkg);
@@ -686,14 +821,13 @@ static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name)
 
         pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
         if (pkg_node == NULL) {
-                fprintf(stderr, "package %s does not exist\n", pkg_name);
+                mesg_error("package %s does not exist\n", pkg_name);
                 return 1;
         }
         return edit_dep_file(pkg_node->pkg.name);
 }
 
-static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                         enum output_mode output_mode)
+static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options)
 {
         int rc = 0;
         char sqf_file[256];
@@ -727,12 +861,12 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, stru
 
         while (1) {
 
-                bool buffer_stream      = (output_mode != OUTPUT_FILE);
-                const char *output_path = (output_mode == OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
+                bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
+                const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
                 os                      = ostream_open(output_path, "w", buffer_stream);
 
                 if (os == NULL) {
-                        fprintf(stderr, "unable to create %s\n", output_path);
+                        mesg_error("unable to create %s\n", output_path);
                         rc = 1;
                         goto finish;
                 }
@@ -762,14 +896,12 @@ finish:
         return rc;
 }
 
-static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                                enum output_mode output_mode)
+static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options)
 {
         return 0;
 }
 
-static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options,
-                                enum output_mode output_mode)
+static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options)
 {
         int rc = 0;
         char sqf_file[256];
@@ -825,8 +957,8 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 
                         if (!parent_node->pkg.for_removal &&
                             slack_pkg_is_installed(parent_node->pkg.name, user_config.sbo_tag)) {
-                                printf(COLOR_FAIL "%12s" COLOR_END " %-24s <-- %s\n", "[required]", node->pkg.name,
-                                       parent_node->pkg.name);
+                                mesg_error_label("%12s", " %-24s <-- %s\n", "[required]", node->pkg.name,
+                                                 parent_node->pkg.name);
                                 node->pkg.for_removal = false;
                                 break;
                         }
@@ -842,10 +974,10 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
 
         bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-remove.sqf", pkg_name);
 
-        if (output_mode == OUTPUT_FILE) {
+        if (pkg_options.output_mode == PKG_OUTPUT_FILE) {
                 fp = fopen(sqf_file, "w");
                 if (fp == NULL) {
-                        fprintf(stderr, "unable to create %s\n", sqf_file);
+                        mesg_error("unable to create %s\n", sqf_file);
                         rc = 1;
                         goto finish;
                 }
@@ -860,7 +992,7 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
         }
 
         if (fp != stdout) {
-                printf("created %s\n", sqf_file);
+                mesg_ok("created %s\n", sqf_file);
         } else {
                 fprintf(fp, "\n");
         }
@@ -878,6 +1010,7 @@ finish:
 }
 
 static int compar_string_ptr(const void *a, const void *b) { return strcmp(*(const char **)a, *(const char **)b); }
+
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name)
 {
         size_t num_nodes            = 0;

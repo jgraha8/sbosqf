@@ -95,9 +95,13 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
 enum pkg_review_type { PKG_REVIEW_DISABLED = 0, PKG_REVIEW_ENABLED, PKG_REVIEW_AUTO, PKG_REVIEW_AUTO_VERBOSE };
 
+enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT };
+
+
 struct pkg_options {
         int check_installed;              /* Bit flags for checking packages are already installed */
         enum pkg_review_type review_type; /* Selection for how packages are reviewed */
+	enum pkg_output_mode output_mode; /* Output mode selection */
         bool recursive;                   /* Recursive dep file parsing */
         bool optional;                    /* Include optional packages in dep file parsing */
         bool revdeps;                     /* Include reverse dependencies */

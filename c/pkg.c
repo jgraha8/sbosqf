@@ -29,6 +29,7 @@ struct pkg_options pkg_options_default()
         options.recursive   = true;
         options.optional    = true;
         options.review_type = PKG_REVIEW_ENABLED;
+	options.output_mode = PKG_OUTPUT_FILE;
 
         return options;
 }

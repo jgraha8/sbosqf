@@ -8,8 +8,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <errno.h>
 
 #include "file_mmap.h"
+#include "mesg.h"
 
 struct file_mmap *file_mmap(const char *path)
 {
@@ -19,7 +21,8 @@ struct file_mmap *file_mmap(const char *path)
 
         int fd = open(path, O_RDONLY);
         if (fd == -1) {
-                perror("open()");
+		mesg_error("open(): %s\n", strerror(errno));
+                //perror("open()");
                 rc = 1;
                 goto finish;
         }

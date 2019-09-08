@@ -8,6 +8,7 @@
 #include <libbds/bds_queue.h>
 
 #include "file_mmap.h"
+#include "mesg.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
 #include "sbo.h"
@@ -162,7 +163,7 @@ int pkg_create_default_deps(pkg_nodes_t *pkgs)
 
                 const char *dep_file = NULL;
                 if ((dep_file = create_default_dep_verbose(&pkg_node->pkg)) == NULL) {
-                        fprintf(stderr, "  unable to create %s dependency file\n", pkg_node->pkg.name);
+                        mesg_error("unable to create %s dependency file\n", pkg_node->pkg.name);
                 }
         }
         return 0;
@@ -406,8 +407,7 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                         "\n"
                         "%s\n" // package info
                 BORDER2 "\n"
-                        "README\n"
-		BORDER2 "\n"
+                        "README\n" BORDER2 "\n"
                         "%s\n" // readme file
                         "\n",
                 pkg->name, info->data, readme->data);
@@ -476,17 +476,17 @@ static char read_response()
  */
 int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *dep_status)
 {
-	int rc = 0;
-	static int level = 0;
-	
+        int rc           = 0;
+        static int level = 0;
+
         if (pkg_review(pkg) != 0)
                 return -1;
 
-	++level;
-	if( level == 1 ) {
-		*dep_status = 0;
-	}
-	
+        ++level;
+        if (level == 1) {
+                *dep_status = 0;
+        }
+
         while (1) {
                 printf("Add %s to REVIEWED ([Y]es / [n]o / [d]efault / [e]dit / [a]gain / [q]uit)? ", pkg->name);
                 char r = 0;
@@ -495,45 +495,45 @@ int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *de
                 }
                 if (r == 'y' || r == 'Y' || r == '\0') {
                         rc = 0;
-			break;
+                        break;
                 }
                 if (r == 'n' || r == 'N') {
-			rc = 1;
-			break;
+                        rc = 1;
+                        break;
                 }
                 if (r == 'd' || r == 'D') {
                         // Reset to default dependency file
                         assert(create_default_dep(pkg) != NULL);
-			*dep_status |= PKG_DEP_REVERTED_DEFAULT;
-			if( *dep_status & return_on_modify_mask ) {
-				rc = 1;
-				break;
-			}
+                        *dep_status |= PKG_DEP_REVERTED_DEFAULT;
+                        if (*dep_status & return_on_modify_mask) {
+                                rc = 1;
+                                break;
+                        }
                         rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
-			break;
+                        break;
                 }
                 if (r == 'e' || r == 'E') {
                         if (0 != edit_dep_file(pkg->name))
                                 exit(EXIT_FAILURE);
-			*dep_status |= PKG_DEP_EDITED;
-			if( *dep_status & return_on_modify_mask ) {
-				rc = 1;
-				break;
-			}
+                        *dep_status |= PKG_DEP_EDITED;
+                        if (*dep_status & return_on_modify_mask) {
+                                rc = 1;
+                                break;
+                        }
                         rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
-			break;
+                        break;
                 }
-		if (r == 'a' || r == 'A') {
-			rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
-			break;
-		}
+                if (r == 'a' || r == 'A') {
+                        rc = pkg_review_prompt(pkg, return_on_modify_mask, dep_status);
+                        break;
+                }
                 if (r == 'q' || r == 'Q') {
-                        fprintf(stderr, COLOR_WARN "[warning]" COLOR_END " terminating upon user request\n");
+                        mesg_error("terminating upon user request\n");
                         exit(EXIT_FAILURE);
                 }
         }
 
-	--level;
+        --level;
 
-	return rc;
+        return rc;
 }
