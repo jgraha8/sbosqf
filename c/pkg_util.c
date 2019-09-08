@@ -177,19 +177,19 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         if (!options.optional)
                                 break;
                 case REQUIRED_BLOCK: {
-                        //if (skip_installed(line, options))
+                        // if (skip_installed(line, options))
                         //        break;
 
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
                         if (req_node == NULL) {
-				mesg_warn("%s no longer in repository\n", line);
+                                mesg_warn("%s no longer in repository\n", line);
                                 break;
                         }
 
                         if (bds_stack_lsearch(visit_path, &req_node, pkg_nodes_compar)) {
-                                mesg_error("cyclic dependency found: %s <--> %s\n",
-                                        pkg_node->pkg.name, req_node->pkg.name);
+                                mesg_error("cyclic dependency found: %s <--> %s\n", pkg_node->pkg.name,
+                                           req_node->pkg.name);
                                 exit(EXIT_FAILURE);
                         }
 
@@ -209,8 +209,7 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         pkg_append_buildopts(&pkg_node->pkg, buildopt);
                 } break;
                 default:
-                        mesg_error("%s(%d): badly formatted dependency file %s\n", __FILE__, __LINE__,
-                                dep_file);
+                        mesg_error("%s(%d): badly formatted dependency file %s\n", __FILE__, __LINE__, dep_file);
                         exit(EXIT_FAILURE);
                 }
 
@@ -415,8 +414,9 @@ static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review
  *    0   success / no errors
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
-int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
-              pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name,
+                       struct pkg_options options, pkg_nodes_t *reviewed_pkgs,
+                        bool *reviewed_pkgs_dirty, pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
 {
         int rc = 0;
         struct pkg_iterator iter;
@@ -424,11 +424,8 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_n
         pkg_iterator_flags_t flags = 0;
         int max_dist               = (options.deep ? -1 : 1);
 
-        struct bds_stack *revdeps_pkgs = NULL;
-
         if (options.revdeps) {
-                flags        = PKG_ITER_REVDEPS;
-                revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL);
+                flags = PKG_ITER_REVDEPS;
         } else {
                 flags = PKG_ITER_DEPS;
         }
@@ -439,60 +436,112 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const char *pkg_n
                 if (node->pkg.dep.is_meta)
                         continue;
 
-                if (options.check_installed && strcmp(node->pkg.name, pkg_name) != 0) {
+                if (options.check_installed && strcmp(pkg_name, node->pkg.name) == 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
                         if (slack_pkg_is_installed(node->pkg.name, tag)) {
-				mesg_info("package %s is already installed: skipping\n", node->pkg.name);
+                                mesg_info("package %s is already installed: skipping\n", node->pkg.name);
                                 continue;
+                        }
+                }
+
+                if (pkg_nodes_bsearch_const(review_skip_pkgs, node->pkg.name) == NULL) {
+                        rc = check_reviewed_pkg(&node->pkg, options.review_type, reviewed_pkgs,
+                                                reviewed_pkgs_dirty);
+                        if (rc < 0) {
+                                goto finish;
+                        }
+                        if (rc > 0) {
+                                // Package dependency file was edited (it may have been updated): reload the dep
+                                // file and
+                                // process the node
+                                pkg_clear_required(&node->pkg);
+                                pkg_load_dep(pkg_graph, node->pkg.name, options);
+                                goto finish;
+                        }
+                        pkg_nodes_insert_sort(review_skip_pkgs, node);
+                }
+
+		if(pkg_nodes_lsearch_const(output_pkgs, node->pkg.name) == NULL ) {
+			pkg_nodes_append(output_pkgs, node);
+		}
+        }
+
+finish:
+        pkg_iterator_destroy(&iter);
+
+        return rc;
+}
+
+/*
+ * Return:
+ *   -1   if error occurred
+ *    0   success / no errors
+ */
+int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
+              struct pkg_options options, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+{
+        int rc = 0;
+
+        pkg_nodes_t *output_pkgs = NULL;
+	string_list_t *review_skip_pkgs = string_list_alloc_reference();
+	const size_t num_pkgs = string_list_size(pkg_names);
+	
+        /* if (options.revdeps) { */
+        /*         revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL); */
+        /* } */
+	output_pkgs = pkg_nodes_alloc_reference();
+	
+	for( size_t i=0; i<num_pkgs; ++i ) {
+		rc = 0;
+
+		while(1) {
+			rc = __write_sqf(pkg_graph, string_list_get_const(pkg_names, i) /* pkg_name */,
+					 options, reviewed_pkgs, reviewed_pkgs_dirty, review_skip_pkgs, output_pkgs );
+			
+			if( rc > 0 ) {
+				/* A dependency file was modified during review */
+				continue;
 			}
-                }
-
-                rc = check_reviewed_pkg(&node->pkg, options.review_type, reviewed_pkgs, reviewed_pkgs_dirty);
-                if (rc < 0) {
-                        goto finish;
-                }
-                if (rc > 0) {
-                        // Package dependency file was edited (it may have been updated): reload the dep file and
-                        // process the node
-                        pkg_clear_required(&node->pkg);
-                        pkg_load_dep(pkg_graph, node->pkg.name, options);
-                        goto finish;
-                }
-
-                if (options.revdeps) {
-                        bds_stack_push(revdeps_pkgs, &node->pkg);
-                } else {
-                        ostream_printf(os, "%s", node->pkg.name);
-                        if (ostream_is_console_stream(os)) {
-                                ostream_printf(os, " ");
-                        } else {
-                                write_buildopts(os, &node->pkg);
-                                ostream_printf(os, "\n");
-                        }
-                }
+				
+			if( rc < 0 ) { /* Error occurred */
+				goto finish;
+			}
+			break;
+		}
         }
 
-        if (options.revdeps) {
-                struct pkg pkg;
-                while (bds_stack_pop(revdeps_pkgs, &pkg)) {
-                        ostream_printf(os, "%s", pkg.name);
-                        if (ostream_is_console_stream(os)) {
-                                ostream_printf(os, " ");
-                        } else {
-                                write_buildopts(os, &pkg);
-                                ostream_printf(os, "\n");
-                        }
-                }
-        }
-        if (ostream_is_console_stream(os))
+	const size_t num_output = pkg_nodes_size(output_pkgs);
+	bool have_output = (num_output > 0 );
+	
+	for( size_t i=0; i<num_output; ++i ) {
+		const struct pkg_node *node = NULL;
+		
+		if( options.revdeps) {
+			node = pkg_nodes_get_const(output_pkgs, num_output - 1 - i );
+		} else {
+			node = pkg_nodes_get_const(output_pkgs, i );
+		}
+
+		ostream_printf(os, "%s", node->pkg.name);
+		if (ostream_is_console_stream(os)) {
+			ostream_printf(os, " ");
+		} else {
+			write_buildopts(os, &node->pkg);
+			ostream_printf(os, "\n");
+		}
+	}
+
+        if (have_output && ostream_is_console_stream(os))
                 ostream_printf(os, "\n");
 
 finish:
-        if (options.revdeps) {
-                bds_stack_free(&revdeps_pkgs);
+	if( review_skip_pkgs ) {
+		string_list_free(&review_skip_pkgs);
+	}
+        if (output_pkgs) {
+                pkg_nodes_free(&output_pkgs);
         }
-        pkg_iterator_destroy(&iter);
 
         return rc;
 }

@@ -42,6 +42,8 @@ bool ostream_is_console_stream(const struct ostream *os);
 
 int ostream_printf(struct ostream *os, const char *fmt, ...);
 
+void ostream_clear(struct ostream *os);
+
 void ostream_close(struct ostream *os);
 
 #endif

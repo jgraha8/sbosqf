@@ -69,6 +69,13 @@ int ostream_printf(struct ostream *os, const char *fmt, ...)
 	return rc;
 }
 
+void ostream_clear(struct ostream *os)
+{
+	if( os->output_buffer ) {
+		bds_vector_clear(os->output_buffer);
+	}
+}
+
 void ostream_close(struct ostream *os)
 {
 	if( os->output_buffer) {
