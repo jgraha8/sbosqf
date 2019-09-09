@@ -184,7 +184,8 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
 
 static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options pkg_options);
 
-static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names, struct pkg_options pkg_options);
+static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
+                                struct pkg_options pkg_options);
 static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name);
@@ -281,6 +282,42 @@ static int cmd_create_options(int argc, char **argv, struct pkg_options *options
                                                      {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_create_print_help, options);
+
+        if (rc >= 0) {
+                if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
+                        mesg_error("options --list/-l and --output/-o are mutually exclusive\n");
+                        return -1;
+                }
+        }
+
+        return rc;
+}
+
+static void cmd_remove_print_help()
+{
+        printf("Usage: %s remove [option] pkg\n"
+               "Options:\n"
+               "  -d, --deep\n"
+               "  -h, --help\n"
+               "  -l, --list\n"
+               "  -o, --output\n",
+               "sbopkg-dep2sqf"); // TODO: have program_name variable
+}
+
+static int cmd_remove_options(int argc, char **argv, struct pkg_options *options)
+{
+        static const char *options_str            = "dhlo:";
+        static const struct option long_options[] = {                              /* These options set a flag. */
+                                                     LONG_OPT("deep", 'd'),                /* option */
+                                                     LONG_OPT("help", 'h'),
+                                                     LONG_OPT("list", 'l'),
+                                                     LONG_OPT("output", 'o'),
+                                                     {0, 0, 0, 0}};
+
+        int rc = process_options(argc, argv, options_str, long_options, cmd_remove_print_help, options);
+
+	/* Revdeps processing is required for package removal */
+	options->revdeps = true;
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
@@ -450,15 +487,21 @@ int main(int argc, char **argv)
 
         {
                 int num_opts = 0;
-                --argc;
-                ++argv;
+                //--argc;
+                //++argv;
 
-                const char *cmd = argv[0];
+                const char *cmd = argv[1];
                 if (strcmp(cmd, "create") == 0) {
 
                         as.action          = ACTION_WRITE_SQF;
                         num_opts           = cmd_create_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
+
+		} else if (strcmp(cmd, "remove") == 0 ) {
+
+			as.action = ACTION_WRITE_REMOVE_SQF;
+			num_opts = cmd_remove_options(argc, argv, &pkg_options);
+			multiple_pkg_names = true;
 
                 } else if (strcmp(cmd, "edit") == 0) {
 
@@ -515,8 +558,8 @@ int main(int argc, char **argv)
                         exit(EXIT_FAILURE);
                 }
 
-                argc -= MAX(num_opts, 1);
-                argv += MAX(num_opts, 1);
+                argc -= MAX(num_opts+1, 1);
+                argv += MAX(num_opts+1, 1);
         }
 
         const char *pkg_name = NULL;
@@ -617,6 +660,9 @@ int main(int argc, char **argv)
                 break;
         case ACTION_WRITE_REMOVE_SQF:
                 rc = write_pkg_remove_sqf(pkg_graph, pkg_names, pkg_options);
+                if (rc != 0) {
+                        mesg_error("unable to create remove package list\n");
+                }
                 break;
         case ACTION_SEARCH_PKG:
                 rc = search_pkg(sbo_pkgs, pkg_name);
@@ -939,12 +985,11 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
                         return rc;
         }
 
-	if (pkg_options.output_mode == PKG_OUTPUT_FILE &&
-	    num_pkgs > 1) 
-		assert(pkg_options.output_name);
-	
-	if( pkg_options.output_name ) {
-		bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
+        if (pkg_options.output_mode == PKG_OUTPUT_FILE && num_pkgs > 1)
+                assert(pkg_options.output_name);
+
+        if (pkg_options.output_name) {
+                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
         } else {
                 if (pkg_options.revdeps) {
                         bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-revdeps.sqf",
@@ -962,21 +1007,20 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
                         goto finish;
         }
 
-	bool buffer_stream = (pkg_options.output_mode != PKG_OUTPUT_FILE);
-	const char *output_path =
-		(pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
-	os = ostream_open(output_path, "w", buffer_stream);
+        bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
+        const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
+        os                      = ostream_open(output_path, "w", buffer_stream);
 
-	if (os == NULL) {
-		mesg_error("unable to create %s\n", output_path);
-		rc = 1;
-		goto finish;
-	}
-	rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, reviewed_pkgs, &reviewed_pkgs_dirty);
+        if (os == NULL) {
+                mesg_error("unable to create %s\n", output_path);
+                rc = 1;
+                goto finish;
+        }
+        rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, reviewed_pkgs, &reviewed_pkgs_dirty);
 
-	if (rc < 0) {
-		goto finish;
-	}
+        if (rc < 0) {
+                goto finish;
+        }
 
         if (reviewed_pkgs_dirty) {
                 rc = pkg_write_reviewed(reviewed_pkgs);
@@ -996,73 +1040,81 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const char *pkg_nam
         return 0;
 }
 
-static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names, struct pkg_options pkg_options)
+static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
+                                struct pkg_options pkg_options)
 {
-	return 0;
-#if 0
+
         int rc = 0;
         char sqf_file[256];
-        FILE *fp                       = NULL;
+	struct ostream *os  = NULL;
         const char *term               = NULL;
-        struct bds_queue *pkg_list     = NULL;
+        pkg_nodes_t *pkg_list     = NULL;
         struct bds_stack *removal_list = NULL;
         struct pkg_node *node          = NULL;
         struct pkg_iterator iter;
-        struct pkg_options options = pkg_options_default();
         pkg_iterator_flags_t flags = 0;
         int max_dist               = 0;
 	const size_t num_pkgs = string_list_size(pkg_names);
-	string_list_t *node_pkg_name = string_list_alloc_reference();	
 
-        options.revdeps = true;
-
-        if ((rc = pkg_load_all_deps(pkg_graph, options)) != 0)
+	// Make sure revdeps flag is set 
+	assert( pkg_options.revdeps );
+	
+        if ((rc = pkg_load_all_deps(pkg_graph, pkg_options)) != 0)
                 return rc;
+	
+	// Make sure all dependency files are loaded in case we have meta-packages
 	for( size_t i=0; i<num_pkgs; ++i ) {
-		if ((rc = pkg_load_dep(pkg_graph, string_list_get_const(pkg_names,i), options)) != 0)
+		if ((rc = pkg_load_dep(pkg_graph, string_list_get_const(pkg_names,i), pkg_options)) != 0)
 			return rc;
 	}
 
-        pkg_list = bds_queue_alloc(1, sizeof(struct pkg_node *), NULL);
-        bds_queue_set_autoresize(pkg_list, true);
-
+        pkg_list = pkg_nodes_alloc_reference();
         removal_list = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
 
         flags    = PKG_ITER_DEPS | PKG_ITER_FORW;
         max_dist = (pkg_options.deep ? -1 : 0);
-        for (node = pkg_iterator_begin(&iter, pkg_graph, pkg_names, flags, max_dist); node != NULL;
-             node = pkg_iterator_next(&iter)) {
 
-                if (node->pkg.dep.is_meta)
-                        continue;
+	for( size_t i=0; i<num_pkgs; ++i ) {
+		const char *pkg_name = string_list_get_const(pkg_names,i);
+	
+		for (node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist); node != NULL;
+		     node = pkg_iterator_next(&iter)) {
 
-                node->pkg.for_removal = true;
-                bds_queue_push(pkg_list, &node);
-        }
-        pkg_iterator_destroy(&iter);
+			if (node->pkg.dep.is_meta)
+				continue;
 
-        while (bds_queue_pop(pkg_list, &node)) {
+			node->pkg.for_removal = true;
+			if( pkg_nodes_lsearch_const(pkg_list, node->pkg.name) == NULL )
+				pkg_nodes_append(pkg_list, node);
+		}
+		pkg_iterator_destroy(&iter);
+	}
 
+	/*
+	  Check if packages marked for removal have any parent packages installed
+
+	  Forward traversal through the package graph
+	 */
+        for( size_t i = 0; i< pkg_nodes_size(pkg_list); ++i ) {
+		node = pkg_nodes_get(pkg_list, i);
                 flags    = PKG_ITER_REVDEPS;
                 max_dist = 1;
 
-		string_list_append(node_pkg_name, node->pkg.name);
-		
                 for (struct pkg_node *parent_node =
-                         pkg_iterator_begin(&iter, pkg_graph, node_pkg_name, flags, max_dist);
+			     pkg_iterator_begin(&iter, pkg_graph, node->pkg.name, flags, max_dist);
                      parent_node != NULL; parent_node = pkg_iterator_next(&iter)) {
 
                         if (strcmp(parent_node->pkg.name, node->pkg.name) == 0)
-                                goto cycle;
+				continue;
 
                         if (parent_node->pkg.dep.is_meta)
-                                goto cycle;
+				continue;
 
-                        if (!parent_node->pkg.for_removal &&
-                            slack_pkg_is_installed(parent_node->pkg.name, user_config.sbo_tag)) {
+			bool parent_installed = slack_pkg_is_installed(parent_node->pkg.name, user_config.sbo_tag);
+                        if (!parent_node->pkg.for_removal && parent_installed ) {
                                 mesg_error_label("%12s", " %-24s <-- %s\n", "[required]", node->pkg.name,
                                                  parent_node->pkg.name);
-                                node->pkg.for_removal = false;
+                                node->pkg.for_removal = false; /* Disable package remove */
                                 break;
                         }
                 }
@@ -1070,57 +1122,44 @@ static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t
 
                 if (node->pkg.for_removal)
                         bds_stack_push(removal_list, &node);
-
-	cycle:
-		string_list_clear(node_pkg_name);		
         }
 
-        if (bds_stack_size(removal_list) == 0)
+        if (bds_stack_size(removal_list) == 0) /* Empty removal list */
                 goto finish;
 
-	if( num_pkgs > 1 ) {
-		assert(pkg_options.output_name);
-                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
-	} else {
-		bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-remove.sqf", string_list_get_const(pkg_names,0));
-	}
+        if (pkg_options.output_mode == PKG_OUTPUT_FILE && num_pkgs > 1)
+                assert(pkg_options.output_name);
 
-        if (pkg_options.output_mode == PKG_OUTPUT_FILE) {
-                fp = fopen(sqf_file, "w");
-                if (fp == NULL) {
-                        mesg_error("unable to create %s\n", sqf_file);
-                        rc = 1;
-                        goto finish;
-                }
-                term = "\n";
+        if (pkg_options.output_name) {
+                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
         } else {
-                fp   = stdout;
-                term = " ";
+		bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-remove.sqf",
+                                         string_list_get_const(pkg_names, 0));
         }
+
+        bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
+        const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
+        os                      = ostream_open(output_path, "w", buffer_stream);
+	term = ( pkg_options.output_mode == PKG_OUTPUT_FILE ? "\n" : " " );
 
         while (bds_stack_pop(removal_list, &node)) {
-                fprintf(fp, "%s%s", node->pkg.name, term);
+                ostream_printf(os, "%s%s", node->pkg.name, term);
         }
 
-        if (fp != stdout) {
+        if (pkg_options.output_mode != PKG_OUTPUT_STDOUT ) {
                 mesg_ok("created %s\n", sqf_file);
         } else {
-                fprintf(fp, "\n");
+                ostream_printf(os, "\n");
         }
+	ostream_close(os);
 
 finish:
-        if (fp && fp != stdout)
-                fclose(fp);
-
         if (pkg_list)
-                bds_queue_free(&pkg_list);
+                pkg_nodes_free(&pkg_list);
         if (removal_list)
                 bds_stack_free(&removal_list);
-	if(node_pkg_name)
-		string_list_free(&node_pkg_name);
 
         return rc;
-#endif
 }
 
 static int search_pkg(const pkg_nodes_t *sbo_pkgs, const char *pkg_name)
