@@ -414,9 +414,9 @@ static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review
  *    0   success / no errors
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
-static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name,
-                       struct pkg_options options, pkg_nodes_t *reviewed_pkgs,
-                        bool *reviewed_pkgs_dirty, pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
+static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
+                       pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty, pkg_nodes_t *review_skip_pkgs,
+                       pkg_nodes_t *output_pkgs)
 {
         int rc = 0;
         struct pkg_iterator iter;
@@ -462,9 +462,9 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name,
                         pkg_nodes_insert_sort(review_skip_pkgs, node);
                 }
 
-		if(pkg_nodes_lsearch_const(output_pkgs, node->pkg.name) == NULL ) {
-			pkg_nodes_append(output_pkgs, node);
-		}
+                if (pkg_nodes_lsearch_const(output_pkgs, node->pkg.name) == NULL) {
+                        pkg_nodes_append(output_pkgs, node);
+                }
         }
 
 finish:
@@ -483,62 +483,62 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list
 {
         int rc = 0;
 
-        pkg_nodes_t *output_pkgs = NULL;
-	string_list_t *review_skip_pkgs = string_list_alloc_reference();
-	const size_t num_pkgs = string_list_size(pkg_names);
-	
+        pkg_nodes_t *output_pkgs        = NULL;
+        string_list_t *review_skip_pkgs = string_list_alloc_reference();
+        const size_t num_pkgs           = string_list_size(pkg_names);
+
         /* if (options.revdeps) { */
         /*         revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL); */
         /* } */
-	output_pkgs = pkg_nodes_alloc_reference();
-	
-	for( size_t i=0; i<num_pkgs; ++i ) {
-		rc = 0;
+        output_pkgs = pkg_nodes_alloc_reference();
 
-		while(1) {
-			rc = __write_sqf(pkg_graph, string_list_get_const(pkg_names, i) /* pkg_name */,
-					 options, reviewed_pkgs, reviewed_pkgs_dirty, review_skip_pkgs, output_pkgs );
-			
-			if( rc > 0 ) {
-				/* A dependency file was modified during review */
-				continue;
-			}
-				
-			if( rc < 0 ) { /* Error occurred */
-				goto finish;
-			}
-			break;
-		}
+        for (size_t i = 0; i < num_pkgs; ++i) {
+                rc = 0;
+
+                while (1) {
+                        rc = __write_sqf(pkg_graph, string_list_get_const(pkg_names, i) /* pkg_name */, options,
+                                         reviewed_pkgs, reviewed_pkgs_dirty, review_skip_pkgs, output_pkgs);
+
+                        if (rc > 0) {
+                                /* A dependency file was modified during review */
+                                continue;
+                        }
+
+                        if (rc < 0) { /* Error occurred */
+                                goto finish;
+                        }
+                        break;
+                }
         }
 
-	const size_t num_output = pkg_nodes_size(output_pkgs);
-	bool have_output = (num_output > 0 );
-	
-	for( size_t i=0; i<num_output; ++i ) {
-		const struct pkg_node *node = NULL;
-		
-		if( options.revdeps) {
-			node = pkg_nodes_get_const(output_pkgs, num_output - 1 - i );
-		} else {
-			node = pkg_nodes_get_const(output_pkgs, i );
-		}
+        const size_t num_output = pkg_nodes_size(output_pkgs);
+        bool have_output        = (num_output > 0);
 
-		ostream_printf(os, "%s", node->pkg.name);
-		if (ostream_is_console_stream(os)) {
-			ostream_printf(os, " ");
-		} else {
-			write_buildopts(os, &node->pkg);
-			ostream_printf(os, "\n");
-		}
-	}
+        for (size_t i = 0; i < num_output; ++i) {
+                const struct pkg_node *node = NULL;
+
+                if (options.revdeps) {
+                        node = pkg_nodes_get_const(output_pkgs, num_output - 1 - i);
+                } else {
+                        node = pkg_nodes_get_const(output_pkgs, i);
+                }
+
+                ostream_printf(os, "%s", node->pkg.name);
+                if (ostream_is_console_stream(os)) {
+                        ostream_printf(os, " ");
+                } else {
+                        write_buildopts(os, &node->pkg);
+                        ostream_printf(os, "\n");
+                }
+        }
 
         if (have_output && ostream_is_console_stream(os))
                 ostream_printf(os, "\n");
 
 finish:
-	if( review_skip_pkgs ) {
-		string_list_free(&review_skip_pkgs);
-	}
+        if (review_skip_pkgs) {
+                string_list_free(&review_skip_pkgs);
+        }
         if (output_pkgs) {
                 pkg_nodes_free(&output_pkgs);
         }
