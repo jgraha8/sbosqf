@@ -183,7 +183,7 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
                         if (req_node == NULL) {
-                                mesg_warn("%s no longer in repository\n", line);
+                                mesg_warn("%s no longer in repository but included by %s\n", line, pkg_node->pkg.name);
                                 break;
                         }
 
@@ -353,57 +353,41 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
 
-static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review_type, pkg_nodes_t *reviewed_pkgs,
-                              bool *reviewed_pkgs_dirty)
+static int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
 {
         int rc                         = 0;
-        bool review_pkg                = false;
-        struct pkg_node *reviewed_node = NULL;
 
-        if (review_type != PKG_REVIEW_DISABLED) {
-                reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg->name);
-                if (reviewed_node) {
-                        if (reviewed_node->pkg.info_crc != pkg->info_crc)
-                                review_pkg = true;
-                } else {
-                        review_pkg = true;
-                }
-        }
+        if (review_type == PKG_REVIEW_DISABLED)
+		return 0;
 
-        if (review_pkg) {
-                int rc_review = -1;
-                switch (review_type) {
-                case PKG_REVIEW_DISABLED:
-                        mesg_error("internal error: review type should not be PKG_REVIEW_DISABLED\n");
-                        abort();
-                        break;
-                case PKG_REVIEW_AUTO:
-                        rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
-                        break;
-                case PKG_REVIEW_AUTO_VERBOSE:
-                        rc_review = pkg_review(pkg);
-                        break;
-                default: // PKG_REVIEW_ENABLED
-                        /* Use the dep status as the return code */
-                        rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
-                        if (rc_review < 0) { /* If an error occurs set error return code */
-                                rc = -1;
-                        }
-                        break;
-                }
+	if( pkg->is_reviewed )
+		return 0;
 
-                if (rc_review == 0) { // Add-to-REVIEWED status
-                        *reviewed_pkgs_dirty = true;
-                        if (reviewed_node) {
-                                pkg_copy_nodep(&reviewed_node->pkg, pkg);
-                        } else {
-                                struct pkg_node *pkg_node = pkg_node_alloc(pkg->name);
-                                pkg_copy_nodep(&pkg_node->pkg, pkg);
-
-                                pkg_nodes_insert_sort(reviewed_pkgs, pkg_node);
-                        }
-                }
-        }
+	int rc_review = -1;
+	switch (review_type) {
+	case PKG_REVIEW_DISABLED:
+		mesg_error("internal error: review type should not be PKG_REVIEW_DISABLED\n");
+		abort();
+		break;
+	case PKG_REVIEW_AUTO:
+		rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
+		break;
+	case PKG_REVIEW_AUTO_VERBOSE:
+		rc_review = pkg_review(pkg);
+		break;
+	default: // PKG_REVIEW_ENABLED
+		/* Use the dep status as the return code */
+		rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
+		if (rc_review < 0) { /* If an error occurs set error return code */
+			rc = -1;
+		}
+		break;
+	}
+	
+	if (rc_review == 0) { // Add-to-REVIEWED status
+		pkg->is_reviewed = true;
+		*db_dirty = true;
+	}
 
         return rc;
 }
@@ -415,8 +399,7 @@ static int check_reviewed_pkg(const struct pkg *pkg, enum pkg_review_type review
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
 static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
-                       pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty, pkg_nodes_t *review_skip_pkgs,
-                       pkg_nodes_t *output_pkgs)
+                       bool *db_dirty, pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
 {
         int rc = 0;
         struct pkg_iterator iter;
@@ -446,15 +429,13 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                 }
 
                 if (pkg_nodes_bsearch_const(review_skip_pkgs, node->pkg.name) == NULL) {
-                        rc = check_reviewed_pkg(&node->pkg, options.review_type, reviewed_pkgs,
-                                                reviewed_pkgs_dirty);
+                        rc = check_reviewed_pkg(&node->pkg, options.review_type, db_dirty);
                         if (rc < 0) {
                                 goto finish;
                         }
                         if (rc > 0) {
                                 // Package dependency file was edited (it may have been updated): reload the dep
-                                // file and
-                                // process the node
+                                // file and process the node
                                 pkg_clear_required(&node->pkg);
                                 pkg_load_dep(pkg_graph, node->pkg.name, options);
                                 goto finish;
@@ -479,7 +460,7 @@ finish:
  *    0   success / no errors
  */
 int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
-              struct pkg_options options, pkg_nodes_t *reviewed_pkgs, bool *reviewed_pkgs_dirty)
+              struct pkg_options options, bool *db_dirty)
 {
         int rc = 0;
 
@@ -497,7 +478,7 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list
 
                 while (1) {
                         rc = __write_sqf(pkg_graph, string_list_get_const(pkg_names, i) /* pkg_name */, options,
-                                         reviewed_pkgs, reviewed_pkgs_dirty, review_skip_pkgs, output_pkgs);
+                                         db_dirty, review_skip_pkgs, output_pkgs);
 
                         if (rc > 0) {
                                 /* A dependency file was modified during review */

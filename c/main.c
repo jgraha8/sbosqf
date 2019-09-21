@@ -535,8 +535,6 @@ int main(int argc, char **argv)
 
         {
                 int num_opts = 0;
-                //--argc;
-                //++argv;
 
                 const char *cmd = argv[1];
                 if (strcmp(cmd, "create") == 0) {
@@ -616,6 +614,21 @@ int main(int argc, char **argv)
                 argv += MAX(num_opts + 1, 1);
         }
 
+        pkg_graph = pkg_graph_alloc();
+        sbo_pkgs  = pkg_graph_sbo_pkgs(pkg_graph);
+
+        if (create_graph) {
+                if (!pkg_db_exists()) {
+                        pkg_load_sbo(sbo_pkgs);
+                        if( (rc = pkg_write_db(sbo_pkgs)) != 0 ) {
+				return 1;
+			}
+                        pkg_create_default_deps(sbo_pkgs);
+                } else {
+                        pkg_load_db(sbo_pkgs);
+                }
+        }
+
         const char *pkg_name = NULL;
         if (pkg_name_required) {
                 if (argc == 0) {
@@ -646,19 +659,6 @@ int main(int argc, char **argv)
                                 print_help();
                                 exit(EXIT_FAILURE);
                         }
-                }
-        }
-
-        pkg_graph = pkg_graph_alloc();
-        sbo_pkgs  = pkg_graph_sbo_pkgs(pkg_graph);
-
-        if (create_graph) {
-                if (!pkg_db_exists()) {
-                        pkg_load_sbo(sbo_pkgs);
-                        pkg_write_db(sbo_pkgs);
-                        pkg_create_default_deps(sbo_pkgs);
-                } else {
-                        pkg_load_db(sbo_pkgs);
                 }
         }
 
@@ -953,9 +953,6 @@ static int check_updates(struct pkg_graph *pkg_graph, const char *pkg_name)
                 case PKG_UPDATED:
                         mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[U]", updated_pkg.name,
                                       updated_pkg.slack_pkg_version, updated_pkg.sbo_version);
-                        /*                        printf(COLOR_OK "%4s" COLOR_END " %-24s %-8s --> %s\n", "[U]",
-                           updated_pkg.name,
-                                                  updated_pkg.slack_pkg_version, updated_pkg.sbo_version); */
                         break;
                 case PKG_DOWNGRADED:
                         mesg_info_label("%4s", " %-24s %-8s --> %s\n", "[D]", updated_pkg.name,
@@ -998,13 +995,10 @@ static int update_pkgdb(struct pkg_graph *pkg_graph)
 
 static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name)
 {
-        int rc                     = 0;
-        pkg_nodes_t *reviewed_pkgs = NULL;
-        bool reviewed_pkgs_dirty   = false;
-
-        struct pkg_node *reviewed_node  = NULL;
-        const struct pkg_node *pkg_node = NULL;
-
+        int rc        = 0;
+        bool db_dirty = false;
+	
+        struct pkg_node *pkg_node = NULL;
         struct pkg_options pkg_options = pkg_options_default();
 
         pkg_options.recursive = false;
@@ -1013,48 +1007,26 @@ static int review_pkg(struct pkg_graph *pkg_graph, const char *pkg_name)
         if (rc != 0)
                 return rc;
 
-        pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
+        pkg_node = pkg_graph_search(pkg_graph, pkg_name);
         if (pkg_node == NULL) {
                 mesg_error("package %s does not exist\n", pkg_name);
                 rc = 1;
                 return rc;
         }
 
-        reviewed_pkgs = pkg_nodes_alloc();
-        if (pkg_reviewed_exists()) {
-                rc = pkg_load_reviewed(reviewed_pkgs);
-                if (rc != 0)
-                        goto finish;
-        }
-
-        reviewed_node = pkg_nodes_bsearch(reviewed_pkgs, pkg_name);
-
-        if (reviewed_node && reviewed_node->pkg.info_crc == pkg_node->pkg.info_crc) {
+        if (pkg_node->pkg.is_reviewed) {
                 rc = pkg_review(&pkg_node->pkg);
         } else {
                 int dep_status;
                 rc = pkg_review_prompt(&pkg_node->pkg, 0, &dep_status);
                 if (rc == 0) {
-                        if (reviewed_node) {
-                                if (reviewed_node->pkg.info_crc != pkg_node->pkg.info_crc) {
-                                        pkg_set_version(&reviewed_node->pkg, pkg_node->pkg.version);
-                                        reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
-                                        reviewed_pkgs_dirty         = true;
-                                }
-                        } else {
-                                reviewed_node = pkg_node_alloc(pkg_node->pkg.name);
-                                pkg_init_version(&reviewed_node->pkg, pkg_node->pkg.version);
-                                reviewed_node->pkg.info_crc = pkg_node->pkg.info_crc;
-                                pkg_nodes_insert_sort(reviewed_pkgs, reviewed_node);
-                                reviewed_pkgs_dirty = true;
-                        }
-                        if (reviewed_pkgs_dirty)
-                                rc = pkg_write_reviewed(reviewed_pkgs);
+                        pkg_node->pkg.is_reviewed = true;
+                        db_dirty                  = true;
                 }
         }
-finish:
-        if (reviewed_pkgs)
-                pkg_nodes_free(&reviewed_pkgs);
+
+        if (db_dirty)
+                pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
 
         return rc;
 }
@@ -1089,8 +1061,7 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
         char sqf_file[256];
         struct ostream *os = NULL;
 
-        pkg_nodes_t *reviewed_pkgs = NULL;
-        bool reviewed_pkgs_dirty   = false;
+        bool db_dirty = false;
 
         const size_t num_pkgs = string_list_size(pkg_names);
 
@@ -1121,13 +1092,6 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
                 }
         }
 
-        reviewed_pkgs = pkg_nodes_alloc();
-        if (pkg_reviewed_exists()) {
-                rc = pkg_load_reviewed(reviewed_pkgs);
-                if (rc != 0)
-                        goto finish;
-        }
-
         bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
         const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
         os                      = ostream_open(output_path, "w", buffer_stream);
@@ -1137,19 +1101,16 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
                 rc = 1;
                 goto finish;
         }
-        rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, reviewed_pkgs, &reviewed_pkgs_dirty);
+        rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, &db_dirty);
 
         if (rc < 0) {
                 goto finish;
         }
 
-        if (reviewed_pkgs_dirty) {
-                rc = pkg_write_reviewed(reviewed_pkgs);
+        if (db_dirty) {
+                rc = pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
         }
 finish:
-        if (reviewed_pkgs)
-                pkg_nodes_free(&reviewed_pkgs);
-
         if (os)
                 ostream_close(os);
 
@@ -1186,8 +1147,6 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_
 		if( rc != 0 )
 			goto finish;
 	}
-
-
 finish:
 	if( pkg_status ) {
 		bds_vector_free(&pkg_status);

@@ -107,18 +107,12 @@ bool pkg_db_exists()
         return file_exists(db_file);
 }
 
-bool pkg_reviewed_exists()
-{
-        char db_file[4096];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
-
-        return file_exists(db_file);
-}
-
-static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_dir)
+static int __create_db(const char *db_file, pkg_nodes_t *pkgs)
 {
         FILE *fp = fopen(db_file, "w");
-        assert(fp);
+	if( fp == NULL ) {
+		return -1;
+	}
 
         for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
@@ -126,9 +120,9 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_di
                 if (pkg_node->pkg.name == NULL) /* Package has been removed */
                         continue;
 
-                fprintf(fp, "%s:%s:%x", pkg_node->pkg.name, pkg_node->pkg.version, pkg_node->pkg.info_crc);
-                if (write_sbo_dir)
-                        fprintf(fp, ":%s", pkg_node->pkg.sbo_dir + strlen(user_config.sbopkg_repo) + 1);
+                fprintf(fp, "%s:%s:%s:%x:%d:%d", pkg_node->pkg.name,
+                        pkg_node->pkg.sbo_dir + strlen(user_config.sbopkg_repo) + 1, pkg_node->pkg.version,
+                        pkg_node->pkg.info_crc, pkg_node->pkg.is_reviewed, pkg_node->pkg.is_tracked);
                 fprintf(fp, "\n");
         }
         fclose(fp);
@@ -138,18 +132,17 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs, bool write_sbo_di
 
 int pkg_write_db(pkg_nodes_t *pkgs)
 {
+	int rc = 0;
+	
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-        return __create_db(db_file, pkgs, true);
-}
+	rc = __create_db(db_file, pkgs);
+	if( rc != 0 ) {
+		mesg_error("unable to write %s\n", db_file);
+	}
 
-int pkg_write_reviewed(pkg_nodes_t *pkgs)
-{
-        char db_file[4096];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
-
-        return __create_db(db_file, pkgs, false);
+        return rc;
 }
 
 int pkg_create_default_deps(pkg_nodes_t *pkgs)
@@ -169,7 +162,7 @@ int pkg_create_default_deps(pkg_nodes_t *pkgs)
         return 0;
 }
 
-int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
+int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
 {
         size_t num_nodes = 0;
 
@@ -187,11 +180,19 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
 
         num_nodes = pkg_nodes_size(new_pkgs);
         for (size_t i = 0; i < num_nodes; ++i) {
-                const struct pkg_node *new_pkg = pkg_nodes_get_const(new_pkgs, i);
-
+                struct pkg_node *new_pkg = pkg_nodes_get(new_pkgs, i);
                 struct pkg_node *old_pkg = pkg_nodes_bsearch(old_pkgs, new_pkg->pkg.name);
+		
                 if (old_pkg) {
-                        if (old_pkg->pkg.info_crc != new_pkg->pkg.info_crc) {
+			// Preserve tracked flag
+			new_pkg->pkg.is_tracked = old_pkg->pkg.is_tracked;
+			if (old_pkg->pkg.info_crc == new_pkg->pkg.info_crc) {
+				/*
+				  If there is no change in the package, preserved the reviewed flag; otherwise it
+				  will be set to false (0).
+				*/
+				new_pkg->pkg.is_reviewed = old_pkg->pkg.is_reviewed;
+			} else {
                                 int ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
                                 struct pkg updated_pkg[2] = {old_pkg->pkg, new_pkg->pkg};
 
@@ -203,6 +204,7 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                         bds_queue_push(downgraded_pkg_queue, &updated_pkg);
                                 }
                         }
+			// TODO: check if this is needed
                         old_pkg->color = COLOR_BLACK;
                 } else {
                         bds_queue_push(added_pkg_queue, &new_pkg->pkg);
@@ -262,7 +264,7 @@ int pkg_compar_sets(const pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
         return 0;
 }
 
-static int __load_db(pkg_nodes_t *pkgs, const char *db_file, bool read_sbo_dir)
+static int __load_db(pkg_nodes_t *pkgs, const char *db_file)
 {
         FILE *fp = fopen(db_file, "r");
         assert(fp);
@@ -283,21 +285,17 @@ static int __load_db(pkg_nodes_t *pkgs, const char *db_file, bool read_sbo_dir)
                 char **tok     = NULL;
 
                 bds_string_tokenize(line, ":", &num_tok, &tok);
-                if (read_sbo_dir) {
-                        assert(num_tok == 4);
-                } else {
-                        assert(num_tok == 3);
-                }
+		assert(num_tok == 6);
 
                 struct pkg_node *pkg_node = pkg_node_alloc(tok[0]);
 
-                pkg_init_version(&pkg_node->pkg, tok[1]);
-                pkg_node->pkg.info_crc = strtol(tok[2], NULL, 16);
-
-                if (read_sbo_dir) {
-                        bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[3]);
-                        pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
-                }
+                bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[1]);
+                pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
+                pkg_init_version(&pkg_node->pkg, tok[2]);
+                pkg_node->pkg.info_crc    = strtol(tok[3], NULL, 16);
+                pkg_node->pkg.is_reviewed = strtol(tok[4], NULL, 10);
+                pkg_node->pkg.is_tracked  = strtol(tok[5], NULL, 10);
+		
                 pkg_nodes_append(pkgs, pkg_node);
 
                 free(tok);
@@ -315,18 +313,7 @@ int pkg_load_db(pkg_nodes_t *pkgs)
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-        return __load_db(pkgs, db_file, true);
-}
-
-int pkg_load_reviewed(pkg_nodes_t *pkgs)
-{
-        if (!pkg_reviewed_exists())
-                return 1;
-
-        char db_file[4096];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/REVIEWED", user_config.depdir);
-
-        return __load_db(pkgs, db_file, false);
+        return __load_db(pkgs, db_file);
 }
 
 int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)

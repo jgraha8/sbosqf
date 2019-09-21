@@ -60,6 +60,8 @@ struct pkg {
         struct pkg_dep dep;
         uint32_t info_crc; /// CRC of README and REQUIRED list in .info
                            // struct pkg_sbo *sbo;
+	bool is_reviewed;
+	bool is_tracked;
         bool parent_installed;
         bool for_removal;
 };
