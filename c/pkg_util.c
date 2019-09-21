@@ -183,7 +183,8 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
                         struct pkg_node *req_node = pkg_graph_search(pkg_graph, line);
 
                         if (req_node == NULL) {
-                                mesg_warn("%s no longer in repository but included by %s\n", line, pkg_node->pkg.name);
+                                mesg_warn("%s no longer in repository but included by %s\n", line,
+                                          pkg_node->pkg.name);
                                 break;
                         }
 
@@ -347,6 +348,19 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
 }
 
 /*
+  Return:
+    0    always
+ */
+static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode track_mode, bool *db_dirty)
+{
+	if ((PKG_TRACK == track_mode && 0 == node_dist) || PKG_TRACK_ALL == track_mode) {
+		pkg->is_tracked = true;
+		*db_dirty       = true;
+	}
+	return 0;
+}
+
+/*
  * Return:
  *   -1   if error occurred
  *    0   success / no errors
@@ -355,39 +369,39 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
 
 static int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
 {
-        int rc                         = 0;
+        int rc = 0;
 
         if (review_type == PKG_REVIEW_DISABLED)
-		return 0;
+                return 0;
 
-	if( pkg->is_reviewed )
-		return 0;
+        if (pkg->is_reviewed)
+                return 0;
 
-	int rc_review = -1;
-	switch (review_type) {
-	case PKG_REVIEW_DISABLED:
-		mesg_error("internal error: review type should not be PKG_REVIEW_DISABLED\n");
-		abort();
-		break;
-	case PKG_REVIEW_AUTO:
-		rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
-		break;
-	case PKG_REVIEW_AUTO_VERBOSE:
-		rc_review = pkg_review(pkg);
-		break;
-	default: // PKG_REVIEW_ENABLED
-		/* Use the dep status as the return code */
-		rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
-		if (rc_review < 0) { /* If an error occurs set error return code */
-			rc = -1;
-		}
-		break;
-	}
-	
-	if (rc_review == 0) { // Add-to-REVIEWED status
-		pkg->is_reviewed = true;
-		*db_dirty = true;
-	}
+        int rc_review = -1;
+        switch (review_type) {
+        case PKG_REVIEW_DISABLED:
+                mesg_error("internal error: review type should not be PKG_REVIEW_DISABLED\n");
+                abort();
+                break;
+        case PKG_REVIEW_AUTO:
+                rc_review = 0; /* Set the add-to-REVIEWED status and proceed */
+                break;
+        case PKG_REVIEW_AUTO_VERBOSE:
+                rc_review = pkg_review(pkg);
+                break;
+        default: // PKG_REVIEW_ENABLED
+                /* Use the dep status as the return code */
+                rc_review = pkg_review_prompt(pkg, PKG_DEP_REVERTED_DEFAULT, &rc);
+                if (rc_review < 0) { /* If an error occurs set error return code */
+                        rc = -1;
+                }
+                break;
+        }
+
+        if (rc_review == 0) { // Add-to-REVIEWED status
+                pkg->is_reviewed = true;
+                *db_dirty        = true;
+        }
 
         return rc;
 }
@@ -419,6 +433,8 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                 if (node->pkg.dep.is_meta)
                         continue;
 
+		check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
+		
                 if (options.check_installed && strcmp(pkg_name, node->pkg.name) == 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
