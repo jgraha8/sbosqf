@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <dirent.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -102,6 +103,30 @@ bool is_meta_pkg(const char *pkg_name)
         file_munmap(&dep);
 
         return is_meta;
+}
+
+int find_all_meta_pkgs(pkg_nodes_t *meta_pkgs)
+{
+        struct dirent *dirent = NULL;
+
+        DIR *dp = opendir(user_config.depdir);
+        if (dp == NULL)
+                return 1;
+
+        while ((dirent = readdir(dp)) != NULL) {
+                if (dirent->d_type == DT_DIR)
+                        continue;
+
+                if (NULL == pkg_nodes_bsearch_const(meta_pkgs, dirent->d_name)) {
+                        if (is_meta_pkg(dirent->d_name)) {
+				struct pkg_node *meta_node = pkg_node_alloc(dirent->d_name);
+				meta_node->pkg.dep.is_meta = true;
+                                pkg_nodes_insert_sort(meta_pkgs, meta_node);
+                        }
+                }
+        }
+
+        return 0;
 }
 
 int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pkg_options options,
@@ -353,11 +378,11 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
  */
 static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode track_mode, bool *db_dirty)
 {
-	if ((PKG_TRACK == track_mode && 0 == node_dist) || PKG_TRACK_ALL == track_mode) {
-		pkg->is_tracked = true;
-		*db_dirty       = true;
-	}
-	return 0;
+        if ((PKG_TRACK == track_mode && 0 == node_dist) || PKG_TRACK_ALL == track_mode) {
+                pkg->is_tracked = true;
+                *db_dirty       = true;
+        }
+        return 0;
 }
 
 /*
@@ -433,8 +458,8 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                 if (node->pkg.dep.is_meta)
                         continue;
 
-		check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
-		
+                check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
+
                 if (options.check_installed && strcmp(pkg_name, node->pkg.name) == 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
