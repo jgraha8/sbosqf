@@ -458,7 +458,7 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                 if (node->pkg.dep.is_meta)
                         continue;
 
-                check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
+                check_track_pkg(&node->pkg, pkg_iterator_node_dist(&iter, node), options.track_mode, db_dirty);
 
                 if (options.check_installed && strcmp(pkg_name, node->pkg.name) == 0) {
                         const char *tag =
