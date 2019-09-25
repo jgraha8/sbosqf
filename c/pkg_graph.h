@@ -9,15 +9,11 @@ enum pkg_color {
         COLOR_BLACK
 };
 
-struct pkg_node_state {
-	int dist;
-	enum pkg_color color;
-	int edge_index;
-};
-
 struct pkg_node {
         struct pkg pkg;
-	struct bds_vector *state;
+        int dist;
+        enum pkg_color color;
+        int edge_index;
 };
 
 struct pkg_node *pkg_node_alloc(const char *name);
@@ -25,9 +21,6 @@ void pkg_node_free(struct pkg_node **pkg_node);
 struct pkg_node pkg_node_create(struct pkg *pkg, int dist);
 void pkg_node_destroy(struct pkg_node *pkg_node);
 int pkg_node_compar(const void *a, const void *b);
-
-struct pkg_node_state *pkg_node_state(struct pkg_node *pkg_node, size_t graph_id);
-const struct pkg_node_state *pkg_node_state_const(struct pkg_node *pkg_node, size_t graph_id);
 
 typedef struct bds_vector pkg_nodes_t;
 
@@ -62,7 +55,7 @@ pkg_nodes_t *pkg_graph_assign_sbo_pkgs(struct pkg_graph *pkg_graph, pkg_nodes_t 
 pkg_nodes_t *pkg_graph_meta_pkgs(struct pkg_graph *pkg_graph);
 int pkg_graph_load_sbo(struct pkg_graph *pkg_graph);
 struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_name);
-void pkg_graph_clear_markers(struct pkg_graph *pkg_graph, size_t graph_id);
+void pkg_graph_clear_markers(struct pkg_graph *pkg_graph);
 
 #define PKG_ITER_DEPS          0x00
 #define PKG_ITER_REVDEPS       0x01
@@ -85,13 +78,11 @@ struct pkg_iterator {
         struct bds_stack *visit_nodes;
 	struct pkg_node *(*next)(struct pkg_iterator *iter);
         int max_dist;
-	int graph_id;
 };
 
 struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg_graph *pkg_graph, const char *pkg_name,
                                     pkg_iterator_flags_t flags, int max_dist);
 struct pkg_node *pkg_iterator_node(struct pkg_iterator *iter);
-int pkg_iterator_node_dist(const struct pkg_iterator *iter, struct pkg_node *node);
 struct pkg_node *pkg_iterator_next(struct pkg_iterator *iter);
 void pkg_iterator_destroy(struct pkg_iterator *iter);
 
