@@ -30,6 +30,7 @@ struct pkg_options pkg_options_default()
         options.optional    = true;
         options.review_type = PKG_REVIEW_ENABLED;
 	options.output_mode = PKG_OUTPUT_FILE;
+	options.max_dist    = -1;
 
         return options;
 }

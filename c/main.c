@@ -66,13 +66,13 @@ enum action {
         ACTION_SEARCH_PKG,
         ACTION_EDIT_DEP,
         ACTION_HELP,
-        ACTION_WRITE_REMOVE_SQF,
-        ACTION_WRITE_SQF,
-        ACTION_WRITE_UPDATE_SQF,
+        ACTION_CREATE_REMOVE_SQF,
+        ACTION_CREATE_SQF,
+        ACTION_CREATE_UPDATE_SQF,
         ACTION_MAKE_META,
         ACTION_TRACK,
         ACTION_UNTRACK,
-        ACTION_CHECK_TRACK,
+        ACTION_SHOW_TRACK,
 };
 
 struct action_struct {
@@ -196,7 +196,7 @@ static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int search_pkg(struct pkg_graph *pkg_graph, const char *pkg_name);
 static int make_meta_pkg(const pkg_nodes_t *sbo_pkgs, const char *meta_pkg_name, string_list_t *pkg_names);
 static int manage_track_pkg(pkg_nodes_t *sbo_pkgs, string_list_t *pkg_names, bool track);
-static int check_track_pkg(const pkg_nodes_t *sbo_pkgs, const string_list_t *pkg_names);
+static int show_track_pkg(const pkg_nodes_t *sbo_pkgs, const string_list_t *pkg_names, struct pkg_options options);
 
 static int process_options(int argc, char **argv, const char *options_str, const struct option *long_options,
                            void (*__print_help)(void), struct pkg_options *pkg_options)
@@ -246,11 +246,15 @@ static int process_options(int argc, char **argv, const char *options_str, const
                         pkg_options->revdeps = true;
                         break;
                 case 't':
-                        pkg_options->track_mode = PKG_TRACK;
+                        pkg_options->track_mode = PKG_TRACK_ENABLE;
                         break;
                 case 'T':
-                        pkg_options->track_mode = PKG_TRACK_ALL;
+                        pkg_options->track_mode = PKG_TRACK_ENABLE_ALL;
                         break;
+                case 'z':
+                        pkg_options->all_packages = true;
+                        break;
+
                 default:
                         abort();
                 }
@@ -317,32 +321,22 @@ static void cmd_update_print_help()
                "  -a, --auto-review\n"
                "  -A, --auto-review-verbose\n"
                "  -i, --ignore-review\n"
-               "  -c, --check-installed\n"
-               "  -C, --check-any-installed\n"
-               "  -d, --deep\n"
                "  -h, --help\n"
                "  -l, --list\n"
-               "  -o, --output\n"
-               "  -n, --no-recursive\n"
-               "  -p, --revdeps\n",
+               "  -o, --output\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
 static int cmd_update_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "aAibcCdhlo:np";
+        static const char *options_str            = "aAihlo:z";
         static const struct option long_options[] = {                              /* These options set a flag. */
                                                      LONG_OPT("auto-review", 'a'), /* option */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
                                                      LONG_OPT("ignore-review", 'i'),       /* option */
-                                                     LONG_OPT("check-installed", 'c'),     /* option */
-                                                     LONG_OPT("check-any-installed", 'C'), /* option */
-                                                     LONG_OPT("deep", 'd'),                /* option */
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
                                                      LONG_OPT("output", 'o'),
-                                                     LONG_OPT("no-recursive", 'n'), /* option */
-                                                     LONG_OPT("revdeps", 'p'),      /* option */
                                                      {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_update_print_help, options);
@@ -561,22 +555,23 @@ static int cmd_untrack_options(int argc, char **argv, struct pkg_options *option
         return process_options(argc, argv, options_str, long_options, cmd_untrack_print_help, options);
 }
 
-static void cmd_check_track_print_help()
+static void cmd_show_track_print_help()
 {
-        printf("Usage: %s check-track [option] [pkg]\n"
+        printf("Usage: %s show-track [option] [pkg]\n"
                "Checks if packages are tracked\n"
                "\n"
                "Options:\n"
-               "  -h, --help\n",
+               "  -h, --help\n"
+               " --all\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
-static int cmd_check_track_options(int argc, char **argv, struct pkg_options *options)
+static int cmd_show_track_options(int argc, char **argv, struct pkg_options *options)
 {
         static const char *options_str            = "h";
-        static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
+        static const struct option long_options[] = {LONG_OPT("help", 'h'), LONG_OPT("all", 'z'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, cmd_check_track_print_help, options);
+        return process_options(argc, argv, options_str, long_options, cmd_show_track_print_help, options);
 }
 
 int main(int argc, char **argv)
@@ -609,19 +604,19 @@ int main(int argc, char **argv)
                 const char *cmd = argv[1];
                 if (strcmp(cmd, "create") == 0) {
 
-                        as.action          = ACTION_WRITE_SQF;
+                        as.action          = ACTION_CREATE_SQF;
                         num_opts           = cmd_create_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
 
                 } else if (strcmp(cmd, "remove") == 0) {
 
-                        as.action          = ACTION_WRITE_REMOVE_SQF;
+                        as.action          = ACTION_CREATE_REMOVE_SQF;
                         num_opts           = cmd_remove_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
 
                 } else if (strcmp(cmd, "update") == 0) {
 
-                        as.action          = ACTION_WRITE_UPDATE_SQF;
+                        as.action          = ACTION_CREATE_UPDATE_SQF;
                         num_opts           = cmd_update_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
 
@@ -683,12 +678,13 @@ int main(int argc, char **argv)
                         multiple_pkg_names = true;
                         dep_file_required  = false;
 
-                } else if (strcmp(cmd, "check-track") == 0) {
+                } else if (strcmp(cmd, "show-track") == 0) {
 
-                        as.action          = ACTION_CHECK_TRACK;
-                        num_opts           = cmd_check_track_options(argc, argv, &pkg_options);
+                        as.action          = ACTION_SHOW_TRACK;
+                        num_opts           = cmd_show_track_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
                         dep_file_required  = false;
+                        pkg_name_required  = !pkg_options.all_packages;
 
                 } else {
 
@@ -756,7 +752,7 @@ int main(int argc, char **argv)
         }
 
         if (as.action == 0) {
-                as.action = ACTION_WRITE_SQF;
+                as.action = ACTION_CREATE_SQF;
         }
 
         switch (as.action) {
@@ -784,7 +780,7 @@ int main(int argc, char **argv)
                         }
                 }
                 break;
-        case ACTION_WRITE_UPDATE_SQF:
+        case ACTION_CREATE_UPDATE_SQF:
                 rc = write_pkg_update_sqf(pkg_graph, pkg_names, pkg_options);
                 if (rc != 0) {
                         mesg_error("unable to create update package list\n");
@@ -802,13 +798,13 @@ int main(int argc, char **argv)
                         mesg_error("unable to edit package dependency file %s\n", pkg_name);
                 }
                 break;
-        case ACTION_WRITE_SQF:
+        case ACTION_CREATE_SQF:
                 rc = write_pkg_sqf(pkg_graph, pkg_names, pkg_options);
                 if (rc != 0) {
                         mesg_error("unable to create dependency list for package %s\n", pkg_name);
                 }
                 break;
-        case ACTION_WRITE_REMOVE_SQF:
+        case ACTION_CREATE_REMOVE_SQF:
                 rc = write_pkg_remove_sqf(pkg_graph, pkg_names, pkg_options);
                 if (rc != 0) {
                         mesg_error("unable to create remove package list\n");
@@ -837,8 +833,8 @@ int main(int argc, char **argv)
                         mesg_ok("updated package tracking\n");
                 }
                 break;
-        case ACTION_CHECK_TRACK:
-                rc = check_track_pkg(sbo_pkgs, pkg_names);
+        case ACTION_SHOW_TRACK:
+                rc = show_track_pkg(sbo_pkgs, pkg_names, pkg_options);
                 if (rc != 0) {
                         mesg_error("unable to check tracking\n");
                         /*                } else {
@@ -1166,14 +1162,68 @@ static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name)
         return edit_dep_file(pkg_node->pkg.name);
 }
 
+static int __write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, const char *output_path,
+                           struct pkg_options pkg_options, bool *db_dirty)
+{
+        int rc = 0;
+
+        struct ostream *os = ostream_open(output_path, "w", (0 == strcmp(output_path, "/dev/stdout")));
+
+        if (os == NULL) {
+                mesg_error("unable to create %s\n", output_path);
+                return 1;
+        }
+        rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, db_dirty);
+
+        if (os)
+                ostream_close(os);
+
+        return rc;
+}
+
+static int __write_pkg_nodes_sqf(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_nodes, const char *output_path,
+                                 struct pkg_options pkg_options, bool *db_dirty)
+{
+        int rc = 0;
+
+        string_list_t *pkg_names = string_list_alloc_reference();
+
+        for (size_t i = 0; i < pkg_nodes_size(pkg_nodes); ++i) {
+                string_list_append(pkg_names, pkg_nodes_get_const(pkg_nodes, i)->pkg.name);
+        }
+
+        rc = __write_pkg_sqf(pkg_graph, pkg_names, output_path, pkg_options, db_dirty);
+
+        string_list_free(&pkg_names);
+
+        return rc;
+}
+
+static const char *get_output_path(struct pkg_options pkg_options, const string_list_t *pkg_names)
+{
+        static char buf[256]    = {0};
+        const char *output_path = "/dev/stdout";
+
+        if (pkg_options.output_mode == PKG_OUTPUT_FILE) {
+                if (string_list_size(pkg_names) > 1)
+                        assert(pkg_options.output_name);
+
+                if (pkg_options.output_name) {
+                        bds_string_copyf(buf, sizeof(buf), "%s", pkg_options.output_name);
+                } else {
+                        bds_string_copyf(buf, sizeof(buf), "%s.sqf", string_list_get_const(pkg_names, 0));
+                }
+                output_path = buf;
+        }
+        return output_path;
+}
+
 static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, struct pkg_options pkg_options)
 {
         int rc = 0;
-        char sqf_file[256];
-        struct ostream *os = NULL;
 
-        bool db_dirty = false;
-
+        struct ostream *os    = NULL;
+        bool db_dirty         = false;
         const size_t num_pkgs = string_list_size(pkg_names);
 
         for (size_t i = 0; i < num_pkgs; ++i) {
@@ -1188,32 +1238,8 @@ static int write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, 
                         return rc;
         }
 
-        if (pkg_options.output_mode == PKG_OUTPUT_FILE && num_pkgs > 1)
-                assert(pkg_options.output_name);
-
-        if (pkg_options.output_name) {
-                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
-        } else {
-                if (pkg_options.revdeps) {
-                        bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-revdeps.sqf",
-                                         string_list_get_const(pkg_names, 0));
-                } else {
-                        bds_string_copyf(sqf_file, sizeof(sqf_file), "%s.sqf",
-                                         string_list_get_const(pkg_names, 0));
-                }
-        }
-
-        bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
-        const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
-        os                      = ostream_open(output_path, "w", buffer_stream);
-
-        if (os == NULL) {
-                mesg_error("unable to create %s\n", output_path);
-                rc = 1;
-                goto finish;
-        }
-        rc = write_sqf(os, pkg_graph, pkg_names, pkg_options, &db_dirty);
-
+        rc =
+            __write_pkg_sqf(pkg_graph, pkg_names, get_output_path(pkg_options, pkg_names), pkg_options, &db_dirty);
         if (rc < 0) {
                 goto finish;
         }
@@ -1231,7 +1257,224 @@ finish:
 static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
                                 struct pkg_options pkg_options)
 {
-        return 0;
+        int rc = 0;
+
+        struct pkg_node *node      = NULL;
+        struct pkg_node *cur_node  = NULL;
+        pkg_nodes_t *pkg_list      = NULL;
+        pkg_nodes_t *processed_list = NULL;	
+        pkg_nodes_t *next_pkg_list = NULL;
+        pkg_nodes_t *build_list    = NULL;
+
+        struct pkg_iterator iter;
+        pkg_iterator_flags_t flags = 0;
+        int max_dist               = 0;
+        bool db_dirty              = false;
+
+        pkg_options.revdeps = true;
+        pkg_options.deep    = true;
+
+        rc = pkg_load_all_deps(pkg_graph, pkg_options);
+        if (rc != 0)
+                return rc;
+
+        pkg_list       = pkg_nodes_alloc_reference();
+        next_pkg_list  = pkg_nodes_alloc_reference();
+        processed_list = pkg_nodes_alloc_reference();	
+        build_list = pkg_nodes_alloc_reference();
+
+        for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
+		node = pkg_graph_search(pkg_graph, string_list_get_const(pkg_names, i));
+			
+		const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+		if( slack_pkg ) {
+			if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
+				pkg_nodes_append(pkg_list, node);
+			}
+		}
+        }
+
+        pkg_graph_clear_markers(pkg_graph, false);
+
+        while (pkg_nodes_size(pkg_list) > 0) {
+
+                cur_node = pkg_nodes_get(pkg_list, 0);
+
+                /*
+                  Process dependencies
+                 */
+                flags           = PKG_ITER_DEPS | PKG_ITER_PRESERVE_COLOR;
+                max_dist        = -1;
+
+                for (node = pkg_iterator_begin(&iter, pkg_graph, cur_node->pkg.name, flags, max_dist);
+                     node != NULL; node = pkg_iterator_next(&iter)) {
+
+                        if (node->pkg.dep.is_meta)
+                                continue;
+
+                        if (0 == node->dist) {
+				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {
+					mesg_ok_label("[U]", " %s\n", node->pkg.name);
+					pkg_nodes_append(build_list, node);					
+				}
+
+                                continue;
+                        }
+
+                        bool update    = false;
+                        bool added_dep = false;
+
+			const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+			if( slack_pkg ) {
+				if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
+					update = true;
+				}
+			} else {
+				added_dep = true;
+			}
+			
+
+                        if (update) {
+				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {				
+					mesg_ok_label("[U]", " %s\n", node->pkg.name);
+					pkg_nodes_append(build_list, node);									
+				}
+
+				//if( pkg_nodes_bsearch_const(processed_list, node->pkg.name) == NULL ) {
+					//mesg_warn_label("[N]", " %s\n", node->pkg.name);					
+				pkg_nodes_append_unique(next_pkg_list, node);
+					//}
+                                continue;
+                        }
+
+                        if (added_dep) {
+				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {				
+					mesg_warn_label("[A]", " %s\n", node->pkg.name);
+					pkg_nodes_append(build_list, node);					
+				}
+                        }
+                }
+                pkg_iterator_destroy(&iter);
+
+                /*
+                  Process parents
+                 */
+                flags           = PKG_ITER_REVDEPS | PKG_ITER_FORW | PKG_ITER_PRESERVE_COLOR;
+                max_dist        = 1;
+
+                for (node = pkg_iterator_begin(&iter, pkg_graph, cur_node->pkg.name, flags, max_dist);
+                     node != NULL; node = pkg_iterator_next(&iter)) {
+
+                        if (node->pkg.dep.is_meta)
+                                continue;
+
+                        if (0 == node->dist) {
+                                continue;
+                        }
+
+                        bool rebuild = false;
+                        bool update  = false;
+
+			const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+			if( slack_pkg ) {
+				if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
+					update = true;
+				} else {
+					rebuild = true;
+				}
+			}
+			
+                        if (rebuild) {
+				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {
+					mesg_info_label("[R]", " %s\n", node->pkg.name);
+					pkg_nodes_append(build_list, node);
+				}
+                                continue;
+                        }
+
+                        if (update) {
+				//if( pkg_nodes_bsearch_const(processed_list, node->pkg.name) == NULL ) {
+					//mesg_warn_label("[PU]", " %s\n", node->pkg.name);					
+				pkg_nodes_append_unique(pkg_list, node);
+				//}
+                        }
+                }
+                pkg_iterator_destroy(&iter);
+
+		pkg_nodes_insert_sort(processed_list, cur_node);
+		pkg_nodes_remove(pkg_list, cur_node->pkg.name);
+                if (pkg_nodes_size(pkg_list) == 0) {
+			//mesg_error_label("[AN]", " %s\n", "appending next packages");
+                        pkg_nodes_append_all(pkg_list, next_pkg_list);
+			pkg_nodes_clear(next_pkg_list);
+                }
+        }
+
+#if 0
+        // 1. Create update list excluding meta packages (meta package contents are included)
+        for (size_t i = 0; i < pkg_nodes_size(new_list); ++i) {
+                struct pkg_node *node = pkg_nodes_get(new_list, i);
+                mesg_warn_label("[N]", " %s\n", node->pkg.name);
+                pkg_nodes_append_unique(pkg_list, node);
+        }
+
+        for (size_t i = 0; i < pkg_nodes_size(update_list); ++i) {
+                struct pkg_node *node = pkg_nodes_get(update_list, i);
+                mesg_ok_label("[U]", " %s\n", node->pkg.name);
+                pkg_nodes_append_unique(pkg_list, node);
+        }
+
+        // 3. Add the rebuild list to the main list (using update_list to hold all packages)
+        for (size_t i = 0; i < pkg_nodes_size(rebuild_list); ++i) {
+                struct pkg_node *node = pkg_nodes_get(rebuild_list, i);
+                mesg_info_label("[R]", " %s\n", node->pkg.name);
+
+                pkg_nodes_append_unique(pkg_list, node);
+        }
+        pkg_nodes_free(&new_list);
+        pkg_nodes_free(&update_list);
+        pkg_nodes_free(&rebuild_list);
+
+        // 4. Create output file
+
+        // 5. Write the sqf file with the package list
+        pkg_options.check_installed = PKG_CHECK_INSTALLED;
+        pkg_options.revdeps         = false;
+        pkg_options.deep            = true;
+
+        rc = __write_pkg_nodes_sqf(pkg_graph, pkg_list, get_output_path(pkg_options, pkg_names), pkg_options,
+                                   &db_dirty);
+
+        if (rc < 0) {
+                goto finish;
+        }
+#endif
+        // 5. Write the sqf file with the package list
+        pkg_options.check_installed = 0;
+        pkg_options.revdeps         = false;
+        pkg_options.deep            = false;
+	pkg_options.max_dist        = 0;
+	pkg_options.recursive       = false;
+
+        rc = __write_pkg_nodes_sqf(pkg_graph, build_list, get_output_path(pkg_options, pkg_names), pkg_options,
+                                   &db_dirty);
+        if (db_dirty) {
+                rc = pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
+        }
+// finish:
+	
+        if (pkg_list)
+                pkg_nodes_free(&pkg_list);
+        if (processed_list)
+                pkg_nodes_free(&processed_list);
+        if (next_pkg_list)
+                pkg_nodes_free(&next_pkg_list);
+        if (build_list)
+                pkg_nodes_free(&build_list);
+ 
+	
+ 
+        return rc;
 }
 
 #if 0
@@ -1494,8 +1737,20 @@ static int manage_track_pkg(pkg_nodes_t *sbo_pkgs, string_list_t *pkg_names, boo
         return pkg_write_db(sbo_pkgs);
 }
 
-static int check_track_pkg(const pkg_nodes_t *sbo_pkgs, const string_list_t *pkg_names)
+static int show_track_pkg(const pkg_nodes_t *sbo_pkgs, const string_list_t *pkg_names, struct pkg_options options)
 {
+        string_list_t *__pkg_names = NULL;
+        if (options.all_packages) {
+                __pkg_names = string_list_alloc_reference();
+                for (size_t i = 0; i < pkg_nodes_size(sbo_pkgs); ++i) {
+                        const struct pkg_node *node = pkg_nodes_get_const(sbo_pkgs, i);
+                        if (node->pkg.is_tracked) {
+                                string_list_append(__pkg_names, node->pkg.name);
+                        }
+                }
+                pkg_names = __pkg_names;
+        }
+
         for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
                 const char *pkg_name        = string_list_get_const(pkg_names, i);
                 const struct pkg_node *node = pkg_nodes_bsearch_const(sbo_pkgs, pkg_name);
@@ -1510,6 +1765,10 @@ static int check_track_pkg(const pkg_nodes_t *sbo_pkgs, const string_list_t *pkg
                 } else {
                         mesg_error_label("[U]", " %s\n", pkg_name);
                 }
+        }
+
+        if (options.all_packages) {
+                string_list_free(&__pkg_names);
         }
 
         return 0;

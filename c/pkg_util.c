@@ -378,7 +378,7 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
  */
 static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode track_mode, bool *db_dirty)
 {
-        if ((PKG_TRACK == track_mode && 0 == node_dist) || PKG_TRACK_ALL == track_mode) {
+        if ((PKG_TRACK_ENABLE == track_mode && 0 == node_dist) || PKG_TRACK_ENABLE_ALL == track_mode) {
                 pkg->is_tracked = true;
                 *db_dirty       = true;
         }
@@ -444,7 +444,7 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
         struct pkg_iterator iter;
 
         pkg_iterator_flags_t flags = 0;
-        int max_dist               = (options.deep ? -1 : 1);
+        int max_dist               = (options.max_dist >= 0 ? options.max_dist : (options.deep ? -1 : 1));
 
         if (options.revdeps) {
                 flags = PKG_ITER_REVDEPS;
@@ -460,11 +460,11 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
 
                 check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
 
-                if (options.check_installed && strcmp(pkg_name, node->pkg.name) == 0) {
+                if (options.check_installed && strcmp(pkg_name, node->pkg.name) != 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
                         if (slack_pkg_is_installed(node->pkg.name, tag)) {
-                                mesg_info("package %s is already installed: skipping\n", node->pkg.name);
+                                //mesg_info("package %s is already installed: skipping\n", node->pkg.name);
                                 continue;
                         }
                 }

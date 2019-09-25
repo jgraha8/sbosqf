@@ -99,10 +99,11 @@ enum pkg_review_type { PKG_REVIEW_DISABLED = 0, PKG_REVIEW_ENABLED, PKG_REVIEW_A
 
 enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT };
 
-enum pkg_track_mode { PKG_TRACK = 1, PKG_TRACK_ALL = 2 };
+enum pkg_track_mode { PKG_TRACK_NONE = 0, PKG_TRACK_ENABLE, PKG_TRACK_ENABLE_ALL };
 
 struct pkg_options {
         int check_installed;              /* Bit flags for checking packages are already installed */
+	int max_dist;
         enum pkg_review_type review_type; /* Selection for how packages are reviewed */
 	enum pkg_output_mode output_mode; /* Output mode selection */
 	enum pkg_track_mode track_mode;   /* Package tracking selection */
@@ -112,7 +113,9 @@ struct pkg_options {
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
         bool graph;
-	
+	bool all_packages;
+	bool update_tracked;
+	bool update_installed;
 };
 
 struct pkg_options pkg_options_default();

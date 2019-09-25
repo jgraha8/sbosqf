@@ -33,6 +33,8 @@ const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i);
 
 void pkg_nodes_free(pkg_nodes_t **pl);
 void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg);
+void pkg_nodes_append_all(pkg_nodes_t *nodes, pkg_nodes_t *src_nodes);
+void pkg_nodes_append_unique(pkg_nodes_t *pl, struct pkg_node *pkg);
 void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg);
 int pkg_nodes_remove(pkg_nodes_t *pl, const char *pkg_name);
 void pkg_nodes_clear(pkg_nodes_t *pkg_nodes);
@@ -55,13 +57,14 @@ pkg_nodes_t *pkg_graph_assign_sbo_pkgs(struct pkg_graph *pkg_graph, pkg_nodes_t 
 pkg_nodes_t *pkg_graph_meta_pkgs(struct pkg_graph *pkg_graph);
 int pkg_graph_load_sbo(struct pkg_graph *pkg_graph);
 struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_name);
-void pkg_graph_clear_markers(struct pkg_graph *pkg_graph);
+void pkg_graph_clear_markers(struct pkg_graph *pkg_graph, bool preserve_color);
 
-#define PKG_ITER_DEPS          0x00
-#define PKG_ITER_REVDEPS       0x01
-#define PKG_ITER_REQ_NEAREST   0x02
-#define PKG_ITER_FORW          0x04
-#define PKG_ITER_METAPKG_DIST  0x08
+#define PKG_ITER_DEPS           0x00
+#define PKG_ITER_REVDEPS        0x01
+#define PKG_ITER_REQ_NEAREST    0x02
+#define PKG_ITER_FORW           0x04
+#define PKG_ITER_METAPKG_DIST   0x08
+#define PKG_ITER_PRESERVE_COLOR 0x10
 
 typedef int pkg_iterator_flags_t;
 

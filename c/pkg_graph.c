@@ -50,27 +50,29 @@ void pkg_node_free(struct pkg_node **pkg_node)
         *pkg_node = NULL;
 }
 
-void pkg_node_clear_markers(struct pkg_node *pkg_node)
+void pkg_node_clear_markers(struct pkg_node *pkg_node, bool preserve_color)
 {
         pkg_node->dist       = -1;
-        pkg_node->color      = COLOR_WHITE;
+	if( !preserve_color ) {
+		pkg_node->color = COLOR_WHITE;
+	}
         pkg_node->edge_index = 0;
 }
 
-void pkg_graph_clear_markers(struct pkg_graph *pkg_graph)
+void pkg_graph_clear_markers(struct pkg_graph *pkg_graph, bool preserve_color)
 {
         size_t n = 0;
 
         n = bds_vector_size(pkg_graph->sbo_pkgs);
         for (size_t i = 0; i < n; ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkg_graph->sbo_pkgs, i);
-                pkg_node_clear_markers(pkg_node);
+                pkg_node_clear_markers(pkg_node, preserve_color);
         }
 
         n = bds_vector_size(pkg_graph->meta_pkgs);
         for (size_t i = 0; i < n; ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkg_graph->meta_pkgs, i);
-                pkg_node_clear_markers(pkg_node);
+                pkg_node_clear_markers(pkg_node, preserve_color);
         }
 }
 
@@ -100,6 +102,19 @@ const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i)
 size_t pkg_nodes_size(const pkg_nodes_t *nodes) { return bds_vector_size(nodes); }
 
 void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg_node) { bds_vector_append(pl, &pkg_node); }
+
+void pkg_nodes_append_all(pkg_nodes_t *nodes, pkg_nodes_t *src_nodes) {
+	for( size_t i=0; i<pkg_nodes_size(src_nodes); ++i ) {
+		pkg_nodes_append(nodes, pkg_nodes_get(src_nodes, i));
+	}
+}
+
+void pkg_nodes_append_unique(pkg_nodes_t *pl, struct pkg_node *pkg_node)
+{
+	if( NULL == pkg_nodes_lsearch_const(pl, pkg_node->pkg.name) ) {
+		bds_vector_append(pl, &pkg_node);
+	}
+}
 
 void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg_node)
 {
@@ -271,7 +286,7 @@ struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg_graph 
         iter->max_dist    = max_dist;
         iter->visit_nodes = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
 
-        pkg_graph_clear_markers(pkg_graph);
+        pkg_graph_clear_markers(pkg_graph, (flags & PKG_ITER_PRESERVE_COLOR ? true : false));
 
         if (iter->flags & PKG_ITER_FORW) {
                 iter->next = __iterator_next_forward;
