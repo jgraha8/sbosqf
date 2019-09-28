@@ -332,6 +332,18 @@ static int set_next_node_dist(struct pkg_iterator *iter)
         return iter->edge_node->dist;
 }
 
+static int node_at_max_dist(const struct pkg_iterator *iter)
+{
+	if( iter->max_dist >= 0 ) {
+		if( iter->cur_node->pkg.dep.is_meta )
+			return false;
+
+		return (iter->cur_node->dist == iter->max_dist);
+	}
+
+	return false;
+}
+
 static struct pkg_node *get_next_edge_node(struct pkg_iterator *iter, pkg_nodes_t *edge_nodes)
 {
         iter->edge_node = *(struct pkg_node **)bds_vector_get(edge_nodes, iter->cur_node->edge_index++);
@@ -355,7 +367,7 @@ static struct pkg_node *__iterator_next_reverse(struct pkg_iterator *iter)
 
         pkg_nodes_t *edge_nodes = iterator_edge_nodes(iter);
 
-        const bool at_max_dist     = (iter->max_dist >= 0 && iter->cur_node->dist == iter->max_dist);
+        const bool at_max_dist     = node_at_max_dist(iter);
         const bool have_edge_nodes = (edge_nodes ? (iter->cur_node->edge_index >= 0 &&
                                                     iter->cur_node->edge_index < bds_vector_size(edge_nodes))
                                                  : false);
@@ -434,7 +446,7 @@ static struct pkg_node *__iterator_next_forward(struct pkg_iterator *iter)
 
         pkg_nodes_t *edge_nodes = iterator_edge_nodes(iter);
 
-        const bool at_max_dist     = (iter->max_dist >= 0 && iter->cur_node->dist == iter->max_dist);
+        const bool at_max_dist     = node_at_max_dist(iter);
         const bool have_edge_nodes = (edge_nodes ? (iter->cur_node->edge_index >= 0 &&
                                                     iter->cur_node->edge_index < bds_vector_size(edge_nodes))
                                                  : false);
