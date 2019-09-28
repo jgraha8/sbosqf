@@ -1254,57 +1254,104 @@ finish:
         return rc;
 }
 
+/**
+   @brief Selects packages from a specified list that have been updated in the SBo repository from what is
+   currently installed.
+
+   @param pkg_graph Address of the package graph object
+   @param pkg_names Address of the string list object containing the list of specified package names
+   @return updated_pkgs Address of the package nodes object containing the set of updated packages
+   @retval Returns 0 on success and -1 otherwise.
+
+   @note This procedure requires that all packages (including meta packages) provided by @c pkg_names are already
+   loaded into the package graph.
+ */
+static int select_updated_pkgs(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
+                               pkg_nodes_t *updated_pkgs)
+{
+        struct pkg_node *node             = NULL;
+        const struct slack_pkg *slack_pkg = NULL;
+        const char *pkg_name              = NULL;
+        const int flags                   = PKG_ITER_DEPS;
+        const int max_dist                = 0;
+        struct pkg_iterator iter;
+	
+        for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
+                pkg_name = string_list_get_const(pkg_names, i);
+
+                for (node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist); node != NULL;
+                     node = pkg_iterator_next(&iter)) {
+
+                        if (node->pkg.dep.is_meta)
+                                continue;
+
+                        slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+                        if (slack_pkg) {
+                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
+                                        pkg_nodes_append_unique(updated_pkgs, node);
+                                }
+                        }
+                }
+                pkg_iterator_destroy(&iter);
+        }
+
+        return 0;
+}
+
 static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
                                 struct pkg_options pkg_options)
 {
         int rc = 0;
 
-        struct pkg_node *node      = NULL;
-        struct pkg_node *cur_node  = NULL;
-        pkg_nodes_t *pkg_list      = NULL;
-        pkg_nodes_t *processed_list = NULL;	
-        pkg_nodes_t *next_pkg_list = NULL;
-        pkg_nodes_t *build_list    = NULL;
+        struct pkg_node *node       = NULL;
+        struct pkg_node *cur_node   = NULL;
+        pkg_nodes_t *input_pkg_list = NULL;
+        pkg_nodes_t *pkg_list       = NULL;
+        pkg_nodes_t *next_pkg_list  = NULL;
+        pkg_nodes_t *build_list     = NULL;
 
         struct pkg_iterator iter;
         pkg_iterator_flags_t flags = 0;
         int max_dist               = 0;
         bool db_dirty              = false;
 
-        pkg_options.revdeps = true;
-        pkg_options.deep    = true;
+        pkg_options.revdeps  = true;
+        pkg_options.deep     = true;
+        pkg_options.max_dist = -1;
 
         rc = pkg_load_all_deps(pkg_graph, pkg_options);
         if (rc != 0)
                 return rc;
 
-        pkg_list       = pkg_nodes_alloc_reference();
-        next_pkg_list  = pkg_nodes_alloc_reference();
-        processed_list = pkg_nodes_alloc_reference();	
-        build_list = pkg_nodes_alloc_reference();
-
+        /*
+          Load any meta package dependency files
+         */
         for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
-		node = pkg_graph_search(pkg_graph, string_list_get_const(pkg_names, i));
-			
-		const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
-		if( slack_pkg ) {
-			if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
-				pkg_nodes_append(pkg_list, node);
-			}
-		}
+                const char *pkg_name = string_list_get_const(pkg_names, i);
+                if (is_meta_pkg(pkg_name)) {
+                        assert(pkg_load_dep(pkg_graph, pkg_name, pkg_options) == 0);
+                }
         }
 
+        input_pkg_list = pkg_nodes_alloc_reference();
+        pkg_list       = pkg_nodes_alloc_reference();
+        next_pkg_list  = pkg_nodes_alloc_reference();
+        build_list     = pkg_nodes_alloc_reference();
+
+        rc = select_updated_pkgs(pkg_graph, pkg_names, input_pkg_list);
+        assert(0 == rc);
+
+        pkg_nodes_append_all(pkg_list, input_pkg_list);
         pkg_graph_clear_markers(pkg_graph, false);
 
         while (pkg_nodes_size(pkg_list) > 0) {
 
                 cur_node = pkg_nodes_get(pkg_list, 0);
-
                 /*
                   Process dependencies
                  */
-                flags           = PKG_ITER_DEPS | PKG_ITER_PRESERVE_COLOR;
-                max_dist        = -1;
+                flags    = PKG_ITER_DEPS | PKG_ITER_PRESERVE_COLOR;
+                max_dist = -1;
 
                 for (node = pkg_iterator_begin(&iter, pkg_graph, cur_node->pkg.name, flags, max_dist);
                      node != NULL; node = pkg_iterator_next(&iter)) {
@@ -1312,55 +1359,74 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                         if (node->pkg.dep.is_meta)
                                 continue;
 
+                        const struct slack_pkg *slack_pkg =
+                            slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+
                         if (0 == node->dist) {
-				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {
-					mesg_ok_label("[U]", " %s\n", node->pkg.name);
-					pkg_nodes_append(build_list, node);					
-				}
+                                assert(slack_pkg);
+                                if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
+                                        if (pkg_nodes_lsearch_const(input_pkg_list, node->pkg.name)) {
+                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[ U]",
+                                                              node->pkg.name, slack_pkg->version,
+                                                              node->pkg.version);
+                                        } else {
+                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[PU]",
+                                                              node->pkg.name, slack_pkg->version,
+                                                              node->pkg.version);
+                                        }
+                                        pkg_nodes_append(build_list, node);
+                                }
 
                                 continue;
                         }
 
-                        bool update    = false;
-                        bool added_dep = false;
+                        if (slack_pkg) {
+                                /*
+                                  Updated package (version change)
 
-			const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
-			if( slack_pkg ) {
-				if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
-					update = true;
-				}
-			} else {
-				added_dep = true;
-			}
-			
+                                  If there is a version change we place the package in the output build
+                                  list and added it to the next package list set for further processing.
+                                */
+                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
+                                        if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
+                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[DU]",
+                                                              node->pkg.name, slack_pkg->version,
+                                                              node->pkg.version);
+                                                pkg_nodes_append(build_list, node);
+                                        }
+                                        pkg_nodes_append_unique(next_pkg_list, node);
+                                } else {
+                                        if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
+                                                mesg_info_label("%4s", " %-24s %-8s\n", "[DR]", node->pkg.name,
+                                                                node->pkg.version);
+                                                pkg_nodes_append(build_list, node);
+                                        }
+                                }
+                        } else {
+                                /*
+                                  Added dependency package
 
-                        if (update) {
-				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {				
-					mesg_ok_label("[U]", " %s\n", node->pkg.name);
-					pkg_nodes_append(build_list, node);									
-				}
-
-				//if( pkg_nodes_bsearch_const(processed_list, node->pkg.name) == NULL ) {
-					//mesg_warn_label("[N]", " %s\n", node->pkg.name);					
-				pkg_nodes_append_unique(next_pkg_list, node);
-					//}
-                                continue;
-                        }
-
-                        if (added_dep) {
-				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {				
-					mesg_warn_label("[A]", " %s\n", node->pkg.name);
-					pkg_nodes_append(build_list, node);					
-				}
+                                  If the package is not currently installed, we assume that it is a new
+                                  dependency and add it to the output build list.
+                                 */
+                                if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
+                                        mesg_warn_label("%4s", " %-24s %-8s\n", "[DA]", node->pkg.name,
+                                                        node->pkg.version);
+                                        pkg_nodes_append(build_list, node);
+                                }
                         }
                 }
                 pkg_iterator_destroy(&iter);
+
+                if (cur_node->pkg.parent_rebuild) {
+                        goto cycle;
+                }
 
                 /*
                   Process parents
                  */
-                flags           = PKG_ITER_REVDEPS | PKG_ITER_FORW | PKG_ITER_PRESERVE_COLOR;
-                max_dist        = 1;
+                flags    = PKG_ITER_REVDEPS | PKG_ITER_FORW | PKG_ITER_PRESERVE_COLOR;
+                max_dist = 1;
 
                 for (node = pkg_iterator_begin(&iter, pkg_graph, cur_node->pkg.name, flags, max_dist);
                      node != NULL; node = pkg_iterator_next(&iter)) {
@@ -1372,143 +1438,64 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                 continue;
                         }
 
-                        bool rebuild = false;
-                        bool update  = false;
-
-			const struct slack_pkg *slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
-			if( slack_pkg ) {
-				if( compar_versions(slack_pkg->version, node->pkg.version) != 0 ) {
-					update = true;
-				} else {
-					rebuild = true;
-				}
-			}
-			
-                        if (rebuild) {
-				if( pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL ) {
-					mesg_info_label("[R]", " %s\n", node->pkg.name);
-					pkg_nodes_append(build_list, node);
-				}
-                                continue;
-                        }
-
-                        if (update) {
-				//if( pkg_nodes_bsearch_const(processed_list, node->pkg.name) == NULL ) {
-					//mesg_warn_label("[PU]", " %s\n", node->pkg.name);					
-				pkg_nodes_append_unique(pkg_list, node);
-				//}
+                        const struct slack_pkg *slack_pkg =
+                            slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
+                        if (slack_pkg) {
+                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
+                                        /*
+                                          Updated parent package
+                                         */
+                                        pkg_nodes_append_unique(pkg_list, node);
+                                } else {
+                                        /*
+                                          Rebuild the parent package
+                                         */
+                                        if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
+                                                mesg_info_label("%4s", " %-24s %-8s\n", "[PR]", node->pkg.name,
+                                                                node->pkg.version);
+                                                // pkg_nodes_append(build_list, node);
+                                        }
+                                        node->pkg.parent_rebuild = true;
+                                        pkg_nodes_append_unique(pkg_list, node);
+                                }
                         }
                 }
                 pkg_iterator_destroy(&iter);
 
-		pkg_nodes_insert_sort(processed_list, cur_node);
-		pkg_nodes_remove(pkg_list, cur_node->pkg.name);
-                if (pkg_nodes_size(pkg_list) == 0) {
-			//mesg_error_label("[AN]", " %s\n", "appending next packages");
+        cycle:
+                pkg_nodes_remove(pkg_list, cur_node->pkg.name);
+                if (0 == pkg_nodes_size(pkg_list)) {
                         pkg_nodes_append_all(pkg_list, next_pkg_list);
-			pkg_nodes_clear(next_pkg_list);
+                        pkg_nodes_clear(next_pkg_list);
                 }
         }
 
-#if 0
-        // 1. Create update list excluding meta packages (meta package contents are included)
-        for (size_t i = 0; i < pkg_nodes_size(new_list); ++i) {
-                struct pkg_node *node = pkg_nodes_get(new_list, i);
-                mesg_warn_label("[N]", " %s\n", node->pkg.name);
-                pkg_nodes_append_unique(pkg_list, node);
-        }
+        if (input_pkg_list)
+                pkg_nodes_free(&input_pkg_list);
+        if (pkg_list)
+                pkg_nodes_free(&pkg_list);
+        if (next_pkg_list)
+                pkg_nodes_free(&next_pkg_list);
 
-        for (size_t i = 0; i < pkg_nodes_size(update_list); ++i) {
-                struct pkg_node *node = pkg_nodes_get(update_list, i);
-                mesg_ok_label("[U]", " %s\n", node->pkg.name);
-                pkg_nodes_append_unique(pkg_list, node);
-        }
-
-        // 3. Add the rebuild list to the main list (using update_list to hold all packages)
-        for (size_t i = 0; i < pkg_nodes_size(rebuild_list); ++i) {
-                struct pkg_node *node = pkg_nodes_get(rebuild_list, i);
-                mesg_info_label("[R]", " %s\n", node->pkg.name);
-
-                pkg_nodes_append_unique(pkg_list, node);
-        }
-        pkg_nodes_free(&new_list);
-        pkg_nodes_free(&update_list);
-        pkg_nodes_free(&rebuild_list);
-
-        // 4. Create output file
-
-        // 5. Write the sqf file with the package list
-        pkg_options.check_installed = PKG_CHECK_INSTALLED;
-        pkg_options.revdeps         = false;
-        pkg_options.deep            = true;
-
-        rc = __write_pkg_nodes_sqf(pkg_graph, pkg_list, get_output_path(pkg_options, pkg_names), pkg_options,
-                                   &db_dirty);
-
-        if (rc < 0) {
-                goto finish;
-        }
-#endif
         // 5. Write the sqf file with the package list
         pkg_options.check_installed = 0;
         pkg_options.revdeps         = false;
         pkg_options.deep            = false;
-	pkg_options.max_dist        = 0;
-	pkg_options.recursive       = false;
+        pkg_options.max_dist        = 0;
+        pkg_options.recursive       = false;
 
         rc = __write_pkg_nodes_sqf(pkg_graph, build_list, get_output_path(pkg_options, pkg_names), pkg_options,
                                    &db_dirty);
+
+        if (build_list)
+                pkg_nodes_free(&build_list);
+
         if (db_dirty) {
                 rc = pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
         }
-// finish:
-	
-        if (pkg_list)
-                pkg_nodes_free(&pkg_list);
-        if (processed_list)
-                pkg_nodes_free(&processed_list);
-        if (next_pkg_list)
-                pkg_nodes_free(&next_pkg_list);
-        if (build_list)
-                pkg_nodes_free(&build_list);
- 
-	
- 
+
         return rc;
 }
-
-#if 0
-static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names,
-                                struct pkg_options pkg_options)
-{
-        int rc = 0;
-        char sqf_file[256];
-
-        const size_t num_pkgs = string_list_size(pkg_names);
-
-        for (size_t i = 0; i < num_pkgs; ++i) {
-                rc = pkg_load_dep(pkg_graph, string_list_get_const(pkg_names, i), pkg_options);
-                if (rc != 0)
-                        return rc;
-        }
-
-	// Get the status of all packages
-	struct bds_vector *pkg_status = create_pkg_status_vector();
-	
-        for (size_t i = 0; i < num_pkgs; ++i) {	
-		/* Check to see if any of the packages require updating */
-		rc = get_pkg_status(pkg_graph, string_list_get_const(pkg_names, i), pkg_status);
-		if( rc != 0 )
-			goto finish;
-	}
-finish:
-	if( pkg_status ) {
-		bds_vector_free(&pkg_status);
-	}
-	
-	return rc;
-}
-#endif
 
 static int write_pkg_remove_sqf(struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
                                 struct pkg_options pkg_options)

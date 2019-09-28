@@ -65,6 +65,7 @@ struct pkg {
 	bool is_tracked;
         bool parent_installed;
         bool for_removal;
+	bool parent_rebuild;
 };
 
 struct pkg pkg_create(const char *name);
