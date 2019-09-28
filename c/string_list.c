@@ -50,6 +50,13 @@ size_t string_list_size(const string_list_t *string_list) { return bds_vector_si
 
 void string_list_append(string_list_t *string_list, char *str) { bds_vector_append(string_list, &str); }
 
+void string_list_append_unique(string_list_t *string_list, char *str) {
+
+	if( NULL == string_list_lsearch_const(string_list, str) ) {
+		string_list_append(string_list, str);
+	}
+}
+
 void string_list_insert_sort(string_list_t *string_list, char *str)
 {
         string_list_append(string_list, str);

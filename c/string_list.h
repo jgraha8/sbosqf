@@ -14,6 +14,7 @@ const char *string_list_get_const(const string_list_t *string_list, size_t i);
 
 void string_list_free(string_list_t **string_list);
 void string_list_append(string_list_t *string_list, char *pkg);
+void string_list_append_unique(string_list_t *string_list, char *pkg);
 void string_list_insert_sort(string_list_t *string_list, char *pkg);
 int string_list_remove(string_list_t *string_list, const char *pkg_name);
 void string_list_clear(string_list_t *string_list);
