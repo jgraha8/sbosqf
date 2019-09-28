@@ -16,6 +16,7 @@
 #include "sbo.h"
 #include "slack_pkg.h"
 #include "user_config.h"
+#include "string_list.h"
 
 #ifndef MAX_LINE
 #define MAX_LINE 2048
@@ -208,9 +209,11 @@ struct pkg *pkg_bsearch_parent(struct pkg *pkg, const char *parent_name)
 void pkg_append_buildopts(struct pkg *pkg, char *bopt)
 {
         if (pkg->dep.buildopts == NULL) {
-                pkg->dep.buildopts = bds_vector_alloc(1, sizeof(char *), (void (*)(void *))free_string_ptr);
+                pkg->dep.buildopts = string_list_alloc();
         }
-        bds_vector_append(pkg->dep.buildopts, &bopt);
+	if( NULL == string_list_lsearch_const(pkg->dep.buildopts, bopt) ) {
+		string_list_append(pkg->dep.buildopts, bds_string_dup(bopt));
+	}
 }
 
 size_t pkg_buildopts_size(const struct pkg *pkg)
@@ -218,7 +221,7 @@ size_t pkg_buildopts_size(const struct pkg *pkg)
         if (pkg->dep.buildopts == NULL)
                 return 0;
 
-        return bds_vector_size(pkg->dep.buildopts);
+        return string_list_size(pkg->dep.buildopts);
 }
 
 const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
@@ -226,9 +229,5 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
         if (pkg->dep.buildopts == NULL)
                 return 0;
 
-        const char **bp = (const char **)bds_vector_get(pkg->dep.buildopts, i);
-        if (bp == NULL)
-                return NULL;
-
-        return *bp;
+	return string_list_get_const(pkg->dep.buildopts, i);
 }

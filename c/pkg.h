@@ -32,6 +32,8 @@
 #include <libbds/bds_string.h>
 #include <libbds/bds_vector.h>
 
+#include "string_list.h"
+
 #define PKG_CHECK_INSTALLED 0x1
 #define PKG_CHECK_ANY_INSTALLED 0x2
 // #define PKG_AUTO_REVIEW_ADD 0x1
@@ -41,7 +43,6 @@
 #define PKG_DEP_EDITED 0x2
 
 typedef struct bds_vector pkg_nodes_t;
-typedef struct bds_vector buildopts_t;
 
 struct pkg;
 struct pkg_node;
@@ -49,7 +50,7 @@ struct pkg_node;
 struct pkg_dep {
         pkg_nodes_t *required;
         pkg_nodes_t *parents;
-        buildopts_t *buildopts;
+        string_list_t *buildopts;
         bool is_meta;
 };
 

@@ -231,7 +231,7 @@ int __load_dep(struct pkg_graph *pkg_graph, struct pkg_node *pkg_node, struct pk
 
                 } break;
                 case BUILDOPTS_BLOCK: {
-                        char *buildopt = bds_string_dup(bds_string_atrim(line));
+                        char *buildopt = bds_string_atrim(line);
                         pkg_append_buildopts(&pkg_node->pkg, buildopt);
                 } break;
                 default:
@@ -367,6 +367,9 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
 {
         const size_t n = pkg_buildopts_size(pkg);
 
+	if( 0 < n ) {
+		ostream_printf(os, " |");
+	}
         for (size_t i = 0; i < n; ++i) {
                 ostream_printf(os, " %s", pkg_buildopts_get_const(pkg, i));
         }
