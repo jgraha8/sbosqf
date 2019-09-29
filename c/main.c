@@ -909,7 +909,7 @@ struct bds_vector *create_pkg_status_vector()
 static int get_pkg_status(struct pkg_graph *pkg_graph, const char *pkg_name, struct bds_vector *pkg_status)
 {
 	int rc = 0;
-	
+
         struct pkg_node *node = pkg_graph_search(pkg_graph, pkg_name);
         if (node == NULL)
                 return -1;
@@ -945,7 +945,7 @@ static int get_pkg_status(struct pkg_graph *pkg_graph, const char *pkg_name, str
                         status.status = PKG_REMOVED;
                         goto cycle;
                 }
-                status.slack_pkg_version = bds_string_dup(slack_pkg->version);		
+                status.slack_pkg_version = bds_string_dup(slack_pkg->version);
 
 		const char *sbo_version = sbo_read_version(node->pkg.sbo_dir, node->pkg.name);
                 assert(sbo_version);
@@ -1275,7 +1275,7 @@ static int select_updated_pkgs(struct pkg_graph *pkg_graph, const string_list_t 
         const int flags                   = PKG_ITER_DEPS;
         const int max_dist                = 0;
         struct pkg_iterator iter;
-	
+
         for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
                 pkg_name = string_list_get_const(pkg_names, i);
 
@@ -1370,24 +1370,29 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                                               node->pkg.name, slack_pkg->version,
                                                               node->pkg.version);
                                         } else {
-                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[PU]",
-                                                              node->pkg.name, slack_pkg->version,
-                                                              node->pkg.version);
+                                                if (node->pkg.parent_rebuild) {
+                                                        mesg_info_label("%4s", " %-24s %-8s\n", "[PR]",
+                                                                        node->pkg.name, node->pkg.version);
+                                                } else {
+                                                        mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[PU]",
+                                                                      node->pkg.name, slack_pkg->version,
+                                                                      node->pkg.version);
+                                                }
                                         }
                                         pkg_nodes_append(build_list, node);
                                 }
-
                                 continue;
                         }
 
                         if (slack_pkg) {
-                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
-					/*
-					  Updated package (version change)
+                                int ver_diff = compar_versions(node->pkg.version, slack_pkg->version);
+                                if (ver_diff > 0) {
+                                        /*
+                                          Updated package (version change)
 
-					  If there is a version change we place the package in the output build
-					  list and added it to the next package list set for further processing.
-					*/
+                                          If there is a version change we place the package in the output build
+                                          list and added it to the next package list set for further processing.
+                                        */
                                         if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
                                                 mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[DU]",
                                                               node->pkg.name, slack_pkg->version,
@@ -1395,18 +1400,25 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                                 pkg_nodes_append(build_list, node);
                                         }
                                         pkg_nodes_append_unique(next_pkg_list, node);
-                                } else {
-					/*
-					  Dependency rebuild (no version change)
+                                } else if (ver_diff == 0) {
+                                        /*
+                                          Dependency rebuild (no version change)
 
-					  The package is addded to the output build list. No further processing.
-					*/
+                                          The package is addded to the output build list. No further processing.
+                                        */
                                         if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
                                                 mesg_info_label("%4s", " %-24s %-8s\n", "[DR]", node->pkg.name,
                                                                 node->pkg.version);
                                                 pkg_nodes_append(build_list, node);
                                         }
+                                } else {
+                                        /*
+                                          Dependency downgrade (ignoring for now)
+                                        */
+                                        mesg_error_label("%4s", " %-24s %-8s\n", "[DD]", node->pkg.name,
+                                                         node->pkg.version);
                                 }
+
                         } else {
                                 /*
                                   Added dependency package
@@ -1423,10 +1435,10 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                 }
                 pkg_iterator_destroy(&iter);
 
-		/*
-		  If the package is marked as a parent rebuild, then
-		  we skip any processing of its parent packages
-		 */
+                /*
+                  If the package is marked as a parent rebuild, then
+                  we skip any processing of its parent packages
+                 */
                 if (cur_node->pkg.parent_rebuild) {
                         goto cycle;
                 }
@@ -1443,10 +1455,10 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                         if (node->pkg.dep.is_meta)
                                 continue;
 
-			/*
-			  The current node has already been processed
-			  during dependency processing. Skip any further processing.
-			 */
+                        /*
+                          The current node has already been processed
+                          during dependency processing. Skip any further processing.
+                         */
                         if (0 == node->dist) {
                                 continue;
                         }
@@ -1454,22 +1466,25 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                         const struct slack_pkg *slack_pkg =
                             slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
                         if (slack_pkg) {
-                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
+                                int ver_diff = compar_versions(node->pkg.version, slack_pkg->version);
+                                if (ver_diff > 0) {
                                         /*
                                           Updated parent package
                                          */
                                         pkg_nodes_append_unique(pkg_list, node);
-                                } else {
+                                } else if (ver_diff == 0) {
                                         /*
                                           Rebuild the parent package
                                          */
-                                        if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
-                                                mesg_info_label("%4s", " %-24s %-8s\n", "[PR]", node->pkg.name,
-                                                                node->pkg.version);
-                                                pkg_nodes_append(build_list, node);
-                                        }
                                         node->pkg.parent_rebuild = true;
                                         pkg_nodes_append_unique(pkg_list, node);
+                                } else {
+                                        /*
+                                          Parent downgrade (ignoring for now)
+
+                                        */
+                                        mesg_error_label("%4s", " %-24s %-8s\n", "[PD]", node->pkg.name,
+                                                         node->pkg.version);
                                 }
                         }
                 }
