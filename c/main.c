@@ -1287,7 +1287,7 @@ static int select_updated_pkgs(struct pkg_graph *pkg_graph, const string_list_t 
 
                         slack_pkg = slack_pkg_search_const(node->pkg.name, user_config.sbo_tag);
                         if (slack_pkg) {
-                                if (compar_versions(slack_pkg->version, node->pkg.version) != 0) {
+                                if (compar_versions(node->pkg.version, slack_pkg->version) > 0) {
                                         pkg_nodes_append_unique(updated_pkgs, node);
                                 }
                         }
@@ -1347,6 +1347,7 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
         while (pkg_nodes_size(pkg_list) > 0) {
 
                 cur_node = pkg_nodes_get(pkg_list, 0);
+
                 /*
                   Process dependencies
                  */

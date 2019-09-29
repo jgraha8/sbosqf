@@ -66,6 +66,7 @@ struct pkg {
         bool parent_installed;
         bool for_removal;
         bool parent_rebuild;
+        bool parent_update;
 
         struct pkg_node *update_dep;
 };
