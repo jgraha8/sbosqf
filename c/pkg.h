@@ -61,11 +61,13 @@ struct pkg {
         struct pkg_dep dep;
         uint32_t info_crc; /// CRC of README and REQUIRED list in .info
                            // struct pkg_sbo *sbo;
-	bool is_reviewed;
-	bool is_tracked;
+        bool is_reviewed;
+        bool is_tracked;
         bool parent_installed;
         bool for_removal;
-	bool parent_rebuild;
+        bool parent_rebuild;
+
+        struct pkg_node *update_dep;
 };
 
 struct pkg pkg_create(const char *name);
@@ -104,20 +106,20 @@ enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT };
 enum pkg_track_mode { PKG_TRACK_NONE = 0, PKG_TRACK_ENABLE, PKG_TRACK_ENABLE_ALL };
 
 struct pkg_options {
-        int check_installed;              /* Bit flags for checking packages are already installed */
-	int max_dist;
+        int check_installed; /* Bit flags for checking packages are already installed */
+        int max_dist;
         enum pkg_review_type review_type; /* Selection for how packages are reviewed */
-	enum pkg_output_mode output_mode; /* Output mode selection */
-	enum pkg_track_mode track_mode;   /* Package tracking selection */
+        enum pkg_output_mode output_mode; /* Output mode selection */
+        enum pkg_track_mode track_mode;   /* Package tracking selection */
         char *output_name;                /* Output file name */
         bool recursive;                   /* Recursive dep file parsing */
         bool optional;                    /* Include optional packages in dep file parsing */
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
         bool graph;
-	bool all_packages;
-	bool update_tracked;
-	bool update_installed;
+        bool all_packages;
+        bool update_tracked;
+        bool update_installed;
 };
 
 struct pkg_options pkg_options_default();

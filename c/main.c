@@ -1366,17 +1366,20 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                 assert(slack_pkg);
                                 if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
                                         if (pkg_nodes_lsearch_const(input_pkg_list, node->pkg.name)) {
-                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[ U]",
-                                                              node->pkg.name, slack_pkg->version,
+                                                mesg_ok_label("%4s", " %-24s %-28s %-8s --> %s\n", "[ U]",
+                                                              node->pkg.name, "", slack_pkg->version,
                                                               node->pkg.version);
                                         } else {
                                                 if (node->pkg.parent_rebuild) {
-                                                        mesg_info_label("%4s", " %-24s %-8s\n", "[PR]",
-                                                                        node->pkg.name, node->pkg.version);
+                                                        mesg_info_label("%4s", " %-24s (D:%-24s) %-8s\n", "[PR]",
+                                                                        node->pkg.name,
+                                                                        node->pkg.update_dep->pkg.name,
+                                                                        node->pkg.version);
                                                 } else {
-                                                        mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[PU]",
-                                                                      node->pkg.name, slack_pkg->version,
-                                                                      node->pkg.version);
+                                                        mesg_ok_label("%4s", " %-24s (D:%-24s) %-8s --> %s\n",
+                                                                      "[PU]", node->pkg.name,
+                                                                      node->pkg.update_dep->pkg.name,
+                                                                      slack_pkg->version, node->pkg.version);
                                                 }
                                         }
                                         pkg_nodes_append(build_list, node);
@@ -1394,9 +1397,9 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                           list and added it to the next package list set for further processing.
                                         */
                                         if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
-                                                mesg_ok_label("%4s", " %-24s %-8s --> %s\n", "[DU]",
-                                                              node->pkg.name, slack_pkg->version,
-                                                              node->pkg.version);
+                                                mesg_ok_label("%4s", " %-24s (P:%-24s) %-8s --> %s\n", "[DU]",
+                                                              node->pkg.name, cur_node->pkg.name,
+                                                              slack_pkg->version, node->pkg.version);
                                                 pkg_nodes_append(build_list, node);
                                         }
                                         pkg_nodes_append_unique(next_pkg_list, node);
@@ -1407,7 +1410,8 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                           The package is addded to the output build list. No further processing.
                                         */
                                         if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
-                                                mesg_info_label("%4s", " %-24s %-8s\n", "[DR]", node->pkg.name,
+                                                mesg_info_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DR]",
+                                                                node->pkg.name, cur_node->pkg.name,
                                                                 node->pkg.version);
                                                 pkg_nodes_append(build_list, node);
                                         }
@@ -1415,8 +1419,8 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                         /*
                                           Dependency downgrade (ignoring for now)
                                         */
-                                        mesg_error_label("%4s", " %-24s %-8s\n", "[DD]", node->pkg.name,
-                                                         node->pkg.version);
+                                        mesg_error_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DD]", node->pkg.name,
+                                                         cur_node->pkg.name, node->pkg.version);
                                 }
 
                         } else {
@@ -1427,8 +1431,8 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                   dependency and add it to the output build list.
                                  */
                                 if (pkg_nodes_lsearch_const(build_list, node->pkg.name) == NULL) {
-                                        mesg_warn_label("%4s", " %-24s %-8s\n", "[DA]", node->pkg.name,
-                                                        node->pkg.version);
+                                        mesg_warn_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DA]", node->pkg.name,
+                                                        cur_node->pkg.name, node->pkg.version);
                                         pkg_nodes_append(build_list, node);
                                 }
                         }
@@ -1471,11 +1475,13 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                         /*
                                           Updated parent package
                                          */
+                                        node->pkg.update_dep = cur_node;
                                         pkg_nodes_append_unique(pkg_list, node);
                                 } else if (ver_diff == 0) {
                                         /*
                                           Rebuild the parent package
                                          */
+                                        node->pkg.update_dep     = cur_node;
                                         node->pkg.parent_rebuild = true;
                                         pkg_nodes_append_unique(pkg_list, node);
                                 } else {
@@ -1483,8 +1489,8 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
                                           Parent downgrade (ignoring for now)
 
                                         */
-                                        mesg_error_label("%4s", " %-24s %-8s\n", "[PD]", node->pkg.name,
-                                                         node->pkg.version);
+                                        mesg_error_label("%4s", " %-24s (%-24s) %-8s\n", "[PD]", node->pkg.name,
+                                                         cur_node->pkg.name, node->pkg.version);
                                 }
                         }
                 }
