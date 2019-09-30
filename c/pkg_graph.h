@@ -42,6 +42,7 @@ struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pl, const char *name);
 const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pl, const char *name);
 struct pkg_node *pkg_nodes_bsearch(pkg_nodes_t *pl, const char *name);
 const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pl, const char *name);
+
 int pkg_nodes_compar(const void *a, const void *b);
 
 struct pkg_graph {
@@ -59,11 +60,11 @@ int pkg_graph_load_sbo(struct pkg_graph *pkg_graph);
 struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_name);
 void pkg_graph_clear_markers(struct pkg_graph *pkg_graph, bool preserve_color);
 
-#define PKG_ITER_DEPS           0x00
-#define PKG_ITER_REVDEPS        0x01
-#define PKG_ITER_REQ_NEAREST    0x02
-#define PKG_ITER_FORW           0x04
-#define PKG_ITER_METAPKG_DIST   0x08
+#define PKG_ITER_DEPS 0x00
+#define PKG_ITER_REVDEPS 0x01
+#define PKG_ITER_REQ_NEAREST 0x02
+#define PKG_ITER_FORW 0x04
+#define PKG_ITER_METAPKG_DIST 0x08
 #define PKG_ITER_PRESERVE_COLOR 0x10
 
 typedef int pkg_iterator_flags_t;
@@ -74,12 +75,12 @@ struct pkg_iterator {
         pkg_iterator_flags_t flags;
         // struct pkg_node pkg_node;
         struct pkg_node *cur_node;
-	struct pkg_node *edge_node;
-	pkg_nodes_t *edge_nodes;
+        struct pkg_node *edge_node;
+        pkg_nodes_t *edge_nodes;
         // int pkgs_index;
         // struct pkg **pkgp;
         struct bds_stack *visit_nodes;
-	struct pkg_node *(*next)(struct pkg_iterator *iter);
+        struct pkg_node *(*next)(struct pkg_iterator *iter);
         int max_dist;
 };
 

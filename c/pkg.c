@@ -15,8 +15,8 @@
 #include "pkg_util.h"
 #include "sbo.h"
 #include "slack_pkg.h"
-#include "user_config.h"
 #include "string_list.h"
+#include "user_config.h"
 
 #ifndef MAX_LINE
 #define MAX_LINE 2048
@@ -30,11 +30,24 @@ struct pkg_options pkg_options_default()
         options.recursive   = true;
         options.optional    = true;
         options.review_type = PKG_REVIEW_ENABLED;
-	options.output_mode = PKG_OUTPUT_FILE;
-	options.max_dist    = -1;
+        options.output_mode = PKG_OUTPUT_FILE;
+        options.max_dist    = -1;
 
         return options;
 }
+
+struct pkg_update pkg_update_assign(enum pkg_update_type type, struct pkg_node *rel_node, const char *version)
+{
+        struct pkg_update update;
+
+        update.type     = type;
+        update.rel_node = rel_node;
+        update.version  = version;
+
+        return update;
+}
+
+void pkg_update_reset(struct pkg_update *update) { memset(update, 0, sizeof(*update)); }
 
 struct pkg pkg_create(const char *name)
 {
@@ -211,9 +224,9 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt)
         if (pkg->dep.buildopts == NULL) {
                 pkg->dep.buildopts = string_list_alloc();
         }
-	if( NULL == string_list_lsearch_const(pkg->dep.buildopts, bopt) ) {
-		string_list_append(pkg->dep.buildopts, bds_string_dup(bopt));
-	}
+        if (NULL == string_list_lsearch_const(pkg->dep.buildopts, bopt)) {
+                string_list_append(pkg->dep.buildopts, bds_string_dup(bopt));
+        }
 }
 
 size_t pkg_buildopts_size(const struct pkg *pkg)
@@ -229,5 +242,5 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
         if (pkg->dep.buildopts == NULL)
                 return 0;
 
-	return string_list_get_const(pkg->dep.buildopts, i);
+        return string_list_get_const(pkg->dep.buildopts, i);
 }

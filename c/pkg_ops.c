@@ -110,9 +110,9 @@ bool pkg_db_exists()
 static int __create_db(const char *db_file, pkg_nodes_t *pkgs)
 {
         FILE *fp = fopen(db_file, "w");
-	if( fp == NULL ) {
-		return -1;
-	}
+        if (fp == NULL) {
+                return -1;
+        }
 
         for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
@@ -132,15 +132,15 @@ static int __create_db(const char *db_file, pkg_nodes_t *pkgs)
 
 int pkg_write_db(pkg_nodes_t *pkgs)
 {
-	int rc = 0;
-	
+        int rc = 0;
+
         char db_file[4096];
         bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
 
-	rc = __create_db(db_file, pkgs);
-	if( rc != 0 ) {
-		mesg_error("unable to write %s\n", db_file);
-	}
+        rc = __create_db(db_file, pkgs);
+        if (rc != 0) {
+                mesg_error("unable to write %s\n", db_file);
+        }
 
         return rc;
 }
@@ -182,17 +182,17 @@ int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
         for (size_t i = 0; i < num_nodes; ++i) {
                 struct pkg_node *new_pkg = pkg_nodes_get(new_pkgs, i);
                 struct pkg_node *old_pkg = pkg_nodes_bsearch(old_pkgs, new_pkg->pkg.name);
-		
+
                 if (old_pkg) {
-			// Preserve tracked flag
-			new_pkg->pkg.is_tracked = old_pkg->pkg.is_tracked;
-			if (old_pkg->pkg.info_crc == new_pkg->pkg.info_crc) {
-				/*
-				  If there is no change in the package, preserved the reviewed flag; otherwise it
-				  will be set to false (0).
-				*/
-				new_pkg->pkg.is_reviewed = old_pkg->pkg.is_reviewed;
-			} else {
+                        // Preserve tracked flag
+                        new_pkg->pkg.is_tracked = old_pkg->pkg.is_tracked;
+                        if (old_pkg->pkg.info_crc == new_pkg->pkg.info_crc) {
+                                /*
+                                  If there is no change in the package, preserved the reviewed flag; otherwise it
+                                  will be set to false (0).
+                                */
+                                new_pkg->pkg.is_reviewed = old_pkg->pkg.is_reviewed;
+                        } else {
                                 int ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
                                 struct pkg updated_pkg[2] = {old_pkg->pkg, new_pkg->pkg};
 
@@ -204,7 +204,7 @@ int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                         bds_queue_push(downgraded_pkg_queue, &updated_pkg);
                                 }
                         }
-			// TODO: check if this is needed
+                        // TODO: check if this is needed
                         old_pkg->color = COLOR_BLACK;
                 } else {
                         bds_queue_push(added_pkg_queue, &new_pkg->pkg);
@@ -285,7 +285,7 @@ static int __load_db(pkg_nodes_t *pkgs, const char *db_file)
                 char **tok     = NULL;
 
                 bds_string_tokenize(line, ":", &num_tok, &tok);
-		assert(num_tok == 6);
+                assert(num_tok == 6);
 
                 struct pkg_node *pkg_node = pkg_node_alloc(tok[0]);
 
@@ -295,7 +295,7 @@ static int __load_db(pkg_nodes_t *pkgs, const char *db_file)
                 pkg_node->pkg.info_crc    = strtol(tok[3], NULL, 16);
                 pkg_node->pkg.is_reviewed = strtol(tok[4], NULL, 10);
                 pkg_node->pkg.is_tracked  = strtol(tok[5], NULL, 10);
-		
+
                 pkg_nodes_append(pkgs, pkg_node);
 
                 free(tok);

@@ -119,8 +119,8 @@ int find_all_meta_pkgs(pkg_nodes_t *meta_pkgs)
 
                 if (NULL == pkg_nodes_bsearch_const(meta_pkgs, dirent->d_name)) {
                         if (is_meta_pkg(dirent->d_name)) {
-				struct pkg_node *meta_node = pkg_node_alloc(dirent->d_name);
-				meta_node->pkg.dep.is_meta = true;
+                                struct pkg_node *meta_node = pkg_node_alloc(dirent->d_name);
+                                meta_node->pkg.dep.is_meta = true;
                                 pkg_nodes_insert_sort(meta_pkgs, meta_node);
                         }
                 }
@@ -367,9 +367,9 @@ static void write_buildopts(struct ostream *os, const struct pkg *pkg)
 {
         const size_t n = pkg_buildopts_size(pkg);
 
-	if( 0 < n ) {
-		ostream_printf(os, " |");
-	}
+        if (0 < n) {
+                ostream_printf(os, " |");
+        }
         for (size_t i = 0; i < n; ++i) {
                 ostream_printf(os, " %s", pkg_buildopts_get_const(pkg, i));
         }
@@ -395,7 +395,7 @@ static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode t
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
 
-static int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
+int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
 {
         int rc = 0;
 
@@ -467,7 +467,7 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
                         if (slack_pkg_is_installed(node->pkg.name, tag)) {
-                                //mesg_info("package %s is already installed: skipping\n", node->pkg.name);
+                                // mesg_info("package %s is already installed: skipping\n", node->pkg.name);
                                 continue;
                         }
                 }
@@ -603,7 +603,7 @@ void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_nam
                      revdep_node != NULL; revdep_node = pkg_iterator_next(&revdesp_iter)) {
 
 			struct pkg_node *rnode =  pkg_iterator_node(&revdeps_iter);
-			
+
 			if( rnode == NULL ) {
 				assert( strcmp(rnode->pkg.name, dep_node->pkg.name) == 0 );
 				continue;
@@ -617,7 +617,7 @@ void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_nam
                                         rnode->pkg.parent_installed = true;
                                 }
                         }
-			
+
 		}
 
 		/*
@@ -627,12 +627,12 @@ void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_nam
 		*/
 		if( dep_node->pkg.parent_installed ) {
 			dep_node->pkg.for_removal = false;
-			
+
 			pkg_iterator_destroy(&revdeps_iter);
 		}
 		if (node->pkg.dep.is_meta)
 			continue;
-		
+
 		struct pkg_node *req_node = pkg_iterator_node(&iter);
 
 		if (!req_node) {

@@ -18,5 +18,6 @@ int find_all_meta_pkgs(pkg_nodes_t *meta_pkgs);
 int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
               struct pkg_options options, bool *db_dirty);
 int compar_versions(const char *ver_a, const char *ver_b);
+int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty);
 
 #endif

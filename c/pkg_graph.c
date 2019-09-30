@@ -52,10 +52,10 @@ void pkg_node_free(struct pkg_node **pkg_node)
 
 void pkg_node_clear_markers(struct pkg_node *pkg_node, bool preserve_color)
 {
-        pkg_node->dist       = -1;
-	if( !preserve_color ) {
-		pkg_node->color = COLOR_WHITE;
-	}
+        pkg_node->dist = -1;
+        if (!preserve_color) {
+                pkg_node->color = COLOR_WHITE;
+        }
         pkg_node->edge_index = 0;
 }
 
@@ -86,7 +86,7 @@ void pkg_nodes_free(pkg_nodes_t **pl) { bds_vector_free(pl); }
 
 struct pkg_node *pkg_nodes_get(pkg_nodes_t *nodes, size_t i)
 {
-	return (struct pkg_node *)pkg_nodes_get_const(nodes, i);
+        return (struct pkg_node *)pkg_nodes_get_const(nodes, i);
 }
 
 const struct pkg_node *pkg_nodes_get_const(const pkg_nodes_t *nodes, size_t i)
@@ -103,17 +103,18 @@ size_t pkg_nodes_size(const pkg_nodes_t *nodes) { return bds_vector_size(nodes);
 
 void pkg_nodes_append(pkg_nodes_t *pl, struct pkg_node *pkg_node) { bds_vector_append(pl, &pkg_node); }
 
-void pkg_nodes_append_all(pkg_nodes_t *nodes, pkg_nodes_t *src_nodes) {
-	for( size_t i=0; i<pkg_nodes_size(src_nodes); ++i ) {
-		pkg_nodes_append(nodes, pkg_nodes_get(src_nodes, i));
-	}
+void pkg_nodes_append_all(pkg_nodes_t *nodes, pkg_nodes_t *src_nodes)
+{
+        for (size_t i = 0; i < pkg_nodes_size(src_nodes); ++i) {
+                pkg_nodes_append(nodes, pkg_nodes_get(src_nodes, i));
+        }
 }
 
 void pkg_nodes_append_unique(pkg_nodes_t *pl, struct pkg_node *pkg_node)
 {
-	if( NULL == pkg_nodes_lsearch_const(pl, pkg_node->pkg.name) ) {
-		bds_vector_append(pl, &pkg_node);
-	}
+        if (NULL == pkg_nodes_lsearch_const(pl, pkg_node->pkg.name)) {
+                bds_vector_append(pl, &pkg_node);
+        }
 }
 
 void pkg_nodes_insert_sort(pkg_nodes_t *pkg_nodes, struct pkg_node *pkg_node)
@@ -147,16 +148,13 @@ int pkg_nodes_remove(pkg_nodes_t *pkg_nodes, const char *pkg_name)
         if (pkgp == NULL)
                 return 1; /* Nothing removed */
 
-	size_t i = pkgp - (struct pkg_node **)bds_vector_ptr(pkg_nodes);
-	bds_vector_remove(pkg_nodes, i);
+        size_t i = pkgp - (struct pkg_node **)bds_vector_ptr(pkg_nodes);
+        bds_vector_remove(pkg_nodes, i);
 
         return 0;
 }
 
-void pkg_nodes_clear(pkg_nodes_t *pkg_nodes)
-{
-	bds_vector_clear(pkg_nodes);
-}
+void pkg_nodes_clear(pkg_nodes_t *pkg_nodes) { bds_vector_clear(pkg_nodes); }
 
 struct pkg_node *pkg_nodes_lsearch(pkg_nodes_t *pkg_nodes, const char *name)
 {
@@ -170,7 +168,8 @@ const struct pkg_node *pkg_nodes_lsearch_const(const pkg_nodes_t *pkg_nodes, con
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_lsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp =
+            (const struct pkg_node **)bds_vector_lsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
@@ -189,7 +188,8 @@ const struct pkg_node *pkg_nodes_bsearch_const(const pkg_nodes_t *pkg_nodes, con
 
         key.pkg.name = (char *)name;
 
-        const struct pkg_node **pkgp = (const struct pkg_node **)bds_vector_bsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
+        const struct pkg_node **pkgp =
+            (const struct pkg_node **)bds_vector_bsearch_const(pkg_nodes, &keyp, pkg_nodes_compar);
         if (pkgp)
                 return *pkgp;
 
@@ -334,14 +334,14 @@ static int set_next_node_dist(struct pkg_iterator *iter)
 
 static int node_at_max_dist(const struct pkg_iterator *iter)
 {
-	if( iter->max_dist >= 0 ) {
-		if( iter->cur_node->pkg.dep.is_meta )
-			return false;
+        if (iter->max_dist >= 0) {
+                if (iter->cur_node->pkg.dep.is_meta)
+                        return false;
 
-		return (iter->cur_node->dist == iter->max_dist);
-	}
+                return (iter->cur_node->dist == iter->max_dist);
+        }
 
-	return false;
+        return false;
 }
 
 static struct pkg_node *get_next_edge_node(struct pkg_iterator *iter, pkg_nodes_t *edge_nodes)

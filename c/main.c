@@ -1152,14 +1152,25 @@ static int show_pkg_info(struct pkg_graph *pkg_graph, const char *pkg_name)
 
 static int edit_pkg_dep(struct pkg_graph *pkg_graph, const char *pkg_name)
 {
-        const struct pkg_node *pkg_node = NULL;
+        int rc                    = 0;
+        struct pkg_node *pkg_node = NULL;
 
-        pkg_node = (const struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
+        pkg_node = (struct pkg_node *)pkg_graph_search(pkg_graph, pkg_name);
         if (pkg_node == NULL) {
                 mesg_error("package %s does not exist\n", pkg_name);
                 return 1;
         }
-        return edit_dep_file(pkg_node->pkg.name);
+
+        rc = edit_dep_file(pkg_node->pkg.name);
+        if (rc != 0)
+                return rc;
+
+        /*
+          Mark not reviewed
+         */
+        pkg_node->pkg.is_reviewed = false;
+
+        return pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
 }
 
 static int __write_pkg_sqf(struct pkg_graph *pkg_graph, string_list_t *pkg_names, const char *output_path,
@@ -1327,8 +1338,8 @@ static int update_process_deps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_lis
                           We need to check if an update type (for a parent package) has already been marked by a
                           call to update_process_revdeps().
                         */
-                        if (PKG_REVDEP_UPDATE == node->pkg.update_type ||
-                            PKG_REVDEP_REBUILD == node->pkg.update_type) {
+                        if (PKG_REVDEP_UPDATE == node->pkg.update.type ||
+                            PKG_REVDEP_REBUILD == node->pkg.update.type) {
                                 assert(0 == node->dist);
 
                                 pkg_nodes_append_unique(build_list, node);
@@ -1341,10 +1352,8 @@ static int update_process_deps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_lis
                         if (0 == node->dist) {
                                 assert(slack_pkg);
 
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type    = PKG_UPDATE;
-                                        node->pkg.update_version = slack_pkg->version;
-
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update = pkg_update_assign(PKG_UPDATE, NULL, slack_pkg->version);
                                         pkg_nodes_append_unique(update_list, node);
                                 }
                                 pkg_nodes_append_unique(build_list, node);
@@ -1360,9 +1369,8 @@ static int update_process_deps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_lis
                                   If the package is not currently installed, we assume that it is a new
                                   dependency and add it to the output build list.
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_DEP_ADDED;
-                                        node->pkg.update_rel_node = cur_node;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update = pkg_update_assign(PKG_DEP_ADDED, cur_node, NULL);
                                 }
                                 pkg_nodes_append_unique(build_list, node);
                                 continue;
@@ -1376,10 +1384,9 @@ static int update_process_deps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_lis
                                   If there is a version change we place the package in the output build
                                   list and added it to the next package list set for further processing.
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_DEP_UPDATE;
-                                        node->pkg.update_rel_node = cur_node;
-                                        node->pkg.update_version  = slack_pkg->version;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update =
+                                            pkg_update_assign(PKG_DEP_UPDATE, cur_node, slack_pkg->version);
                                         pkg_nodes_append_unique(update_list, node);
                                 }
                                 pkg_nodes_append_unique(build_list, node);
@@ -1390,19 +1397,17 @@ static int update_process_deps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_lis
 
                                   The package is addded to the output build list. No further processing.
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_DEP_REBUILD;
-                                        node->pkg.update_rel_node = cur_node;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update = pkg_update_assign(PKG_DEP_REBUILD, cur_node, NULL);
                                 }
                                 pkg_nodes_append_unique(build_list, node);
                         } else {
                                 /*
                                   Dependency downgrade
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_DEP_DOWNGRADE;
-                                        node->pkg.update_rel_node = cur_node;
-                                        node->pkg.update_version  = slack_pkg->version;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update =
+                                            pkg_update_assign(PKG_DEP_DOWNGRADE, cur_node, slack_pkg->version);
                                 }
                                 pkg_nodes_append_unique(build_list, node);
                         }
@@ -1455,10 +1460,9 @@ static int update_process_revdeps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_
                                 /*
                                   Update parent package
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_REVDEP_UPDATE;
-                                        node->pkg.update_rel_node = cur_node;
-                                        node->pkg.update_version  = slack_pkg->version;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update =
+                                            pkg_update_assign(PKG_REVDEP_UPDATE, cur_node, slack_pkg->version);
                                 }
                                 pkg_nodes_append_unique(pkg_list, node);
 
@@ -1466,9 +1470,8 @@ static int update_process_revdeps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_
                                 /*
                                   Rebuild parent package
                                 */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_REVDEP_REBUILD;
-                                        node->pkg.update_rel_node = cur_node;
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update = pkg_update_assign(PKG_REVDEP_REBUILD, cur_node, NULL);
                                 }
                                 pkg_nodes_append_unique(pkg_list, node);
 
@@ -1476,14 +1479,11 @@ static int update_process_revdeps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_
                                 /*
                                   Downgraded parent package
                                  */
-                                if (PKG_UPDATE_NONE == node->pkg.update_type) {
-                                        node->pkg.update_type     = PKG_REVDEP_DOWNGRADE;
-                                        node->pkg.update_rel_node = cur_node;
-                                        node->pkg.update_version  = slack_pkg->version;
-                                        // Add it to the build list without further processing. These will
-                                        // get
-                                        // removed upon before final processing, but are here for noting
-                                        // that a
+                                if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                        node->pkg.update =
+                                            pkg_update_assign(PKG_REVDEP_DOWNGRADE, cur_node, slack_pkg->version);
+                                        // Add it to the build list without further processing. These will get
+                                        // removed upon before final processing, but are here for noting that a
                                         // downgraded parent package exists.
                                         pkg_nodes_append_unique(build_list, node);
                                 }
@@ -1497,19 +1497,77 @@ static int update_process_revdeps(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_
         return rc;
 }
 
-static int update_process(struct pkg_graph *pkg_graph, pkg_nodes_t *pkg_list, pkg_nodes_t *update_list,
-                          pkg_nodes_t *build_list)
+static int update_process(struct pkg_graph *pkg_graph, enum pkg_review_type review_type, pkg_nodes_t *pkg_list,
+                          pkg_nodes_t *update_list, pkg_nodes_t *build_list)
 {
-        int rc = 0;
+        int rc                        = 0;
+        bool db_dirty                 = false;
+        pkg_nodes_t *input_pkg_list   = pkg_nodes_alloc_reference();
+        pkg_nodes_t *review_skip_list = pkg_nodes_alloc_reference();
 
-        while (pkg_nodes_size(pkg_list) + pkg_nodes_size(update_list) > 0) {
-                rc = update_process_deps(pkg_graph, pkg_list, update_list, build_list);
-                if (rc != 0)
-                        break;
+        pkg_nodes_append_all(input_pkg_list, pkg_list);
 
-                rc = update_process_revdeps(pkg_graph, pkg_list, update_list, build_list);
-                if (rc != 0)
+        while (1) {
+
+                pkg_graph_clear_markers(pkg_graph, false);
+
+                for (size_t i = 0; i < pkg_nodes_size(build_list); ++i) {
+                        pkg_update_reset(&pkg_nodes_get(build_list, i)->pkg.update);
+                }
+                pkg_nodes_clear(build_list);
+
+                if (0 == pkg_nodes_size(pkg_list)) {
+                        pkg_nodes_append_all(pkg_list, input_pkg_list);
+                }
+
+                while (pkg_nodes_size(pkg_list) + pkg_nodes_size(update_list) > 0) {
+                        rc = update_process_deps(pkg_graph, pkg_list, update_list, build_list);
+                        if (rc != 0) {
+                                goto finish;
+                        }
+
+                        rc = update_process_revdeps(pkg_graph, pkg_list, update_list, build_list);
+                        if (rc != 0) {
+                                goto finish;
+                        }
+                }
+
+                for (size_t i = 0; i < pkg_nodes_size(build_list); ++i) {
+                        struct pkg_node *node = pkg_nodes_get(build_list, i);
+
+                        if (pkg_nodes_bsearch_const(review_skip_list, node->pkg.name)) {
+                                continue;
+                        }
+
+                        rc = check_reviewed_pkg(&pkg_nodes_get(build_list, i)->pkg, review_type, &db_dirty);
+                        if (0 > rc) {
+                                goto finish;
+                        }
+
+                        if (db_dirty) {
+                                rc = pkg_write_db(pkg_graph_sbo_pkgs(pkg_graph));
+                                if (rc != 0) {
+                                        goto finish;
+                                }
+                        }
+
+                        pkg_nodes_insert_sort(review_skip_list, node);
+                        if (0 < rc) {
+                                break;
+                        }
+                }
+
+                if (0 == rc) {
                         break;
+                }
+        }
+
+finish:
+        if (input_pkg_list) {
+                pkg_nodes_free(&input_pkg_list);
+        }
+        if (review_skip_list) {
+                pkg_nodes_free(&review_skip_list);
         }
 
         return rc;
@@ -1548,11 +1606,14 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
         }
 
         rc = select_updated_pkgs(pkg_graph, pkg_names, pkg_list);
-        assert(0 == rc);
+        if (rc != 0) {
+                goto finish;
+        }
 
-        pkg_graph_clear_markers(pkg_graph, false);
-
-        update_process(pkg_graph, pkg_list, update_list, build_list);
+        rc = update_process(pkg_graph, pkg_options.review_type, pkg_list, update_list, build_list);
+        if (rc != 0) {
+                goto finish;
+        }
 
         if (pkg_list)
                 pkg_nodes_free(&pkg_list);
@@ -1565,44 +1626,44 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
 
                 const struct pkg_node *node = pkg_nodes_get_const(build_list, i);
 
-                assert(PKG_UPDATE_NONE != node->pkg.update_type);
+                assert(PKG_UPDATE_NONE != node->pkg.update.type);
 
-                switch (node->pkg.update_type) {
+                switch (node->pkg.update.type) {
                 case PKG_UPDATE:
                         mesg_ok_label("%4s", " %-24s %-28s %-8s --> %s\n", "[ U]", node->pkg.name, "",
-                                      node->pkg.update_version, node->pkg.version);
+                                      node->pkg.update.version, node->pkg.version);
                         break;
                 case PKG_DEP_UPDATE:
                         mesg_ok_label("%4s", " %-24s (P:%-24s) %-8s --> %s\n", "[DU]", node->pkg.name,
-                                      node->pkg.update_rel_node->pkg.name, node->pkg.update_version,
+                                      node->pkg.update.rel_node->pkg.name, node->pkg.update.version,
                                       node->pkg.version);
                         break;
                 case PKG_DEP_REBUILD:
                         mesg_info_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DR]", node->pkg.name,
-                                        node->pkg.update_rel_node->pkg.name, node->pkg.version);
+                                        node->pkg.update.rel_node->pkg.name, node->pkg.version);
                         break;
                 case PKG_DEP_DOWNGRADE:
                         mesg_error_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DD]", node->pkg.name,
-                                         node->pkg.update_rel_node->pkg.name, node->pkg.version);
+                                         node->pkg.update.rel_node->pkg.name, node->pkg.version);
                         pkg_nodes_remove(build_list, node->pkg.name);
                         i_incr = 0;
                         break;
                 case PKG_DEP_ADDED:
                         mesg_warn_label("%4s", " %-24s (P:%-24s) %-8s\n", "[DA]", node->pkg.name,
-                                        node->pkg.update_rel_node->pkg.name, node->pkg.version);
+                                        node->pkg.update.rel_node->pkg.name, node->pkg.version);
                         break;
                 case PKG_REVDEP_UPDATE:
                         mesg_ok_label("%4s", " %-24s (D:%-24s) %-8s --> %s\n", "[PU]", node->pkg.name,
-                                      node->pkg.update_rel_node->pkg.name, node->pkg.update_version,
+                                      node->pkg.update.rel_node->pkg.name, node->pkg.update.version,
                                       node->pkg.version);
                         break;
                 case PKG_REVDEP_REBUILD:
                         mesg_info_label("%4s", " %-24s (D:%-24s) %-8s\n", "[PR]", node->pkg.name,
-                                        node->pkg.update_rel_node->pkg.name, node->pkg.version);
+                                        node->pkg.update.rel_node->pkg.name, node->pkg.version);
                         break;
                 case PKG_REVDEP_DOWNGRADE:
                         mesg_error_label("%4s", " %-24s (%-24s) %-8s\n", "[PD]", node->pkg.name,
-                                         node->pkg.update_rel_node->pkg.name, node->pkg.version);
+                                         node->pkg.update.rel_node->pkg.name, node->pkg.version);
                         pkg_nodes_remove(build_list, node->pkg.name);
                         i_incr = 0;
                         break;
@@ -1613,6 +1674,7 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
         }
 
         // 5. Write the sqf file with the package list
+        pkg_options.review_type     = PKG_REVIEW_DISABLED;
         pkg_options.check_installed = 0;
         pkg_options.revdeps         = false;
         pkg_options.deep            = false;
@@ -1622,6 +1684,11 @@ static int write_pkg_update_sqf(struct pkg_graph *pkg_graph, const string_list_t
         rc = __write_pkg_nodes_sqf(pkg_graph, build_list, get_output_path(pkg_options, pkg_names), pkg_options,
                                    &db_dirty);
 
+finish:
+        if (pkg_list)
+                pkg_nodes_free(&pkg_list);
+        if (update_list)
+                pkg_nodes_free(&update_list);
         if (build_list)
                 pkg_nodes_free(&build_list);
 

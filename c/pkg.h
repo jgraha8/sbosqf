@@ -67,6 +67,15 @@ enum pkg_update_type {
         PKG_REVDEP_DOWNGRADE
 };
 
+struct pkg_update {
+        enum pkg_update_type type;
+        struct pkg_node *rel_node;
+        const char *version;
+};
+
+struct pkg_update pkg_update_assign(enum pkg_update_type type, struct pkg_node *rel_node, const char *version);
+void pkg_update_reset(struct pkg_update *update);
+
 struct pkg {
         char *name;
         char *version;
@@ -78,9 +87,7 @@ struct pkg {
         bool is_tracked;
         bool parent_installed;
         bool for_removal;
-        enum pkg_update_type update_type;
-        struct pkg_node *update_rel_node;
-        const char *update_version;
+        struct pkg_update update;
 };
 
 struct pkg pkg_create(const char *name);
