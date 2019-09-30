@@ -54,6 +54,19 @@ struct pkg_dep {
         bool is_meta;
 };
 
+enum pkg_update_type {
+        PKG_UPDATE_NONE = 0,
+        PKG_UPDATE,
+        PKG_DOWNGRADE,
+        PKG_DEP_UPDATE,
+        PKG_DEP_REBUILD,
+        PKG_DEP_DOWNGRADE,
+        PKG_DEP_ADDED,
+        PKG_REVDEP_UPDATE,
+        PKG_REVDEP_REBUILD,
+        PKG_REVDEP_DOWNGRADE
+};
+
 struct pkg {
         char *name;
         char *version;
@@ -65,10 +78,9 @@ struct pkg {
         bool is_tracked;
         bool parent_installed;
         bool for_removal;
-        bool parent_rebuild;
-        bool parent_update;
-
-        struct pkg_node *update_dep;
+        enum pkg_update_type update_type;
+        struct pkg_node *update_rel_node;
+        const char *update_version;
 };
 
 struct pkg pkg_create(const char *name);
@@ -119,8 +131,6 @@ struct pkg_options {
         bool deep;                        /* Perform deep graph processing */
         bool graph;
         bool all_packages;
-        bool update_tracked;
-        bool update_installed;
 };
 
 struct pkg_options pkg_options_default();
