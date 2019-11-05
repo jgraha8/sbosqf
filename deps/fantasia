@@ -1,0 +1,7 @@
+REQUIRED:
+jdk
+linuxsampler
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+colord
+packagekit
+meson
+libgusb
+vala
+
+OPTIONAL:
+
+BUILDOPTS:

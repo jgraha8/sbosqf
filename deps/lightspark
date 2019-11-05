@@ -1,0 +1,8 @@
+REQUIRED:
+ffmpeg
+rtmpdump
+SDL2_mixer
+
+OPTIONAL:
+
+BUILDOPTS:

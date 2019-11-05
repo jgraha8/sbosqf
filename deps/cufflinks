@@ -1,0 +1,6 @@
+REQUIRED:
+samtools-legacy
+
+OPTIONAL:
+
+BUILDOPTS:

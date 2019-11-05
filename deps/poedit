@@ -1,0 +1,8 @@
+REQUIRED:
+wxGTK3
+LucenePlusPlus
+gtkspell3
+
+OPTIONAL:
+
+BUILDOPTS:

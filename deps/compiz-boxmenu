@@ -1,0 +1,7 @@
+REQUIRED:
+lxml
+pyxdg
+
+OPTIONAL:
+
+BUILDOPTS:

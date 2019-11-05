@@ -1,0 +1,13 @@
+REQUIRED:
+python3
+setuptools-scm
+py
+python3-six
+python3-attrs
+pluggy
+more-itertools
+atomicwrites
+
+OPTIONAL:
+
+BUILDOPTS:

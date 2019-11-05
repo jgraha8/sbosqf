@@ -1,0 +1,13 @@
+REQUIRED:
+haskell-aeson
+haskell-attoparsec
+haskell-base-compat
+haskell-cmdargs
+haskell-scientific
+haskell-semigroups
+haskell-unordered-containers
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

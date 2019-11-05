@@ -1,0 +1,8 @@
+REQUIRED:
+OpenAL
+lua
+physfs
+
+OPTIONAL:
+
+BUILDOPTS:

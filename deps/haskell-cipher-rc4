@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-byteable
+haskell-crypto-cipher-types
+
+OPTIONAL:
+
+BUILDOPTS:

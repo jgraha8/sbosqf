@@ -1,0 +1,6 @@
+REQUIRED:
+perl-File-ShareDir
+
+OPTIONAL:
+
+BUILDOPTS:

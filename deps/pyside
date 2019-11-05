@@ -1,2 +1,6 @@
 REQUIRED:
 shiboken
+
+OPTIONAL:
+
+BUILDOPTS:

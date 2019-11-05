@@ -1,0 +1,11 @@
+REQUIRED:
+haskell-case-insensitive
+haskell-fail
+haskell-parser-combinators
+haskell-scientific
+haskell-semigroups
+haskell-void
+
+OPTIONAL:
+
+BUILDOPTS:

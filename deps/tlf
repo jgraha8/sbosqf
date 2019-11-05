@@ -1,0 +1,7 @@
+REQUIRED:
+hamlib
+xmlrpc-c
+
+OPTIONAL:
+
+BUILDOPTS:

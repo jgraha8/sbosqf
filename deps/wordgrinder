@@ -1,0 +1,8 @@
+REQUIRED:
+ninja
+lua52
+lua-filesystem
+
+OPTIONAL:
+
+BUILDOPTS:

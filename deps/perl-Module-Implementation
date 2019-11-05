@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Test-Fatal
+perl-Module-Runtime
+perl-Try-Tiny
+perl-Test-Requires
+
+OPTIONAL:
+
+BUILDOPTS:

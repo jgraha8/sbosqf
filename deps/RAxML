@@ -1,0 +1,6 @@
+REQUIRED:
+openmpi
+
+OPTIONAL:
+
+BUILDOPTS:

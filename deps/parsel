@@ -1,0 +1,9 @@
+REQUIRED:
+pytest-runner
+w3lib
+lxml
+cssselect
+
+OPTIONAL:
+
+BUILDOPTS:

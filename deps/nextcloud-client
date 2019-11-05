@@ -1,4 +1,8 @@
 REQUIRED:
 qt5
-qtkeychain
 qt5-webkit
+qtkeychain
+
+OPTIONAL:
+
+BUILDOPTS:

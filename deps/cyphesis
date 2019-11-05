@@ -1,0 +1,10 @@
+REQUIRED:
+bullet
+postgresql
+mercator
+skstream
+varconf
+
+OPTIONAL:
+
+BUILDOPTS:

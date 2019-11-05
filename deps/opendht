@@ -1,0 +1,7 @@
+REQUIRED:
+msgpack-c
+argon2
+
+OPTIONAL:
+
+BUILDOPTS:

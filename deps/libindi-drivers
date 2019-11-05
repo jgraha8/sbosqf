@@ -1,0 +1,8 @@
+REQUIRED:
+libindi
+libftdi1
+gpsd
+
+OPTIONAL:
+
+BUILDOPTS:

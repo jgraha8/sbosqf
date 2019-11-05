@@ -1,0 +1,16 @@
+REQUIRED:
+bleach
+decorator
+python3-defusedxml
+entrypoints
+Jinja2
+jupyter_core
+jupyter-nbformat
+mistune
+pandocfilters
+Pygments
+testpath
+
+OPTIONAL:
+
+BUILDOPTS:

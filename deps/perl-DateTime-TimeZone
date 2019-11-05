@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Class-Load
+perl-Class-Singleton
+perl-Params-Validate
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+perl-class-accessor-chained
+perl-Test-Exception
+
+OPTIONAL:
+
+BUILDOPTS:

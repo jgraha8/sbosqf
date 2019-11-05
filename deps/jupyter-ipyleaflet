@@ -1,0 +1,8 @@
+REQUIRED:
+jupyter-ipywidgets
+python-branca
+traittypes
+
+OPTIONAL:
+
+BUILDOPTS:

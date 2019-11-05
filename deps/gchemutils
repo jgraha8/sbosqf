@@ -1,0 +1,10 @@
+REQUIRED:
+goffice
+chemical-mime-data
+bodr
+gtkglext
+openbabel
+
+OPTIONAL:
+
+BUILDOPTS:

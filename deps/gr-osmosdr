@@ -1,0 +1,7 @@
+REQUIRED:
+gnuradio
+python-cheetah
+
+OPTIONAL:
+
+BUILDOPTS:

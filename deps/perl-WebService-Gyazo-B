@@ -1,0 +1,13 @@
+REQUIRED:
+perl-Module-Build
+perl-Test-Pod
+perl-Test-Pod-Coverage
+perl-http-message
+libwww-perl
+perl-LWP-Protocol-https
+perl-LWP-Protocol-socks
+perl-URI-Simple
+
+OPTIONAL:
+
+BUILDOPTS:

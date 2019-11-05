@@ -1,0 +1,9 @@
+REQUIRED:
+vala
+rest
+json-glib
+gst-libav
+
+OPTIONAL:
+
+BUILDOPTS:

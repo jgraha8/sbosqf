@@ -1,0 +1,13 @@
+REQUIRED:
+faac
+ffmpeg
+jansson
+qt5
+rtmpdump
+x264
+jack-audio-connection-kit
+libfdk-aac
+
+OPTIONAL:
+
+BUILDOPTS:

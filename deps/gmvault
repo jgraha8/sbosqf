@@ -1,0 +1,8 @@
+REQUIRED:
+Logbook
+IMAPClient
+python-chardet
+
+OPTIONAL:
+
+BUILDOPTS:

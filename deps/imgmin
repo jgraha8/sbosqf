@@ -1,0 +1,8 @@
+REQUIRED:
+pngnq-s9
+pngcrush
+pngquant
+
+OPTIONAL:
+
+BUILDOPTS:

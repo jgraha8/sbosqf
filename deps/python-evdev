@@ -2,3 +2,5 @@ REQUIRED:
 
 OPTIONAL:
 python3
+
+BUILDOPTS:

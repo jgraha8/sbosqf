@@ -1,0 +1,7 @@
+REQUIRED:
+libxkbcommon
+libinput
+
+OPTIONAL:
+
+BUILDOPTS:

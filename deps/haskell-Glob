@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-dlist
+haskell-semigroups
+haskell-transformers-compat
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,14 @@
+REQUIRED:
+haskell-aeson
+haskell-conduit
+haskell-conduit-extra
+haskell-http-client
+haskell-http-client-tls
+haskell-http-types
+haskell-resourcet
+haskell-unliftio-core
+haskell-void
+
+OPTIONAL:
+
+BUILDOPTS:

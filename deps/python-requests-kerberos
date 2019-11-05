@@ -1,0 +1,8 @@
+REQUIRED:
+python-kerberos
+python-requests
+cryptography
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,9 @@
+REQUIRED:
+perl-extutils-depends
+perl-B-Hooks-OP-Check
+perl-B-Hooks-EndOfScope
+perl-Sub-Name
+
+OPTIONAL:
+
+BUILDOPTS:

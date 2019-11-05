@@ -1,0 +1,8 @@
+REQUIRED:
+lua
+ode
+libxdg-basedir
+
+OPTIONAL:
+
+BUILDOPTS:

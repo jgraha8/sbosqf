@@ -1,0 +1,11 @@
+REQUIRED:
+python3
+curses_ex
+pyjf3
+setproctitle
+kaadbg
+GitPython
+
+OPTIONAL:
+
+BUILDOPTS:

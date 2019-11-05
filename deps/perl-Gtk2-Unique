@@ -1,0 +1,7 @@
+REQUIRED:
+libunique
+perl-gtk2
+
+OPTIONAL:
+
+BUILDOPTS:

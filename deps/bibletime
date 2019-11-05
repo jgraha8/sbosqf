@@ -1,3 +1,7 @@
 REQUIRED:
 sword
 qt5
+
+OPTIONAL:
+
+BUILDOPTS:

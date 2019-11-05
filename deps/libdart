@@ -1,0 +1,10 @@
+REQUIRED:
+assimp
+libccd
+fcl
+OpenSceneGraph
+ode
+
+OPTIONAL:
+
+BUILDOPTS:

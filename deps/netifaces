@@ -1,6 +1,6 @@
 OPTIONAL:
--python3
+python3
 -Sphinx
 
 BUILDOPTS:
--PYTHON3=yes
+PYTHON3=yes

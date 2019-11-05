@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Net-XMPP
+perl-IO-Socket-SSL
+perl-net-dns
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+xcb-util-xrm
+
+OPTIONAL:
+
+BUILDOPTS:

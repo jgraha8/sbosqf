@@ -1,0 +1,10 @@
+REQUIRED:
+qt5-webkit
+jack2
+lame
+portaudio
+portmidi
+
+OPTIONAL:
+
+BUILDOPTS:

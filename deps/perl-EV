@@ -1,0 +1,7 @@
+REQUIRED:
+perl-common-sense
+perl-Canary-Stability
+
+OPTIONAL:
+
+BUILDOPTS:

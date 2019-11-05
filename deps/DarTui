@@ -1,0 +1,8 @@
+REQUIRED:
+web.py
+rtorrent-python
+simplejson
+
+OPTIONAL:
+
+BUILDOPTS:

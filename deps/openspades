@@ -1,0 +1,8 @@
+REQUIRED:
+SDL2_image
+OpenAL
+opusfile
+
+OPTIONAL:
+
+BUILDOPTS:

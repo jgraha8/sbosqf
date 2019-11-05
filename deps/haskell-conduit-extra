@@ -1,0 +1,14 @@
+REQUIRED:
+haskell-async
+haskell-attoparsec
+haskell-conduit
+haskell-network
+haskell-primitive
+haskell-resourcet
+haskell-streaming-commons
+haskell-typed-process
+haskell-unliftio-core
+
+OPTIONAL:
+
+BUILDOPTS:

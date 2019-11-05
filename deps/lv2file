@@ -1,0 +1,7 @@
+REQUIRED:
+lilv
+argtable
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+ftp-cloudfs
+paramiko
+
+OPTIONAL:
+
+BUILDOPTS:

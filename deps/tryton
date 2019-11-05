@@ -1,0 +1,8 @@
+REQUIRED:
+simplejson
+pytz
+trytond
+
+OPTIONAL:
+
+BUILDOPTS:

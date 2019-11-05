@@ -1,0 +1,10 @@
+REQUIRED:
+libxmlb
+libgusb
+efivar
+json-glib
+gcab
+
+OPTIONAL:
+
+BUILDOPTS:

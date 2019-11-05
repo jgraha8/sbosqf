@@ -1,0 +1,9 @@
+REQUIRED:
+gunicorn
+async-timeout
+python3-attrs
+yarl
+
+OPTIONAL:
+
+BUILDOPTS:

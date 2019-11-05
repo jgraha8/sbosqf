@@ -6,8 +6,8 @@ OPTIONAL:
 netcat-openbsd
 -avahi
 -xen
-glusterfs
 audit
+glusterfs
 numactl
 
 BUILDOPTS:

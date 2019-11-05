@@ -1,1 +1,7 @@
 REQUIRED:
+
+OPTIONAL:
+-PyStemmer
+python3
+
+BUILDOPTS:

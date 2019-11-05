@@ -1,0 +1,9 @@
+REQUIRED:
+pygobject3-python3
+dbus-python3
+python3-PyYAML
+pyxdg
+
+OPTIONAL:
+
+BUILDOPTS:

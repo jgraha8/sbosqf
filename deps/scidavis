@@ -1,0 +1,8 @@
+REQUIRED:
+muParser
+qwt5
+qwtplot3d
+
+OPTIONAL:
+
+BUILDOPTS:

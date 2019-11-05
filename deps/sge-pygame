@@ -1,0 +1,7 @@
+REQUIRED:
+pygame
+six
+
+OPTIONAL:
+
+BUILDOPTS:

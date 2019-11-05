@@ -1,0 +1,8 @@
+REQUIRED:
+pyasn1
+pycrypto
+six
+
+OPTIONAL:
+
+BUILDOPTS:

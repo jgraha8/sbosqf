@@ -1,0 +1,6 @@
+REQUIRED:
+perl-YAML-Syck
+
+OPTIONAL:
+
+BUILDOPTS:

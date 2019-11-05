@@ -1,0 +1,8 @@
+REQUIRED:
+jdk
+chromaprint
+libmediainfo
+
+OPTIONAL:
+
+BUILDOPTS:

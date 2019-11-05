@@ -1,0 +1,8 @@
+REQUIRED:
+python3
+BeautifulSoup4
+veryprettytable
+
+OPTIONAL:
+
+BUILDOPTS:

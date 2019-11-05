@@ -1,0 +1,7 @@
+REQUIRED:
+jdk
+commons-daemon
+
+OPTIONAL:
+
+BUILDOPTS:

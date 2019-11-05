@@ -1,0 +1,11 @@
+REQUIRED:
+pymongo
+monty
+python-dateutil
+python-tabulate
+flask-paginate
+gunicorn
+
+OPTIONAL:
+
+BUILDOPTS:

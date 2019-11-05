@@ -1,0 +1,7 @@
+REQUIRED:
+gnulib
+allegro
+
+OPTIONAL:
+
+BUILDOPTS:

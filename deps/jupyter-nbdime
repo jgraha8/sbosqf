@@ -1,0 +1,10 @@
+REQUIRED:
+colorama
+GitPython
+jupyter-notebook
+python-requests
+python3-gitdb2
+
+OPTIONAL:
+
+BUILDOPTS:

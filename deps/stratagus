@@ -1,0 +1,8 @@
+REQUIRED:
+tolua++
+libmikmod
+fluidsynth
+
+OPTIONAL:
+
+BUILDOPTS:

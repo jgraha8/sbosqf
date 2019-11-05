@@ -1,0 +1,12 @@
+REQUIRED:
+perl-File-Which
+perl-File-ShareDir
+perl-Text-Patch
+perl-Capture-Tiny
+perl-Archive-Zip
+perl-Module-Build
+perl-Archive-Extract
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,12 @@
+REQUIRED:
+perl-Class-Data-Inheritable
+perl-Params-Validate
+perl-HTML-Tree
+perl-html-tagset
+perl-CSS
+perl-CGI-Application
+perl-XML-Writer
+
+OPTIONAL:
+
+BUILDOPTS:

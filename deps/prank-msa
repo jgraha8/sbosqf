@@ -1,0 +1,8 @@
+REQUIRED:
+bppsuite
+mafft
+exonerate
+
+OPTIONAL:
+
+BUILDOPTS:

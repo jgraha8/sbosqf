@@ -1,0 +1,9 @@
+REQUIRED:
+perl-B-Hooks-EndOfScope
+perl-Sub-Identify
+perl-namespace-clean
+perl-Sub-Name
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+python3-jupyter-ipykernel
+python3-PyQt5
+
+OPTIONAL:
+
+BUILDOPTS:

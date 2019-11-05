@@ -1,0 +1,9 @@
+REQUIRED:
+jack-rack
+lash
+lv2dynparam1
+slv2
+
+OPTIONAL:
+
+BUILDOPTS:

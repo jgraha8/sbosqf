@@ -1,0 +1,7 @@
+REQUIRED:
+gnome-mime-data
+libbonobo
+
+OPTIONAL:
+
+BUILDOPTS:

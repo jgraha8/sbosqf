@@ -1,0 +1,9 @@
+REQUIRED:
+SDL2
+wxGTK3
+portaudio
+soundtouch
+
+OPTIONAL:
+
+BUILDOPTS:

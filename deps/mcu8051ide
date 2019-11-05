@@ -1,0 +1,9 @@
+REQUIRED:
+bwidget
+itcl
+tkimg
+tDOM
+
+OPTIONAL:
+
+BUILDOPTS:

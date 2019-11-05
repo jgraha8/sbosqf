@@ -1,0 +1,11 @@
+REQUIRED:
+pbr
+SQLAlchemy
+decorator
+six
+sqlparse
+tempita
+
+OPTIONAL:
+
+BUILDOPTS:

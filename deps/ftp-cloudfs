@@ -1,0 +1,9 @@
+REQUIRED:
+pyftpdlib
+python-daemon
+python-memcached
+python-swiftclient
+
+OPTIONAL:
+
+BUILDOPTS:

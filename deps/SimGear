@@ -1,0 +1,8 @@
+REQUIRED:
+OpenSceneGraph
+freealut
+plib
+
+OPTIONAL:
+
+BUILDOPTS:

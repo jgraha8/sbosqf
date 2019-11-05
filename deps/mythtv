@@ -1,0 +1,17 @@
+REQUIRED:
+libass
+faac
+lame
+MySQL-python
+lxml
+urlgrabber
+perl-http-message
+libwww-perl
+perl-Net-UPnP
+perl-IO-Socket-INET6
+x264
+xvidcore
+
+OPTIONAL:
+
+BUILDOPTS:

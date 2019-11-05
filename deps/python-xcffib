@@ -1,0 +1,7 @@
+REQUIRED:
+six
+cffi
+
+OPTIONAL:
+
+BUILDOPTS:

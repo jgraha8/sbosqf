@@ -1,0 +1,8 @@
+REQUIRED:
+tesseract
+qtspell
+podofo
+
+OPTIONAL:
+
+BUILDOPTS:

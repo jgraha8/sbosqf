@@ -1,0 +1,8 @@
+REQUIRED:
+gnome-common
+libcryptui
+seahorse
+
+OPTIONAL:
+
+BUILDOPTS:

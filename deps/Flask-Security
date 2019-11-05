@@ -1,0 +1,11 @@
+REQUIRED:
+Flask-Login
+Flask-Mail
+Flask-Principal
+Flask-WTF
+itsdangerous
+passlib
+
+OPTIONAL:
+
+BUILDOPTS:

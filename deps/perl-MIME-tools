@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Convert-BinHex
+perl-IO-stringy
+perl-MailTools
+
+OPTIONAL:
+
+BUILDOPTS:

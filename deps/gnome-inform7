@@ -1,0 +1,11 @@
+REQUIRED:
+gtksourceview
+goocanvas
+libmodplug
+webkitgtk
+gst-plugins-ugly
+gst-plugins-bad
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Net-IPv4Addr
+perl-Math-Base85
+
+OPTIONAL:
+
+BUILDOPTS:

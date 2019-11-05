@@ -1,0 +1,6 @@
+REQUIRED:
+telepathy-glib
+
+OPTIONAL:
+
+BUILDOPTS:

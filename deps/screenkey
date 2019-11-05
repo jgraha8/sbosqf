@@ -1,0 +1,9 @@
+REQUIRED:
+FontAwesome
+setuptools-git
+python-distutils-extra
+slop
+
+OPTIONAL:
+
+BUILDOPTS:

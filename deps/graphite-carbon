@@ -1,0 +1,7 @@
+REQUIRED:
+python-whisper
+python-twisted
+
+OPTIONAL:
+
+BUILDOPTS:

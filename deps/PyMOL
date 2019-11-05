@@ -1,0 +1,8 @@
+REQUIRED:
+python-pmw
+msgpack-c
+glm
+
+OPTIONAL:
+
+BUILDOPTS:

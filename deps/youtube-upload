@@ -1,0 +1,8 @@
+REQUIRED:
+progressbar
+google-api-python-client
+six
+
+OPTIONAL:
+
+BUILDOPTS:

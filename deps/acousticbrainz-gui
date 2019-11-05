@@ -1,0 +1,7 @@
+REQUIRED:
+acousticbrainz-music-extractor
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

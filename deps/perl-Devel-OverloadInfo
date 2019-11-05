@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Sub-Identify
+perl-Test-Fatal
+perl-Package-Stash
+perl-MRO-Compat
+
+OPTIONAL:
+
+BUILDOPTS:

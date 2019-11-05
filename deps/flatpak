@@ -1,0 +1,11 @@
+REQUIRED:
+bubblewrap
+ostree
+appstream-glib
+json-glib
+libseccomp
+xdg-desktop-portal-gtk
+
+OPTIONAL:
+
+BUILDOPTS:

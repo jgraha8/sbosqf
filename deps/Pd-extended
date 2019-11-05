@@ -1,0 +1,11 @@
+REQUIRED:
+dssi
+imlib2
+lame
+libquicktime
+speex
+lua
+
+OPTIONAL:
+
+BUILDOPTS:

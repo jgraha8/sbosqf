@@ -1,0 +1,9 @@
+REQUIRED:
+gdal
+polyclipping
+proj
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

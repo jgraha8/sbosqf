@@ -1,0 +1,10 @@
+REQUIRED:
+perl-xml-libxml
+c-ares
+ipaddr-py
+Sphinx
+rtrlib
+
+OPTIONAL:
+
+BUILDOPTS:

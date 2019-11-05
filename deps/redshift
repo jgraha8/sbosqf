@@ -1,0 +1,7 @@
+REQUIRED:
+pyxdg
+geoclue2
+
+OPTIONAL:
+
+BUILDOPTS:

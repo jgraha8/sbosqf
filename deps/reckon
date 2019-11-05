@@ -1,0 +1,9 @@
+REQUIRED:
+rubygem-highline
+rubygem-terminal-table
+rubygem-fastercsv
+chronic
+
+OPTIONAL:
+
+BUILDOPTS:

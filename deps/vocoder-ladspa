@@ -1,0 +1,6 @@
+REQUIRED:
+ladspa_sdk
+
+OPTIONAL:
+
+BUILDOPTS:

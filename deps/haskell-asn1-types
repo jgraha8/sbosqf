@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-hourglass
+haskell-memory
+
+OPTIONAL:
+
+BUILDOPTS:

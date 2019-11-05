@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Test-Deep
+perl-Test-Trap
+perl-Tie-IxHash
+perl-Package-Stash
+
+OPTIONAL:
+
+BUILDOPTS:

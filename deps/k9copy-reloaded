@@ -1,0 +1,7 @@
+REQUIRED:
+dvdauthor
+libmpeg2
+
+OPTIONAL:
+
+BUILDOPTS:

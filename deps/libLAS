@@ -1,0 +1,8 @@
+REQUIRED:
+gdal
+libgeotiff
+laszip
+
+OPTIONAL:
+
+BUILDOPTS:

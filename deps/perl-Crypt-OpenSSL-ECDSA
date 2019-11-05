@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Crypt-OpenSSL-EC
+
+OPTIONAL:
+
+BUILDOPTS:

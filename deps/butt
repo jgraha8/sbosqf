@@ -1,0 +1,10 @@
+REQUIRED:
+portaudio
+fltk
+lame
+opus
+libfdk-aac
+
+OPTIONAL:
+
+BUILDOPTS:

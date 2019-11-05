@@ -1,0 +1,8 @@
+REQUIRED:
+python3-matplotlib
+python3-gmpy2
+python3-sympy
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+dmenu
+xsel
+
+OPTIONAL:
+
+BUILDOPTS:

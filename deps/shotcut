@@ -1,0 +1,13 @@
+REQUIRED:
+qt5-webkit
+jack-audio-connection-kit
+x264
+lame
+frei0r
+ladspa_sdk
+mlt
+SDL2
+
+OPTIONAL:
+
+BUILDOPTS:

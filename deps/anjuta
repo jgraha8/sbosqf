@@ -1,0 +1,10 @@
+REQUIRED:
+autogen
+gdl
+gtksourceview3
+libgda
+vte3
+
+OPTIONAL:
+
+BUILDOPTS:

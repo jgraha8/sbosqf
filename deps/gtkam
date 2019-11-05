@@ -1,0 +1,6 @@
+REQUIRED:
+libexif-gtk
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Text-Diff
+
+OPTIONAL:
+
+BUILDOPTS:

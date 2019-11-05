@@ -1,0 +1,9 @@
+REQUIRED:
+pam
+libedit
+argon2
+libsodium
+
+OPTIONAL:
+
+BUILDOPTS:

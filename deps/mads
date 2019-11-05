@@ -1,0 +1,7 @@
+REQUIRED:
+p7zip
+fpc
+
+OPTIONAL:
+
+BUILDOPTS:

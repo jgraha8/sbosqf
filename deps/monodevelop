@@ -1,0 +1,9 @@
+REQUIRED:
+gnome-sharp
+nuget
+fsharp
+referenceassemblies-pcl
+
+OPTIONAL:
+
+BUILDOPTS:

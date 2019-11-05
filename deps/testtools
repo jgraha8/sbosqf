@@ -1,0 +1,10 @@
+REQUIRED:
+pbr
+extras
+python-mimeparse
+traceback2
+six
+
+OPTIONAL:
+
+BUILDOPTS:

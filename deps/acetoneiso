@@ -1,0 +1,10 @@
+REQUIRED:
+ffmpeg
+p7zip
+fuseiso
+cdrkit
+unrar
+
+OPTIONAL:
+
+BUILDOPTS:

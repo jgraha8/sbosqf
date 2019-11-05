@@ -1,0 +1,7 @@
+REQUIRED:
+idna
+python3-multidict
+
+OPTIONAL:
+
+BUILDOPTS:

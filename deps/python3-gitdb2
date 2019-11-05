@@ -1,0 +1,6 @@
+REQUIRED:
+python3-smmap2
+
+OPTIONAL:
+
+BUILDOPTS:

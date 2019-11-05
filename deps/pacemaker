@@ -1,0 +1,6 @@
+REQUIRED:
+corosync
+
+OPTIONAL:
+
+BUILDOPTS:

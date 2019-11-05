@@ -1,0 +1,7 @@
+REQUIRED:
+libmusicbrainz
+libofa
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+OpenAL
+agg
+gtkglext
+soundtouch
+zziplib
+
+OPTIONAL:
+
+BUILDOPTS:

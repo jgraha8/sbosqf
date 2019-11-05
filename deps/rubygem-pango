@@ -1,0 +1,7 @@
+REQUIRED:
+rubygem-cairo
+rubygem-glib2
+
+OPTIONAL:
+
+BUILDOPTS:

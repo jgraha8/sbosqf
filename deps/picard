@@ -1,0 +1,7 @@
+REQUIRED:
+mutagen
+chromaprint
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+postgis
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+json-glib
+gnome-common
+
+OPTIONAL:
+
+BUILDOPTS:

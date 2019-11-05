@@ -1,0 +1,11 @@
+REQUIRED:
+libgee
+libgexiv2
+libunique
+webkit2gtk
+rest
+json-glib
+
+OPTIONAL:
+
+BUILDOPTS:

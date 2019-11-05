@@ -1,0 +1,8 @@
+REQUIRED:
+python-requests
+singledispatch
+futures
+
+OPTIONAL:
+
+BUILDOPTS:

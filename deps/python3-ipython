@@ -1,0 +1,15 @@
+REQUIRED:
+decorator
+ipython_genutils
+python3-jedi
+python3-pexpect
+pickleshare
+python3-prompt_toolkit
+Pygments
+simplegeneric
+traitlets
+backcall
+
+OPTIONAL:
+
+BUILDOPTS:

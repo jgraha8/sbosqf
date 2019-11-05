@@ -1,0 +1,10 @@
+REQUIRED:
+python3-PyQt5
+PyOpenGL
+CherryPy
+matplotlib
+WebOb
+
+OPTIONAL:
+
+BUILDOPTS:

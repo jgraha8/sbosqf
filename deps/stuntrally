@@ -1,0 +1,11 @@
+REQUIRED:
+MyGUI
+SDL2
+enet
+bullet
+OpenAL
+FreeImage
+
+OPTIONAL:
+
+BUILDOPTS:

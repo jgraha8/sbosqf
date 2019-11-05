@@ -1,0 +1,10 @@
+REQUIRED:
+python-requests
+Pygments
+six
+curtsies
+greenlet
+
+OPTIONAL:
+
+BUILDOPTS:

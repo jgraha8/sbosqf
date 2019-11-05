@@ -1,2 +1,9 @@
 REQUIRED:
 blas
+
+OPTIONAL:
+
+BUILDOPTS:
+# Build static library in addition to the shared library
+-STATIC=yes
+

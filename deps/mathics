@@ -1,0 +1,12 @@
+REQUIRED:
+colorama
+mpmath
+ply
+python-dateutil
+python-django-legacy
+six
+sympy
+
+OPTIONAL:
+
+BUILDOPTS:

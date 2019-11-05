@@ -1,8 +1,6 @@
-# See SBo README for additional information
 REQUIRED:
 qt5
 
-# Autodetected options
 OPTIONAL:
 -libass
 -libdc1394
@@ -45,4 +43,9 @@ schroedinger
 -chromaprint
 x264
 x265
--libblueray
+-libbluray
+libnfs
+protobuf
+
+BUILDOPTS:
+OPENCV=no

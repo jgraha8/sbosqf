@@ -1,0 +1,8 @@
+REQUIRED:
+clalsadrv
+clxclient
+jack-audio-connection-kit
+
+OPTIONAL:
+
+BUILDOPTS:

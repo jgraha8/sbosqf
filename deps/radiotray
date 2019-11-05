@@ -1,0 +1,10 @@
+REQUIRED:
+gst0-ffmpeg
+gst0-plugins-ugly
+gst0-python
+lxml
+pyxdg
+
+OPTIONAL:
+
+BUILDOPTS:

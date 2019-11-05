@@ -1,0 +1,8 @@
+REQUIRED:
+cryptography
+python3-PyYAML
+Jinja2
+
+OPTIONAL:
+
+BUILDOPTS:

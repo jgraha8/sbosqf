@@ -1,0 +1,10 @@
+REQUIRED:
+libass
+x264
+lame
+jansson
+opus
+
+OPTIONAL:
+
+BUILDOPTS:

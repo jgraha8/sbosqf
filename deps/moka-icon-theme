@@ -1,0 +1,7 @@
+REQUIRED:
+meson
+faba-icon-theme
+
+OPTIONAL:
+
+BUILDOPTS:

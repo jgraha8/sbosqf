@@ -1,0 +1,9 @@
+REQUIRED:
+OpenAL
+SDL2
+speex
+libmodplug
+
+OPTIONAL:
+
+BUILDOPTS:

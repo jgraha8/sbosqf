@@ -1,0 +1,7 @@
+REQUIRED:
+libmicrohttpd
+yder
+
+OPTIONAL:
+
+BUILDOPTS:

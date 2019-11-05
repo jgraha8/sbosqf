@@ -1,0 +1,6 @@
+REQUIRED:
+libsigrok
+
+OPTIONAL:
+
+BUILDOPTS:

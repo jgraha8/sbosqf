@@ -1,0 +1,10 @@
+REQUIRED:
+setuptools-scm
+py
+virtualenv
+pluggy
+packaging
+
+OPTIONAL:
+
+BUILDOPTS:

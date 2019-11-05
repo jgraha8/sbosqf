@@ -1,0 +1,8 @@
+REQUIRED:
+babelfish
+rebulk
+python-dateutil
+
+OPTIONAL:
+
+BUILDOPTS:

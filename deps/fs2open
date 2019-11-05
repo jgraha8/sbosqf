@@ -1,0 +1,10 @@
+REQUIRED:
+OpenAL
+ffmpeg
+lua
+wxGTK3
+SDL2
+
+OPTIONAL:
+
+BUILDOPTS:

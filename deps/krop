@@ -1,0 +1,7 @@
+REQUIRED:
+python-poppler-qt4
+PyPDF2
+
+OPTIONAL:
+
+BUILDOPTS:

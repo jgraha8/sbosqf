@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-aeson
+haskell-json
+haskell-QuickCheck
+haskell-regex-tdfa
+
+OPTIONAL:
+
+BUILDOPTS:

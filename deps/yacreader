@@ -1,0 +1,9 @@
+REQUIRED:
+libwebp
+poppler-qt5
+qrencode
+unarr
+
+OPTIONAL:
+
+BUILDOPTS:

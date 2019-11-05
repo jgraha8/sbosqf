@@ -1,0 +1,14 @@
+REQUIRED:
+avant-window-navigator
+feedparser
+gdata
+gst0-python
+gnome-python-desktop
+pyinotify
+vala
+vobject
+webkitgtk
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+pytest-runner
+python-future
+requests-oauthlib
+
+OPTIONAL:
+
+BUILDOPTS:

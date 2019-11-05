@@ -1,0 +1,8 @@
+REQUIRED:
+etk.docking
+zope.component
+gaphas
+
+OPTIONAL:
+
+BUILDOPTS:

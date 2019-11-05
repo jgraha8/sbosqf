@@ -1,0 +1,8 @@
+REQUIRED:
+pip
+requests-oauthlib
+six
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+hidapi
+
+OPTIONAL:
+
+BUILDOPTS:

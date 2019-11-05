@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Test-Exception
+perl-Test-Fatal
+perl-html-parser
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

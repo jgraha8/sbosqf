@@ -1,0 +1,8 @@
+REQUIRED:
+pyxdg
+pexpect
+python-distutils-extra
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Test-Differences
+perl-test-warn
+perl-Path-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

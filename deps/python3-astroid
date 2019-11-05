@@ -1,0 +1,10 @@
+REQUIRED:
+pytest-runner
+python3-lazy-object-proxy
+python3-six
+python3-wrapt
+typed_ast
+
+OPTIONAL:
+
+BUILDOPTS:

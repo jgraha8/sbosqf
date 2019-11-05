@@ -1,0 +1,7 @@
+REQUIRED:
+rubygem-term-ansicolor
+rubygem-mail
+
+OPTIONAL:
+
+BUILDOPTS:

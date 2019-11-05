@@ -1,0 +1,8 @@
+REQUIRED:
+fontforge
+t1utils
+guile1.8
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-conduit
+haskell-exceptions
+haskell-stringsearch
+
+OPTIONAL:
+
+BUILDOPTS:

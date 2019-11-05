@@ -1,0 +1,7 @@
+REQUIRED:
+perl-PAR-Dist
+perl-Archive-Zip
+
+OPTIONAL:
+
+BUILDOPTS:

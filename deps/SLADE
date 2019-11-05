@@ -1,0 +1,10 @@
+REQUIRED:
+wxGTK3
+SFML
+ftgl
+fluidsynth
+FreeImage
+
+OPTIONAL:
+
+BUILDOPTS:

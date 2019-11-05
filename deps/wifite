@@ -1,0 +1,10 @@
+REQUIRED:
+aircrack-ng
+reaver
+Pyrit
+cowpatty
+wireshark
+
+OPTIONAL:
+
+BUILDOPTS:

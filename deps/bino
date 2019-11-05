@@ -1,0 +1,8 @@
+REQUIRED:
+ffmpeg
+freealut
+libass
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,3 +1,7 @@
 REQUIRED:
 log4cpp
 poppler-qt5
+
+OPTIONAL:
+
+BUILDOPTS:

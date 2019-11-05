@@ -1,2 +1,6 @@
 REQUIRED:
 perl-Unicode-String
+
+OPTIONAL:
+
+BUILDOPTS:

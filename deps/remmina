@@ -1,0 +1,10 @@
+REQUIRED:
+freerdp
+vte3
+json-glib
+spice-protocol
+spice-gtk
+
+OPTIONAL:
+
+BUILDOPTS:

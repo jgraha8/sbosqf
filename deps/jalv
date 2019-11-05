@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+lilv
+suil
+
+OPTIONAL:
+
+BUILDOPTS:

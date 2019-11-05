@@ -1,0 +1,7 @@
+REQUIRED:
+jack-audio-connection-kit
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

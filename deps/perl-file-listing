@@ -1,0 +1,6 @@
+REQUIRED:
+perl-http-date
+
+OPTIONAL:
+
+BUILDOPTS:

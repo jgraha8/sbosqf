@@ -1,0 +1,13 @@
+REQUIRED:
+FreeImage
+physfs
+ogre
+ois
+CEGUI
+freealut
+lua
+poco
+
+OPTIONAL:
+
+BUILDOPTS:

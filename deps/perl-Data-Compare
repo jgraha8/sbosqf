@@ -1,0 +1,6 @@
+REQUIRED:
+perl-File-Find-Rule
+
+OPTIONAL:
+
+BUILDOPTS:

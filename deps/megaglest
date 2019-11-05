@@ -1,0 +1,11 @@
+REQUIRED:
+SDL2
+xerces-c
+OpenAL
+lua
+ftgl
+wxPython
+
+OPTIONAL:
+
+BUILDOPTS:

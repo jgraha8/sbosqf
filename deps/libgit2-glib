@@ -1,0 +1,8 @@
+REQUIRED:
+libgit2
+vala
+meson
+
+OPTIONAL:
+
+BUILDOPTS:

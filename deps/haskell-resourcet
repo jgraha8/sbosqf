@@ -1,0 +1,13 @@
+REQUIRED:
+haskell-exceptions
+haskell-lifted-base
+haskell-mmorph
+haskell-monad-control
+haskell-primitive
+haskell-transformers-base
+haskell-transformers-compat
+haskell-unliftio-core
+
+OPTIONAL:
+
+BUILDOPTS:

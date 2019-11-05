@@ -1,0 +1,9 @@
+REQUIRED:
+corosync
+pacemaker
+pexpect
+python-requests
+
+OPTIONAL:
+
+BUILDOPTS:

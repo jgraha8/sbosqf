@@ -1,0 +1,8 @@
+REQUIRED:
+gdal
+python3
+wxGTK3
+
+OPTIONAL:
+
+BUILDOPTS:

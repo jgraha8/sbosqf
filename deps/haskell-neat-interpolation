@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-base-prelude
+haskell-megaparsec
+
+OPTIONAL:
+
+BUILDOPTS:

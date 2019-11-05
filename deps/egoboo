@@ -1,0 +1,10 @@
+REQUIRED:
+physfs
+SDL2_image
+SDL2_mixer
+SDL2_ttf
+enet
+
+OPTIONAL:
+
+BUILDOPTS:

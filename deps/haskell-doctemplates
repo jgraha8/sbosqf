@@ -1,0 +1,12 @@
+REQUIRED:
+haskell-aeson
+haskell-blaze-html
+haskell-blaze-markup
+haskell-scientific
+haskell-semigroups
+haskell-unordered-containers
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

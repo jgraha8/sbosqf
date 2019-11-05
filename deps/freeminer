@@ -1,0 +1,11 @@
+REQUIRED:
+OpenAL
+luajit
+irrlicht
+enet
+msgpack-c
+jsoncpp
+
+OPTIONAL:
+
+BUILDOPTS:

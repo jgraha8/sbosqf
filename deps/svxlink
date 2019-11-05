@@ -1,0 +1,7 @@
+REQUIRED:
+gsm
+speex
+
+OPTIONAL:
+
+BUILDOPTS:

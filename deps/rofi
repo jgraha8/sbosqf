@@ -1,0 +1,8 @@
+REQUIRED:
+check
+libxkbcommon
+xcb-util-xrm
+
+OPTIONAL:
+
+BUILDOPTS:

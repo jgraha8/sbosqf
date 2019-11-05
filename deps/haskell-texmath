@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-syb
+haskell-xml
+haskell-pandoc-types
+haskell-network-uri
+
+OPTIONAL:
+
+BUILDOPTS:

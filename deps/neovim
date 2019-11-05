@@ -1,0 +1,12 @@
+REQUIRED:
+libuv
+msgpack-c
+luajit
+lua-lpeg
+lua-mpack
+libtermkey
+libvterm
+
+OPTIONAL:
+
+BUILDOPTS:

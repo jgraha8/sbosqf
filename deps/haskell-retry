@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-data-default-class
+haskell-exceptions
+haskell-random
+
+OPTIONAL:
+
+BUILDOPTS:

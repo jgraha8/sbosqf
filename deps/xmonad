@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-X11
+haskell-data-default
+haskell-extensible-exceptions
+haskell-setlocale
+haskell-utf8-string
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+mysql-connector-python
+
+OPTIONAL:
+
+BUILDOPTS:

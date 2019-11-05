@@ -1,0 +1,12 @@
+REQUIRED:
+blas
+lapack
+suitesparseconfig
+amd
+camd
+colamd
+ccolamd
+
+OPTIONAL:
+
+BUILDOPTS:

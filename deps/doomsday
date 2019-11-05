@@ -1,0 +1,8 @@
+REQUIRED:
+wxPython
+assimp
+SDL2_mixer
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+python3-PyYAML
+minidb
+python-requests
+python-keyring
+python3-appdirs
+pycodestyle
+
+OPTIONAL:
+
+BUILDOPTS:

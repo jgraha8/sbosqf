@@ -1,0 +1,7 @@
+REQUIRED:
+avr-gcc
+avr-libc
+
+OPTIONAL:
+
+BUILDOPTS:

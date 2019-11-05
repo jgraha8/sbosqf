@@ -1,0 +1,6 @@
+REQUIRED:
+avr-binutils
+
+OPTIONAL:
+
+BUILDOPTS:

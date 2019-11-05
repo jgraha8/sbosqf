@@ -1,0 +1,7 @@
+REQUIRED:
+zope.i18nmessageid
+zope.schema
+
+OPTIONAL:
+
+BUILDOPTS:

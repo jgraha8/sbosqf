@@ -1,0 +1,7 @@
+REQUIRED:
+ffmpeg
+libkate
+
+OPTIONAL:
+
+BUILDOPTS:

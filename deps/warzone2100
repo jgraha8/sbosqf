@@ -1,0 +1,9 @@
+REQUIRED:
+OpenAL
+physfs
+SDL2
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

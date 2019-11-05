@@ -4,3 +4,5 @@ OpenAL
 OPTIONAL:
 flashplayer-plugin
 libtxc_dxtn
+
+BUILDOPTS:

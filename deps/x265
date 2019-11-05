@@ -1,3 +1,7 @@
+REQUIRED:
+
 OPTIONAL:
 # Not currently listed as a compile-time option
 numactl
+
+BUILDOPTS:

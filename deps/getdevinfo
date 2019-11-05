@@ -1,0 +1,9 @@
+REQUIRED:
+lshw
+lxml
+wheel
+python3
+
+OPTIONAL:
+
+BUILDOPTS:

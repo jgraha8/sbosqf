@@ -1,0 +1,7 @@
+REQUIRED:
+zope.event
+zope.interface
+
+OPTIONAL:
+
+BUILDOPTS:

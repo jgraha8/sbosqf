@@ -1,0 +1,7 @@
+REQUIRED:
+libmirage
+vhba-module
+
+OPTIONAL:
+
+BUILDOPTS:

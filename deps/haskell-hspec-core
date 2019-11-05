@@ -1,0 +1,15 @@
+REQUIRED:
+haskell-ansi-terminal
+haskell-call-stack
+haskell-clock
+haskell-hspec-expectations
+haskell-HUnit
+haskell-QuickCheck
+haskell-quickcheck-io
+haskell-random
+haskell-setenv
+haskell-tf-random
+
+OPTIONAL:
+
+BUILDOPTS:

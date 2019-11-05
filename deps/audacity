@@ -1,0 +1,7 @@
+REQUIRED:
+lame
+wxGTK3
+
+OPTIONAL:
+
+BUILDOPTS:

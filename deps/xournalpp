@@ -1,0 +1,8 @@
+REQUIRED:
+graphviz
+lua
+portaudio
+
+OPTIONAL:
+
+BUILDOPTS:

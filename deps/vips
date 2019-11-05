@@ -1,0 +1,7 @@
+REQUIRED:
+cfitsio
+libwebp
+
+OPTIONAL:
+
+BUILDOPTS:

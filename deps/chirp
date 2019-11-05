@@ -1,0 +1,6 @@
+REQUIRED:
+pyserial
+
+OPTIONAL:
+
+BUILDOPTS:

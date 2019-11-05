@@ -1,0 +1,7 @@
+REQUIRED:
+gdal
+postgresql
+
+OPTIONAL:
+
+BUILDOPTS:

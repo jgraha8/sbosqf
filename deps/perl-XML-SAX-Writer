@@ -1,0 +1,6 @@
+REQUIRED:
+perl-XML-Filter-BufferText
+
+OPTIONAL:
+
+BUILDOPTS:

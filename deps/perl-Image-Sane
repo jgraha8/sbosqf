@@ -1,0 +1,13 @@
+REQUIRED:
+perl-extutils-depends
+perl-extutils-pkgconfig
+perl-Exception-Class
+perl-Test-Requires
+perl-Class-Data-Inheritable
+perl-Devel-StackTrace
+perl-Readonly
+perl-Try-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

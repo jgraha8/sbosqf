@@ -1,0 +1,10 @@
+REQUIRED:
+gst0-plugins-ugly
+gst0-python
+mutagen
+cddb-py
+cd-discid
+
+OPTIONAL:
+
+BUILDOPTS:

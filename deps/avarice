@@ -1,0 +1,6 @@
+REQUIRED:
+avr-gdb
+
+OPTIONAL:
+
+BUILDOPTS:

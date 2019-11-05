@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Text-Autoformat
+perl-Text-Tabs+Wrap
+
+OPTIONAL:
+
+BUILDOPTS:

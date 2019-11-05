@@ -1,0 +1,13 @@
+REQUIRED:
+Jinja2
+ipaddress
+python3-jupyter-ipykernel
+jupyter-nbconvert
+python-prometheus_client
+singledispatch
+send2trash
+terminado
+
+OPTIONAL:
+
+BUILDOPTS:

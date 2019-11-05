@@ -1,0 +1,10 @@
+REQUIRED:
+libcli
+libnet
+nacl
+liburcu
+GeoIP
+
+OPTIONAL:
+
+BUILDOPTS:

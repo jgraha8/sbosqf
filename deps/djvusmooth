@@ -1,0 +1,7 @@
+REQUIRED:
+wxPython
+python-djvulibre
+
+OPTIONAL:
+
+BUILDOPTS:

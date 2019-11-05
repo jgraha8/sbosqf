@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-hashable
+haskell-tagged
+haskell-unordered-containers
+
+OPTIONAL:
+
+BUILDOPTS:

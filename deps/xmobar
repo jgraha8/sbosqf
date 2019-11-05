@@ -1,0 +1,12 @@
+REQUIRED:
+haskell-hinotify
+haskell-iwlib
+haskell-parsec-numbers
+haskell-regex-compat
+haskell-X11-xft
+haskell-HTTP
+xmonad-contrib
+
+OPTIONAL:
+
+BUILDOPTS:

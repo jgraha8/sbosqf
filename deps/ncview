@@ -1,0 +1,7 @@
+REQUIRED:
+udunits
+netcdf
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+cmocka
+
+OPTIONAL:
+
+BUILDOPTS:

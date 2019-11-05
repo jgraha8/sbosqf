@@ -1,0 +1,12 @@
+REQUIRED:
+gst-plugins-bad
+gst-python
+gst-plugins-ugly
+mutagen
+futures
+python-faulthandler
+feedparser
+
+OPTIONAL:
+
+BUILDOPTS:

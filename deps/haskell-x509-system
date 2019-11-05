@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-pem
+haskell-x509
+haskell-x509-store
+
+OPTIONAL:
+
+BUILDOPTS:

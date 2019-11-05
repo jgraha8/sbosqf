@@ -1,0 +1,8 @@
+REQUIRED:
+fcitx
+qt5
+extra-cmake-modules
+
+OPTIONAL:
+
+BUILDOPTS:

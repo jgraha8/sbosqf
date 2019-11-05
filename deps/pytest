@@ -1,0 +1,14 @@
+REQUIRED:
+setuptools-scm
+py
+six
+attrs
+pluggy
+more-itertools
+atomicwrites
+funcsigs
+pathlib2
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+python3
+cairocffi
+cssselect
+tinycss
+python3-pillow
+python3-defusedxml
+
+OPTIONAL:
+
+BUILDOPTS:

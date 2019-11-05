@@ -1,0 +1,10 @@
+REQUIRED:
+Flask
+six
+jsonschema
+pytz
+aniso8601
+
+OPTIONAL:
+
+BUILDOPTS:

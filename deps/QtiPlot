@@ -1,0 +1,9 @@
+REQUIRED:
+alglib
+muParser
+qt-assistant-compat
+tamu_anova
+
+OPTIONAL:
+
+BUILDOPTS:

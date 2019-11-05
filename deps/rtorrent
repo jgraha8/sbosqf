@@ -1,0 +1,6 @@
+REQUIRED:
+libtorrent
+
+OPTIONAL:
+
+BUILDOPTS:

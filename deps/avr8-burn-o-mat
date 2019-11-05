@@ -1,0 +1,7 @@
+REQUIRED:
+jdk
+avrdude
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+opal
+ptlib
+
+OPTIONAL:
+
+BUILDOPTS:

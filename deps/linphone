@@ -1,0 +1,11 @@
+REQUIRED:
+belle-sip
+bzrtp
+ffmpeg
+libsrtp
+libupnp-legacy
+speex
+
+OPTIONAL:
+
+BUILDOPTS:

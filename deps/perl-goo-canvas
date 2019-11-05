@@ -1,0 +1,7 @@
+REQUIRED:
+goocanvas
+perl-gtk2
+
+OPTIONAL:
+
+BUILDOPTS:

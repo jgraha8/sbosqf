@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-primitive
+haskell-tagged
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

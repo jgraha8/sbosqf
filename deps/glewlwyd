@@ -1,0 +1,8 @@
+REQUIRED:
+libconfig
+libjwt
+hoel
+
+OPTIONAL:
+
+BUILDOPTS:

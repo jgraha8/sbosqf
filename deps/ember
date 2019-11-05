@@ -1,0 +1,13 @@
+REQUIRED:
+FreeImage
+tolua++
+freealut
+ogre
+CEGUI
+eris
+libwfut
+varconf
+
+OPTIONAL:
+
+BUILDOPTS:

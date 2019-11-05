@@ -1,0 +1,8 @@
+REQUIRED:
+python-axolotl-curve25519
+cryptography
+protobuf3
+
+OPTIONAL:
+
+BUILDOPTS:

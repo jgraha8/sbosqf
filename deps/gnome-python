@@ -1,0 +1,7 @@
+REQUIRED:
+libgnome
+pyorbit
+
+OPTIONAL:
+
+BUILDOPTS:

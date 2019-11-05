@@ -1,0 +1,13 @@
+REQUIRED:
+mutagen
+munkres
+Unidecode
+musicbrainzngs
+PyYAML
+enum34
+jellyfish
+six
+
+OPTIONAL:
+
+BUILDOPTS:

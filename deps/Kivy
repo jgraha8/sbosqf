@@ -1,0 +1,11 @@
+REQUIRED:
+kivy-garden
+docutils
+Pygments
+SDL2_ttf
+SDL2_image
+SDL2_mixer
+
+OPTIONAL:
+
+BUILDOPTS:

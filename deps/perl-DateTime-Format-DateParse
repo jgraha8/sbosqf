@@ -1,0 +1,7 @@
+REQUIRED:
+perl-DateTime
+perl-TimeDate
+
+OPTIONAL:
+
+BUILDOPTS:

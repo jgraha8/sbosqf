@@ -1,0 +1,6 @@
+REQUIRED:
+lua-std._debug
+
+OPTIONAL:
+
+BUILDOPTS:

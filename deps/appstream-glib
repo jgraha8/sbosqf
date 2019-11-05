@@ -1,0 +1,8 @@
+REQUIRED:
+meson
+json-glib
+gcab
+
+OPTIONAL:
+
+BUILDOPTS:

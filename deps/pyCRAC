@@ -1,0 +1,13 @@
+REQUIRED:
+python3
+flexbar
+novocraft
+numpy
+pysam
+scipy
+pandas
+ruffus
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+htmlcxx
+jsoncpp
+liboauth
+rhash
+tinyxml2
+
+OPTIONAL:
+
+BUILDOPTS:

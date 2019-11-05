@@ -1,0 +1,8 @@
+REQUIRED:
+python-joblib
+python3-Cython
+scipy3
+
+OPTIONAL:
+
+BUILDOPTS:

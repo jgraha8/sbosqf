@@ -1,0 +1,6 @@
+REQUIRED:
+arm-gcc
+
+OPTIONAL:
+
+BUILDOPTS:

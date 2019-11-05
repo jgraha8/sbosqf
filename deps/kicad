@@ -1,0 +1,9 @@
+REQUIRED:
+wxPython3
+ngspice
+OpenCASCADE
+glm
+
+OPTIONAL:
+
+BUILDOPTS:

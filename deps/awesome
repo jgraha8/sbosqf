@@ -1,0 +1,10 @@
+REQUIRED:
+lgi
+libxdg-basedir
+xcb-util-xrm
+libxkbcommon
+rubygem-asciidoctor
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,2 +1,6 @@
 REQUIRED:
 osinfo-db-tools
+
+OPTIONAL:
+
+BUILDOPTS:

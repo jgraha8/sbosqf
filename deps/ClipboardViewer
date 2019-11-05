@@ -1,0 +1,6 @@
+REQUIRED:
+libgnomeui
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+setuptools-scm
+pyfiglet
+python-future
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,9 @@
+REQUIRED:
+pyqt-distutils
+python3-PyQt5
+python3-matplotlib
+xcalib
+
+OPTIONAL:
+
+BUILDOPTS:

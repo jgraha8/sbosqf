@@ -1,0 +1,8 @@
+REQUIRED:
+rubygem-rspec-core
+rubygem-rspec-expectations
+rubygem-rspec-mocks
+
+OPTIONAL:
+
+BUILDOPTS:

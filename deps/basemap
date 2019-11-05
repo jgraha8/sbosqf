@@ -1,0 +1,9 @@
+REQUIRED:
+geos
+matplotlib
+pyproj
+pyshp
+
+OPTIONAL:
+
+BUILDOPTS:

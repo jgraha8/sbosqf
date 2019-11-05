@@ -1,0 +1,13 @@
+REQUIRED:
+perl-Role-Tiny
+perl-strictures
+perl-Dist-CheckConflicts
+perl-Class-Method-Modifiers
+perl-Devel-GlobalDestruction
+perl-Module-Runtime
+perl-Import-Into
+perl-Sub-Quote
+
+OPTIONAL:
+
+BUILDOPTS:

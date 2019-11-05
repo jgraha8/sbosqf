@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+yaml-cpp0.3
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

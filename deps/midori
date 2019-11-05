@@ -1,0 +1,7 @@
+REQUIRED:
+vala
+webkit2gtk
+
+OPTIONAL:
+
+BUILDOPTS:

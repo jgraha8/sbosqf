@@ -1,0 +1,7 @@
+REQUIRED:
+meson
+wine
+
+OPTIONAL:
+
+BUILDOPTS:

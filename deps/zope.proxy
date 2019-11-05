@@ -1,0 +1,6 @@
+REQUIRED:
+zope.interface
+
+OPTIONAL:
+
+BUILDOPTS:

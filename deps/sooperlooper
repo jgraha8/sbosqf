@@ -1,0 +1,9 @@
+REQUIRED:
+jack-audio-connection-kit
+liblo
+rubberband
+wxPython
+
+OPTIONAL:
+
+BUILDOPTS:

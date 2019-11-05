@@ -1,0 +1,8 @@
+REQUIRED:
+ffmpeg
+libdv
+libquicktime
+
+OPTIONAL:
+
+BUILDOPTS:

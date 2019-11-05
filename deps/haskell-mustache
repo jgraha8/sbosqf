@@ -1,0 +1,13 @@
+REQUIRED:
+haskell-aeson
+haskell-cmdargs
+haskell-either
+haskell-scientific
+haskell-th-lift
+haskell-unordered-containers
+haskell-vector
+haskell-yaml
+
+OPTIONAL:
+
+BUILDOPTS:

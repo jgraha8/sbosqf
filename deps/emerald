@@ -1,0 +1,7 @@
+REQUIRED:
+ccsm
+libwnck3
+
+OPTIONAL:
+
+BUILDOPTS:

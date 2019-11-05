@@ -1,0 +1,7 @@
+REQUIRED:
+pd
+postgresql
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-OpenGLRaw
+haskell-GLURaw
+haskell-ObjectName
+haskell-StateVar
+
+OPTIONAL:
+
+BUILDOPTS:

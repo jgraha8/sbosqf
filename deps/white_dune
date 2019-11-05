@@ -1,0 +1,8 @@
+REQUIRED:
+CGAL
+vcglib
+ffmpeg
+
+OPTIONAL:
+
+BUILDOPTS:

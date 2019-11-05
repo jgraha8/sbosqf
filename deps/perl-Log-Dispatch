@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Devel-GlobalDestruction
+perl-Dist-CheckConflicts
+perl-Params-Validate
+
+OPTIONAL:
+
+BUILDOPTS:

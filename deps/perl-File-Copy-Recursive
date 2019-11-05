@@ -1,0 +1,10 @@
+REQUIRED:
+perl-Test-Deep
+perl-Test-File
+perl-Path-Tiny
+perl-Test-Warnings
+perl-Test-Fatal
+
+OPTIONAL:
+
+BUILDOPTS:

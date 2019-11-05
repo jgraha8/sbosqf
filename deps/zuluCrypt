@@ -1,0 +1,8 @@
+REQUIRED:
+qt5
+libpwquality
+zuluplay
+
+OPTIONAL:
+
+BUILDOPTS:

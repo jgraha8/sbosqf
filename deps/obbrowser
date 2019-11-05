@@ -1,0 +1,9 @@
+REQUIRED:
+perl-file-mimeinfo
+perl-data-dump
+perl-linux-desktop-files
+perl-gtk2
+
+OPTIONAL:
+
+BUILDOPTS:

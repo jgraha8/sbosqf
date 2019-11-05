@@ -1,0 +1,7 @@
+REQUIRED:
+Flask
+SQLAlchemy
+
+OPTIONAL:
+
+BUILDOPTS:

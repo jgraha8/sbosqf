@@ -1,3 +1,7 @@
 REQUIRED:
 perl-extutils-depends
 perl-extutils-pkgconfig
+
+OPTIONAL:
+
+BUILDOPTS:

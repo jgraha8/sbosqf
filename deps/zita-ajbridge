@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+zita-resampler
+zita-alsa-pcmi
+
+OPTIONAL:
+
+BUILDOPTS:

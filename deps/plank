@@ -1,0 +1,8 @@
+REQUIRED:
+bamf
+libgee
+libdbusmenu
+
+OPTIONAL:
+
+BUILDOPTS:

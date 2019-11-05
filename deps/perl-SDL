@@ -1,0 +1,10 @@
+REQUIRED:
+perl-Alien-SDL
+perl-Tie-Simple
+perl-Test-Most
+SDL_gfx
+SDL_Pango
+
+OPTIONAL:
+
+BUILDOPTS:

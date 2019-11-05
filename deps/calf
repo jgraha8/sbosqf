@@ -1,0 +1,9 @@
+REQUIRED:
+jack-audio-connection-kit
+lash
+slv2
+fluidsynth
+
+OPTIONAL:
+
+BUILDOPTS:

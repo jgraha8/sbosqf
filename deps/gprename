@@ -1,0 +1,7 @@
+REQUIRED:
+perl-gtk2
+perl-libintl
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,14 @@
+REQUIRED:
+haskell-aeson
+haskell-attoparsec
+haskell-conduit
+haskell-enclosed-exceptions
+haskell-libyaml
+haskell-resourcet
+haskell-scientific
+haskell-unordered-containers
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

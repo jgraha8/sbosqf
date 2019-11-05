@@ -1,0 +1,12 @@
+REQUIRED:
+tor
+python3-Flask
+stem
+python3-pycrypto
+PySocks
+python3-PyQt5
+pysha3
+
+OPTIONAL:
+
+BUILDOPTS:

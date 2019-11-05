@@ -1,0 +1,10 @@
+REQUIRED:
+backports-ssl-match-hostname
+ipaddress
+python-docker-pycreds
+python-requests
+websocket-client
+
+OPTIONAL:
+
+BUILDOPTS:

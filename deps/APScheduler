@@ -1,0 +1,10 @@
+REQUIRED:
+setuptools-scm
+tzlocal
+six
+futures
+funcsigs
+
+OPTIONAL:
+
+BUILDOPTS:

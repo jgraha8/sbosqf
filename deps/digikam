@@ -1,0 +1,12 @@
+REQUIRED:
+liblqr
+lensfun
+ffmpeg
+libpgf
+libkvkontakte
+libkface
+libkgeomap4
+
+OPTIONAL:
+
+BUILDOPTS:

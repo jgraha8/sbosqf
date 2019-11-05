@@ -1,0 +1,6 @@
+REQUIRED:
+haskell-cereal
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+gtest
+ninja
+pcre2
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+astroid
+isort
+functools-lru-cache
+ConfigParser
+singledispatch
+python-mccabe
+
+OPTIONAL:
+
+BUILDOPTS:

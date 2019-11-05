@@ -1,0 +1,9 @@
+REQUIRED:
+python-m2r
+setuptools-scm
+attrs
+six
+
+OPTIONAL:
+
+BUILDOPTS:

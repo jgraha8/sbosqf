@@ -1,0 +1,9 @@
+REQUIRED:
+prompt_toolkit
+jedi
+docopt
+Pygments
+
+OPTIONAL:
+
+BUILDOPTS:

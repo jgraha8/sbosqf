@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+liblo
+ntk
+
+OPTIONAL:
+
+BUILDOPTS:

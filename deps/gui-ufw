@@ -1,0 +1,9 @@
+REQUIRED:
+python-distutils-extra
+pygobject3-python3
+ufw
+webkit2gtk
+
+OPTIONAL:
+
+BUILDOPTS:

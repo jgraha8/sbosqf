@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Carp-Clan
+perl-Module-Runtime
+perl-Moose
+perl-Sub-Exporter-ForMethods
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+botocore
+futures
+
+OPTIONAL:
+
+BUILDOPTS:

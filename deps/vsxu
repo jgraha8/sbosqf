@@ -1,0 +1,9 @@
+REQUIRED:
+glfw
+ftgl
+opencv
+SDL2
+
+OPTIONAL:
+
+BUILDOPTS:

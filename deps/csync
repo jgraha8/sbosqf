@@ -1,0 +1,8 @@
+REQUIRED:
+log4c
+iniparser
+check
+
+OPTIONAL:
+
+BUILDOPTS:

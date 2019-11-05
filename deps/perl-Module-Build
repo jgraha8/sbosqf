@@ -1,0 +1,6 @@
+REQUIRED:
+perl-PAR-Dist
+
+OPTIONAL:
+
+BUILDOPTS:

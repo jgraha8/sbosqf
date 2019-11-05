@@ -1,0 +1,8 @@
+REQUIRED:
+dnspython
+python-ipcalc
+ldns
+
+OPTIONAL:
+
+BUILDOPTS:

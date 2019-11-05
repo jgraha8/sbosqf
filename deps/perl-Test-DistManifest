@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Test-NoWarnings
+perl-Module-Manifest
+
+OPTIONAL:
+
+BUILDOPTS:

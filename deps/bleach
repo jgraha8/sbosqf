@@ -1,0 +1,8 @@
+REQUIRED:
+python-webencodings
+python3-six
+six
+
+OPTIONAL:
+
+BUILDOPTS:

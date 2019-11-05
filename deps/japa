@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+clxclient
+zita-alsa-pcmi
+
+OPTIONAL:
+
+BUILDOPTS:

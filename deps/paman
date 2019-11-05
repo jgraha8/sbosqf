@@ -1,0 +1,6 @@
+REQUIRED:
+libglademm
+
+OPTIONAL:
+
+BUILDOPTS:

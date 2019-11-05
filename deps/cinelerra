@@ -1,0 +1,14 @@
+REQUIRED:
+faac
+faad2
+imlib2
+libavc1394
+libdv
+libiec61883
+mjpegtools
+lame
+x264
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,14 @@
+REQUIRED:
+haskell-aeson
+haskell-aeson-compat
+haskell-http-api-data
+haskell-monad-control
+haskell-monad-logger
+haskell-path-pieces
+haskell-persistent
+haskell-tagged
+haskell-unordered-containers
+
+OPTIONAL:
+
+BUILDOPTS:

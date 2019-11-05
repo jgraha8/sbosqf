@@ -1,0 +1,12 @@
+REQUIRED:
+haskell-base-orphans
+haskell-bifunctors
+haskell-comonad
+haskell-contravariant
+haskell-distributive
+haskell-semigroups
+haskell-tagged
+
+OPTIONAL:
+
+BUILDOPTS:

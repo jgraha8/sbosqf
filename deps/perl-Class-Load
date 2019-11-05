@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Module-Runtime
+perl-Package-Stash
+perl-Module-Build-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

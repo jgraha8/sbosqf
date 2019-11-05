@@ -1,0 +1,8 @@
+REQUIRED:
+fcitx-configtool
+ninja
+zinnia
+
+OPTIONAL:
+
+BUILDOPTS:

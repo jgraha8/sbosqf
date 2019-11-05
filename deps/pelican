@@ -1,0 +1,15 @@
+REQUIRED:
+feedgenerator
+Jinja2
+Unidecode
+blinker
+pytz
+docutils
+Pygments
+six
+python-dateutil
+Markdown
+
+OPTIONAL:
+
+BUILDOPTS:

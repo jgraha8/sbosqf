@@ -1,0 +1,8 @@
+REQUIRED:
+plib
+CGAL
+portaudio
+
+OPTIONAL:
+
+BUILDOPTS:

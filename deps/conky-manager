@@ -1,0 +1,9 @@
+REQUIRED:
+conky
+libgee
+json-glib
+p7zip
+
+OPTIONAL:
+
+BUILDOPTS:

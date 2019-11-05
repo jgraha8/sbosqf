@@ -1,0 +1,6 @@
+REQUIRED:
+perl-ExtUtils-Config
+
+OPTIONAL:
+
+BUILDOPTS:

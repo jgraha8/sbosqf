@@ -1,0 +1,6 @@
+REQUIRED:
+lapack
+
+OPTIONAL:
+
+BUILDOPTS:

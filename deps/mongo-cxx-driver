@@ -1,0 +1,6 @@
+REQUIRED:
+mongo-c-driver
+
+OPTIONAL:
+
+BUILDOPTS:

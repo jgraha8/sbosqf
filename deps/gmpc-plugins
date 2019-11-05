@@ -1,0 +1,8 @@
+REQUIRED:
+gmpc
+json-glib
+avahi
+
+OPTIONAL:
+
+BUILDOPTS:

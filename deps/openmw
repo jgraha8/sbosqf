@@ -1,0 +1,13 @@
+REQUIRED:
+FreeImage
+OpenAL
+unshield
+ffmpeg
+OpenSceneGraph
+SDL2
+MyGUI
+bullet
+
+OPTIONAL:
+
+BUILDOPTS:

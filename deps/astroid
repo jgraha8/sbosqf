@@ -1,0 +1,8 @@
+REQUIRED:
+six
+python-lazy-object-proxy
+python-wrapt
+
+OPTIONAL:
+
+BUILDOPTS:

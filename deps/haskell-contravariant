@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-semigroups
+haskell-StateVar
+haskell-tagged
+haskell-transformers-compat
+haskell-void
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+qt5
+libsigrok
+libsigrokdecode
+
+OPTIONAL:
+
+BUILDOPTS:

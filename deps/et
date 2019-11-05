@@ -1,0 +1,8 @@
+REQUIRED:
+protobuf-c
+gflags
+libsodium
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,9 @@
+REQUIRED:
+mbedtls
+libsodium
+libev
+c-ares
+
+OPTIONAL:
+
+BUILDOPTS:

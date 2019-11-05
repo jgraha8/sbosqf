@@ -1,0 +1,10 @@
+REQUIRED:
+OpenAL
+enet
+plib
+SDL2
+OpenSceneGraph
+
+OPTIONAL:
+
+BUILDOPTS:

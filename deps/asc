@@ -1,0 +1,9 @@
+REQUIRED:
+lua
+wxPython
+physfs
+SDL_sound
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+python3-attrs
+python3-PyYAML
+Pygments
+Jinja2
+pyPEG2
+python3-PyQt5
+
+OPTIONAL:
+
+BUILDOPTS:

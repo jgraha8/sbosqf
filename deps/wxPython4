@@ -1,0 +1,7 @@
+REQUIRED:
+python3
+webkit2gtk
+
+OPTIONAL:
+
+BUILDOPTS:

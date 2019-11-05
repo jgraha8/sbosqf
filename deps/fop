@@ -1,0 +1,7 @@
+REQUIRED:
+apache-ant
+jai
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+opencl-headers
+
+OPTIONAL:
+
+BUILDOPTS:

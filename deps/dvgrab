@@ -1,0 +1,8 @@
+REQUIRED:
+libavc1394
+libdv
+libiec61883
+
+OPTIONAL:
+
+BUILDOPTS:

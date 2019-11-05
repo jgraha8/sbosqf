@@ -1,0 +1,10 @@
+REQUIRED:
+OpenAL
+SDL2
+libmodplug
+luajit
+physfs
+
+OPTIONAL:
+
+BUILDOPTS:

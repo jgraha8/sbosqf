@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Algorithm-Diff
+perl-Regexp-Common
+perl-parallel-forkmanager
+
+OPTIONAL:
+
+BUILDOPTS:

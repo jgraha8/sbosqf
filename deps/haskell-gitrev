@@ -1,0 +1,6 @@
+REQUIRED:
+haskell-base-compat
+
+OPTIONAL:
+
+BUILDOPTS:

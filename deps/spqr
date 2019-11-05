@@ -1,0 +1,10 @@
+REQUIRED:
+blas
+lapack
+suitesparseconfig
+cholmod
+tbb
+
+OPTIONAL:
+
+BUILDOPTS:

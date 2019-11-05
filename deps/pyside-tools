@@ -1,2 +1,6 @@
 REQUIRED:
 pyside
+
+OPTIONAL:
+
+BUILDOPTS:

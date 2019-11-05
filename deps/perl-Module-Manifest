@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Params-Util
+perl-Test-Exception
+perl-test-warn
+
+OPTIONAL:
+
+BUILDOPTS:

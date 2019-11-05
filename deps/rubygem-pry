@@ -1,0 +1,7 @@
+REQUIRED:
+rubygem-coderay
+rubygem-method_source
+
+OPTIONAL:
+
+BUILDOPTS:

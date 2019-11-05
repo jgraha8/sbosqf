@@ -1,0 +1,6 @@
+REQUIRED:
+rrdtool
+
+OPTIONAL:
+
+BUILDOPTS:

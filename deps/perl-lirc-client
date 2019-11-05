@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Moo
+perl-class-accessor
+perl-file-path-expand
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

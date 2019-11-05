@@ -1,0 +1,7 @@
+REQUIRED:
+libgexiv2
+libpeas
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+pyproj
+pykdtree
+configobj
+
+OPTIONAL:
+
+BUILDOPTS:

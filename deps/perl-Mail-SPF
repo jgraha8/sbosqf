@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Net-DNS-Resolver-Programmable
+perl-NetAddr-IP
+perl-net-dns
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

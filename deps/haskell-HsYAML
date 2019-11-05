@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-dlist
+haskell-fail
+haskell-nats
+
+OPTIONAL:
+
+BUILDOPTS:

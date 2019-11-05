@@ -1,0 +1,7 @@
+REQUIRED:
+libwww-perl
+perl-Test-Simple
+
+OPTIONAL:
+
+BUILDOPTS:

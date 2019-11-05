@@ -1,0 +1,8 @@
+REQUIRED:
+gdal
+libgeotiff
+postgresql
+
+OPTIONAL:
+
+BUILDOPTS:

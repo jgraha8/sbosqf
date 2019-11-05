@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-byteable
+haskell-cryptonite
+haskell-memory
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-cereal
+haskell-conduit
+haskell-data-default
+haskell-idna
+haskell-utf8-string
+
+OPTIONAL:
+
+BUILDOPTS:

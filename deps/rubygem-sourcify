@@ -1,0 +1,7 @@
+REQUIRED:
+rubygem-file-tail
+rubygem-ruby2ruby
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+PyYAML
+libedit
+
+OPTIONAL:
+
+BUILDOPTS:

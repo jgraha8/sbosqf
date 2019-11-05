@@ -1,0 +1,12 @@
+REQUIRED:
+perl-Crypt-OpenSSL-DSA
+perl-Crypt-OpenSSL-RSA
+perl-Crypt-OpenSSL-EC
+perl-Crypt-OpenSSL-DSA
+perl-Crypt-OpenSSL-ECDSA
+perl-Digest-GOST
+perl-net-dns
+
+OPTIONAL:
+
+BUILDOPTS:

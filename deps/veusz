@@ -1,0 +1,7 @@
+REQUIRED:
+numpy
+PyQt5
+
+OPTIONAL:
+
+BUILDOPTS:

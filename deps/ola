@@ -1,0 +1,7 @@
+REQUIRED:
+cppunit
+protobuf
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,13 @@
+REQUIRED:
+haskell-exceptions
+haskell-lifted-base
+haskell-mmorph
+haskell-mono-traversable
+haskell-resourcet
+haskell-transformers-base
+haskell-vector
+haskell-void
+
+OPTIONAL:
+
+BUILDOPTS:

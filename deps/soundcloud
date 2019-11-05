@@ -1,0 +1,8 @@
+REQUIRED:
+fudge
+python-requests
+simplejson
+
+OPTIONAL:
+
+BUILDOPTS:

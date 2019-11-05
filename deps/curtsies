@@ -1,0 +1,7 @@
+REQUIRED:
+blessings
+wcwidth
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,13 @@
+REQUIRED:
+SOAPpy
+graphviz
+lxml
+nltk
+pyOpenSSL
+pygtksourceview
+pysvn
+scapy
+
+OPTIONAL:
+
+BUILDOPTS:

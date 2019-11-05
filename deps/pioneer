@@ -1,0 +1,7 @@
+REQUIRED:
+SDL2_image
+assimp
+
+OPTIONAL:
+
+BUILDOPTS:

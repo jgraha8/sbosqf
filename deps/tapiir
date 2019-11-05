@@ -1,0 +1,7 @@
+REQUIRED:
+fltk
+jack-audio-connection-kit
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+stfl
+log4net
+nini
+gtk-sharp
+dbus-sharp-glib
+
+OPTIONAL:
+
+BUILDOPTS:

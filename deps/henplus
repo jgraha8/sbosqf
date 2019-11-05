@@ -1,0 +1,7 @@
+REQUIRED:
+apache-ant
+libreadline-java
+
+OPTIONAL:
+
+BUILDOPTS:

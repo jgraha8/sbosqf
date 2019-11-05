@@ -1,0 +1,12 @@
+REQUIRED:
+faac
+faad2
+lame
+libdca
+qt5
+x264
+xvidcore
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,12 @@
+REQUIRED:
+dmenu
+libev
+libxkbcommon
+xcb-util-xrm
+yajl
+perl-JSON-XS
+perl-AnyEvent
+
+OPTIONAL:
+
+BUILDOPTS:

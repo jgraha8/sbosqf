@@ -1,0 +1,7 @@
+REQUIRED:
+libgnome
+rarian
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,13 @@
+REQUIRED:
+decorator
+python3-future
+python-requests
+scipy3
+lxml
+SQLAlchemy
+python3-basemap
+suds-jurko
+
+OPTIONAL:
+
+BUILDOPTS:

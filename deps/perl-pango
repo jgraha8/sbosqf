@@ -1,3 +1,7 @@
 REQUIRED:
 perl-cairo
 perl-glib
+
+OPTIONAL:
+
+BUILDOPTS:

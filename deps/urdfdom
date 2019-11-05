@@ -1,0 +1,8 @@
+REQUIRED:
+console_bridge
+urdfdom_headers
+tinyxml
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+exiftool
+ufraw
+
+OPTIONAL:
+
+BUILDOPTS:

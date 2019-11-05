@@ -1,0 +1,7 @@
+REQUIRED:
+openmpi
+CGAL
+
+OPTIONAL:
+
+BUILDOPTS:

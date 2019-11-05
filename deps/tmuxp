@@ -1,0 +1,9 @@
+REQUIRED:
+kaptan
+click
+colorama
+python-libtmux
+
+OPTIONAL:
+
+BUILDOPTS:

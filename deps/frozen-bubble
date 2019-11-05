@@ -1,0 +1,10 @@
+REQUIRED:
+perl-Compress-Bzip2
+perl-File-Slurp
+perl-IPC-System-Simple
+perl-Locale-Maketext-Lexicon
+perl-SDL
+
+OPTIONAL:
+
+BUILDOPTS:

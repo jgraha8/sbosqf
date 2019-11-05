@@ -1,0 +1,12 @@
+REQUIRED:
+rubygem-cool.io
+rubygem-http_parser.rb
+rubygem-msgpack
+rubygem-sigdump
+rubygem-string-scrub
+rubygem-tzinfo-data
+rubygem-yajl-ruby
+
+OPTIONAL:
+
+BUILDOPTS:

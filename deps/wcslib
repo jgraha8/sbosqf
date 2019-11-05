@@ -1,0 +1,7 @@
+REQUIRED:
+cfitsio
+pgplot
+
+OPTIONAL:
+
+BUILDOPTS:

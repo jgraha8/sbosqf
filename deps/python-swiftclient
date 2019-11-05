@@ -1,0 +1,9 @@
+REQUIRED:
+python-requests
+six
+futures
+pbr
+
+OPTIONAL:
+
+BUILDOPTS:

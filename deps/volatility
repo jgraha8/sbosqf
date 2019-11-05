@@ -1,0 +1,8 @@
+REQUIRED:
+distorm
+pycrypto
+yara-python
+
+OPTIONAL:
+
+BUILDOPTS:

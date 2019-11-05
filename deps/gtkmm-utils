@@ -1,0 +1,6 @@
+REQUIRED:
+gnome-common
+
+OPTIONAL:
+
+BUILDOPTS:

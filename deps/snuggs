@@ -1,0 +1,8 @@
+REQUIRED:
+click
+numpy
+pyparsing
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,12 @@
+REQUIRED:
+pyasn1
+cffi
+enum34
+ipaddress
+idna
+packaging
+asn1crypto
+
+OPTIONAL:
+
+BUILDOPTS:

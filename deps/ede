@@ -1,0 +1,7 @@
+REQUIRED:
+edelib
+fltk
+
+OPTIONAL:
+
+BUILDOPTS:

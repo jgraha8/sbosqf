@@ -1,0 +1,7 @@
+REQUIRED:
+wxGTK3
+ffmpeg
+
+OPTIONAL:
+
+BUILDOPTS:

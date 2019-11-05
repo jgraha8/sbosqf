@@ -1,0 +1,8 @@
+REQUIRED:
+ccnet
+libevhtp
+seahub
+
+OPTIONAL:
+
+BUILDOPTS:

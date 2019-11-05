@@ -1,0 +1,9 @@
+REQUIRED:
+mxml
+fltk
+lv2
+jack-audio-connection-kit
+
+OPTIONAL:
+
+BUILDOPTS:

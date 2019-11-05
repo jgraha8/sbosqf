@@ -1,0 +1,7 @@
+REQUIRED:
+wxPython
+BeautifulSoup4
+
+OPTIONAL:
+
+BUILDOPTS:

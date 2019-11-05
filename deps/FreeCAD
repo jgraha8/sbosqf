@@ -9,3 +9,5 @@ xerces-c
 
 OPTIONAL:
 graphviz
+
+BUILDOPTS:

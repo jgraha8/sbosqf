@@ -1,0 +1,11 @@
+REQUIRED:
+gpsd
+tinyxml
+libmspack
+portaudio
+webkitgtk
+wxGTK3
+
+OPTIONAL:
+
+BUILDOPTS:

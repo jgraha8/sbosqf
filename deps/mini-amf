@@ -1,0 +1,7 @@
+REQUIRED:
+defusedxml
+six
+
+OPTIONAL:
+
+BUILDOPTS:

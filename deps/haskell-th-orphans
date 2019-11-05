@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-generic-deriving
+haskell-th-lift
+haskell-th-lift-instances
+haskell-th-reify-many
+
+OPTIONAL:
+
+BUILDOPTS:

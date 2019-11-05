@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-async
+haskell-unliftio-core
+
+OPTIONAL:
+
+BUILDOPTS:

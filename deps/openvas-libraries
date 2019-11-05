@@ -1,0 +1,6 @@
+REQUIRED:
+hiredis
+
+OPTIONAL:
+
+BUILDOPTS:

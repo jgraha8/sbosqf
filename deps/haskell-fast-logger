@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-auto-update
+haskell-bytestring-builder
+haskell-easy-file
+haskell-old-locale
+haskell-unix-time
+
+OPTIONAL:
+
+BUILDOPTS:

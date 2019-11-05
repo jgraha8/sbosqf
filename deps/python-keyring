@@ -1,0 +1,8 @@
+REQUIRED:
+setuptools-scm
+entrypoints
+secretstorage
+
+OPTIONAL:
+
+BUILDOPTS:

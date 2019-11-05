@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Curses
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+nvidia-cg-toolkit
+
+OPTIONAL:
+
+BUILDOPTS:

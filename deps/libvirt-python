@@ -1,2 +1,6 @@
 REQUIRED:
 libvirt
+
+OPTIONAL:
+
+BUILDOPTS:

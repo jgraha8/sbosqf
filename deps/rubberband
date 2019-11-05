@@ -1,0 +1,7 @@
+REQUIRED:
+ladspa_sdk
+vamp-plugin-sdk
+
+OPTIONAL:
+
+BUILDOPTS:

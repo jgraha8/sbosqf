@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-HUnit
+haskell-hxt-charproperties
+haskell-hxt-unicode
+haskell-hxt-regex-xmlschema
+haskell-network-uri
+
+OPTIONAL:
+
+BUILDOPTS:

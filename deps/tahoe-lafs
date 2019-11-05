@@ -1,0 +1,14 @@
+REQUIRED:
+txtorcon
+txi2p
+simplejson
+pycrypto
+pycryptopp
+zfec
+service_identity
+foolscap
+Nevow
+
+OPTIONAL:
+
+BUILDOPTS:

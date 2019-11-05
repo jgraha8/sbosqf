@@ -1,0 +1,12 @@
+REQUIRED:
+ninja
+libbsd
+libedit
+libkqueue
+systemtap
+blocksruntime
+six
+
+OPTIONAL:
+
+BUILDOPTS:

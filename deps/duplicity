@@ -1,0 +1,9 @@
+REQUIRED:
+librsync
+lockfile
+fasteners
+rename
+
+OPTIONAL:
+
+BUILDOPTS:

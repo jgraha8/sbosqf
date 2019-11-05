@@ -1,0 +1,11 @@
+REQUIRED:
+libb2
+lz4
+msgpack-python
+python3
+setuptools-scm
+zstd
+
+OPTIONAL:
+
+BUILDOPTS:

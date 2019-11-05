@@ -1,0 +1,11 @@
+REQUIRED:
+jsoncpp
+lua
+libb64
+jq
+tbb
+grpc
+
+OPTIONAL:
+
+BUILDOPTS:

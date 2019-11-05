@@ -1,0 +1,10 @@
+REQUIRED:
+python3-jedi
+docutils
+python3-pylint
+pyserial
+mypy_extensions
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+dvdauthor
+ffmpeg
+mjpegtools
+
+OPTIONAL:
+
+BUILDOPTS:

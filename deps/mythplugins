@@ -1,0 +1,14 @@
+REQUIRED:
+dcraw
+mythtv
+perl-Date-Manip
+perl-SOAP-Lite
+perl-DateTime-Format-ISO8601
+perl-Image-Size
+perl-XML-XPath
+python-oauth
+perl-JSON
+
+OPTIONAL:
+
+BUILDOPTS:

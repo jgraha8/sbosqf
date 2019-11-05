@@ -1,0 +1,8 @@
+REQUIRED:
+gnonlin
+gst0-python
+pyxdg
+
+OPTIONAL:
+
+BUILDOPTS:

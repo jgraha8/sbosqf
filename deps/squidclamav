@@ -1,0 +1,8 @@
+REQUIRED:
+clamav
+squid
+c-icap
+
+OPTIONAL:
+
+BUILDOPTS:

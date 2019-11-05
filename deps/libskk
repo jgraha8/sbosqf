@@ -1,0 +1,8 @@
+REQUIRED:
+gnome-common
+libgee1
+json-glib
+
+OPTIONAL:
+
+BUILDOPTS:

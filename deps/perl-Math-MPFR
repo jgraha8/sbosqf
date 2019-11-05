@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Math-GMPq
+perl-Math-GMPz
+
+OPTIONAL:
+
+BUILDOPTS:

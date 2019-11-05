@@ -1,0 +1,7 @@
+REQUIRED:
+python3
+pytest-runner
+
+OPTIONAL:
+
+BUILDOPTS:

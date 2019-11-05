@@ -1,0 +1,7 @@
+REQUIRED:
+efl
+neovim
+
+OPTIONAL:
+
+BUILDOPTS:

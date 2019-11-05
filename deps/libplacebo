@@ -1,0 +1,7 @@
+REQUIRED:
+meson
+vulkan-sdk
+
+OPTIONAL:
+
+BUILDOPTS:

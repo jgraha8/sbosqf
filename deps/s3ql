@@ -1,0 +1,11 @@
+REQUIRED:
+python3-dugong
+python3-defusedxml
+python3-pycrypto
+python-requests
+llfuse
+apsw
+
+OPTIONAL:
+
+BUILDOPTS:

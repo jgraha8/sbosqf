@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+clalsadrv
+ladspa_sdk
+
+OPTIONAL:
+
+BUILDOPTS:

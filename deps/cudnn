@@ -1,0 +1,6 @@
+REQUIRED:
+cudatoolkit
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+perl-AnyEvent
+perl-common-sense
+
+OPTIONAL:
+
+BUILDOPTS:

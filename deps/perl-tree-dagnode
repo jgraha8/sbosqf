@@ -1,0 +1,6 @@
+REQUIRED:
+perl-File-Slurp-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+libpseudo
+libviper
+libgtop
+
+OPTIONAL:
+
+BUILDOPTS:

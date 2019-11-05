@@ -1,0 +1,7 @@
+REQUIRED:
+leiningen
+nodejs
+
+OPTIONAL:
+
+BUILDOPTS:

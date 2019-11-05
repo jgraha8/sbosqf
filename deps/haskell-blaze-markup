@@ -1,0 +1,6 @@
+REQUIRED:
+haskell-blaze-builder
+
+OPTIONAL:
+
+BUILDOPTS:

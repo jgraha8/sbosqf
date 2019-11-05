@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Devel-Symdump
+
+OPTIONAL:
+
+BUILDOPTS:

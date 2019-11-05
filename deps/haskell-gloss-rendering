@@ -1,0 +1,8 @@
+REQUIRED:
+haskell-bmp
+haskell-OpenGL
+haskell-GLUT
+
+OPTIONAL:
+
+BUILDOPTS:

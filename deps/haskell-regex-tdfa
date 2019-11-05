@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-regex-base
+haskell-semigroups
+
+OPTIONAL:
+
+BUILDOPTS:

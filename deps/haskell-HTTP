@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-network
+haskell-network-uri
+
+OPTIONAL:
+
+BUILDOPTS:

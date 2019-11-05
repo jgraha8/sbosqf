@@ -1,0 +1,9 @@
+REQUIRED:
+jack-audio-connection-kit
+libsmf
+pyliblo
+decorator
+
+OPTIONAL:
+
+BUILDOPTS:

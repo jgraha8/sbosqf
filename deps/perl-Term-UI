@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Log-Message-Simple
+
+OPTIONAL:
+
+BUILDOPTS:

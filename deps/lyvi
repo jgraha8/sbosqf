@@ -1,0 +1,10 @@
+REQUIRED:
+python3-urwid
+python3-pillow
+python3-Cython
+psutil
+plyr
+
+OPTIONAL:
+
+BUILDOPTS:

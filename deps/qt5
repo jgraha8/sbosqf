@@ -1,3 +1,6 @@
+#
+# Previous QT5 installation must be removed before building
+#
 REQUIRED:
 libxkbcommon
 libinput
@@ -9,7 +12,9 @@ pcre2
 snappy
 
 BUILDOPTS:
--DOCS=yes
--EXAMPLES=yes
--PROPRIETARY_CODECS=yes
--PULSEAUDIO=no
+CCACHE=yes
+DOCS=no
+EXAMPLES=no
+PROPRIETARY_CODECS=no
+PULSEAUDIO=no
+WEBENGINE=yes

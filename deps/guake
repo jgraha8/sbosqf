@@ -1,0 +1,9 @@
+REQUIRED:
+pyxdg
+python-keybinder
+gnome-python2-gconf
+gnome-common
+
+OPTIONAL:
+
+BUILDOPTS:

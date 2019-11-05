@@ -1,0 +1,7 @@
+REQUIRED:
+xerces-c
+collada-dom
+
+OPTIONAL:
+
+BUILDOPTS:

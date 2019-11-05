@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Net-Server
+perl-IO-Multiplex
+perl-BerkeleyDB
+perl-net-dns
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+pypy
+SDL2
+
+OPTIONAL:
+
+BUILDOPTS:

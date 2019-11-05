@@ -1,0 +1,10 @@
+REQUIRED:
+pandas
+mando
+matplotlib
+rst2ansi
+scipy
+
+OPTIONAL:
+
+BUILDOPTS:

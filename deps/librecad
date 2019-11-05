@@ -1,0 +1,7 @@
+REQUIRED:
+muParser
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

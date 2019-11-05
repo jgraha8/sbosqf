@@ -1,0 +1,7 @@
+REQUIRED:
+g15daemon
+libgtop
+
+OPTIONAL:
+
+BUILDOPTS:

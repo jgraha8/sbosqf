@@ -1,0 +1,8 @@
+REQUIRED:
+libnova
+proj
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

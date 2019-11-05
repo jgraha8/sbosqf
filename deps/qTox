@@ -1,0 +1,12 @@
+REQUIRED:
+c-toxcore
+libfilteraudio
+qt5
+ffmpeg
+qrencode
+libxkbcommon
+sqlcipher
+
+OPTIONAL:
+
+BUILDOPTS:

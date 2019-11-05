@@ -1,0 +1,8 @@
+REQUIRED:
+webkit2gtk
+python3
+gtest
+
+OPTIONAL:
+
+BUILDOPTS:

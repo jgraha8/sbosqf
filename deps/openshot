@@ -1,0 +1,13 @@
+REQUIRED:
+python3-PyQt5
+python3-pyzmq
+libopenshot
+python-chardet
+httplib2
+jack-audio-connection-kit
+python3-certifi
+python-requests
+
+OPTIONAL:
+
+BUILDOPTS:

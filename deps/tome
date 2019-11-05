@@ -1,0 +1,10 @@
+REQUIRED:
+premake
+SDL2_image
+SDL2_ttf
+SDL2_mixer
+OpenAL
+
+OPTIONAL:
+
+BUILDOPTS:

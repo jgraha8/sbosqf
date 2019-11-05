@@ -1,0 +1,6 @@
+REQUIRED:
+perl-IO-Interface
+
+OPTIONAL:
+
+BUILDOPTS:

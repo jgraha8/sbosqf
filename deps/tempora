@@ -1,0 +1,8 @@
+REQUIRED:
+setuptools-scm
+six
+pytz
+
+OPTIONAL:
+
+BUILDOPTS:

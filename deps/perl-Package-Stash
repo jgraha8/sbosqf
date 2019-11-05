@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Dist-CheckConflicts
+perl-Package-Stash-XS
+perl-Module-Implementation
+
+OPTIONAL:
+
+BUILDOPTS:

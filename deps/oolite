@@ -1,0 +1,8 @@
+REQUIRED:
+espeak
+gnustep-base
+OpenAL
+
+OPTIONAL:
+
+BUILDOPTS:

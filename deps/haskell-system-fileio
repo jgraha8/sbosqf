@@ -1,0 +1,6 @@
+REQUIRED:
+haskell-system-filepath
+
+OPTIONAL:
+
+BUILDOPTS:

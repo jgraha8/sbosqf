@@ -1,0 +1,8 @@
+REQUIRED:
+lilypond
+python-poppler-qt4
+python-ly
+
+OPTIONAL:
+
+BUILDOPTS:

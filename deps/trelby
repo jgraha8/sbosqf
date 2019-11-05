@@ -1,0 +1,7 @@
+REQUIRED:
+wxPython
+lxml
+
+OPTIONAL:
+
+BUILDOPTS:

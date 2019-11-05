@@ -1,0 +1,6 @@
+REQUIRED:
+blas35
+
+OPTIONAL:
+
+BUILDOPTS:

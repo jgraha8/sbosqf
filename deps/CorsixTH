@@ -1,0 +1,9 @@
+REQUIRED:
+SDL2_mixer
+lua-filesystem
+lua-lpeg
+ffmpeg
+
+OPTIONAL:
+
+BUILDOPTS:

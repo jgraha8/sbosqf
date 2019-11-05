@@ -1,0 +1,14 @@
+REQUIRED:
+ffmpeg
+jack-audio-connection-kit
+opencollada
+python-requests
+valgrind
+numpy3
+SDL2
+openimageio
+freealut
+
+OPTIONAL:
+
+BUILDOPTS:

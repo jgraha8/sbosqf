@@ -1,0 +1,7 @@
+REQUIRED:
+python-dateutil
+PyYAML
+
+OPTIONAL:
+
+BUILDOPTS:

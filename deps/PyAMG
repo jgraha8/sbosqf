@@ -1,0 +1,8 @@
+REQUIRED:
+nose
+numpy
+scipy
+
+OPTIONAL:
+
+BUILDOPTS:

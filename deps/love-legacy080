@@ -1,0 +1,10 @@
+REQUIRED:
+lua
+DevIL
+physfs
+libmodplug
+OpenAL
+
+OPTIONAL:
+
+BUILDOPTS:

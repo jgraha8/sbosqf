@@ -1,0 +1,11 @@
+REQUIRED:
+ffmpeg
+gnome-python
+gst0-python
+libtorrent-rasterbar
+mutagen
+pywebkitgtk
+
+OPTIONAL:
+
+BUILDOPTS:

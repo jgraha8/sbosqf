@@ -1,0 +1,6 @@
+REQUIRED:
+libmemcached
+
+OPTIONAL:
+
+BUILDOPTS:

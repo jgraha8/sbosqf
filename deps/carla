@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+liblo
+python3-PyQt5
+
+OPTIONAL:
+
+BUILDOPTS:

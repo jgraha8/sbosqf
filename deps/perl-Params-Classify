@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Test-Pod
+perl-Test-Pod-Coverage
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

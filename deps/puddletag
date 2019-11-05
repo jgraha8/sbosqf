@@ -1,0 +1,8 @@
+REQUIRED:
+configobj
+mutagen
+pyparsing
+
+OPTIONAL:
+
+BUILDOPTS:

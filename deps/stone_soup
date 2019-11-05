@@ -1,0 +1,8 @@
+REQUIRED:
+lua
+PyYAML
+SDL2_image
+
+OPTIONAL:
+
+BUILDOPTS:

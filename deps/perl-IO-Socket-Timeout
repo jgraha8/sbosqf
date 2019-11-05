@@ -1,0 +1,6 @@
+REQUIRED:
+perl-PerlIO-via-Timeout
+
+OPTIONAL:
+
+BUILDOPTS:

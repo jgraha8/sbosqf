@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-async
+haskell-blaze-builder
+haskell-network
+haskell-random
+haskell-zlib
+
+OPTIONAL:
+
+BUILDOPTS:

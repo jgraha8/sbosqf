@@ -1,0 +1,7 @@
+REQUIRED:
+efivar
+libsmbios
+
+OPTIONAL:
+
+BUILDOPTS:

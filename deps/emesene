@@ -1,0 +1,7 @@
+REQUIRED:
+libmimic
+wxPython
+
+OPTIONAL:
+
+BUILDOPTS:

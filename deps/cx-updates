@@ -1,0 +1,5 @@
+METAPKG
+REQUIRED:
+virt-manager
+qemu
+libvirt

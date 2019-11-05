@@ -1,0 +1,7 @@
+REQUIRED:
+OpenAL
+enet
+
+OPTIONAL:
+
+BUILDOPTS:

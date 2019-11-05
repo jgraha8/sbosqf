@@ -1,0 +1,4 @@
+METAPKG
+REQUIRED:
+pygtksourceview
+gtksourceview

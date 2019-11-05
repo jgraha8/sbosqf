@@ -1,0 +1,11 @@
+REQUIRED:
+accuraterip-checksum
+cddb-py
+mutagen
+musicbrainzngs
+pycdio
+python-requests
+
+OPTIONAL:
+
+BUILDOPTS:

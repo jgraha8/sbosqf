@@ -1,0 +1,7 @@
+REQUIRED:
+libdc1394
+libgnomeui
+
+OPTIONAL:
+
+BUILDOPTS:

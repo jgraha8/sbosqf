@@ -1,0 +1,8 @@
+REQUIRED:
+bctoolbox
+jdk
+libantlr3c
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+gr-osmosdr
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

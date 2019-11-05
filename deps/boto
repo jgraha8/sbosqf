@@ -1,0 +1,10 @@
+REQUIRED:
+python-requests
+paramiko
+rsa
+PyYAML
+simplejson
+
+OPTIONAL:
+
+BUILDOPTS:

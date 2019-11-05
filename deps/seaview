@@ -1,0 +1,11 @@
+REQUIRED:
+fltk
+PDFlib-Lite
+Gblocks
+PhyML
+clustalo
+muscle
+
+OPTIONAL:
+
+BUILDOPTS:

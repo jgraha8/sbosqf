@@ -1,0 +1,6 @@
+REQUIRED:
+libcpuid
+
+OPTIONAL:
+
+BUILDOPTS:

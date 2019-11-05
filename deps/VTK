@@ -1,12 +1,17 @@
+REQUIRED:
+qt5
 
 OPTIONAL:
 openmpi
+-jsoncpp
+-proj
 
 BUILDOPTS:
 IMAGING=yes
 MPI=yes
-TCL=yes
 TK=yes
+VIEWS=no
+WEB=no   # requires python-twisted
+JAVA=no  # requires jdk
 PYTHON=yes
 QT=yes
-VTKQT5=yes

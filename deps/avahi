@@ -1,7 +1,12 @@
-# See SBo README for additional information
-
 REQUIRED:
 libdaemon
 
+OPTIONAL:
+-mono
+-gtk-sharp
+
 BUILDOPTS:
+# mono is an optional dependency that also requires gtk-sharp - enable it
+# with the following:  "MONO=yes ./avahi.SlackBuild"
 MONO=no
+

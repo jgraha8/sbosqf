@@ -2,21 +2,27 @@ REQUIRED:
 SDL2
 
 OPTIONAL:
+-Sphinx
+-libiscsi
 -libcacard
 spice
 usbredir
 virglrenderer
+# To compile with virglrenderer, you will need to upgrade to
+# mesa-12.0.0 or higher.
+mesa
 device-tree-compiler
 libnfs
 snappy
 glusterfs
 -vde2
--libseccomp
+libseccomp
+python3
 
 BUILDOPTS:
-KVMGROUP=users # Needs to be the same as libvirt
--TARGETS=all
--VNC_ENABLE=no
-# AUDIODRIVERS defauls to "pa,alsa,oss,sdl"
-AUDIODRIVERS="pa,alsa"
-BRIDGE_HELPER_SETUID=yes
+# TARGETS=all
+# VNC_ENABLE=no
+# AUDIODRIVERS="pa,alsa,oss,sdl"
+KVMGROUP=users
+# BRIDGE_HELPER_SETUID=yes
+

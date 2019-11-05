@@ -1,0 +1,17 @@
+REQUIRED:
+perl-Sys-MemInfo
+perl-Date-Manip
+perl-Sys-Mmap
+perl-LWP-Protocol-https
+SDL2
+perl-JSON-MaybeXS
+perl-Number-Bites-Human
+perl-TimeDate
+perl-Sys-CPU
+ffmpeg
+libmp4v2
+x264
+
+OPTIONAL:
+
+BUILDOPTS:

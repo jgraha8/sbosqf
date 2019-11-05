@@ -1,0 +1,6 @@
+REQUIRED:
+rubygem-glib2
+
+OPTIONAL:
+
+BUILDOPTS:

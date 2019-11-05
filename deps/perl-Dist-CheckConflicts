@@ -1,0 +1,9 @@
+REQUIRED:
+perl-List-MoreUtils
+perl-Sub-Exporter
+perl-Test-Fatal
+perl-Module-Runtime
+
+OPTIONAL:
+
+BUILDOPTS:

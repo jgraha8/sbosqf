@@ -1,0 +1,6 @@
+REQUIRED:
+libgcrypt15
+
+OPTIONAL:
+
+BUILDOPTS:

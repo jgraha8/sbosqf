@@ -1,0 +1,9 @@
+REQUIRED:
+python3
+openjdk7
+apache-ant
+perl-Archive-Zip
+
+OPTIONAL:
+
+BUILDOPTS:

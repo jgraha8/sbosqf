@@ -4,3 +4,4 @@ qt5
 OPTIONAL:
 libwebp
 
+BUILDOPTS:

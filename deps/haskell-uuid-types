@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-hashable
+haskell-random
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+gconfmm
+libglademm
+
+OPTIONAL:
+
+BUILDOPTS:

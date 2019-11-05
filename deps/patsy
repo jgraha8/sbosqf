@@ -1,0 +1,7 @@
+REQUIRED:
+six
+numpy
+
+OPTIONAL:
+
+BUILDOPTS:

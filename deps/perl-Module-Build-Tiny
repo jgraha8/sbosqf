@@ -1,0 +1,10 @@
+REQUIRED:
+perl-ExtUtils-Config
+perl-ExtUtils-InstallPaths
+perl-ExtUtils-Helpers
+perl-Test-Harness
+perl-JSON
+
+OPTIONAL:
+
+BUILDOPTS:

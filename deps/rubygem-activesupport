@@ -1,0 +1,7 @@
+REQUIRED:
+rubygem-i18n
+rubygem-tzinfo
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+geos
+matplotlib
+proj
+pyshp
+scipy
+Shapely
+
+OPTIONAL:
+
+BUILDOPTS:

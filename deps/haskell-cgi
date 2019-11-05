@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-exceptions
+haskell-multipart
+haskell-network
+haskell-network-uri
+
+OPTIONAL:
+
+BUILDOPTS:

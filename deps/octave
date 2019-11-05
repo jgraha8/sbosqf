@@ -15,6 +15,7 @@ suitesparse
 glpk
 arpack-ng
 qrupdate
+-sundials
 qhull
 hdf5
 # Disabling since may be giving segfaults when plotting

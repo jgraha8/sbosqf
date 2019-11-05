@@ -1,0 +1,14 @@
+REQUIRED:
+gdal
+Jinja2
+libspatialindex
+numpy
+OWSLib
+Pygments
+psycopg2
+pyspatialite
+qwtpolar
+
+OPTIONAL:
+
+BUILDOPTS:

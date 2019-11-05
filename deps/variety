@@ -1,0 +1,10 @@
+REQUIRED:
+python-distutils-extra
+BeautifulSoup4
+python-requests
+libgexiv2
+configobj
+
+OPTIONAL:
+
+BUILDOPTS:

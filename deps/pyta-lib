@@ -1,0 +1,7 @@
+REQUIRED:
+ta-lib
+numpy
+
+OPTIONAL:
+
+BUILDOPTS:

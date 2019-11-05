@@ -1,0 +1,10 @@
+REQUIRED:
+Shapely
+Fiona
+click
+numpy
+rasterio
+
+OPTIONAL:
+
+BUILDOPTS:

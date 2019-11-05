@@ -1,0 +1,7 @@
+REQUIRED:
+python-docopt
+python3
+
+OPTIONAL:
+
+BUILDOPTS:

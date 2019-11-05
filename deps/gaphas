@@ -1,0 +1,9 @@
+REQUIRED:
+decorator
+nose
+setuptools-git
+simplegeneric
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+protobuf
+libqb
+libsodium
+
+OPTIONAL:
+
+BUILDOPTS:

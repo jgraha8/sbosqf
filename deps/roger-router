@@ -1,0 +1,11 @@
+REQUIRED:
+speex
+libpeas
+spandsp
+libcapi20
+gupnp
+json-glib
+
+OPTIONAL:
+
+BUILDOPTS:

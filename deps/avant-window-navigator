@@ -1,0 +1,8 @@
+REQUIRED:
+libdesktop-agnostic
+pyxdg
+libgtop
+
+OPTIONAL:
+
+BUILDOPTS:

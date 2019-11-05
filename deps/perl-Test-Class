@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Module-Runtime
+perl-MRO-Compat
+perl-Test-Simple
+perl-Try-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+libmirage
+pygobject3-python3
+python3-matplotlib
+
+OPTIONAL:
+
+BUILDOPTS:

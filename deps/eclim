@@ -1,0 +1,8 @@
+REQUIRED:
+apache-ant
+eclipse-java
+Sphinx
+
+OPTIONAL:
+
+BUILDOPTS:

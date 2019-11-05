@@ -1,2 +1,7 @@
+REQUIRED:
+
+OPTIONAL:
+
 BUILDOPTS:
-DOCS=no
+HTML=no
+

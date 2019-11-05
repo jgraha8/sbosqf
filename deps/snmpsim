@@ -1,0 +1,6 @@
+REQUIRED:
+pysnmp
+
+OPTIONAL:
+
+BUILDOPTS:

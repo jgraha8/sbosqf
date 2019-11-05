@@ -1,0 +1,8 @@
+REQUIRED:
+tqdm
+pkginfo
+requests-toolbelt
+
+OPTIONAL:
+
+BUILDOPTS:

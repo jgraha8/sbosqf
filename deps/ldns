@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Test-Exception
+perl-Devel-CheckLib
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,14 @@
+REQUIRED:
+aubio
+jack-audio-connection-kit
+liblo
+liblrdf
+vamp-plugin-sdk
+rubberband
+lv2
+cwiid
+lilv
+
+OPTIONAL:
+
+BUILDOPTS:

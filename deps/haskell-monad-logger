@@ -1,0 +1,17 @@
+REQUIRED:
+haskell-conduit
+haskell-conduit-extra
+haskell-exceptions
+haskell-fast-logger
+haskell-lifted-base
+haskell-monad-control
+haskell-monad-loops
+haskell-resourcet
+haskell-stm-chans
+haskell-transformers-base
+haskell-transformers-compat
+haskell-unliftio-core
+
+OPTIONAL:
+
+BUILDOPTS:

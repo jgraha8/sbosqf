@@ -1,0 +1,8 @@
+REQUIRED:
+python3-PyQt5
+python3-lhafile
+fs-uae
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -6,3 +6,6 @@ python-urllib3
 
 OPTIONAL:
 python3
+python3-certifi
+
+BUILDOPTS:

@@ -1,0 +1,11 @@
+REQUIRED:
+0ad-data
+OpenAL
+enet
+gloox
+miniupnpc
+SDL2
+
+OPTIONAL:
+
+BUILDOPTS:

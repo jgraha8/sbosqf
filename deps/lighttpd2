@@ -1,0 +1,8 @@
+REQUIRED:
+libev
+lua
+ragel
+
+OPTIONAL:
+
+BUILDOPTS:

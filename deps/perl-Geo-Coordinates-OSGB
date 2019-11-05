@@ -1,0 +1,7 @@
+REQUIRED:
+perl-File-Share
+perl-File-ShareDir-Install
+
+OPTIONAL:
+
+BUILDOPTS:

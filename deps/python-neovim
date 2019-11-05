@@ -1,0 +1,8 @@
+REQUIRED:
+greenlet
+msgpack-python
+trollius
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-crypto-random
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

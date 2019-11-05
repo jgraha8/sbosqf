@@ -1,0 +1,10 @@
+REQUIRED:
+python3
+Markups
+python3-PyQt5
+Markdown
+python-markdown-math
+
+OPTIONAL:
+
+BUILDOPTS:

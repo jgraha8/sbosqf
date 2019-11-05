@@ -1,0 +1,9 @@
+REQUIRED:
+numpy
+python-django
+R
+Jinja2
+
+OPTIONAL:
+
+BUILDOPTS:

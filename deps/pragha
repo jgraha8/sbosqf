@@ -1,0 +1,13 @@
+REQUIRED:
+gst0-plugins-bad
+gst0-plugins-ugly
+gst-plugins-bad
+gst-plugins-ugly
+gst0-python
+gst-python
+gst-libav
+libpeas
+
+OPTIONAL:
+
+BUILDOPTS:

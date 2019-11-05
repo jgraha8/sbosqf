@@ -1,0 +1,11 @@
+REQUIRED:
+ffmpeg
+frei0r
+gnome-python
+ladspa_sdk
+mlt
+numpy
+
+OPTIONAL:
+
+BUILDOPTS:

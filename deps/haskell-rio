@@ -1,0 +1,13 @@
+REQUIRED:
+haskell-exceptions
+haskell-hashable
+haskell-microlens
+haskell-primitive
+haskell-typed-process
+haskell-unliftio
+haskell-unordered-containers
+haskell-vector
+
+OPTIONAL:
+
+BUILDOPTS:

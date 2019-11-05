@@ -1,4 +1,7 @@
-# Circular dependency with Sphinx
+REQUIRED:
+
 OPTIONAL:
--Sphinx
--python3
+Sphinx
+python3
+
+BUILDOPTS:

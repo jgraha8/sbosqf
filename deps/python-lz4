@@ -1,0 +1,6 @@
+REQUIRED:
+setuptools-scm
+
+OPTIONAL:
+
+BUILDOPTS:

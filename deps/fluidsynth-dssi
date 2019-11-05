@@ -1,0 +1,7 @@
+REQUIRED:
+dssi
+fluidsynth
+
+OPTIONAL:
+
+BUILDOPTS:

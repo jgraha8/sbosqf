@@ -1,0 +1,9 @@
+REQUIRED:
+PyYAML
+dfdatetime
+dtfabric
+libregf
+
+OPTIONAL:
+
+BUILDOPTS:

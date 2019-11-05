@@ -1,0 +1,11 @@
+REQUIRED:
+jdk
+libass
+crossguid
+yajl
+tinyxml
+libmicrohttpd
+
+OPTIONAL:
+
+BUILDOPTS:

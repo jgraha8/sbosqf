@@ -1,0 +1,10 @@
+REQUIRED:
+gtest
+double-conversion
+glog
+gflags
+libunwind
+
+OPTIONAL:
+
+BUILDOPTS:

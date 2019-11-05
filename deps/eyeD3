@@ -1,0 +1,8 @@
+REQUIRED:
+pathlib
+python-magic
+pylast
+
+OPTIONAL:
+
+BUILDOPTS:

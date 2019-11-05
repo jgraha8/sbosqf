@@ -1,0 +1,11 @@
+REQUIRED:
+perl-File-ShareDir
+perl-File-Copy-Recursive
+perl-Path-Tiny
+perl-Scope-Guard
+perl-Test-Fatal
+perl-Class-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

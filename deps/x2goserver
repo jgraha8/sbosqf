@@ -1,0 +1,14 @@
+REQUIRED:
+nx-libs
+perl-Config-Simple
+perl-File-ReadBackwards
+perl-DBD-SQLite
+perl-Capture-Tiny
+perl-Try-Tiny
+perl-Unix-Syslog
+perl-file-basedir
+perl-Switch
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+cryptography
+pycrypto
+ecdsa
+
+OPTIONAL:
+
+BUILDOPTS:

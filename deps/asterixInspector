@@ -1,0 +1,7 @@
+REQUIRED:
+qt5-webkit
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

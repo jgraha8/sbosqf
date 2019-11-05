@@ -1,0 +1,7 @@
+REQUIRED:
+davfs2
+sshfs-fuse
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Test-Exception
+
+OPTIONAL:
+
+BUILDOPTS:

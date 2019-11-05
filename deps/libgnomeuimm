@@ -1,0 +1,11 @@
+REQUIRED:
+libgnomeui
+libgnomemm
+libgnomecanvasmm
+gnome-vfsmm
+libglademm
+gconfmm
+
+OPTIONAL:
+
+BUILDOPTS:

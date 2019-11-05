@@ -1,0 +1,9 @@
+REQUIRED:
+jack-audio-connection-kit
+ladspa_sdk
+liblo
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

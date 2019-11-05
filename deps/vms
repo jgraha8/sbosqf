@@ -1,0 +1,8 @@
+REQUIRED:
+qemu
+socat
+vde2
+
+OPTIONAL:
+
+BUILDOPTS:

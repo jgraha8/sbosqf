@@ -1,0 +1,10 @@
+REQUIRED:
+gnome-common
+yelp-tools
+gtksourceview3
+libpeas
+python3
+
+OPTIONAL:
+
+BUILDOPTS:

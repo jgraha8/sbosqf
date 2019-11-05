@@ -1,0 +1,7 @@
+REQUIRED:
+PyPDF2
+pypoppler
+
+OPTIONAL:
+
+BUILDOPTS:

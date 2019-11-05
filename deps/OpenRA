@@ -1,0 +1,8 @@
+REQUIRED:
+lua
+SDL2
+mono
+
+OPTIONAL:
+
+BUILDOPTS:

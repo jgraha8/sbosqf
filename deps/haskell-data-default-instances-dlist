@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-dlist
+haskell-data-default-class
+
+OPTIONAL:
+
+BUILDOPTS:

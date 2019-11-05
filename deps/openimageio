@@ -1,0 +1,13 @@
+REQUIRED:
+ffmpeg
+libwebp
+opencv
+opencolorio
+pybind11
+robin-map
+qt5
+dcmtk
+
+OPTIONAL:
+
+BUILDOPTS:

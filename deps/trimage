@@ -1,0 +1,10 @@
+REQUIRED:
+python3
+optipng
+pngcrush
+jpegoptim
+advancecomp
+
+OPTIONAL:
+
+BUILDOPTS:

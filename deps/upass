@@ -1,0 +1,8 @@
+REQUIRED:
+python3-urwid
+pyperclip
+password-store
+
+OPTIONAL:
+
+BUILDOPTS:

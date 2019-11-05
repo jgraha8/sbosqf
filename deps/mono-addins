@@ -1,0 +1,7 @@
+REQUIRED:
+gtk-sharp
+nuget
+
+OPTIONAL:
+
+BUILDOPTS:

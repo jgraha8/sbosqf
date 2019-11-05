@@ -1,0 +1,11 @@
+REQUIRED:
+lxml
+sqlalchemy-migrate
+python-dateutil
+matplotlib
+pywebkitgtk
+zenity
+
+OPTIONAL:
+
+BUILDOPTS:

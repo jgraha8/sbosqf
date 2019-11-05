@@ -1,0 +1,15 @@
+REQUIRED:
+yajl
+libmicrohttpd
+tinyxml
+avahi
+libmpeg2
+libass
+rtmpdump
+libmodplug
+lame
+openjdk7
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+libgit2
+grantlee-qt5
+qt5-webkit
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+tor
+tsocks
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-gitrev
+haskell-optparse-applicative
+
+OPTIONAL:
+
+BUILDOPTS:

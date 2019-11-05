@@ -1,0 +1,7 @@
+REQUIRED:
+gtkimageview
+perl-gtk2
+
+OPTIONAL:
+
+BUILDOPTS:

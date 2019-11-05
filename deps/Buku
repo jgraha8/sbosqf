@@ -1,0 +1,9 @@
+REQUIRED:
+python3
+python-urllib3
+BeautifulSoup4
+cryptography
+
+OPTIONAL:
+
+BUILDOPTS:

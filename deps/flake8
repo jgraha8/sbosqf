@@ -1,0 +1,11 @@
+REQUIRED:
+pytest-runner
+pycodestyle
+pyflakes
+python-mccabe
+ConfigParser
+enum34
+
+OPTIONAL:
+
+BUILDOPTS:

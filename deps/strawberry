@@ -1,0 +1,9 @@
+REQUIRED:
+chromaprint
+protobuf
+cryptopp
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

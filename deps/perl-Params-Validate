@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Test-Fatal
+perl-Module-Implementation
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

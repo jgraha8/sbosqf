@@ -1,0 +1,8 @@
+REQUIRED:
+jack-audio-connection-kit
+liblrdf
+lilv
+
+OPTIONAL:
+
+BUILDOPTS:

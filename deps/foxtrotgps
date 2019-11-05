@@ -1,0 +1,6 @@
+REQUIRED:
+gpsd
+
+OPTIONAL:
+
+BUILDOPTS:

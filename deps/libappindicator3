@@ -1,0 +1,7 @@
+REQUIRED:
+libindicator3
+libdbusmenu
+
+OPTIONAL:
+
+BUILDOPTS:

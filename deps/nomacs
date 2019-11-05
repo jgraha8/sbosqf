@@ -1,0 +1,8 @@
+REQUIRED:
+lcov
+opencv
+quazip-qt5
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+dssi
+qjackctl
+set_rlimits
+
+OPTIONAL:
+
+BUILDOPTS:

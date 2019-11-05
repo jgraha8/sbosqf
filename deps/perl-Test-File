@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Test-utf8
+
+OPTIONAL:
+
+BUILDOPTS:

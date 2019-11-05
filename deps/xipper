@@ -1,0 +1,7 @@
+REQUIRED:
+gambas3
+extract-xiso
+
+OPTIONAL:
+
+BUILDOPTS:

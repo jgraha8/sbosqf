@@ -1,5 +1,4 @@
-BUILDOPTS:
-LDFLAGS=-L/usr/lib64
+REQUIRED:
 
 OPTIONAL:
 faac
@@ -9,3 +8,5 @@ lame
 -libdv
 schroedinger
 x264
+
+BUILDOPTS:

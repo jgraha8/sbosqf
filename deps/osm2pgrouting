@@ -1,0 +1,7 @@
+REQUIRED:
+libpqxx
+pgrouting
+
+OPTIONAL:
+
+BUILDOPTS:

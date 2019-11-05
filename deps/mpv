@@ -1,0 +1,8 @@
+REQUIRED:
+docutils
+ffmpeg4
+lua
+
+OPTIONAL:
+
+BUILDOPTS:

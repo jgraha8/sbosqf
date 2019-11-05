@@ -1,0 +1,8 @@
+REQUIRED:
+freealut
+quesoglc
+libglpng
+
+OPTIONAL:
+
+BUILDOPTS:

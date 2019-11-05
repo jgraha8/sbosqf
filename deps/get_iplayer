@@ -1,0 +1,11 @@
+REQUIRED:
+ffmpeg
+perl-LWP-Protocol-https
+perl-JSON
+perl-xml-libxml
+perl-Mojolicious
+AtomicParsley
+
+OPTIONAL:
+
+BUILDOPTS:

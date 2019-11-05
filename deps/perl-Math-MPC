@@ -1,0 +1,6 @@
+REQUIRED:
+perl-Math-MPFR
+
+OPTIONAL:
+
+BUILDOPTS:

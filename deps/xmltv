@@ -1,0 +1,16 @@
+REQUIRED:
+libwww-perl
+perl-Date-Manip
+perl-File-Slurp
+perl-Lingua-EN-Numbers-Ordinate
+perl-Lingua-Preferred
+perl-Term-ProgressBar
+perl-Unicode-String
+perl-XML-Writer
+perl-xml-libxml
+perl-xml-twig
+perl-XML-TreePP
+
+OPTIONAL:
+
+BUILDOPTS:

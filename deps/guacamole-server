@@ -1,0 +1,7 @@
+REQUIRED:
+libtelnet
+freerdp
+
+OPTIONAL:
+
+BUILDOPTS:

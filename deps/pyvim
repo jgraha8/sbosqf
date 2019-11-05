@@ -1,0 +1,9 @@
+REQUIRED:
+prompt_toolkit
+pyflakes
+Pygments
+docopt
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,12 @@
+REQUIRED:
+opencore-amr
+gpac
+faac
+aacplusenc
+nero-aac
+wxGTK
+wxsvg
+
+OPTIONAL:
+
+BUILDOPTS:

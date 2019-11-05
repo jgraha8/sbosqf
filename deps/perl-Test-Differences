@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Text-Diff
+perl-Module-Build
+perl-Capture-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

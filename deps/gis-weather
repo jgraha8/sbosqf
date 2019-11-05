@@ -1,0 +1,6 @@
+REQUIRED:
+pygobject3-python3
+
+OPTIONAL:
+
+BUILDOPTS:

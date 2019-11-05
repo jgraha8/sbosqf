@@ -1,0 +1,10 @@
+REQUIRED:
+matplotlib
+pywebkitgtk
+wkhtmltopdf
+python-requests
+pyPdf
+
+OPTIONAL:
+
+BUILDOPTS:

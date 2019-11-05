@@ -1,0 +1,10 @@
+REQUIRED:
+python-demjson
+python-morbid
+python-stomper
+python-twisted
+python-uuid
+
+OPTIONAL:
+
+BUILDOPTS:

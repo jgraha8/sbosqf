@@ -1,0 +1,10 @@
+REQUIRED:
+python-cheetah
+python-yenc
+pyOpenSSL
+unrar
+par2cmdline
+
+OPTIONAL:
+
+BUILDOPTS:

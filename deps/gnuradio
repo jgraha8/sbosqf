@@ -1,0 +1,8 @@
+REQUIRED:
+Mako
+six
+python-cheetah
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+Jinja2
+six
+python3-six
+
+OPTIONAL:
+
+BUILDOPTS:

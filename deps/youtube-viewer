@@ -1,0 +1,11 @@
+REQUIRED:
+perl-data-dump
+perl-LWP-Protocol-https
+perl-lwp-useragent-cached
+perl-JSON
+perl-JSON-XS
+perl-Module-Build
+
+OPTIONAL:
+
+BUILDOPTS:

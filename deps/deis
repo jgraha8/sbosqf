@@ -1,0 +1,12 @@
+REQUIRED:
+docopt
+python-dateutil
+python-requests
+termcolor
+PyYAML
+python-tabulate
+ndg_httpsclient
+
+OPTIONAL:
+
+BUILDOPTS:

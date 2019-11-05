@@ -1,0 +1,8 @@
+REQUIRED:
+wxPython4
+python-requests
+getdevinfo
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,9 @@
+REQUIRED:
+libunique
+gob2
+vala
+libmpd
+
+OPTIONAL:
+
+BUILDOPTS:

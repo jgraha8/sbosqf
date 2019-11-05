@@ -1,0 +1,6 @@
+REQUIRED:
+haskell-regex-base
+
+OPTIONAL:
+
+BUILDOPTS:

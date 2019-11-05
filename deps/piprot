@@ -1,0 +1,7 @@
+REQUIRED:
+six
+requests-futures
+
+OPTIONAL:
+
+BUILDOPTS:

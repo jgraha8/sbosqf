@@ -1,0 +1,7 @@
+REQUIRED:
+libnet
+jansson
+
+OPTIONAL:
+
+BUILDOPTS:

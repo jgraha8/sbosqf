@@ -1,0 +1,14 @@
+REQUIRED:
+blas
+gdal
+ITK
+OpenSceneGraph
+muParser
+python3
+ossim
+Shark
+tinyxml
+
+OPTIONAL:
+
+BUILDOPTS:

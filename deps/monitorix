@@ -1,0 +1,8 @@
+REQUIRED:
+perl-http-server-simple
+perl-config-general
+rrdtool
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+perl-List-MoreUtils
+perl-Params-Util
+perl-Package-Stash
+perl-Test-Warnings
+perl-Sub-Name
+
+OPTIONAL:
+
+BUILDOPTS:

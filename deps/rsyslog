@@ -1,0 +1,10 @@
+REQUIRED:
+docutils
+libee
+libestr
+libfastjson
+liblogging
+
+OPTIONAL:
+
+BUILDOPTS:

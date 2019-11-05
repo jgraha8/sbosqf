@@ -1,0 +1,7 @@
+REQUIRED:
+libunique
+totem-pl-parser
+
+OPTIONAL:
+
+BUILDOPTS:

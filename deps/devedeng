@@ -1,0 +1,9 @@
+REQUIRED:
+dvdauthor
+ffmpeg
+vcdimager
+pygobject3-python3
+
+OPTIONAL:
+
+BUILDOPTS:

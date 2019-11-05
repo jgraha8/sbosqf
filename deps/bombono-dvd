@@ -1,0 +1,10 @@
+REQUIRED:
+dvdauthor
+ffmpeg
+libxml++
+mjpegtools
+twolame
+
+OPTIONAL:
+
+BUILDOPTS:

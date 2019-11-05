@@ -1,0 +1,10 @@
+REQUIRED:
+portaudio
+wxGTK3
+codec2
+hamlib
+speex
+
+OPTIONAL:
+
+BUILDOPTS:

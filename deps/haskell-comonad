@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-contravariant
+haskell-distributive
+haskell-semigroups
+haskell-tagged
+haskell-transformers-compat
+
+OPTIONAL:
+
+BUILDOPTS:

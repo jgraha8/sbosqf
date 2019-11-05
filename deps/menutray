@@ -1,0 +1,9 @@
+REQUIRED:
+perl-data-dump
+perl-linux-desktop-files
+perl-gtk2
+perl-file-desktopentry
+
+OPTIONAL:
+
+BUILDOPTS:

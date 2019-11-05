@@ -1,0 +1,8 @@
+REQUIRED:
+pyudev
+pyparsing
+six
+
+OPTIONAL:
+
+BUILDOPTS:

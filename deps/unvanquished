@@ -1,0 +1,14 @@
+REQUIRED:
+GeoIP
+SDL2
+libwebp
+speex
+OpenAL
+opusfile
+lua
+PyYAML
+Jinja2
+
+OPTIONAL:
+
+BUILDOPTS:

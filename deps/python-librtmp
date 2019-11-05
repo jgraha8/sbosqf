@@ -1,0 +1,7 @@
+REQUIRED:
+rtmpdump
+cffi
+
+OPTIONAL:
+
+BUILDOPTS:

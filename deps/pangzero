@@ -1,0 +1,6 @@
+REQUIRED:
+perl-SDL
+
+OPTIONAL:
+
+BUILDOPTS:

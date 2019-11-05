@@ -1,0 +1,7 @@
+REQUIRED:
+pcre2
+vala
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+PyYAML
+feedparser
+python-requests
+redis-py
+six
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,3 +1,7 @@
 REQUIRED:
 python3
 ninja
+
+OPTIONAL:
+
+BUILDOPTS:

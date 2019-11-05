@@ -1,0 +1,8 @@
+REQUIRED:
+pytest-runner
+six
+python-requests
+
+OPTIONAL:
+
+BUILDOPTS:

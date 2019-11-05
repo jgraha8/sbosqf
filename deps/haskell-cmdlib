@@ -1,0 +1,7 @@
+REQUIRED:
+haskell-split
+haskell-syb
+
+OPTIONAL:
+
+BUILDOPTS:

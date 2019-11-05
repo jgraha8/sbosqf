@@ -1,0 +1,7 @@
+REQUIRED:
+pangox-compat
+wxPython3
+
+OPTIONAL:
+
+BUILDOPTS:

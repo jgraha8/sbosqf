@@ -1,0 +1,6 @@
+REQUIRED:
+python-gattlib
+
+OPTIONAL:
+
+BUILDOPTS:

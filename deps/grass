@@ -1,0 +1,8 @@
+REQUIRED:
+gdal
+numpy
+wxPython
+
+OPTIONAL:
+
+BUILDOPTS:

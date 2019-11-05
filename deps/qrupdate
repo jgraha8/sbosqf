@@ -1,3 +1,7 @@
 REQUIRED:
 blas
 lapack
+
+OPTIONAL:
+
+BUILDOPTS:

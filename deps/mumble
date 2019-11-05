@@ -1,0 +1,8 @@
+REQUIRED:
+protobuf
+opus
+speex
+
+OPTIONAL:
+
+BUILDOPTS:

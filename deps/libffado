@@ -1,0 +1,8 @@
+REQUIRED:
+libconfig
+libiec61883
+libxml++
+
+OPTIONAL:
+
+BUILDOPTS:

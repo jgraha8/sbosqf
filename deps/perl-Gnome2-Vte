@@ -1,0 +1,9 @@
+REQUIRED:
+perl-glib
+perl-gtk2
+perl-extutils-depends
+perl-extutils-pkgconfig
+
+OPTIONAL:
+
+BUILDOPTS:

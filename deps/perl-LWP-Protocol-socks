@@ -1,0 +1,9 @@
+REQUIRED:
+perl-IO-Socket-Socks
+perl-IO-Socket-SSL
+libwww-perl
+perl-LWP-Protocol-https
+
+OPTIONAL:
+
+BUILDOPTS:

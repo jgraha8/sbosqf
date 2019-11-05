@@ -1,0 +1,9 @@
+REQUIRED:
+PyYAML
+PyColorizer
+PrettyTable
+argcomplete
+
+OPTIONAL:
+
+BUILDOPTS:

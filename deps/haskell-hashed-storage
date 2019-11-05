@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-extensible-exceptions
+haskell-dataenc
+haskell-mmap
+haskell-zlib
+
+OPTIONAL:
+
+BUILDOPTS:

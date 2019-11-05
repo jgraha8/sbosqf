@@ -1,0 +1,6 @@
+REQUIRED:
+zeromq
+
+OPTIONAL:
+
+BUILDOPTS:

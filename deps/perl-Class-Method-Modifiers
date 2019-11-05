@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Module-Build-Tiny
+perl-Test-Fatal
+perl-Test-Requires
+
+OPTIONAL:
+
+BUILDOPTS:

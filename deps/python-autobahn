@@ -1,0 +1,6 @@
+REQUIRED:
+python-txaio
+
+OPTIONAL:
+
+BUILDOPTS:

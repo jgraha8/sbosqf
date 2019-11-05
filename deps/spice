@@ -5,7 +5,9 @@ six
 spice-protocol
 
 OPTIONAL:
--lz4
+-libcacard
+lz4
 gst-libav
 gst-plugins-bad # (with x264 support)
--libcacard # (smartcard support)
+
+BUILDOPTS:

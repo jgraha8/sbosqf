@@ -1,0 +1,15 @@
+REQUIRED:
+haskell-aeson
+haskell-conduit
+haskell-microlens-th
+haskell-monad-logger
+haskell-old-locale
+haskell-persistent
+haskell-resource-pool
+haskell-resourcet
+haskell-unliftio-core
+haskell-unordered-containers
+
+OPTIONAL:
+
+BUILDOPTS:

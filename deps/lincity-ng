@@ -1,0 +1,8 @@
+REQUIRED:
+SDL_gfx
+jam
+physfs
+
+OPTIONAL:
+
+BUILDOPTS:

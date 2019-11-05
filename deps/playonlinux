@@ -1,0 +1,11 @@
+REQUIRED:
+cabextract
+wine
+wxPython
+icoutils
+php-imagick
+p7zip
+
+OPTIONAL:
+
+BUILDOPTS:

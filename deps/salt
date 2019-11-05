@@ -1,0 +1,16 @@
+REQUIRED:
+msgpack-python
+PyYAML
+Jinja2
+MarkupSafe
+python-requests
+singledispatch
+tornado
+futures
+zeromq
+pyzmq
+pycrypto
+
+OPTIONAL:
+
+BUILDOPTS:

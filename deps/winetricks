@@ -1,0 +1,7 @@
+REQUIRED:
+cabextract
+wine
+
+OPTIONAL:
+
+BUILDOPTS:

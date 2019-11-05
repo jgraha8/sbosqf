@@ -1,0 +1,6 @@
+REQUIRED:
+rabbitmq-server
+
+OPTIONAL:
+
+BUILDOPTS:

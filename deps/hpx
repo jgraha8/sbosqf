@@ -1,0 +1,8 @@
+REQUIRED:
+numactl
+hwloc
+gperftools
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,7 @@
+REQUIRED:
+python-requests
+Pygments
+
+OPTIONAL:
+
+BUILDOPTS:

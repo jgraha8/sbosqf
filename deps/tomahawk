@@ -1,0 +1,12 @@
+REQUIRED:
+jreen
+libechonest
+LucenePlusPlus
+qtkeychain
+sparsehash
+quazip
+libwebsocketpp
+
+OPTIONAL:
+
+BUILDOPTS:

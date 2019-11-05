@@ -1,0 +1,6 @@
+REQUIRED:
+ncbi-blast+
+
+OPTIONAL:
+
+BUILDOPTS:

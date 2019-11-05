@@ -1,2 +1,6 @@
 REQUIRED:
 perl-pango
+
+OPTIONAL:
+
+BUILDOPTS:

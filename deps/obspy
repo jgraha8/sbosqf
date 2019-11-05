@@ -1,0 +1,15 @@
+REQUIRED:
+decorator
+numpy
+python-future
+python-requests
+scipy
+matplotlib
+lxml
+SQLAlchemy
+basemap
+suds-jurko
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,12 @@
+REQUIRED:
+DevIL
+OpenAL
+p7zip
+jdk
+SDL2
+bullet
+libunwind
+
+OPTIONAL:
+
+BUILDOPTS:

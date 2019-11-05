@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Class-MethodMaker
+perl-Capture-Tiny
+perl-Test-Exception
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+Pygments
+pyqode.qt
+python3-future
+
+OPTIONAL:
+
+BUILDOPTS:

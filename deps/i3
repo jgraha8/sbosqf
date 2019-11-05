@@ -9,3 +9,5 @@ perl-AnyEvent
 
 OPTIONAL:
 i3status
+
+BUILDOPTS:

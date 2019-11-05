@@ -1,0 +1,8 @@
+REQUIRED:
+wxPython
+SQLAlchemy
+python-dateutil
+
+OPTIONAL:
+
+BUILDOPTS:

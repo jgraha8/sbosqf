@@ -1,0 +1,9 @@
+REQUIRED:
+python-requests
+paramiko
+BeautifulSoup4
+pysnmp
+
+OPTIONAL:
+
+BUILDOPTS:

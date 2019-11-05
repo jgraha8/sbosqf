@@ -1,0 +1,6 @@
+REQUIRED:
+python3-setuptools_autover
+
+OPTIONAL:
+
+BUILDOPTS:

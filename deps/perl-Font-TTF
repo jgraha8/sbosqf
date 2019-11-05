@@ -1,0 +1,6 @@
+REQUIRED:
+perl-IO-String
+
+OPTIONAL:
+
+BUILDOPTS:

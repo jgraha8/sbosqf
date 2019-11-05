@@ -1,0 +1,10 @@
+REQUIRED:
+haskell-asn1-encoding
+haskell-asn1-types
+haskell-crypto-pubkey-types
+haskell-pem
+haskell-x509
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,10 @@
+REQUIRED:
+python-twisted
+queuelib
+parsel
+PyDispatcher
+service_identity
+
+OPTIONAL:
+
+BUILDOPTS:

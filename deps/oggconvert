@@ -1,0 +1,7 @@
+REQUIRED:
+ffmpeg2theora
+gst0-python
+
+OPTIONAL:
+
+BUILDOPTS:

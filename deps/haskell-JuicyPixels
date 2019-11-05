@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-mmap
+haskell-primitive
+haskell-vector
+haskell-zlib
+
+OPTIONAL:
+
+BUILDOPTS:

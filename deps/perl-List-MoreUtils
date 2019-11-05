@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Exporter-Tiny
+perl-List-MoreUtils-XS
+
+OPTIONAL:
+
+BUILDOPTS:
