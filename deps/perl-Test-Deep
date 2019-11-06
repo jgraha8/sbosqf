@@ -1,2 +1,6 @@
 REQUIRED:
 perl-Test-NoWarnings
+
+OPTIONAL:
+
+BUILDOPTS:

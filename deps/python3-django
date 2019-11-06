@@ -1,6 +1,7 @@
 REQUIRED:
 python3
 pytz
+sqlparse
 
 OPTIONAL:
 python-mysqlclient # If using mysql backends

@@ -1,2 +1,6 @@
 REQUIRED:
 redis
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,2 +1,6 @@
 REQUIRED:
 avahi
+
+OPTIONAL:
+
+BUILDOPTS:
