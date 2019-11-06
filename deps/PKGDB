@@ -2858,8 +2858,8 @@ ioping:system/ioping:0.9:2ceda59e:0:0
 ioquake3:games/ioquake3:r20190822:dd2ed6b1:0:0
 iortcw:games/iortcw:1.51b:3fb76854:0:0
 iotop:system/iotop:0.6:e00403d4:0:0
-ip2location-apache:network/ip2location-apache:20180302:80146b61:0:0
-ip2location-c:network/ip2location-c:8.0.7:8298f81d:1:0
+ip2location-apache:network/ip2location-apache:20181007:80146b61:1:0
+ip2location-c:network/ip2location-c:8.0.9:b0e85bf9:1:0
 ipaddr-py:python/ipaddr-py:2.1.10:e3463c1:1:0
 ipaddress:libraries/ipaddress:1.0.22:e6cb2fa9:0:0
 ipcalc:network/ipcalc:0.41:adc562c5:0:0
@@ -3973,7 +3973,7 @@ mod_ruid2:network/mod_ruid2:0.9.8:baaf750a:0:0
 mod_wsgi:network/mod_wsgi:4.6.5:f7762413:0:0
 mod_wsgi-metrics:network/mod_wsgi-metrics:1.1.1:ef5ad0d5:0:0
 modemu2k:network/modemu2k:0.0.5:b79c8327:0:0
-modsecurity-apache:network/modsecurity-apache:2.9.3:15b53bf:0:0
+modsecurity-apache:network/modsecurity-apache:2.9.3:15b53bf:1:0
 modules:system/modules:4.3.0:3618b252:0:0
 moedict-desktop.app:misc/moedict-desktop.app:1.1.1:71b6c210:0:0
 mog:games/mog:0.63.1548:d6e7dd63:0:0
