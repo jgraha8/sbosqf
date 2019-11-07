@@ -10,7 +10,7 @@ usbredir
 virglrenderer
 # To compile with virglrenderer, you will need to upgrade to
 # mesa-12.0.0 or higher.
-mesa
+mesa12
 device-tree-compiler
 libnfs
 snappy

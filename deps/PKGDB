@@ -5847,7 +5847,7 @@ qcomicbook:graphics/qcomicbook:0.9.0:e78ce8e2:0:0
 qconf:development/qconf:1.4:bb68e26e:0:0
 qdirstat:system/qdirstat:1.6:f459fb96:0:0
 qelectrotech:graphics/qelectrotech:0.6:3904c071:0:0
-qemu:system/qemu:4.1.0:497d2a24:1:0
+qemu:system/qemu:4.1.0:497d2a24:0:0
 qemu-guest-agent:system/qemu-guest-agent:2.12.0:430501b0:0:0
 qgis:gis/qgis:2.18.18:a28f7e72:0:0
 qgnomeplatform:libraries/qgnomeplatform:0.5:1515ad2d:0:0
