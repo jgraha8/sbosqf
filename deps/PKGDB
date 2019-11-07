@@ -3900,7 +3900,7 @@ menumaker:desktop/menumaker:0.99.10:b82490d9:0:0
 menutray:desktop/menutray:0.53:31f5a9d0:0:0
 mercator:libraries/mercator:0.3.3:ee693cc1:0:0
 merkaartor:gis/merkaartor:0.18.2:638d2ee7:0:0
-mesa:system/mesa:12.0.6:6c73688c:1:0
+mesa12:system/mesa12:12.0.6:809d8225:0:0
 meshlab:graphics/meshlab:2016.12:df59d5b2:0:0
 meson:development/meson:0.51.0:544388cd:1:0
 metapixel:graphics/metapixel:1.0.2:fbfa8a08:0:0
