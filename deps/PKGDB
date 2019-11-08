@@ -1066,7 +1066,7 @@ clalsadrv:libraries/clalsadrv:2.0.0:61a4019:0:0
 clam:audio/clam:r15456:b5f78209:0:0
 clam_annotator:audio/clam_annotator:0.5.0:55cbe6ea:0:0
 clam_voice2midi:audio/clam_voice2midi:0.3.10:bf388c05:0:0
-clamav:system/clamav:0.101.4:de852a01:0:0
+clamav:system/clamav:0.101.4:de852a01:1:0
 clamav-unofficial-sigs:network/clamav-unofficial-sigs:5.6.2:1196fb87:0:0
 clamsmtp:system/clamsmtp:1.10:efc71b73:0:0
 clamtk:system/clamtk:5.26:7acd605b:0:0
@@ -1276,7 +1276,7 @@ cxxtest:development/cxxtest:4.4:b09eac0a:0:0
 cxxtools:development/cxxtools:2.2.1:c60943b7:0:0
 cycler:development/cycler:0.10.0:15d7182a:1:0
 cyphesis:games/cyphesis:0.6.2:b2823bcf:0:0
-cyrus-imapd:network/cyrus-imapd:2.5.11:e76e5ca8:0:0
+cyrus-imapd:network/cyrus-imapd:2.5.13:9e1c46ee:1:0
 d-feet:system/d-feet:0.3.11:35a03a1c:0:0
 d-tools:development/d-tools:2.088.1:835e6b2a:0:0
 d1x-rebirth:games/d1x-rebirth:0.58.1:366c9792:0:0
@@ -2940,7 +2940,7 @@ jalview:academic/jalview:2.10.0b1:52b34d3b:0:0
 jam:development/jam:2.5:19b7f202:0:0
 jamin:audio/jamin:0.95.0:eaa00045:0:0
 jamulus:audio/jamulus:3.4.3:b4d168e8:0:0
-jansson:libraries/jansson:2.12:db0092a9:0:0
+jansson:libraries/jansson:2.12:db0092a9:1:0
 japa:audio/japa:0.8.4:22c27990:0:0
 jaraco.classes:python/jaraco.classes:1.4.3:7c10d429:0:0
 jasspa:development/jasspa:091011:76765f9a:0:0

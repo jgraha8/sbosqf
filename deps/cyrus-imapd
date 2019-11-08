@@ -1,1 +1,9 @@
 REQUIRED:
+
+OPTIONAL:
+jansson
+clamav
+
+BUILDOPTS:
+DATABASE=mysql
+

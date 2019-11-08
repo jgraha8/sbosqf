@@ -1,5 +1,6 @@
 REQUIRED:
-accuraterip-checksum
+# This package has been removed from the repo
+# accuraterip-checksum
 cddb-py
 mutagen
 musicbrainzngs
