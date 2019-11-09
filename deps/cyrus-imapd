@@ -6,4 +6,4 @@ clamav
 
 BUILDOPTS:
 DATABASE=mysql
-
+DISABLE_GSSAPI=yes

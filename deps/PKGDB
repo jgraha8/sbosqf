@@ -1276,7 +1276,7 @@ cxxtest:development/cxxtest:4.4:b09eac0a:0:0
 cxxtools:development/cxxtools:2.2.1:c60943b7:0:0
 cycler:development/cycler:0.10.0:15d7182a:1:0
 cyphesis:games/cyphesis:0.6.2:b2823bcf:0:0
-cyrus-imapd:network/cyrus-imapd:2.5.13:9e1c46ee:1:0
+cyrus-imapd:network/cyrus-imapd:2.5.13:86810251:1:0
 d-feet:system/d-feet:0.3.11:35a03a1c:0:0
 d-tools:development/d-tools:2.088.1:835e6b2a:0:0
 d1x-rebirth:games/d1x-rebirth:0.58.1:366c9792:0:0
