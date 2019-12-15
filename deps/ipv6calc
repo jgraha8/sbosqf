@@ -1,9 +1,11 @@
 OPTIONAL:
 ip2location-c
-GeoIP
+# GeoIP
+libmaxminddb
 
 BUILDOPTS:
 EXTERNAL=yes
 IP2LOCATION=yes
-GEOIP=yes
+GEOIP=no
+GEOIP2=yes
 MOD_IPV6CALC=yes
