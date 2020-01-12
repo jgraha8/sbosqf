@@ -1,6 +1,6 @@
 REQUIRED:
 
 OPTIONAL:
-python3
+python3-six
 
 BUILDOPTS:

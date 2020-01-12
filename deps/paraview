@@ -3,13 +3,13 @@ qt5
 ffmpeg
 hdf5
 Sphinx
-matplotlib
-openmpi # mpich 
 
 OPTIONAL:
+openmpi # mpich
+matplotlib
 PythonQt
 
 BUILDOPTS:
-MPICH=yes   # Really should be MPI 
+MPICH=yes   # Really should be MPI
 PYTHONQT=yes
 MATPLOTLIB=yes

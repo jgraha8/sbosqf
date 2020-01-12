@@ -4,7 +4,7 @@ lua
 python3
 
 OPTIONAL:
--c-ares
+c-ares
 -krb5
 -nghttp2
 -spandsp
