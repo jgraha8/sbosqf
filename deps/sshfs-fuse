@@ -1,4 +1,6 @@
 REQUIRED:
+meson
+fuse3
 
 OPTIONAL:
 

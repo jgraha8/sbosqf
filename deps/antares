@@ -1,0 +1,10 @@
+REQUIRED:
+OpenAL
+glfw3
+gn
+libc++
+libmodplug
+
+OPTIONAL:
+
+BUILDOPTS:

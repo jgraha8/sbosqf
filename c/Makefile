@@ -1,7 +1,7 @@
 CC:=gcc
 ZLIB:=${HOME}/opt/zlib/1.2.11
-CFLAGS:=-Wall -Wfatal-errors -Werror -O0 -g -I. -I$(ZLIB)/include -I/usr/local/include -fPIC 
-LDFLAGS:=-L$(ZLIB)/lib -L/usr/local/lib -Wl,-rpath,$(ZLIB)/lib
+CFLAGS:=-Wall -Wfatal-errors -Werror -O0 -g -I. -I$(ZLIB)/include -I/mnt/shared/include -fPIC 
+LDFLAGS:=-L$(ZLIB)/lib -L/mnt/shared/lib64 -Wl,-rpath,$(ZLIB)/lib
 LIBS:=-lbds -lz -lm
 
 all: sbopkg-dep2sqf

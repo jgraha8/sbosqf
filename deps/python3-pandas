@@ -1,4 +1,7 @@
 REQUIRED:
+numpy3
+python3-dateutil
+pytz
 
 OPTIONAL:
 

@@ -1,4 +1,6 @@
 REQUIRED:
+python3-certifi
+python-requests
 
 OPTIONAL:
 

@@ -1,4 +1,7 @@
 REQUIRED:
+bleach
+docutils
+Pygments
 
 OPTIONAL:
 

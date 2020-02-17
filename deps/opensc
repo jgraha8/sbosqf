@@ -2,7 +2,5 @@ REQUIRED:
 pcsc-lite
 
 OPTIONAL:
--openct
 
 BUILDOPTS:
-# OPENCT=1

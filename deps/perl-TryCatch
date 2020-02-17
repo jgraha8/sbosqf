@@ -1,0 +1,16 @@
+REQUIRED:
+perl-B-Hooks-EndOfScope
+perl-B-Hooks-OP-Check
+perl-B-Hooks-OP-PPAddr
+perl-Devel-Declare
+perl-Moose
+perl-MooseX-Types
+perl-namespace-clean
+perl-Parse-Method-Signatures
+perl-Scope-Upper
+perl-Sub-Exporter
+perl-Variable-Magic
+
+OPTIONAL:
+
+BUILDOPTS:

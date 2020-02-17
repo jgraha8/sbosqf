@@ -1,4 +1,6 @@
 REQUIRED:
+libmigdb
+librhtv
 
 OPTIONAL:
 

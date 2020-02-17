@@ -1,0 +1,9 @@
+REQUIRED:
+python3-Flask
+requests-oauthlib
+URLObject
+python3-six
+
+OPTIONAL:
+
+BUILDOPTS:

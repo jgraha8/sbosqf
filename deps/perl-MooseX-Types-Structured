@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Devel-PartialDump
+perl-MooseX-Types
+perl-Sub-Exporter
+perl-Test-Needs
+
+OPTIONAL:
+
+BUILDOPTS:

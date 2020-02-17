@@ -1,4 +1,5 @@
 REQUIRED:
+python3-six
 
 OPTIONAL:
 

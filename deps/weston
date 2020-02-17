@@ -1,0 +1,10 @@
+REQUIRED:
+libinput
+libwebp
+libxkbcommon
+wayland-egl
+wayland-protocols
+
+OPTIONAL:
+
+BUILDOPTS:

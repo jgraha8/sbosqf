@@ -1,4 +1,5 @@
 REQUIRED:
+perl-xml-libxml
 
 OPTIONAL:
 

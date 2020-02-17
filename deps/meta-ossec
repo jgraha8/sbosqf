@@ -1,0 +1,5 @@
+METAPKG
+REQUIRED:
+ossec-agent
+ossec-local
+ossec-server

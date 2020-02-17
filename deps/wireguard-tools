@@ -1,4 +1,5 @@
 REQUIRED:
+wireguard-linux-compat
 
 OPTIONAL:
 

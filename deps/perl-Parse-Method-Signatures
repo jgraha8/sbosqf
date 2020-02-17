@@ -1,0 +1,10 @@
+REQUIRED:
+perl-Test-Differences
+perl-MooseX-Traits
+perl-MooseX-Types
+perl-MooseX-Types-Structured
+perl-PPI
+
+OPTIONAL:
+
+BUILDOPTS:

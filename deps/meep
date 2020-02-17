@@ -1,4 +1,8 @@
 REQUIRED:
+lapack
+openmpi
+hdf5
+libctl
 
 OPTIONAL:
 

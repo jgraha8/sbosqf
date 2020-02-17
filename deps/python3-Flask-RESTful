@@ -1,0 +1,9 @@
+REQUIRED:
+aniso8601
+python3-Flask
+python3-six
+pytz
+
+OPTIONAL:
+
+BUILDOPTS:

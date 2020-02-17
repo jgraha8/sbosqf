@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Class-Tiny
+perl-namespace-clean
+perl-Sub-Exporter
+
+OPTIONAL:
+
+BUILDOPTS:

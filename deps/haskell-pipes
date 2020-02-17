@@ -1,0 +1,9 @@
+REQUIRED:
+haskell-exceptions
+haskell-fail
+haskell-mmorph
+haskell-void
+
+OPTIONAL:
+
+BUILDOPTS:

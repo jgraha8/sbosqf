@@ -1,4 +1,5 @@
 REQUIRED:
+python3-PyQt5
 
 OPTIONAL:
 

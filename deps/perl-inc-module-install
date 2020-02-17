@@ -1,0 +1,9 @@
+REQUIRED:
+perl-File-Remove
+perl-Module-Build
+perl-Module-ScanDeps
+perl-YAML-Tiny
+
+OPTIONAL:
+
+BUILDOPTS:

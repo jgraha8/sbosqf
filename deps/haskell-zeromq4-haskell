@@ -1,0 +1,10 @@
+REQUIRED:
+zeromq
+haskell-async
+haskell-exceptions
+haskell-monad-control
+haskell-semigroups
+
+OPTIONAL:
+
+BUILDOPTS:

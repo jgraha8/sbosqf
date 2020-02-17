@@ -1,4 +1,6 @@
 REQUIRED:
+meson
+libwebp
 
 OPTIONAL:
 

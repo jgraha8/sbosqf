@@ -2,6 +2,7 @@ REQUIRED:
 python3
 pytz
 sqlparse
+asgiref
 
 OPTIONAL:
 python-mysqlclient # If using mysql backends
