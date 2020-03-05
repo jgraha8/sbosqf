@@ -136,6 +136,7 @@ struct pkg_options {
         bool optional;                    /* Include optional packages in dep file parsing */
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
+        bool rebuild_deps;                /* Rebuild dependencies--used for updating packages only */
         bool graph;
         bool all_packages;
 };
