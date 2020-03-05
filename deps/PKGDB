@@ -4551,9 +4551,9 @@ osm2pgsql:gis/osm2pgsql:1.2.1:861402b1:0:0
 osmo:office/osmo:0.4.2:326f9743:0:0
 osmo-sdr:development/osmo-sdr:2015.12.11:91079490:0:0
 oss:audio/oss:4.2.2011:3475398f:0:0
-ossec-agent:system/ossec-agent:2.9.1:74b2b93e:0:0
-ossec-local:system/ossec-local:2.9.1:74b2b93e:0:0
-ossec-server:system/ossec-server:2.9.1:74b2b93e:0:0
+ossec-agent:system/ossec-agent:3.6.0:2219479d:1:0
+ossec-local:system/ossec-local:3.6.0:393e6727:1:0
+ossec-server:system/ossec-server:3.6.0:acf4313b:1:0
 ossim:gis/ossim:2.10.0:7ff35fcf:0:0
 ostree:system/ostree:2019.6:79277d28:0:0
 ostrichriders:games/ostrichriders:0.6.5:ebfa51b0:0:0
