@@ -245,9 +245,9 @@ static int process_options(int argc, char **argv, const char *options_str, const
                 case 'p':
                         pkg_options->revdeps = true;
                         break;
-		case 'r':
-		        pkg_options->rebuild_deps = true;
-			break;
+                case 'r':
+                        pkg_options->rebuild_deps = true;
+                        break;
                 case 't':
                         pkg_options->track_mode = PKG_TRACK_ENABLE;
                         break;
@@ -327,7 +327,7 @@ static void cmd_update_print_help()
                "  -h, --help\n"
                "  -l, --list\n"
                "  -o, --output\n"
-	       "  -r, --rebuild-deps\n",
+               "  -r, --rebuild-deps\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
@@ -341,7 +341,7 @@ static int cmd_update_options(int argc, char **argv, struct pkg_options *options
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
                                                      LONG_OPT("output", 'o'),
-						     LONG_OPT("rebuild-deps", 'r'),
+                                                     LONG_OPT("rebuild-deps", 'r'),
                                                      {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_update_print_help, options);
@@ -1314,8 +1314,8 @@ static int select_updated_pkgs(struct pkg_graph *pkg_graph, const string_list_t 
         return 0;
 }
 
-static int update_process_deps(struct pkg_graph *pkg_graph, const bool rebuild_deps, pkg_nodes_t *pkg_list, pkg_nodes_t *update_list,
-                               pkg_nodes_t *build_list)
+static int update_process_deps(struct pkg_graph *pkg_graph, const bool rebuild_deps, pkg_nodes_t *pkg_list,
+                               pkg_nodes_t *update_list, pkg_nodes_t *build_list)
 {
         int rc = 0;
 
@@ -1402,12 +1402,13 @@ static int update_process_deps(struct pkg_graph *pkg_graph, const bool rebuild_d
 
                                   The package is addded to the output build list. No further processing.
                                 */
-			        if( rebuild_deps ) {
-				        if (PKG_UPDATE_NONE == node->pkg.update.type) {
-					        node->pkg.update = pkg_update_assign(PKG_DEP_REBUILD, cur_node, NULL);
-					}
-					pkg_nodes_append_unique(build_list, node);
-				}
+                                if (rebuild_deps) {
+                                        if (PKG_UPDATE_NONE == node->pkg.update.type) {
+                                                node->pkg.update =
+                                                    pkg_update_assign(PKG_DEP_REBUILD, cur_node, NULL);
+                                        }
+                                        pkg_nodes_append_unique(build_list, node);
+                                }
                         } else {
                                 /*
                                   Dependency downgrade
@@ -1511,10 +1512,10 @@ static int update_process(struct pkg_graph *pkg_graph, struct pkg_options pkg_op
         bool db_dirty                 = false;
         pkg_nodes_t *input_pkg_list   = pkg_nodes_alloc_reference();
         pkg_nodes_t *review_skip_list = pkg_nodes_alloc_reference();
-	
-	const enum pkg_review_type review_type = pkg_options.review_type;
-	const bool rebuild_deps = pkg_options.rebuild_deps;
-	
+
+        const enum pkg_review_type review_type = pkg_options.review_type;
+        const bool rebuild_deps                = pkg_options.rebuild_deps;
+
         pkg_nodes_append_all(input_pkg_list, pkg_list);
 
         while (1) {
@@ -1531,7 +1532,7 @@ static int update_process(struct pkg_graph *pkg_graph, struct pkg_options pkg_op
                 }
 
                 while (pkg_nodes_size(pkg_list) + pkg_nodes_size(update_list) > 0) {
-		        rc = update_process_deps(pkg_graph, rebuild_deps, pkg_list, update_list, build_list);
+                        rc = update_process_deps(pkg_graph, rebuild_deps, pkg_list, update_list, build_list);
                         if (rc != 0) {
                                 goto finish;
                         }
