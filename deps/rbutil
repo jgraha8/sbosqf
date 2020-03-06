@@ -1,0 +1,8 @@
+REQUIRED:
+speex
+cryptopp
+quazip
+
+OPTIONAL:
+
+BUILDOPTS:

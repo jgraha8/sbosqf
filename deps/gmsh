@@ -1,0 +1,9 @@
+REQUIRED:
+fltk
+lapack
+med
+OpenCASCADE
+
+OPTIONAL:
+
+BUILDOPTS:
