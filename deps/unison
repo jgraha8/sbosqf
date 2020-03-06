@@ -10,3 +10,5 @@ BUILDOPTS:
 -FLAVOR=gtk2
 # Enables text only
 FLAVOR=text
+# Only single make thread supported
+MAKEFLAGS="-j1"
