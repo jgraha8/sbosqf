@@ -1,6 +1,5 @@
 REQUIRED:
-jack-audio-connection-kit
-liblo
+jack
 
 OPTIONAL:
 

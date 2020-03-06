@@ -1,5 +1,5 @@
 REQUIRED:
-jack-audio-connection-kit
+jack
 clxclient
 zita-alsa-pcmi
 

@@ -1,6 +1,6 @@
 REQUIRED:
 qt5-webkit
-jack-audio-connection-kit
+jack
 x264
 lame
 frei0r

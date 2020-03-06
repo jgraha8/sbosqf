@@ -1,5 +1,5 @@
 REQUIRED:
-python-docopt
+docopt
 python3
 
 OPTIONAL:

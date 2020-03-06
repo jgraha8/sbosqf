@@ -1,13 +1,19 @@
 REQUIRED:
-gdal
-Jinja2
+postgis
+libspatialite
 libspatialindex
-numpy
-OWSLib
+numpy3
+qwt-qt5
+QScintilla-qt5
+qtkeychain
+qca-qt5
+python3-PyYAML
+python3-certifi
+python-requests
 Pygments
+OWSLib
 psycopg2
-pyspatialite
-qwtpolar
+Jinja2
 
 OPTIONAL:
 

@@ -1,6 +1,6 @@
 REQUIRED:
 qt5-webkit
-jack2
+jack
 lame
 portaudio
 portmidi

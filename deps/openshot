@@ -4,7 +4,7 @@ python3-pyzmq
 libopenshot
 python-chardet
 httplib2
-jack-audio-connection-kit
+jack
 python3-certifi
 python-requests
 

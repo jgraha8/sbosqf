@@ -3,7 +3,7 @@ attrs
 ffmpeg
 lxml
 mini-amf
-pycryptodome
+pycryptodomex
 python-configargparse
 python-future
 python-requests

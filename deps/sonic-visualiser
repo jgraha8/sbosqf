@@ -1,10 +1,12 @@
 REQUIRED:
 qt5
-jack-audio-connection-kit
 liblrdf
 rubberband
 vamp-plugin-sdk
 sord
+capnproto
+opusfile
+libfishsound
 
 OPTIONAL:
 

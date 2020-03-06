@@ -1,6 +1,6 @@
 REQUIRED:
 fltk
-jack-audio-connection-kit
+jack
 
 OPTIONAL:
 
