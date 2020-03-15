@@ -1,5 +1,6 @@
 REQUIRED:
-jack-audio-connection-kit
+jack
+meson
 
 OPTIONAL:
 

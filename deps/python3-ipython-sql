@@ -1,0 +1,9 @@
+REQUIRED:
+python3-ipython
+PrettyTable
+SQLAlchemy
+sqlparse
+
+OPTIONAL:
+
+BUILDOPTS:

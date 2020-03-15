@@ -1,6 +1,5 @@
 REQUIRED:
-jack-audio-connection-kit
-lash
+jack
 slv2
 fluidsynth
 

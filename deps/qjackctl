@@ -1,6 +1,6 @@
 REQUIRED:
 qt5
-jack-audio-connection-kit
+jack
 
 OPTIONAL:
 

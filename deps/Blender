@@ -1,6 +1,6 @@
 REQUIRED:
 ffmpeg
-jack-audio-connection-kit
+jack
 opencollada
 python-requests
 valgrind
@@ -8,6 +8,7 @@ numpy3
 SDL2
 openimageio
 freealut
+tbb
 
 OPTIONAL:
 

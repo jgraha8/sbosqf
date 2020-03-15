@@ -1,6 +1,6 @@
 REQUIRED:
 aubio
-jack-audio-connection-kit
+jack
 liblo
 liblrdf
 vamp-plugin-sdk

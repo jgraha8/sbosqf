@@ -1,0 +1,7 @@
+REQUIRED:
+python3-six
+numpy3
+
+OPTIONAL:
+
+BUILDOPTS:

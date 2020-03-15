@@ -5,7 +5,7 @@ jansson
 qt5
 rtmpdump
 x264
-jack-audio-connection-kit
+jack
 libfdk-aac
 
 OPTIONAL:

@@ -1,5 +1,5 @@
 REQUIRED:
-jack-audio-connection-kit
+jack
 ladspa_sdk
 liblo
 qt5

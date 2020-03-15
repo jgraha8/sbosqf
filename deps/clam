@@ -1,6 +1,6 @@
 REQUIRED:
 id3lib
-jack-audio-connection-kit
+jack
 ladspa_sdk
 lv2
 portaudio
