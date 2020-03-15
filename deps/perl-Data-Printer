@@ -1,0 +1,9 @@
+REQUIRED:
+perl-Clone-PP
+perl-File-HomeDir
+perl-Package-Stash
+perl-Sort-Naturally
+
+OPTIONAL:
+
+BUILDOPTS:

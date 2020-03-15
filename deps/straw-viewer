@@ -1,0 +1,10 @@
+REQUIRED:
+perl-data-dump
+perl-LWP-Protocol-https
+perl-JSON
+perl-Module-Build
+perl-List-MoreUtils
+
+OPTIONAL:
+
+BUILDOPTS:

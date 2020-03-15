@@ -1,0 +1,7 @@
+REQUIRED:
+perl-Class-Method-Modifiers
+perl-Moo
+
+OPTIONAL:
+
+BUILDOPTS:

@@ -1,0 +1,8 @@
+REQUIRED:
+python3-matplotlib
+python3-pandas
+scipy3
+
+OPTIONAL:
+
+BUILDOPTS:
