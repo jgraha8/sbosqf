@@ -36,6 +36,7 @@
 
 #define PKG_CHECK_INSTALLED 0x1
 #define PKG_CHECK_ANY_INSTALLED 0x2
+
 // #define PKG_AUTO_REVIEW_ADD 0x1
 //#define PKG_AUTO_REVIEW_QUIET 0x2
 
@@ -126,7 +127,7 @@ enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT };
 enum pkg_track_mode { PKG_TRACK_NONE = 0, PKG_TRACK_ENABLE, PKG_TRACK_ENABLE_ALL };
 
 struct pkg_options {
-        int check_installed; /* Bit flags for checking packages are already installed */
+        int check_installed;              /* Bit flags for checking packages are already installed */
         int max_dist;
         enum pkg_review_type review_type; /* Selection for how packages are reviewed */
         enum pkg_output_mode output_mode; /* Output mode selection */
@@ -137,6 +138,7 @@ struct pkg_options {
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
         bool rebuild_deps;                /* Rebuild dependencies--used for updating packages only */
+	bool check_slackpkg_repo;         /* Check slackpkg repo for updates instead of installed packages */
         bool graph;
         bool all_packages;
 };

@@ -21,6 +21,7 @@
 // Parameters
 #define CONFIG ".sbopkg-dep2sqf"
 #define SBOPKG_REPO "/var/lib/sbopkg/compukix"
+#define SLACKPKG_REPO_NAME "SLACKPKGPLUS_SBo"
 #define SBO_TAG "_SBo"
 #define PKGLIST "PKGLIST"
 #define REVIEWED "REVIEWED"
