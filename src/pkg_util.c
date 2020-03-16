@@ -32,12 +32,12 @@ void free_string_ptr(char **str)
         *str = NULL;
 }
 
-bool skip_installed(const char *pkg_name, struct pkg_options options)
+bool skip_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_name, struct pkg_options options)
 {
         if (options.check_installed) {
                 const char *check_tag =
                     (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-                if (slack_pkg_is_installed(pkg_name, check_tag)) {
+                if (slack_pkg_dbi->is_installed(pkg_name, check_tag)) {
                         return true;
                 }
         }
@@ -440,8 +440,9 @@ int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *
  *    0   success / no errors
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
-static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options,
-                       bool *db_dirty, pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
+static int __write_sqf(struct pkg_graph *pkg_graph, const struct slack_pkg_dbi *slack_pkg_dbi,
+                       const char *pkg_name, struct pkg_options options, bool *db_dirty,
+                       pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
 {
         int rc = 0;
         struct pkg_iterator iter;
@@ -466,7 +467,7 @@ static int __write_sqf(struct pkg_graph *pkg_graph, const char *pkg_name, struct
                 if (options.check_installed && strcmp(pkg_name, node->pkg.name) != 0) {
                         const char *tag =
                             (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-                        if (slack_pkg_is_installed(node->pkg.name, tag)) {
+                        if (slack_pkg_dbi->is_installed(node->pkg.name, tag)) {
                                 // mesg_info("package %s is already installed: skipping\n", node->pkg.name);
                                 continue;
                         }
@@ -503,8 +504,8 @@ finish:
  *   -1   if error occurred
  *    0   success / no errors
  */
-int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list_t *pkg_names,
-              struct pkg_options options, bool *db_dirty)
+int write_sqf(struct ostream *os, const struct slack_pkg_dbi *slack_pkg_dbi, struct pkg_graph *pkg_graph,
+              const string_list_t *pkg_names, struct pkg_options options, bool *db_dirty)
 {
         int rc = 0;
 
@@ -521,8 +522,9 @@ int write_sqf(struct ostream *os, struct pkg_graph *pkg_graph, const string_list
                 rc = 0;
 
                 while (1) {
-                        rc = __write_sqf(pkg_graph, string_list_get_const(pkg_names, i) /* pkg_name */, options,
-                                         db_dirty, review_skip_pkgs, output_pkgs);
+                        rc = __write_sqf(pkg_graph, slack_pkg_dbi,
+                                         string_list_get_const(pkg_names, i) /* pkg_name */, options, db_dirty,
+                                         review_skip_pkgs, output_pkgs);
 
                         if (rc > 0) {
                                 /* A dependency file was modified during review */
@@ -573,95 +575,6 @@ finish:
 
 int compar_versions(const char *ver_a, const char *ver_b) { return filevercmp(ver_a, ver_b); }
 
-#if 0
-void write_remove_sqf(FILE *fp, struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
-{
-        struct pkg_iterator deps_iter, revdeps_iter;
-
-        const char *tag = (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-
-	// Walk the dep tree
-
-
-
-        for (struct pkg_node *dep_node  = pkg_iterator_begin(&deps_iter, pkg_graph, pkg_name, PKG_ITER_DEPS, -1);
-             dep_node != NULL; dep_node = pkg_iterator_next(&iter)) {
-		// Mark all packages for removal
-		dep_node->pkg.for_removal = true;
-	}
-
-	pkg_iterator_destroy(&deps_iter);
-
-        for (struct pkg_node *dep_node  = pkg_iterator_begin(&deps_iter, pkg_graph, pkg_name, PKG_ITER_DEPS, -1);
-             dep_node != NULL; dep_node = pkg_iterator_next(&deps_iter)) {
-
-		/*
-		  Check immediate parent packages to see if any are installed
-		*/
-                for (struct pkg_node *revdep_node =
-			     pkg_iterator_begin(&revdeps_iter, pkg_graph, dep_node->pkg.name, PKG_ITER_REVDEPS, 1);
-                     revdep_node != NULL; revdep_node = pkg_iterator_next(&revdesp_iter)) {
-
-			struct pkg_node *rnode =  pkg_iterator_node(&revdeps_iter);
-
-			if( rnode == NULL ) {
-				assert( strcmp(rnode->pkg.name, dep_node->pkg.name) == 0 );
-				continue;
-			}
-			assert( dep_node == rnode );
-
-			if (!rnode->pkg.parent_installed) {
-                                if (!revdep_node->pkg.for_removal && slack_pkg_is_installed(revdep_node->pkg.name, tag)) {
-                                        printf("%s is required by at least %s\n", rnode->pkg.name,
-                                               revdep_node->pkg.name);
-                                        rnode->pkg.parent_installed = true;
-                                }
-                        }
-
-		}
-
-		/*
-		  If a package has at least one parent installed
-		  whichi is not marked for removal, then unmark the
-		  package for removal.
-		*/
-		if( dep_node->pkg.parent_installed ) {
-			dep_node->pkg.for_removal = false;
-
-			pkg_iterator_destroy(&revdeps_iter);
-		}
-		if (node->pkg.dep.is_meta)
-			continue;
-
-		struct pkg_node *req_node = pkg_iterator_node(&iter);
-
-		if (!req_node) {
-			assert(strcmp(pkg_name, node->pkg.name) == 0);
-			goto write_pkg;
-		}
-
-		if (!req_node->pkg.parent_installed) {
-			if (slack_pkg_is_installed(node->pkg.name, tag)) {
-				printf("%s is required by at least %s\n", req_node->pkg.name,
-				       node->pkg.name);
-				req_node->pkg.parent_installed = true;
-			}
-		}
-
-	write_pkg:
-		if (!node->pkg.parent_installed) {
-			fprintf(fp, "%s", node->pkg.name);
-			if (fp != stdout) {
-				fprintf(fp, "\n");
-			}
-		}
-	}
-
-	pkg_iterator_destroy(&iter);
-
-	return 0;
-}
-#endif
 const char *find_dep_file(const char *pkg_name)
 {
         static char dep_file[4096];

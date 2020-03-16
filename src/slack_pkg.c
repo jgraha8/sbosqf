@@ -1,16 +1,12 @@
 #include <ctype.h>
-#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 
 #include <libbds/bds_string.h>
 #include <libbds/bds_vector.h>
 
 #include "slack_pkg.h"
-
-#define SLACK_PKGDB "/var/log/packages"
 
 struct slack_pkg slack_pkg_parse(const char *packages_entry)
 {
@@ -70,61 +66,29 @@ void slack_pkg_destroy(struct slack_pkg *slack_pkg)
         memset(slack_pkg, 0, sizeof(*slack_pkg));
 }
 
-int compar_slack_pkg(const void *a, const void *b)
+int slack_pkg_compare(const void *a, const void *b)
 {
         return strcmp(((const struct slack_pkg *)a)->name, ((const struct slack_pkg *)b)->name);
 }
 
-__attribute__((destructor)) static void __fini();
-
-struct bds_vector *pkg_cache = NULL;
-
-static int init_pkg_cache()
+slack_pkg_list_t slack_pkg_list_create()
 {
-        struct dirent *dirent = NULL;
-        DIR *dp = opendir(SLACK_PKGDB);
-        if (dp == NULL) {
-                perror("opendir");
-                return 1;
-        }
-
-        pkg_cache = bds_vector_alloc(1, sizeof(struct slack_pkg), (void (*)(void *))slack_pkg_destroy);
-
-        while ((dirent = readdir(dp)) != NULL) {
-                if (dirent->d_type != DT_REG)
-                        continue;
-
-                struct slack_pkg slack_pkg = slack_pkg_parse(dirent->d_name);
-                if (slack_pkg.name == NULL)
-                        continue;
-
-                bds_vector_append(pkg_cache, &slack_pkg);
-        }
-
-        if (dp)
-                closedir(dp);
-
-        bds_vector_qsort(pkg_cache, compar_slack_pkg);
-
-        return 0;
+	return bds_vector_alloc(1, sizeof(struct slack_pkg), (void (*)(void *))slack_pkg_destroy);
 }
 
-const struct slack_pkg *slack_pkg_search_const(const char *pkg_name, const char *tag)
+void slack_pkg_list_destroy(slack_pkg_list_t *spl)
+{
+	bds_vector_free(spl);
+}
+
+const struct slack_pkg *slack_pkg_list_search_const(const slack_pkg_list_t spl, const char *pkg_name, const char *tag)
 {
 	const struct slack_pkg *rp = NULL;
-
         const struct slack_pkg *cache_pkg = NULL;
         struct slack_pkg slack_pkg;
 
-        if (!pkg_cache) {
-                if (init_pkg_cache() != 0) {
-                        fprintf(stderr, "unable to create slackware package cache\n");
-                        return NULL;
-                }
-        }
-
         slack_pkg.name = bds_string_dup(pkg_name);
-        cache_pkg      = bds_vector_bsearch(pkg_cache, &slack_pkg, compar_slack_pkg);
+        cache_pkg      = bds_vector_bsearch(spl, &slack_pkg, slack_pkg_compare);
 
         if (cache_pkg == NULL)
                 goto finish;
@@ -142,34 +106,10 @@ finish:
 
 	return rp;
 }
-       
 
-bool slack_pkg_is_installed(const char *pkg_name, const char *tag)
+const struct slack_pkg *slack_pkg_list_get_const(const slack_pkg_list_t spl, size_t i, const char *tag)
 {
-	return (slack_pkg_search_const(pkg_name, tag) != NULL );
-}
-
-ssize_t slack_pkg_size()
-{
-        if (!pkg_cache) {
-                if (init_pkg_cache() != 0) {
-                        fprintf(stderr, "unable to create slackware package cache\n");
-                        return -1;
-                }
-        }
-	return (ssize_t)bds_vector_size(pkg_cache);
-}
-
-const struct slack_pkg *slack_pkg_get_const(size_t i, const char *tag)
-{
-	if (!pkg_cache) {
-                if (init_pkg_cache() != 0) {
-                        fprintf(stderr, "unable to create slackware package cache\n");
-                        return NULL;
-                }
-        }
-
-	const struct slack_pkg *cache_pkg = (const struct slack_pkg *)bds_vector_get(pkg_cache, i);
+	const struct slack_pkg *cache_pkg = (const struct slack_pkg *)bds_vector_get(spl, i);
 
 	if( tag )
 		if( strcmp(cache_pkg->tag, tag) != 0 )
@@ -178,9 +118,17 @@ const struct slack_pkg *slack_pkg_get_const(size_t i, const char *tag)
 	return cache_pkg;
 }
 
-
-static void __fini()
+void slack_pkg_list_append(slack_pkg_list_t spl, const struct slack_pkg *slack_pkg)
 {
-        if (pkg_cache)
-                bds_vector_free(&pkg_cache);
+	bds_vector_append(spl, slack_pkg);
+}
+
+void slack_pkg_list_qsort(slack_pkg_list_t spl)
+{
+	bds_vector_qsort(spl, slack_pkg_compare);
+}
+
+ssize_t slack_pkg_list_size(const slack_pkg_list_t spl)
+{
+	return (ssize_t)bds_vector_size(spl);
 }

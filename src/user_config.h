@@ -5,6 +5,7 @@
 
 struct user_config {
         char *sbopkg_repo;
+	char *slackpkg_repo_name;
         char *depdir;
         char *sbo_tag;
         char *pager;
