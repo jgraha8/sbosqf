@@ -1,0 +1,7 @@
+REQUIRED:
+opencv
+numpy3
+
+OPTIONAL:
+
+BUILDOPTS:
