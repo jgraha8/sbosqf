@@ -1,0 +1,10 @@
+REQUIRED:
+docopt
+psutil
+python-xlib
+python3-attrs
+python3-pillow
+
+OPTIONAL:
+
+BUILDOPTS:

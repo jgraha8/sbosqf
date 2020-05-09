@@ -1,0 +1,8 @@
+REQUIRED:
+perl-Scalar-List-Utils
+perl-List-SomeUtils
+perl-List-UtilsBy
+
+OPTIONAL:
+
+BUILDOPTS:

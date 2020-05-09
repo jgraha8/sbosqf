@@ -1,0 +1,10 @@
+REQUIRED:
+R
+cffi
+Jinja2
+pytest
+tzlocal
+
+OPTIONAL:
+
+BUILDOPTS:
