@@ -1,5 +1,17 @@
 REQUIRED:
 
 OPTIONAL:
+-ladspa_sdk
+-lash
+-portaudio
+-jack
+SDL2
 
 BUILDOPTS:
+JACK=no
+LADSPA=no
+LASH=no
+OSS=no
+PORTAUDIO=no
+PULSE=yes
+SDL2=yes

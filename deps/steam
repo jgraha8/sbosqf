@@ -1,5 +1,6 @@
 REQUIRED:
 OpenAL
+python3
 
 OPTIONAL:
 flashplayer-plugin

@@ -1,5 +1,6 @@
 REQUIRED:
 qt5
+hyphen
 
 OPTIONAL:
 libwebp

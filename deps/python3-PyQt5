@@ -1,6 +1,6 @@
 REQUIRED:
-python3-sip
 qt5-webkit
+python3-sip
 
 OPTIONAL:
 

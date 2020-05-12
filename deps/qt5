@@ -3,13 +3,25 @@
 #
 REQUIRED:
 libxkbcommon
-libinput
 
 OPTIONAL:
-libwebp 
+# All options are autodetected
+libwebp
 opus
-pcre2
+ffmpeg
+-re2
 snappy
+-libminizip
+-jsoncpp
+libinput
+-unixODBC
+-postgresql
+-SDL2
+-assimp
+-wayland
+-OpenAL
+-protobuf # protobuf(3?)
+-argon2
 
 BUILDOPTS:
 CCACHE=no
@@ -18,3 +30,4 @@ EXAMPLES=no
 PROPRIETARY_CODECS=no
 PULSEAUDIO=yes
 WEBENGINE=yes
+LDGOLD=no

@@ -1,2 +1,6 @@
 REQUIRED:
 libx86emu
+
+OPTIONAL:
+
+BUILDOPTS:

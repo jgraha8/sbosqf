@@ -2,5 +2,7 @@ REQUIRED:
 trilinos
 
 OPTIONAL:
+openmpi
+parmetis
 
 BUILDOPTS:
