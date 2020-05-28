@@ -1,0 +1,11 @@
+REQUIRED:
+geopy
+Fiona
+psycopg2
+pyproj
+python3-pandas
+Shapely
+
+OPTIONAL:
+
+BUILDOPTS:

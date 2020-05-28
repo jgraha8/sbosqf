@@ -1,0 +1,5 @@
+METAPKG
+REQUIRED:
+x265
+ffmpeg
+guvcview

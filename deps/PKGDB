@@ -11,7 +11,7 @@
 7plus:ham/7plus:2.25:1201127b:0:0
 9menu:desktop/9menu:1.9:44bbf378:0:0
 APScheduler:python/APScheduler:3.4.0:10afdf7a:0:0
-AdGuardHome:network/AdGuardHome:0.101.0:4a2d5292:0:0
+AdGuardHome:network/AdGuardHome:0.102.0:4a2d5292:0:0
 Alchemy:graphics/Alchemy:008:b4344654:0:0
 Alphacube-GTK:desktop/Alphacube-GTK:0.5:26b68a03:0:0
 AlsaMixer.app:desktop/AlsaMixer.app:0.1:7a90e8bd:0:0
@@ -89,7 +89,7 @@ FAudio:audio/FAudio:20.01:2a3db409:0:0
 FCSalyzer:academic/FCSalyzer:0.9.18_alpha:5ccec89d:0:0
 FSPViewer:graphics/FSPViewer:2.1.0:8dc34a4:0:0
 Fennel:development/Fennel:0.3.2:4a791ec7:0:0
-Fiona:gis/Fiona:1.8.13:61524ac:0:0
+Fiona:gis/Fiona:1.8.13:1fbbd107:0:0
 FireWorks:network/FireWorks:1.3.4:9e5df96:0:0
 Flask:python/Flask:1.1.1:c61b6295:0:0
 Flask-Babel:python/Flask-Babel:0.11.1:b9794eed:0:0
@@ -106,8 +106,8 @@ Flask-RESTful:python/Flask-RESTful:0.3.6:52ecdfcc:0:0
 Flask-SQLAlchemy:python/Flask-SQLAlchemy:2.4.1:1fafb213:0:0
 Flask-Security:python/Flask-Security:1.7.5:c81fde91:0:0
 Flask-WTF:python/Flask-WTF:0.14.2:3ef19a2b:0:0
-FlightGear:games/FlightGear:2018.3.5:ed740a15:0:0
-FlightGear-data:games/FlightGear-data:2018.3.5:f8c85fd2:0:0
+FlightGear:games/FlightGear:2020.1.1:6bad2e77:0:0
+FlightGear-data:games/FlightGear-data:2020.1.1:f8c85fd2:0:0
 Flootty:network/Flootty:3.2.1:753f6f29:0:0
 FontAwesome:system/FontAwesome:4.7.0:b6f40737:0:0
 FormEncode:libraries/FormEncode:1.2.6:72e5461e:0:0
@@ -157,11 +157,11 @@ JSONObject:development/JSONObject:1.0.2:253b6936:0:0
 JSampler:multimedia/JSampler:0.9:e23280fe:0:0
 JabRef:office/JabRef:2.9.2:19bd9aa2:0:0
 JetBrainsMono:system/JetBrainsMono:1.0.0:986e7b00:0:0
-Jinja2:libraries/Jinja2:2.11.1:9ed6f92a:1:0
+Jinja2:libraries/Jinja2:2.11.2:9ed6f92a:1:0
 KAdventure:games/KAdventure:gitfdc9579:dab81394:0:0
 KKEdit:development/KKEdit:0.1.8:f23793db:0:0
 Kallithea:python/Kallithea:0.4.1:88c9ff5d:0:0
-KeePass:misc/KeePass:2.44:cfb6163f:0:0
+KeePass:misc/KeePass:2.45:cfb6163f:0:0
 KeePassHttp:misc/KeePassHttp:1.8.4.2:d34e1e06:0:0
 Kivy:libraries/Kivy:1.10.1:b92844d3:0:0
 KoboDeluxe:games/KoboDeluxe:0.5.1:7143ccec:0:0
@@ -189,7 +189,7 @@ MediathekView:multimedia/MediathekView:13.2.1:34dd3775:0:0
 MetaPhlAn2:academic/MetaPhlAn2:2.9.5.3:410d8b55:0:0
 Mk4tcl:development/Mk4tcl:2.4.9.8:23612876:0:0
 Mnemosyne:academic/Mnemosyne:2.6.1:4f3f9f3b:0:0
-MoarVM:perl/MoarVM:2020.02.1:7511186b:0:0
+MoarVM:perl/MoarVM:2020.05:7511186b:0:0
 Mopidy:multimedia/Mopidy:2.1.0:7b6bcdbb:0:0
 MuseScore:multimedia/MuseScore:3.4.2:83603680:0:0
 MusicMixer:audio/MusicMixer:1.8:dc6d9799:0:0
@@ -307,7 +307,7 @@ SDL2_net:libraries/SDL2_net:2.0.1:fca0d194:1:0
 SDL2_ttf:libraries/SDL2_ttf:2.0.15:91fc64b7:0:0
 SDL_Pango:libraries/SDL_Pango:0.1.2:d71cf477:1:0
 SDL_gfx:libraries/SDL_gfx:2.0.25:5b00c89e:0:0
-SDL_kitchensink:libraries/SDL_kitchensink:1.0.7:123f8b4a:0:0
+SDL_kitchensink:libraries/SDL_kitchensink:1.0.8:123f8b4a:0:0
 SDL_sound:libraries/SDL_sound:1.0.3:b7bf6bdd:0:0
 SDRPlay:ham/SDRPlay:2.13.1:4dae199:0:0
 SFCGAL:gis/SFCGAL:1.3.7:618fddc3:0:0
@@ -331,7 +331,7 @@ Shark:academic/Shark:4.0.0:cbf280e4:0:0
 ShellCheck-bin:development/ShellCheck-bin:0.6.0:e5ad8261:0:0
 Shellpic:graphics/Shellpic:1.6.2:5794e531:0:0
 Signal-Desktop:network/Signal-Desktop:0.42.2:1fb0f2f:0:0
-SimGear:libraries/SimGear:2018.3.5:acac70c7:0:0
+SimGear:libraries/SimGear:2020.1.1:40eb6832:0:0
 SimpleSysexxer:multimedia/SimpleSysexxer:0.3:55820311:0:0
 SlowAES:libraries/SlowAES:0.1a1:dbd377b:0:0
 Smarty:libraries/Smarty:3.0.8:ad7f55cb:0:0
@@ -367,7 +367,7 @@ USBdev:system/USBdev:2019.11.05:cf31873:0:0
 Unidecode:python/Unidecode:0.04.21:4e0a10d4:1:0
 UrbanTerror:games/UrbanTerror:4.3.4:e164f27b:0:0
 VASSAL:games/VASSAL:3.2.17:4faeb76e:0:0
-VTK:libraries/VTK:8.2.0:c508bcbe:1:0
+VTK:libraries/VTK:8.2.0:f84797e8:0:0
 Vanilla-DMZ:desktop/Vanilla-DMZ:0.4:e38ce09:0:0
 VariCAD:graphics/VariCAD:2013_2.01:5e10971d:0:0
 ViennaRNA:academic/ViennaRNA:2.4.14:ecebdc90:0:0
@@ -528,7 +528,7 @@ aniso8601:python/aniso8601:1.3.0:6689840d:0:0
 anjuta:development/anjuta:3.28.0:2424a56d:0:0
 anki:desktop/anki:2.1.16:b793d376:0:0
 anorack:office/anorack:0.2.5:e622cc8b:0:0
-ansible:system/ansible:2.9.7:99ac3281:0:0
+ansible:system/ansible:2.9.9:99ac3281:0:0
 ant-contrib:libraries/ant-contrib:0.6:506bd682:0:0
 antares:games/antares:0.9.0:5fb8dd51:0:0
 antimicro:games/antimicro:2.23:afece3f9:0:0
@@ -634,7 +634,7 @@ asr-manpages:misc/asr-manpages:1.3.6:92c60f7e:0:0
 assaultcube:games/assaultcube:1.2.0.2:4e8da329:0:0
 assaultcube-reloaded:games/assaultcube-reloaded:2.7:1843da63:0:0
 assimp:libraries/assimp:3.3.1:805b2ae8:0:0
-asterisk:network/asterisk:16.9.0:1b6866fb:0:0
+asterisk:network/asterisk:16.10.0:1b6866fb:0:0
 asterixInspector:misc/asterixInspector:0.12.4:6165c35f:0:0
 asteroidsinfinity:games/asteroidsinfinity:1.2:da4abee2:0:0
 astroid:python/astroid:1.6.5:b4fd8f59:0:0
@@ -711,6 +711,8 @@ awn-extras:desktop/awn-extras:0.4.0:33240cd5:0:0
 awoken-icon-theme:desktop/awoken-icon-theme:2.5.1:2aa08450:0:0
 awscli:network/awscli:1.17.15:84eebc55:0:0
 awstats:network/awstats:7.6:e4553f7e:0:0
+ax25-apps:ham/ax25-apps:0.0.8_rc5:50c0a175:0:0
+ax25-tools:ham/ax25-tools:0.0.8_rc5:87fd186d:0:0
 axel:network/axel:2.17.8:7c04841f:0:0
 azpainter:graphics/azpainter:2.1.5:f325b8da:0:0
 azr3:audio/azr3:1.2.3:227820fb:0:0
@@ -807,7 +809,7 @@ bindfs:system/bindfs:1.13.10:4be17312:0:0
 binfmt-support:system/binfmt-support:2.2.0:40db47c2:0:0
 bino:multimedia/bino:1.6.5:739d9612:0:0
 binplist:python/binplist:0.1.5:4abdf263:0:0
-binwalk:development/binwalk:2.1.1:f795077e:0:0
+binwalk:development/binwalk:2.1.1:f795077e:1:0
 biopython:academic/biopython:1.74:2536a6d4:0:0
 biosdisk:misc/biosdisk:0.75_2:8966a7d8:0:0
 bip:network/bip:0.9.0_rc3:45301ce1:0:0
@@ -851,7 +853,7 @@ bluez-sixaxis:games/bluez-sixaxis:5.47:35421aa5:0:0
 bmake:development/bmake:20200212:32e1d824:1:0
 bmon:network/bmon:4.0:90524fd2:0:0
 bmpanel2:desktop/bmpanel2:20111207_5ad46c8:710995c:0:0
-bochs:system/bochs:2.6.8:ce7eda28:0:0
+bochs:system/bochs:2.6.11:e74dfcff:1:0
 bodr:misc/bodr:10:8311128c:0:0
 bogofilter:system/bogofilter:1.2.4:c2e96058:0:0
 boinc:academic/boinc:7.16.4:e7f47ccd:0:0
@@ -890,7 +892,7 @@ brackets:development/brackets:1.9:b35efa63:0:0
 braincurses:games/braincurses:0.5c:a1ae3284:0:0
 brainparty:games/brainparty:0.61:208e712f:0:0
 brasero:system/brasero:3.12.2:58f527bc:1:0
-brave-browser:network/brave-browser:1.5.115:b855cd9d:0:0
+brave-browser:network/brave-browser:1.8.95:b855cd9d:0:0
 breath-gtk-theme:desktop/breath-gtk-theme:da2706640f457f89de6c26312e391b244ff550b4:47a06add:0:0
 breeze-snow-cursor-theme:desktop/breeze-snow-cursor-theme:1.0:45edc586:0:0
 brewtarget:misc/brewtarget:2.0.2:5b78b241:0:0
@@ -898,7 +900,7 @@ brickout:games/brickout:20020609:fdd9f1c1:0:0
 briquolo:games/briquolo:0.5.7:80a14bc3:0:0
 briss:office/briss:0.9:86669d04:0:0
 bristol:audio/bristol:0.60.11:fa1163c6:0:0
-brlcad:graphics/brlcad:7.30.2:e2bb73e7:0:0
+brlcad:graphics/brlcad:7.30.8:e2bb73e7:0:0
 broadcom-sta:network/broadcom-sta:6.30.223.271:d6abc943:0:0
 broffice.org:office/broffice.org:3.2.1:7aaac211:0:0
 brotli:development/brotli:1.0.7:60201e73:0:0
@@ -921,7 +923,7 @@ buildah:system/buildah:1.5:51a3bb33:0:0
 buildbot:python/buildbot:0.8.14:cfa4333f:0:0
 buildbot-slave:python/buildbot-slave:0.8.12:91a909b8:0:0
 buku:desktop/buku:4.3:a8066767:0:0
-bukubrow:desktop/bukubrow:5.0.0:a604e25d:0:0
+bukubrow:desktop/bukubrow:5.1.0:a604e25d:0:0
 bulk_extractor:system/bulk_extractor:1.5.5:20252785:0:0
 bullet:libraries/bullet:2.89:24be4374:0:0
 bunsen-themes:desktop/bunsen-themes:9.4.1:b9261119:0:0
@@ -963,7 +965,7 @@ calcurse:office/calcurse:4.6.0:a050040b:0:0
 calf:audio/calf:0.90.3:211c6588:0:0
 calf-ladspa:audio/calf-ladspa:0.0.19kx:2c996194:0:0
 calibre:office/calibre:3.34.0:7252415a:0:0
-calibre-bin:office/calibre-bin:4.15.0:e2a74df4:0:0
+calibre-bin:office/calibre-bin:4.16.0:e2a74df4:0:0
 camd:academic/camd:2.4.6:df6c813:0:0
 camlp4:development/camlp4:4.03_1:f7606e24:0:0
 camlp5:development/camlp5:7.10:b439366a:0:0
@@ -982,7 +984,7 @@ caps:audio/caps:0.9.26:7b06f832:0:0
 capstone:system/capstone:4.0.1:a45007fe:0:0
 cargo-vendor:development/cargo-vendor:0.1.23:b688f169:0:0
 carla:audio/carla:2.1:e490d928:0:0
-cartopy:gis/cartopy:0.17.0:b3e271ff:0:0
+cartopy:gis/cartopy:0.18.0:a76a66f5:0:0
 casperjs:development/casperjs:1.1_beta3:5e0bb56a:0:0
 castnow:multimedia/castnow:20170309:a453375f:0:0
 catdoc:office/catdoc:0.94.2:3ee906ae:0:0
@@ -997,6 +999,7 @@ cc-tool:development/cc-tool:20160504+f0c4858:f2f2b6f3:0:0
 cc65:development/cc65:2.17_20180906:fb7d5660:0:0
 ccal:office/ccal:2.5.3:8eef5a:0:0
 ccat:system/ccat:1.1.0:dec92737:0:0
+ccd2cue:system/ccd2cue:0.5:2b7946d5:0:0
 ccd2iso:system/ccd2iso:0.3:939ad45f:0:0
 ccextractor:multimedia/ccextractor:0.88:ea8fb31c:0:0
 cchardet:libraries/cchardet:1.0.0:2b74b8c7:0:0
@@ -1040,6 +1043,7 @@ cgmadness:games/cgmadness:1.3:7d1a0943:0:0
 cgoban:games/cgoban:1.9.14:2583a48d:0:0
 cgterm:network/cgterm:1.6:11d9e306:0:0
 characteristic:python/characteristic:14.3.0:9925284:0:0
+chartgeany:academic/chartgeany:6.1.5:e7400c95:0:0
 check:development/check:0.14.0:b395e98e:0:0
 checkbashisms:development/checkbashisms:2.15.10:4287de4a:0:0
 chemical-mime-data:misc/chemical-mime-data:0.1.94:c6c8afda:0:0
@@ -1062,7 +1066,7 @@ chroma:games/chroma:1.15:7ff92072:0:0
 chromaprint:libraries/chromaprint:1.4.3:9dcac66d:0:0
 chromium-bsu:games/chromium-bsu:0.9.16.1:22a9e4c3:0:0
 chronic:ruby/chronic:0.10.2:a26f00a6:0:0
-chronograf:system/chronograf:1.8.2:876f8b0e:0:0
+chronograf:system/chronograf:1.8.4:876f8b0e:0:0
 chrony:network/chrony:3.5:bde6da75:0:0
 chrpath:system/chrpath:0.16:6070140e:1:0
 chuck:audio/chuck:1.3.1.3:9b0460d7:0:0
@@ -1086,7 +1090,7 @@ clalsadrv:libraries/clalsadrv:2.0.0:61a4019:0:0
 clam:audio/clam:r15456:92997741:0:0
 clam_annotator:audio/clam_annotator:0.5.0:55cbe6ea:0:0
 clam_voice2midi:audio/clam_voice2midi:0.3.10:bf388c05:0:0
-clamav:system/clamav:0.102.2:de852a01:1:0
+clamav:system/clamav:0.102.3:de852a01:1:0
 clamav-unofficial-sigs:network/clamav-unofficial-sigs:5.6.2:1196fb87:0:0
 clamsmtp:system/clamsmtp:1.10:efc71b73:0:0
 clamtk:system/clamtk:5.26:7acd605b:0:0
@@ -1122,7 +1126,7 @@ clyrics:audio/clyrics:0.12:397b192b:0:0
 cmark:libraries/cmark:0.29.0:fd91e73d:0:0
 cmatrix:desktop/cmatrix:1.2a:a09337a3:0:0
 cmdiag:network/cmdiag:0.2:c8bbc401:0:0
-cmocka:development/cmocka:1.1.3:16e7cb4f:0:0
+cmocka:development/cmocka:1.1.5:16e7cb4f:0:0
 cmst:network/cmst:2016.04.03:65d13c75:0:0
 cmt:audio/cmt:1.17:1888ee8:0:0
 cmus:audio/cmus:2.8.0:a3c78224:0:0
@@ -1147,7 +1151,7 @@ colorama:python/colorama:0.3.9:a64cdd6b:0:0
 colorclass:python/colorclass:2.2.0:58eb07d5:0:0
 colord:system/colord:1.3.5:e3ac9b90:0:0
 colord-gtk:system/colord-gtk:0.1.26:57c06492:0:0
-colordiff:development/colordiff:1.0.18:60af3771:0:0
+colordiff:development/colordiff:1.0.19:60af3771:0:0
 colored:python/colored:1.4.2:4a641e8d:0:0
 comgt:network/comgt:0.32:ca5e05ed:0:0
 commandergenius:games/commandergenius:2.3.9:5005a351:0:0
@@ -1181,6 +1185,7 @@ console_bridge:libraries/console_bridge:0.3.2:233a4fbf:0:0
 constantly:python/constantly:15.1.0:3f8aeeab:0:0
 construct:python/construct:2.9.45:876ad0ee:0:0
 containerd:system/containerd:1.2.13:b91cf77a:1:0
+contextlib2:python/contextlib2:0.6.0.post1:64d88e81:0:0
 converseen:graphics/converseen:0.9.8.1:6588417:0:0
 convertall:academic/convertall:0.5.2:a91d4441:0:0
 convertlit:office/convertlit:1.8:e14254a5:0:0
@@ -1228,6 +1233,7 @@ crack-attack:games/crack-attack:1.1.15_cvs_01:16c6494c:0:0
 cracklib:libraries/cracklib:2.9.6:cca0947f:1:0
 crank:python/crank:0.8.1:52f9385a:0:0
 crashplan:system/crashplan:4.3.0:68a1c6c9:0:0
+crc32_simple:system/crc32_simple:20120911:813ca34b:0:0
 crcmod:python/crcmod:1.7:d71dd396:0:0
 cream:development/cream:0.43:c50e5277:0:0
 createrepo_c:system/createrepo_c:0.15.5:3851ca84:0:0
@@ -1245,7 +1251,7 @@ crrcsim:games/crrcsim:0.9.13:99529978:0:0
 crunch:system/crunch:3.6:f624459b:0:0
 cryptcat-unix:network/cryptcat-unix:1.2.1:8aa984f8:0:0
 cryptography:python/cryptography:2.1.4:2a981eff:1:0
-cryptominisat:academic/cryptominisat:5.6.8:9492c0a9:0:0
+cryptominisat:academic/cryptominisat:5.7.1:9492c0a9:0:0
 cryptopp:libraries/cryptopp:8.2.0:2b9d2aa5:0:0
 crystal:desktop/crystal:2.2.1:885c4dca:0:0
 crystal-lang:development/crystal-lang:0.34.0:e67fb619:0:0
@@ -1332,7 +1338,7 @@ davfs2:system/davfs2:1.5.4:29a1b37c:0:0
 davmail:network/davmail:4.9.0:76fcb54c:0:0
 db46:libraries/db46:4.6.21:d755dc73:0:0
 dbeaver:development/dbeaver:3.5.8:2dc90182:0:0
-dbeaver-ce:development/dbeaver-ce:7.0.3:4b707d3:0:0
+dbeaver-ce:development/dbeaver-ce:7.0.4:4b707d3:0:0
 dbgl:desktop/dbgl:0.82:23ce6355:0:0
 dblatex:graphics/dblatex:0.3.10:e9a26ae1:0:0
 dbmail:network/dbmail:3.2.3:41de9e1:0:0
@@ -1365,7 +1371,7 @@ defusedxml:python/defusedxml:0.6.0:d77b77d5:0:0
 dehydrated:system/dehydrated:0.6.5:2bfcffcb:1:0
 deis:network/deis:1.6.1:72742c91:0:0
 dejagnu:development/dejagnu:1.5:beb797a9:0:0
-deluge:network/deluge:2.0.3:8c5e6cde:0:0
+deluge:network/deluge:2.0.3:a697819a:0:0
 demorse:ham/demorse:1.2:4dbf1ee2:0:0
 deskew:graphics/deskew:1.30:92559e84:0:0
 desmume:games/desmume:0.9.11:2eb4c68a:0:0
@@ -1402,7 +1408,7 @@ diffuse:development/diffuse:0.4.8:4818cbe1:0:0
 digger:games/digger:20020314:2331b705:0:0
 digikam:graphics/digikam:4.14.0:2c2dff07:0:0
 digikey-kicad-library:development/digikey-kicad-library:20191024+0802230:b726ad82:0:0
-digimend-kernel-drivers:libraries/digimend-kernel-drivers:20200315:518d5000:0:0
+digimend-kernel-drivers:libraries/digimend-kernel-drivers:20200429:895f8da2:0:0
 diit:system/diit:1.5:f8882eb4:0:0
 dillo:network/dillo:3.0.5:b0b7fdb3:0:0
 dina-font:system/dina-font:2.93:fa18860b:0:0
@@ -1470,7 +1476,7 @@ dos2unix:misc/dos2unix:7.4.1:dde59d76:1:0
 dos33fsprogs:system/dos33fsprogs:0.0.10:87c12a75:0:0
 dosbox:system/dosbox:0.74.3:5def7fb5:0:0
 dosbox-dev:system/dosbox-dev:0.74.3.r4335:53e70c5e:0:0
-dosbox-x:system/dosbox-x:0.83.0:55696904:0:0
+dosbox-x:system/dosbox-x:0.83.1:55696904:1:0
 dosemu:system/dosemu:20130804_35054ba:51aa8074:0:0
 dotconf:libraries/dotconf:1.3:b8486d2a:0:0
 dothost:network/dothost:0.2:ed6ae17e:0:0
@@ -1775,7 +1781,7 @@ feh:graphics/feh:3.3:62ca367f:1:0
 fehlstart:desktop/fehlstart:20160523git:866dcb55:0:0
 fence-agents:system/fence-agents:4.5.2:4a2ed97a:0:0
 ferm:network/ferm:2.4.1:46cedab8:0:0
-fet:academic/fet:5.44.3:8067fa61:0:0
+fet:academic/fet:5.44.6:8067fa61:0:0
 ff8dls:audio/ff8dls:1.39:c90a8316:0:0
 ffgo:games/ffgo:1.12.3:e4d0efa6:0:0
 ffmpeg:multimedia/ffmpeg:3.2.4:d3a3e688:1:0
@@ -1830,7 +1836,7 @@ flann:academic/flann:1.9.1:178cabf0:0:0
 flare:games/flare:1.11:eb8a4cf:0:0
 flare-game:games/flare-game:1.11:15f1907d:0:0
 flashcards:system/flashcards:2.4:e488fbaa:0:0
-flashplayer-plugin:multimedia/flashplayer-plugin:32.0.0.363:69088933:1:0
+flashplayer-plugin:multimedia/flashplayer-plugin:32.0.0.371:69088933:1:0
 flashplugin-lahf-fix:libraries/flashplugin-lahf-fix:0.2:be8d8158:0:0
 flashqard:academic/flashqard:0.15.0:1a07c7c0:0:0
 flashrom:misc/flashrom:0.9.9:eaaee2ec:0:0
@@ -1908,7 +1914,6 @@ freac:audio/freac:20190423:e6e818a1:0:0
 free42:academic/free42:2.0.4:2211fae3:0:0
 freealut:libraries/freealut:1.1.0:165d55b7:0:0
 freeblocks:games/freeblocks:0.5:52146bbd:0:0
-freechartgeany:academic/freechartgeany:2.0.3:9e62ef5c:0:0
 freeciv:games/freeciv:2.6.2:a95a0ad2:0:0
 freedink:games/freedink:109.6:68dcf9f0:0:0
 freedoom:games/freedoom:0.12.1:58d9addf:0:0
@@ -2001,7 +2006,7 @@ game_1945:games/game_1945:0.55:2abc96a:0:0
 gammu:system/gammu:1.38.3:fdc36aba:0:0
 ganglia:network/ganglia:3.7.2:fa91f7bb:0:0
 ganglia-web:network/ganglia-web:3.7.2:7bc3d42:0:0
-ganttproject:office/ganttproject:2.8.9:e6c39323:0:0
+ganttproject:office/ganttproject:2.8.11:e6c39323:0:0
 ganv:libraries/ganv:1.4.2:dc3fb1aa:0:0
 gaphas:libraries/gaphas:0.7.2:900cc587:0:0
 gaphor:development/gaphor:0.17.2:b90dc055:0:0
@@ -2023,6 +2028,7 @@ gcdemu:system/gcdemu:3.2.4:6895eff3:0:0
 gchemutils:academic/gchemutils:0.14.17:f339583d:0:0
 gcolor2:graphics/gcolor2:0.4:f618700:0:0
 gcompris:academic/gcompris:17.05:53710b0e:0:0
+gcompris-qt:academic/gcompris-qt:0.97:fb813319:0:0
 gconf-editor:system/gconf-editor:2.32.0:f4f79a09:0:0
 gconfmm:libraries/gconfmm:2.28.3:8218541b:0:0
 gcp:misc/gcp:0.1.3:6bb339ae:0:0
@@ -2065,7 +2071,8 @@ geoipupdate:network/geoipupdate:2.5.0:f57b3d99:0:0
 geojson:gis/geojson:2.5.0:74f398f6:0:0
 geomview:academic/geomview:1.9.4:3bf02fb9:0:0
 geomyidae:network/geomyidae:v0.34:1be575ce:0:0
-geopy:gis/geopy:1.21.0:ab3af236:0:0
+geopandas:gis/geopandas:0.7.0:fe19e316:0:0
+geopy:gis/geopy:1.22.0:ab3af236:0:0
 geos:gis/geos:3.8.1:2700a904:0:0
 geoserver:gis/geoserver:2.7.0:7e94c69f:0:0
 geoserver-control-flow:gis/geoserver-control-flow:2.7.0:ed8c1a1d:0:0
@@ -2109,7 +2116,7 @@ gis-weather:desktop/gis-weather:0.8.4.1:7aea2ba7:0:0
 gisto:development/gisto:0.3.1:baa6f270:0:0
 git-cola:development/git-cola:3.6:3a02dd51:0:0
 git-fame:python/git-fame:1.11.0:60cb3998:0:0
-git-lfs:development/git-lfs:2.10.0:ca971ade:0:0
+git-lfs:development/git-lfs:2.11.0:ca971ade:0:0
 gitdb:libraries/gitdb:0.6.4:8dacad84:0:0
 gitdb2:libraries/gitdb2:2.0.2:ad5e4e5a:0:0
 githubpy:python/githubpy:1.1.0:573fda3:0:0
@@ -2191,7 +2198,7 @@ gntp-send:desktop/gntp-send:0.3.2:239b8f81:0:0
 gnu-unifont:system/gnu-unifont:13.0.01:6a7449fc:0:0
 gnubg:games/gnubg:1.05.000:ca8dfea1:0:0
 gnucap:academic/gnucap:20091207:c538d723:0:0
-gnucash:office/gnucash:3.10:1ee4e995:0:0
+gnucash:office/gnucash:3.10:b748cc75:0:0
 gnucash-docs:office/gnucash-docs:3.10:35960f9:0:0
 gnucash-legacy:office/gnucash-legacy:2.6.21:4fc06d49:0:0
 gnucash-legacy-docs:office/gnucash-legacy-docs:2.6.20:57aca87c:0:0
@@ -2209,7 +2216,7 @@ gnustep-startup:development/gnustep-startup:0.32.0:92fe933f:0:0
 go-ipfs:network/go-ipfs:0.4.23:1a9e341b:0:0
 go-md2man:misc/go-md2man:1.0.8:f2642c97:0:0
 go-mtree:system/go-mtree:0.4.4:4842c85a:0:0
-goaccess:system/goaccess:1.2:43653322:0:0
+goaccess:system/goaccess:1.3:4829b435:0:0
 gob2:development/gob2:2.0.20:78ffb942:0:0
 gocr:office/gocr:0.50:2de72590:0:0
 goffice:libraries/goffice:0.10.34:937d070e:0:0
@@ -2385,7 +2392,7 @@ gunicorn:python/gunicorn:19.9.0:726719e8:0:0
 gupnp:libraries/gupnp:1.0.3:ffe3fc46:0:0
 guppy:libraries/guppy:0.1.10:27e863cf:0:0
 gusersoundfont:audio/gusersoundfont:1.471:4061b499:0:0
-guvcview:multimedia/guvcview:2.0.6:dd69288d:0:0
+guvcview:multimedia/guvcview:2.0.6:dd69288d:1:0
 guzzle_sphinx_theme:development/guzzle_sphinx_theme:0.7.11:da38a9b5:0:0
 gvolwheel:audio/gvolwheel:1.0:66510b73:0:0
 gw-libretro:games/gw-libretro:2018.10.03_dea8b93:72a8ef00:0:0
@@ -2758,7 +2765,7 @@ hnefatafl:games/hnefatafl:140617:e9f0d1a0:0:0
 hntool:system/hntool:0.1.2:cf2048fc:0:0
 ho1:games/ho1:1.430:8cdad6eb:0:0
 hoedown:libraries/hoedown:3.0.3:86ab7e8d:0:0
-hoel:libraries/hoel:1.4.15:95ed0161:0:0
+hoel:libraries/hoel:1.4.16:95ed0161:0:0
 homebank:office/homebank:5.1.5:ba1623ba:0:0
 homerun:desktop/homerun:1.2.5:db8000d2:0:0
 hoorex:misc/hoorex:0.7.0:8befc679:0:0
@@ -2787,7 +2794,7 @@ htmlcxx:libraries/htmlcxx:0.87:3eb59cde:0:0
 htmldoc:office/htmldoc:1.9.8:3e3f6161:0:0
 htmlmin:python/htmlmin:0.1.10:23f8efeb:0:0
 htslib:libraries/htslib:1.10.2:577add94:0:0
-http-parser:libraries/http-parser:2.9.2:604a2776:0:0
+http-parser:libraries/http-parser:2.9.4:604a2776:0:0
 httpie:network/httpie:1.0.3:8a00bc7b:0:0
 httping:network/httping:2.4:5e2882b7:0:0
 httplib2:python/httplib2:0.11.3:fcd75b97:0:0
@@ -2842,7 +2849,7 @@ icc_profiles:graphics/icc_profiles:2019:7a7de17a:0:0
 icc_profiles_from_eci:graphics/icc_profiles_from_eci:2017_08_27:843b3d6e:0:0
 icebreaker:games/icebreaker:1.9.7:289f6de5:0:0
 icecast:audio/icecast:2.4.3:9ea14dcd:0:0
-icecat:network/icecat:60.3.0:2e238edb:0:0
+icecat:network/icecat:60.7.0:2e238edb:0:0
 icecream:development/icecream:1.1:edec8b81:0:0
 icemon:development/icemon:7f4a841:ef34dc43:0:0
 ices:audio/ices:2.0.1:6b57f8b6:0:0
@@ -2907,6 +2914,7 @@ insync:network/insync:3.1.3.40790:4fd73101:0:0
 insync-thunar:desktop/insync-thunar:1.3.12.36116:5e0c5737:0:0
 intel-microcode:system/intel-microcode:20190618:12fd9051:0:0
 intelmas:system/intelmas:1.0.5:80593df7:0:0
+internetarchive:python/internetarchive:1.9.3:4909a2d9:0:0
 invada_studio_plugins_lv2:audio/invada_studio_plugins_lv2:1.2.0_0:8117add6:0:0
 invasion3d:games/invasion3d:1.0.4b:767145fd:0:0
 invoke:python/invoke:1.0.0:fc2e4a2d:0:0
@@ -3046,6 +3054,7 @@ json-glib:libraries/json-glib:1.2.8:be77c69:1:0
 json-parser:libraries/json-parser:1.1.0:46a7ded5:0:0
 json-py:python/json-py:3.4:6f6914a8:0:0
 jsoncpp:libraries/jsoncpp:1.9.2:c2921991:0:0
+jsonpointer:python/jsonpointer:2.0:f6b66184:0:0
 jsonschema:python/jsonschema:2.5.1:7304ac33:0:0
 jstock:office/jstock:1.0.7.44:ac09d069:0:0
 juffed:office/juffed:20180114_9b7af21:f373b5e7:0:0
@@ -3206,7 +3215,7 @@ lastfm:audio/lastfm:2.1.36:59bf263b:0:0
 lastfmlib:libraries/lastfmlib:0.4.0:1a6b5026:0:0
 lastpass-cli:misc/lastpass-cli:1.3.3:508c909a:0:0
 laszip:gis/laszip:2.2.0:7a6f78d6:0:0
-latex2html:academic/latex2html:2019.2:3ce9c1fd:0:0
+latex2html:academic/latex2html:2020:3ce9c1fd:0:0
 latex2rtf:office/latex2rtf:2.3.17:a33f6fbf:0:0
 latexdiff:office/latexdiff:1.3.0:af1a4a5b:0:0
 latrace:development/latrace:0.5.11:d836825f:0:0
@@ -3239,7 +3248,7 @@ leocad:graphics/leocad:17.07:4fde4135:0:0
 leocad_pieces:graphics/leocad_pieces:9781:7176bd84:0:0
 lepton-eda:development/lepton-eda:1.9.10:eafa8a33:0:0
 leptonica:libraries/leptonica:1.79.0:96e661b6:0:0
-letsencrypt:system/letsencrypt:1.3.0:5565b891:0:0
+letsencrypt:system/letsencrypt:1.4.0:5565b891:0:0
 leveldb:development/leveldb:1.9.0:9ec1afa8:0:0
 levmar:libraries/levmar:2.6:3a010d03:0:0
 lgi:libraries/lgi:0.9.2:7edd148b:0:0
@@ -3266,7 +3275,8 @@ libast:libraries/libast:0.7:ddd91fcf:0:0
 libaudclient:libraries/libaudclient:3.5_rc2:43ff28fb:0:0
 libautoptr:libraries/libautoptr:0.1.0:5bcd473d:0:0
 libavc1394:libraries/libavc1394:0.5.4:eb22ba00:0:0
-libb2:development/libb2:0.98:1285126a:0:0
+libax25:ham/libax25:0.0.12_rc5:182b85a6:0:0
+libb2:development/libb2:0.98.1:1285126a:0:0
 libb64:libraries/libb64:1.2.1:d42730:0:0
 libbde:libraries/libbde:20190102:7b1e30c6:0:0
 libbdplus:libraries/libbdplus:0.1.2:7aa81534:0:0
@@ -3299,7 +3309,7 @@ libconfig:libraries/libconfig:1.7.2:c606a199:0:0
 libcpuid:libraries/libcpuid:0.4.1:ac0ddea6:0:0
 libcryptui:libraries/libcryptui:3.12.2:21107856:0:0
 libcsv:libraries/libcsv:3.0.0:24a4822f:0:0
-libctl:libraries/libctl:4.4.0:68f684bb:0:0
+libctl:libraries/libctl:4.5.0:68f684bb:0:0
 libcue:libraries/libcue:1.4.0:f175af6d:0:0
 libcuefile:libraries/libcuefile:r475:2b6fc3b5:0:0
 libcutl:development/libcutl:1.10.0:50029be7:0:0
@@ -3533,8 +3543,8 @@ libpseudo:libraries/libpseudo:1.2.0:b95f4962:0:0
 libpst:libraries/libpst:0.6.74:b4dc6ca0:0:0
 libpurple-kwallet-plugin:perl/libpurple-kwallet-plugin:0.1:dcc7e43e:0:0
 libpwquality:libraries/libpwquality:1.4.2:b588a66b:0:0
-libqalculate:academic/libqalculate:3.4.0:e1e7cba5:0:0
-libqb:libraries/libqb:1.0.5:65452c6d:0:0
+libqalculate:academic/libqalculate:3.10.0:e1e7cba5:0:0
+libqb:libraries/libqb:2.0.0:65452c6d:0:0
 libqcow:libraries/libqcow:20181227:5333188e:0:0
 libqinfinity:libraries/libqinfinity:20110501_5955f93:aa121f31:0:0
 libqsqlpsql:libraries/libqsqlpsql:4.8.5:8f644aea:0:0
@@ -3676,8 +3686,8 @@ libxml++:libraries/libxml++:2.40.1:1c390835:0:0
 libxml++3:libraries/libxml++3:3.2.0:74a815fa:0:0
 libxmlb:libraries/libxmlb:0.1.14:b6c35f92:0:0
 libxmp:libraries/libxmp:4.4.1:20cadb38:0:0
-libxnvctrl:libraries/libxnvctrl:418.43:82d6a85f:0:0
-libyang:libraries/libyang:0.16_r3:ef6f99f0:0:0
+libxnvctrl:libraries/libxnvctrl:440.82:82d6a85f:0:0
+libyang:libraries/libyang:1.0.167:ef6f99f0:0:0
 libydpdict:misc/libydpdict:1.0.4:c649a1a3:0:0
 libyubikey:libraries/libyubikey:1.13:b5a212e5:0:0
 libzdb:libraries/libzdb:3.1:cdc29143:0:0
@@ -3710,7 +3720,7 @@ linphone:network/linphone:3.12.0:a62f8707:0:0
 linpsk:ham/linpsk:1.2:73f13167:0:0
 linssid:network/linssid:3.6:b4a08b43:0:0
 linux-libertine-fonts:system/linux-libertine-fonts:5.3.0:18840ae0:0:0
-linux_logo:misc/linux_logo:5.11:de64dbd0:0:0
+linux_logo:misc/linux_logo:6.0:de64dbd0:0:0
 linuxconsoletools:system/linuxconsoletools:1.7.0:f706ebe6:0:0
 linuxdcpp:network/linuxdcpp:1.1.0:6becfc7f:0:0
 linuxsampler:audio/linuxsampler:2.1.1:a73da378:0:0
@@ -3721,7 +3731,7 @@ lirc:system/lirc:0.9.3a:88b74652:0:0
 lircaile:multimedia/lircaile:0.3.0:15556e85:0:0
 listener:audio/listener:2.2:132edf6e:0:0
 listpkg:system/listpkg:0.1a:e673cee4:0:0
-live555:libraries/live555:2020.04.24:e8c9d809:0:0
+live555:libraries/live555:2020.05.15:e8c9d809:0:0
 lives:multimedia/lives:3.0.2:d6a4d6e8:0:0
 livestreamer:network/livestreamer:1.12.2:de17ae24:0:0
 livestreamer-curses:network/livestreamer-curses:1.5.2:32385c92:0:0
@@ -3797,7 +3807,7 @@ luaexpat:libraries/luaexpat:1.3.0:f08c8f21:0:0
 luajit:development/luajit:2.0.5:162cdb91:0:0
 luakit:network/luakit:2.0:97ddf91a:0:0
 luarocks:development/luarocks:2.4.1:5c76220:0:0
-luasec:libraries/luasec:0.8.2:a44cb9e6:0:0
+luasec:libraries/luasec:0.9:a44cb9e6:0:0
 luasocket:libraries/luasocket:3.0_rc1:4bb9fa09:0:0
 luckybackup:system/luckybackup:0.5.0:987798a4:0:0
 lumina:desktop/lumina:1.5.0:22cbdadf:0:0
@@ -3941,7 +3951,7 @@ mediatomb:multimedia/mediatomb:b66dc1f:41e70774:0:0
 medit:development/medit:1.2.0:e6ed271a:0:0
 mednafen:games/mednafen:1.22.2:94cbca35:0:0
 mednaffe:games/mednaffe:0.8.8:2f7c2a90:0:0
-meep:academic/meep:1.12.0:2772d447:0:0
+meep:academic/meep:1.14:60ef7019:0:0
 megaglest:games/megaglest:3.13.0:18c5905:0:0
 megamario:games/megamario:1.7:3095cc8f:0:0
 megatools:network/megatools:1.10.2:8fd078d5:0:0
@@ -4032,7 +4042,7 @@ mkDSSP:academic/mkDSSP:2.2.1:a6e6c054:0:0
 mkchroot:development/mkchroot:1.4:6ca9dc53:0:0
 mkclean:multimedia/mkclean:0.8.10:aee08468:0:0
 mkcue:audio/mkcue:1.4:243e21c9:0:0
-mksh:system/mksh:R57:bdc287a2:0:0
+mksh:system/mksh:R59:86f12c94:0:0
 mkslack:system/mkslack:5.2:acfe558b:0:0
 mktoc:audio/mktoc:1.3:1136c512:0:0
 mktorrent:system/mktorrent:1.1:3bc5640e:0:0
@@ -4116,6 +4126,7 @@ mp3val:audio/mp3val:0.1.8:1ccf96fc:0:0
 mp3wrap:audio/mp3wrap:0.5:d5cf5511:0:0
 mp4tools:audio/mp4tools:3.7:d8ecd30f:0:0
 mpack:system/mpack:1.6:6976158d:0:0
+mpb:academic/mpb:1.10.0:37f9d38c:0:0
 mpc:audio/mpc:0.27:56fb6c65:0:0
 mpd:audio/mpd:0.21.22:c33bdaf2:0:0
 mpdscribble:audio/mpdscribble:0.22:ac745868:0:0
@@ -4132,7 +4143,7 @@ mps:network/mps:0.20.16:ccde5d02:0:0
 mps-youtube:network/mps-youtube:0.2.8:1f217f07:0:0
 mpv:multimedia/mpv:0.29.1:18b147bc:0:0
 mrbayes:academic/mrbayes:3.2.7a:bd5831d8:0:0
-mrboom:games/mrboom:4.8:13fda698:0:0
+mrboom:games/mrboom:4.9:13fda698:0:0
 mrrescue:games/mrrescue:1.02e+20180818_a5be73c:9a66e770:0:0
 mrtg:network/mrtg:2.17.7:513df035:0:0
 mrustc:development/mrustc:0.8.0:491bc345:0:0
@@ -4225,7 +4236,7 @@ nant:development/nant:0.92:ea372451:0:0
 nanum-coding-fonts-ttf:system/nanum-coding-fonts-ttf:2.0:31cd2e7a:0:0
 nanum-fonts-ttf:system/nanum-fonts-ttf:3.0:75ab0c50:0:0
 nas:audio/nas:1.9.4:596bc6c7:0:0
-navit:gis/navit:R7651:451a8417:0:0
+navit:gis/navit:0.5.4:451a8417:0:0
 nbd:network/nbd:3.20:4c327dc5:0:0
 nbench:system/nbench:2.2.3:68544121:0:0
 nblood:games/nblood:1.01+20200428_069c52b26:3771474e:0:0
@@ -4247,7 +4258,7 @@ ne:development/ne:2.6:20e04cfc:0:0
 nec2c:ham/nec2c:1.3:fcbae4be:0:0
 nedit:development/nedit:5.6a:db8c030:0:0
 nekobee:audio/nekobee:593d4be:3594ea6d:0:0
-neofetch:desktop/neofetch:7.0.0:9ab41c7d:0:0
+neofetch:desktop/neofetch:7.0.0:9ab41c7d:1:0
 neoleo:office/neoleo:7.0.0:9fd61faa:0:0
 neomutt:network/neomutt:20200417:238f1709:0:0
 neovim:development/neovim:0.4.3:6c9f0c91:0:0
@@ -4258,7 +4269,7 @@ netatop:system/netatop:2.0:3bf0ed29:0:0
 netbeans:development/netbeans:11.3:8d1c7ce0:0:0
 netcat:network/netcat:0.7.1:ec4efe7b:0:0
 netcat-openbsd:network/netcat-openbsd:1.217_1:66f4a198:1:0
-netcdf:libraries/netcdf:4.6.2:3f7c623:0:0
+netcdf:libraries/netcdf:4.7.4:15e2ceff:0:0
 netdata:system/netdata:1.21.1:f7bf9a4:0:0
 netdiscover:network/netdiscover:053dda2:a9cf6873:0:0
 netdrive-connector:network/netdrive-connector:1.1:319ee49d:0:0
@@ -4267,7 +4278,7 @@ nethogs:network/nethogs:0.8.5:f5beff78:0:0
 netifaces:python/netifaces:0.10.9:59a8a895:1:0
 netperf:network/netperf:2.6.0:709ad456:0:0
 netqmail:network/netqmail:1.06:44fd3c0c:0:0
-netsniff-ng:network/netsniff-ng:0.6.6:b5f406f5:0:0
+netsniff-ng:network/netsniff-ng:0.6.7:b5f406f5:0:0
 netstat-nat:network/netstat-nat:1.4.10:a69bced2:0:0
 netsurf:network/netsurf:3.8:b7e8f34c:0:0
 netwmpager:desktop/netwmpager:1.11:c3e5aba4:0:0
@@ -4321,7 +4332,7 @@ nnn:system/nnn:3.0:e3f73f7f:0:0
 no-more-secrets:misc/no-more-secrets:0.3.3:3878d61d:0:0
 node-semver:python/node-semver:0.1.1:8c1afbc4:0:0
 node-xoauth2:libraries/node-xoauth2:1.2.0:455fb34d:0:0
-nodejs:development/nodejs:8.16.0:94ddbac0:1:0
+nodejs:development/nodejs:12.16.3:266099a4:0:0
 nodejs-bin:development/nodejs-bin:10.16.0:a478f54a:1:0
 noice:desktop/noice:2018.04.09:cb1e08df:0:0
 noip2:network/noip2:2.1.9:fdf5e4f1:0:0
@@ -4346,7 +4357,7 @@ npm2tgz:development/npm2tgz:1.3.5:68f4fb8b:0:0
 npth:libraries/npth:1.6:37bb04c5:0:0
 npush:games/npush:0.7:9976acc6:0:0
 npyscreen:python/npyscreen:4.10.5:9b7d2855:0:0
-nqp:perl/nqp:2020.02.1:514089b9:0:0
+nqp:perl/nqp:2020.05:514089b9:0:0
 nrg2iso:multimedia/nrg2iso:0.4:26a97579:0:0
 nrpe:network/nrpe:2.15:7fea1f41:0:0
 nsca:network/nsca:2.9.2:eda6db6c:0:0
@@ -4390,7 +4401,7 @@ nv-codec-headers:libraries/nv-codec-headers:9.1.23.1:6c7a7ce1:0:0
 nvclock:misc/nvclock:0.8b4:6f3032cc:0:0
 nvi:development/nvi:1.81.6:fd8e4266:0:0
 nvidia-cg-toolkit:graphics/nvidia-cg-toolkit:3.1_April2012:dd2705a8:0:0
-nvidia-driver:system/nvidia-driver:440.82:9354d9cb:0:0
+nvidia-driver:system/nvidia-driver:440.82:b237ab14:0:0
 nvidia-firmware:system/nvidia-firmware:325.15:9105773b:0:0
 nvidia-kernel:system/nvidia-kernel:440.82:5b727b89:0:0
 nvidia-legacy304-driver:system/nvidia-legacy304-driver:304.137:fc179a44:0:0
@@ -4433,7 +4444,7 @@ ocaml-ounit:libraries/ocaml-ounit:2.0.0:1d9bf3af:0:0
 ocamlbuild:development/ocamlbuild:0.12.0:e2417b2e:0:0
 ocfs2-tools:system/ocfs2-tools:1.8.5:817a405c:0:0
 ocl-icd:libraries/ocl-icd:2.2.12:d3c377da:0:0
-ocp:audio/ocp:0.1.21:126d461b:0:0
+ocp:audio/ocp:0.2.1:126d461b:0:0
 octant:development/octant:0.11.1:1d8da4c8:0:0
 octave:academic/octave:5.2.0:eb7eb039:1:0
 odamex:games/odamex:0.8.1:15092060:0:0
@@ -4468,7 +4479,7 @@ oniguruma:development/oniguruma:5.9.6_p1:2468c29b:0:0
 onioncat:network/onioncat:0.2.8:93e3db54:0:0
 onionshare:network/onionshare:2.1:ea65f6d5:0:0
 onlyoffice-desktopeditors:office/onlyoffice-desktopeditors:5.5.1:69992f39:0:0
-onscripter:games/onscripter:20191116:f7b6bf4c:0:0
+onscripter:games/onscripter:20200419:f7b6bf4c:0:0
 onyx:network/onyx:0.9.2.0:9e513f21:0:0
 oolite:games/oolite:1.88:862cfefe:0:0
 oomox:desktop/oomox:1.7.0.6:c9459a44:0:0
@@ -4494,7 +4505,7 @@ openclonk:games/openclonk:7.0:97c423a1:0:0
 opencollada:graphics/opencollada:1.6.68:1ac89b45:0:0
 opencolorio:graphics/opencolorio:1.1.1:80b156c7:0:0
 opencomal:development/opencomal:0.2.6:ee01c8bb:0:0
-openconnect:network/openconnect:7.08:ddb973bc:1:0
+openconnect:network/openconnect:8.09:ddb973bc:1:0
 opencore-amr:audio/opencore-amr:0.1.5:6e38b3a5:1:0
 opencpn:gis/opencpn:5.0.0:de55f749:0:0
 opencpn-plugin-oesenc:gis/opencpn-plugin-oesenc:4.0.0:1dc3aead:0:0
@@ -4587,6 +4598,7 @@ osm2pgrouting:gis/osm2pgrouting:2.3.6:a6a8c026:0:0
 osm2pgsql:gis/osm2pgsql:1.2.1:861402b1:0:0
 osmo:office/osmo:0.4.2:326f9743:0:0
 osmo-sdr:development/osmo-sdr:2015.12.11:91079490:0:0
+osquery-bin:system/osquery-bin:4.3.0:adae1250:0:0
 oss:audio/oss:4.2.2011:3475398f:0:0
 ossec-agent:system/ossec-agent:3.6.0:d6d81fb8:1:0
 ossec-local:system/ossec-local:3.6.0:cdff3f02:1:0
@@ -4692,7 +4704,7 @@ pcgen:games/pcgen:6.06.01:40a6e954:0:0
 pcl:libraries/pcl:1.9.1:912c19d9:0:0
 pclock:desktop/pclock:0.13.1:1d9883df:0:0
 pcmanfm:system/pcmanfm:1.3.1:cc1cef5:0:0
-pcre2:libraries/pcre2:10.34:23f7ae64:1:0
+pcre2:libraries/pcre2:10.35:23f7ae64:1:0
 pcsc-lite:system/pcsc-lite:1.8.26:303754a2:1:0
 pcsc-perl:system/pcsc-perl:1.4.14:2a670b14:1:0
 pcsc-tools:system/pcsc-tools:1.5.2:e2efcad3:1:0
@@ -4724,7 +4736,7 @@ pdsh:system/pdsh:2.31:729ae7b7:0:0
 pebrot:network/pebrot:0.8.8:9034dd00:0:0
 pefile:python/pefile:2018.8.8:1980d20e:0:0
 peg:development/peg:0.1.18:7c3b8fe0:0:0
-peg-e:games/peg-e:1.2.6:ead4b36f:0:0
+peg-e:games/peg-e:1.2.8:ead4b36f:0:0
 peksystray:desktop/peksystray:0.4.0:7527b651:0:0
 pekwm:desktop/pekwm:0.1.17:474dbe4e:0:0
 pelican:python/pelican:4.2.0:b8ceebaa:0:0
@@ -4734,7 +4746,7 @@ penguin-command:games/penguin-command:1.6.11:bed43fe6:0:0
 pengupop:games/pengupop:2.2.5:e170cd46:0:0
 pentadactyl:network/pentadactyl:20161203:11b53634:0:0
 pentagram:games/pentagram:20130617_svn:a7e255d2:0:0
-pepperflash-plugin:multimedia/pepperflash-plugin:32.0.0.363:3cc44f37:0:0
+pepperflash-plugin:multimedia/pepperflash-plugin:32.0.0.371:3cc44f37:0:0
 percona-toolkit:system/percona-toolkit:2.2.12:355c6152:0:0
 percona-xtrabackup:system/percona-xtrabackup:2.1.5:a920a5d3:0:0
 perf:development/perf:4.4.190:777acf79:1:0
@@ -4999,6 +5011,8 @@ perl-Math-Prime-Util:perl/perl-Math-Prime-Util:0.73:927bb47e:0:0
 perl-Math-Prime-Util-GMP:perl/perl-Math-Prime-Util-GMP:0.51:fb172f01:0:0
 perl-Math-Round:perl/perl-Math-Round:0.07:826e55ee:0:0
 perl-MaxMind-DB-Common:perl/perl-MaxMind-DB-Common:0.040001:19664d00:0:0
+perl-MaxMind-DB-Reader:perl/perl-MaxMind-DB-Reader:1.000014:4e0d0ae3:0:0
+perl-MaxMind-DB-Reader-XS:perl/perl-MaxMind-DB-Reader-XS:1.000008:f5a1012e:0:0
 perl-Module-Build:perl/perl-Module-Build:0.4231:2d3f448e:0:0
 perl-Module-Build-Tiny:perl/perl-Module-Build-Tiny:0.039:3ec54d23:0:0
 perl-Module-Implementation:perl/perl-Module-Implementation:0.09:69fa8e37:0:0
@@ -5020,7 +5034,7 @@ perl-MooseX-Types:perl/perl-MooseX-Types:0.50:728b973b:0:0
 perl-MooseX-Types-Structured:perl/perl-MooseX-Types-Structured:0.36:11d60801:0:0
 perl-Mozilla-CA:perl/perl-Mozilla-CA:20130114:57463e21:0:0
 perl-MusicBrainz-DiscID:perl/perl-MusicBrainz-DiscID:0.06:fa8e2a9e:0:0
-perl-Net-ARP:perl/perl-Net-ARP:1.0.10:bf355046:0:0
+perl-Net-ARP:perl/perl-Net-ARP:1.0.11:bf355046:0:0
 perl-Net-CIDR:perl/perl-Net-CIDR:0.17:9ec87ad8:0:0
 perl-Net-CIDR-Lite:perl/perl-Net-CIDR-Lite:0.21:8b155f68:0:0
 perl-Net-DNS-Native:perl/perl-Net-DNS-Native:0.18:f81282fa:0:0
@@ -5320,7 +5334,7 @@ pgplot:libraries/pgplot:5.2.2:348241d8:0:0
 pgpool-II:network/pgpool-II:3.7.3:2e59540b:0:0
 pgrouting:gis/pgrouting:2.6.3:acd2690b:0:0
 pgsanity:system/pgsanity:0.2.8:f1681897:0:0
-pgsql-ogr-fdw:gis/pgsql-ogr-fdw:1.0.9:917c9e0e:0:0
+pgsql-ogr-fdw:gis/pgsql-ogr-fdw:1.0.11:917c9e0e:0:0
 pgtcl-ng:libraries/pgtcl-ng:2.1.1:1d457fb7:0:0
 phantomjs:development/phantomjs:1.9.8:7fc50c3d:0:0
 phat:audio/phat:0.4.1:9cff1e17:0:0
@@ -5425,7 +5439,7 @@ playerctl:multimedia/playerctl:0.5.0:9986722b:0:0
 playmp3list:audio/playmp3list:0.95:67532d21:0:0
 playonlinux:games/playonlinux:4.2.10:3e6fa66f:0:0
 plex-home-theater:multimedia/plex-home-theater:1.4.1.469:9c5e1119:0:0
-plexmediaserver:multimedia/plexmediaserver:1.19.2.2737_b69929dab:779e0ad5:0:0
+plexmediaserver:multimedia/plexmediaserver:1.19.3.2764_ef515a800:779e0ad5:0:0
 plib:libraries/plib:1.8.5:c9619ae:0:0
 plotutils:graphics/plotutils:2.6:cde7d823:0:0
 plover:office/plover:weekly-v4.0.0.dev8+66.g685bd33:58a38a7:0:0
@@ -5453,7 +5467,7 @@ poco:libraries/poco:1.9.4:1e21c96b:0:0
 podcastparser:multimedia/podcastparser:0.6.4:49770953:0:0
 podget:audio/podget:0.8.6:724cd22e:0:0
 podman:system/podman:1.6.2:cec8d21c:0:0
-podofo:libraries/podofo:0.9.5:a5266206:0:0
+podofo:libraries/podofo:0.9.6:a5266206:0:0
 poedit:development/poedit:1.8.12:4fc09b09:0:0
 pogo:audio/pogo:0.8.7:4171d97c:0:0
 pointcloud:gis/pointcloud:1.2.0:32c8bdc8:0:0
@@ -5474,7 +5488,7 @@ ponymix:audio/ponymix:5:d33ad887:0:0
 popcorntime:multimedia/popcorntime:0.3.10:7f9f009b:0:0
 poppler-qt5:libraries/poppler-qt5:0.45.0:661c8e79:1:0
 porg:system/porg:0.10:54466e89:0:0
-portaudio:development/portaudio:v190600_20161030:6f748dfc:0:0
+portaudio:development/portaudio:v190600_20161030:6f748dfc:1:0
 portecle:misc/portecle:1.11:120b40d7:0:0
 portend:python/portend:2.1.2:b2c8310f:0:0
 portmidi:audio/portmidi:217:4f084195:1:0
@@ -5525,13 +5539,13 @@ projectM:misc/projectM:2.1.0:97530448:0:0
 prompt_toolkit:python/prompt_toolkit:2.0.10:dfe9fddc:0:0
 prompt_toolkit1:python/prompt_toolkit1:1.0.15:d4bf46a0:0:0
 properties-cpp:libraries/properties-cpp:0.0.1:f04a1502:0:0
-prosody:network/prosody:0.11.3:addde26e:0:0
+prosody:network/prosody:0.11.5:addde26e:0:0
 prosody-mod-block-strangers:network/prosody-mod-block-strangers:hg3023:e3ca471:0:0
-prosody-mod-cloud-notify:network/prosody-mod-cloud-notify:hg3979:2fe02374:0:0
+prosody-mod-cloud-notify:network/prosody-mod-cloud-notify:hg3996:2fe02374:0:0
 prosody-mod-csi:network/prosody-mod-csi:hg3396:81bf530a:0:0
 prosody-mod-filter-chatstates:network/prosody-mod-filter-chatstates:hg1873:5e56ac48:0:0
 prosody-mod-http-upload:network/prosody-mod-http-upload:hg3963:c473735f:0:0
-prosody-mod-smacks:network/prosody-mod-smacks:hg3986:cd159cb4:0:0
+prosody-mod-smacks:network/prosody-mod-smacks:hg4009:cd159cb4:0:0
 prosody-mod-smacks-offline:network/prosody-mod-smacks-offline:hg3938:e28fcdde:0:0
 prosody-mod-throttle-presence:network/prosody-mod-throttle-presence:hg1925:aac7ce69:0:0
 prosody-mod-vcard-muc:network/prosody-mod-vcard-muc:hg3656:6dbd973e:0:0
@@ -5681,7 +5695,7 @@ pyparsing:python/pyparsing:2.3.1:776d8d3f:1:0
 pyperclip:python/pyperclip:1.7.0:bff19ad3:0:0
 pypng:python/pypng:0.0.20:831af417:0:0
 pypoppler:python/pypoppler:0.12.1:60ed4575:0:0
-pyproj:gis/pyproj:2.6.0:201da62:0:0
+pyproj:gis/pyproj:2.6.1:201da62:0:0
 pypy:python/pypy:5.9:d49da2b8:0:0
 pypy3:python/pypy3:5.9_beta:fb0228c6:0:0
 pyqode.cobol:python/pyqode.cobol:2.10.0:f16e9a6e:1:0
@@ -5728,7 +5742,7 @@ python-axolotl:python/python-axolotl:0.2.3:fdf1aa2a:0:0
 python-axolotl-curve25519:python/python-axolotl-curve25519:0.4.1.post2:a6a5f69e:0:0
 python-bigfloat:python/python-bigfloat:0.3.0:7f6df27b:0:0
 python-blake2:python/python-blake2:0.1.6:903c2724:0:0
-python-branca:python/python-branca:0.4.0:9fdd7d73:0:0
+python-branca:python/python-branca:0.4.1:9fdd7d73:0:0
 python-cached-property:python/python-cached-property:1.4.2:7df409fe:0:0
 python-certifi:python/python-certifi:2019.9.11:917e8a62:1:0
 python-chardet:python/python-chardet:3.0.4:8172e164:1:0
@@ -5783,7 +5797,7 @@ python-lazy-object-proxy:python/python-lazy-object-proxy:1.4.0:2377b054:0:0
 python-ldap:python/python-ldap:3.2.0:1a1da63f:0:0
 python-lhafile:python/python-lhafile:0.2.1:52402686:0:0
 python-libarchive-c:python/python-libarchive-c:2.8:b700d95f:0:0
-python-libnacl:python/python-libnacl:1.6.1:fbd4013:0:0
+python-libnacl:python/python-libnacl:1.7.1:fbd4013:0:0
 python-librtmp:libraries/python-librtmp:0.3.0:c5d0d27e:0:0
 python-libsass:python/python-libsass:0.19.3:f3bd37ed:0:0
 python-libtmux:python/python-libtmux:0.8.2:45a35d1c:0:0
@@ -5854,7 +5868,7 @@ python-tabulate:python/python-tabulate:0.7.5:bbafc87a:0:0
 python-tblib:python/python-tblib:1.3.2:bc9af6cd:0:0
 python-texttable:python/python-texttable:0.9.1:ab63518c:0:0
 python-tlslite:python/python-tlslite:0.4.9:efdb253d:0:0
-python-toml:python/python-toml:0.10.0:2cb2d8b1:0:0
+python-toml:python/python-toml:0.10.1:2cb2d8b1:0:0
 python-transaction:python/python-transaction:1.0.0:2f34cd8e:0:0
 python-tvrage:python/python-tvrage:0.4.1:8582fc02:0:0
 python-twisted:python/python-twisted:17.9.0:b669bf5d:0:0
@@ -5882,7 +5896,7 @@ python-zipp:python/python-zipp:2.2.0:1fdb19a4:0:0
 python2-pythondialog:python/python2-pythondialog:3.4.0:2d5ec3c3:1:0
 python2-sip:python/python2-sip:4.19.20:5d5d77d1:1:0
 python3:python/python3:3.7.2:25cc966c:1:0
-python3-Cython:python/python3-Cython:0.29.6:1a165bf3:0:0
+python3-Cython:python/python3-Cython:0.29.17:1a165bf3:0:0
 python3-Flask:python/python3-Flask:1.1.1:94c63384:1:0
 python3-Flask-RESTful:python/python3-Flask-RESTful:0.3.7:8d7122d0:0:0
 python3-PyQt5:libraries/python3-PyQt5:5.13.2:198b7a8f:1:0
@@ -5892,7 +5906,7 @@ python3-aiohttp:python/python3-aiohttp:3.6.2:256db950:0:0
 python3-aiohttp-socks:python/python3-aiohttp-socks:0.3.9:520d4bc9:0:0
 python3-aiorpcX:python/python3-aiorpcX:0.18.4:30a2355c:0:0
 python3-appdirs:python/python3-appdirs:1.4.3:dba67458:0:0
-python3-astroid:python/python3-astroid:2.3.3:1920c8be:0:0
+python3-astroid:python/python3-astroid:2.4.1:8b902539:0:0
 python3-attrs:python/python3-attrs:19.3.0:cd001d85:1:0
 python3-augeas:python/python3-augeas:0.5.0:30f4f2e2:0:0
 python3-babel:python/python3-babel:2.8.0:e31df007:1:0
@@ -5907,13 +5921,13 @@ python3-dvdvideo:libraries/python3-dvdvideo:0.20140413:30fb35a8:0:0
 python3-future:python/python3-future:0.15.2:45bc9629:1:0
 python3-gitdb2:python/python3-gitdb2:2.0.6:85ae0275:0:0
 python3-gmpy2:python/python3-gmpy2:2.0.8:4081dfa2:0:0
-python3-ipython:python/python3-ipython:7.13.0:701fa285:0:0
+python3-ipython:python/python3-ipython:7.14.0:701fa285:0:0
 python3-ipython-sql:python/python3-ipython-sql:0.3.9:40fc85b9:0:0
 python3-isort:python/python3-isort:4.3.21:acd86d85:0:0
 python3-itsdangerous:python/python3-itsdangerous:0.24:c1ad129c:1:0
 python3-jedi:python/python3-jedi:0.16.0:b5b5a2dc:0:0
 python3-jsonschema:python/python3-jsonschema:3.2.0:fcd37c09:0:0
-python3-jupyter-ipykernel:python/python3-jupyter-ipykernel:5.2.0:c26515a9:0:0
+python3-jupyter-ipykernel:python/python3-jupyter-ipykernel:5.2.1:c26515a9:0:0
 python3-kiwisolver:python/python3-kiwisolver:1.0.1:a4b67d7c:1:0
 python3-lazy-object-proxy:python/python3-lazy-object-proxy:1.4.3:f4a03e72:0:0
 python3-lhafile:python/python3-lhafile:0.2.1:ab08c71e:0:0
@@ -5924,21 +5938,21 @@ python3-multidict:python/python3-multidict:4.7.5:dd592dc8:0:0
 python3-obspy:python/python3-obspy:1.2.1:5563c25f:0:0
 python3-openpyxl:python/python3-openpyxl:3.0.3:2d227cf3:0:0
 python3-packaging:python/python3-packaging:20.1:f0e8ba06:1:0
-python3-pandas:python/python3-pandas:0.25.3:d945e0a0:0:0
+python3-pandas:python/python3-pandas:1.0.3:ec4e6798:0:0
 python3-patsy:python/python3-patsy:0.5.1:e6df82e5:0:0
 python3-pexpect:python/python3-pexpect:4.8.0:1ada25e1:0:0
 python3-pillow:libraries/python3-pillow:3.0.0:4e41853e:0:0
 python3-prompt_toolkit:python/python3-prompt_toolkit:2.0.9:c32b4b8d:0:0
 python3-ptyprocess:python/python3-ptyprocess:0.6.0:4e7a5d2b:0:0
 python3-pycrypto:python/python3-pycrypto:2.6.1:caba77e:0:0
-python3-pylint:python/python3-pylint:2.4.4:8c7fcc5c:0:0
+python3-pylint:python/python3-pylint:2.5.2:6e06b8ec:0:0
 python3-pyparsing:python/python3-pyparsing:2.2.0:1065a026:1:0
 python3-pyparted:python/python3-pyparted:3.10.5:d2945ce3:0:0
 python3-pyrsistent:python/python3-pyrsistent:0.16.0:e3d387ee:0:0
 python3-pytest:python/python3-pytest:3.7.1:349504d1:0:0
 python3-pythondialog:python/python3-pythondialog:3.5.1:173e8ed8:0:0
 python3-pyzmq:python/python3-pyzmq:18.1.1:673fc606:0:0
-python3-seaborn:python/python3-seaborn:0.10.0:db3f4138:0:0
+python3-seaborn:python/python3-seaborn:0.10.1:db3f4138:0:0
 python3-setuptools_autover:python/python3-setuptools_autover:1.0.2:af5ede59:0:0
 python3-sip:python/python3-sip:4.19.20:e1a0b47b:1:0
 python3-six:python/python3-six:1.13.0:d1e92ced:1:0
@@ -5950,7 +5964,7 @@ python3-tornado:python/python3-tornado:6.0.4:78c6cd2e:1:0
 python3-urwid:system/python3-urwid:2.0.1:f5f761fd:0:0
 python3-uth:python/python3-uth:1.1.1:43496105:0:0
 python3-wcwidth:python/python3-wcwidth:0.1.9:66afd757:0:0
-python3-wrapt:python/python3-wrapt:1.11.2:ca7892de:0:0
+python3-wrapt:python/python3-wrapt:1.12.1:ca7892de:0:0
 pytrainer:gis/pytrainer:2.0.1:aaa0513d:0:0
 pytrash:system/pytrash:1.1.4:af17fbdb:0:0
 pytsk:python/pytsk:20190121:e749b7ec:0:0
@@ -5969,7 +5983,7 @@ pyzor:network/pyzor:1.0.0:93e0386e:0:0
 q4wine:desktop/q4wine:1.3:aadf5938:0:0
 qControlCenter:system/qControlCenter:0.2:825138a7:0:0
 qTox:network/qTox:20190928_85361393:62ef0995:0:0
-qalculate-gtk:academic/qalculate-gtk:3.4.0:111a013:0:0
+qalculate-gtk:academic/qalculate-gtk:3.10.0:111a013:0:0
 qastools:audio/qastools:0.21.0:a5fc1977:0:0
 qbittorrent:network/qbittorrent:3.3.16:339a56ff:0:0
 qbittorrent-qt5:network/qbittorrent-qt5:4.2.1:722679f5:0:0
@@ -5983,7 +5997,7 @@ qdirstat:system/qdirstat:1.6.1:f459fb96:0:0
 qelectrotech:graphics/qelectrotech:0.6:b65bfbaf:0:0
 qemu:system/qemu:4.1.0:497d2a24:1:0
 qemu-guest-agent:system/qemu-guest-agent:2.12.0:430501b0:0:0
-qgis:gis/qgis:3.12.1:986dad1:0:0
+qgis:gis/qgis:3.12.2:986dad1:0:0
 qgnomeplatform:libraries/qgnomeplatform:0.5:1515ad2d:0:0
 qhull:academic/qhull:2015.2:60c65085:1:0
 qingy:system/qingy:1.0.0:4c40a0f:0:0
@@ -6000,8 +6014,8 @@ qmidinet:audio/qmidinet:0.2.1:171a958d:0:0
 qmidiroute:audio/qmidiroute:0.4.0:2dfeecd7:0:0
 qml-material:libraries/qml-material:0.2.0:3923f01c:0:0
 qmltermwidget:libraries/qmltermwidget:0.2.0:6e71a1b:0:0
-qmmp:audio/qmmp:0.11.3:9454b9cf:0:0
-qmmp-plugin-pack:audio/qmmp-plugin-pack:0.11.3:9360a636:0:0
+qmmp:audio/qmmp:0.12.7:429fd109:0:0
+qmmp-plugin-pack:audio/qmmp-plugin-pack:0.12.2:9360a636:0:0
 qmmp-plugin-pack-qt5:audio/qmmp-plugin-pack-qt5:1.3.2:b91b19cd:0:0
 qmmp-qt5:audio/qmmp-qt5:1.3.7:3ddb0b74:0:0
 qmmp-skins:desktop/qmmp-skins:1.0:4d931df7:0:0
@@ -6051,6 +6065,7 @@ quake-par:system/quake-par:0.03.01:a1329158:0:0
 quake3_shareware_data:games/quake3_shareware_data:1.11.6:b1123cd3:0:0
 quake_shareware_data:games/quake_shareware_data:1.06:81a37a5b:0:0
 quakeforge:games/quakeforge:0.7.0:eb473fd1:0:0
+quarry:games/quarry:0.3.0.1:eb6277e1:0:0
 quassel:network/quassel:0.13.1:24536695:0:0
 quassel-qt5:network/quassel-qt5:0.13.1:d333fd6d:0:0
 quazip:libraries/quazip:0.8.1:5c3205e7:0:0
@@ -6065,7 +6080,7 @@ quodlibet:audio/quodlibet:3.9.1:50096c14:0:0
 quotatool:system/quotatool:1.6.2:396a7823:0:0
 qute:office/qute:0.4.1:a7896187:0:0
 qutebrowser:network/qutebrowser:1.10.2:bed9d68e:0:0
-qutebrowser-tox:network/qutebrowser-tox:1.11.0:4473e38d:0:0
+qutebrowser-tox:network/qutebrowser-tox:1.11.1:4473e38d:0:0
 qutepart:libraries/qutepart:2.2.3:9c075374:0:0
 quvi:network/quvi:0.9.5:dfc428b8:0:0
 qwt:libraries/qwt:6.1.4:c22582c:0:0
@@ -6093,7 +6108,7 @@ radvd:network/radvd:2.15:efbcae46:0:0
 ragel:development/ragel:7.0.0.12:a953b637:0:0
 rakarrack:audio/rakarrack:0.6.1:1d85dc1f:0:0
 raku-Readline:perl/raku-Readline:0.1.5:ecbea335:0:0
-rakudo:perl/rakudo:2020.02.1:cc42663:0:0
+rakudo:perl/rakudo:2020.05:cc42663:0:0
 ralcgm:graphics/ralcgm:3.50:53bcdcf7:0:0
 ramdefrag:misc/ramdefrag:0.4.0:618940c:0:0
 ramlfications:python/ramlfications:0.1.9:dfba2aea:0:0
@@ -6106,7 +6121,7 @@ rar2fs:system/rar2fs:1.26.0:f1371737:0:0
 rarcrack:misc/rarcrack:0.2:41aa30d9:0:0
 rarfile:libraries/rarfile:3.1:9fb26ab5:0:0
 rarian:development/rarian:0.8.1:40ae7f4b:0:0
-rasterio:gis/rasterio:1.1.3:6185aa80:0:0
+rasterio:gis/rasterio:1.1.4:4db76e66:0:0
 ratpoison:desktop/ratpoison:1.4.9:7f7569a8:0:0
 raw-thumbnailer:graphics/raw-thumbnailer:3.0.0:40b829d5:0:0
 rawstudio:graphics/rawstudio:2.0:f072e245:0:0
@@ -6196,7 +6211,7 @@ rhythmbox:audio/rhythmbox:3.2.1:d1b97a3:0:0
 ring-daemon:libraries/ring-daemon:20181026_114c6644:446ffc3c:0:0
 ring-lrc:libraries/ring-lrc:20181023_4cceb03:97fe327a:0:0
 riot-web:network/riot-web:1.5.7:d681efd1:0:0
-ripgrep:system/ripgrep:12.0.1:8c890456:0:0
+ripgrep:system/ripgrep:12.1.0:8c890456:0:0
 ripit:multimedia/ripit:3.9.0:d04fd09b:0:0
 ripperX:multimedia/ripperX:2.8.0:7a1d02e4:0:0
 ristretto:graphics/ristretto:0.8.4:614de63d:0:0
@@ -6213,7 +6228,7 @@ roadfighter:games/roadfighter:1.0.1269:bb04f936:0:0
 robin-map:libraries/robin-map:0.6.2:a33cdc72:0:0
 robomongo:development/robomongo:0.8.4:e5f202cf:0:0
 robotfindskitten:games/robotfindskitten:2.7182818.701:70b14263:0:0
-robotframework:development/robotframework:3.2:dfae821f:0:0
+robotframework:development/robotframework:3.2.1:dfae821f:0:0
 roccat-tools:games/roccat-tools:5.9.0:de91c985:0:0
 rocksdb:libraries/rocksdb:5.7.3:159eb535:0:0
 rocksndiamonds:games/rocksndiamonds:3.3.0.1:7d41bc42:0:0
@@ -6307,7 +6322,7 @@ rubygem-optimist:ruby/rubygem-optimist:3.0.0:7a2db7d:0:0
 rubygem-paint:ruby/rubygem-paint:2.0.0:9abf4638:0:0
 rubygem-pango:ruby/rubygem-pango:2.2.5:d2dd53a2:0:0
 rubygem-parallel:ruby/rubygem-parallel:1.19.1:a4ddda7:0:0
-rubygem-parser:ruby/rubygem-parser:2.7.1.1:510cdd70:0:0
+rubygem-parser:ruby/rubygem-parser:2.7.1.2:510cdd70:0:0
 rubygem-pkg-config:ruby/rubygem-pkg-config:1.1.6:dd7b9db7:0:0
 rubygem-powerpack:ruby/rubygem-powerpack:0.1.2:590e5e25:0:0
 rubygem-pry:ruby/rubygem-pry:0.12.2:dbc3a687:0:0
@@ -6371,7 +6386,7 @@ s6-linux-init:system/s6-linux-init:1.0.4.0:14d41b9f:0:0
 s6-rc:system/s6-rc:0.5.1.2:91276636:0:0
 sabnzbd:network/sabnzbd:2.3.9:4a51291c:0:0
 safecopy:system/safecopy:1.7:1361f63f:0:0
-saga-gis:gis/saga-gis:7.6.2:25b3c538:0:0
+saga-gis:gis/saga-gis:7.6.3:25b3c538:0:0
 sage:academic/sage:9.0:a25d6fc0:0:0
 sage-bin:academic/sage-bin:8.3:79e14f1b:0:0
 sakura:system/sakura:3.5.0:cebab0e2:0:0
@@ -6414,6 +6429,7 @@ scantailor:graphics/scantailor:2016_01_13:e98e71fe:0:0
 scantailor-advanced:graphics/scantailor-advanced:1.0.16:e874d452:0:0
 scapy:network/scapy:2.4.3:4cafc62b:0:0
 schedtool:system/schedtool:1.3.0:b23767f1:0:0
+schema:python/schema:0.7.2:7a45d32c:0:0
 schismtracker:audio/schismtracker:20190805:66a773e2:0:0
 schroedinger:multimedia/schroedinger:1.0.11:438cbe99:1:0
 schroot:development/schroot:1.6.10:64cbf62f:0:0
@@ -6483,7 +6499,7 @@ setuptools-scm:python/setuptools-scm:3.3.3:616dbb80:1:0
 setuptools-scm-git-archive:python/setuptools-scm-git-archive:1.0:5a8006a6:0:0
 sfarkxtc:audio/sfarkxtc:20070326:b32c619a:0:0
 sfc:audio/sfc:0.018:e820bdca:0:0
-sfeed:network/sfeed:0.9.16:adf4d61d:0:0
+sfeed:network/sfeed:0.9.17:ac517fab:0:0
 sflowtool:network/sflowtool:3.41:714c606d:0:0
 sfnt2woff:multimedia/sfnt2woff:2009.10.03:2e9ecefe:0:0
 sftp-cloudfs:network/sftp-cloudfs:0.19:cd49f86d:0:0
@@ -6502,9 +6518,9 @@ shell-fm:audio/shell-fm:0.8:722cfebe:0:0
 shibboleth-sp:network/shibboleth-sp:3.0.4:34706925:0:0
 shiboken:development/shiboken:1.2.2:576cdd62:1:0
 shntool:audio/shntool:3.0.10:33714607:0:0
-shorewall:network/shorewall:5.2.4.4:5220490:1:0
-shorewall-core:network/shorewall-core:5.2.4.4:ed31154f:1:0
-shorewall6:network/shorewall6:5.2.4.4:a1cc1197:0:0
+shorewall:network/shorewall:5.2.4.5:5220490:1:0
+shorewall-core:network/shorewall-core:5.2.4.5:ed31154f:1:0
+shorewall6:network/shorewall6:5.2.4.5:a1cc1197:0:0
 shorten:audio/shorten:3.6.1:b0d647e1:0:0
 shorturl:accessibility/shorturl:0.8:a0056963:0:0
 shotcut:multimedia/shotcut:18.11.18:79c1bd4a:0:0
@@ -6520,7 +6536,7 @@ sidplayfp:audio/sidplayfp:1.3.0:71ac0554:0:0
 siege:network/siege:4.0.4:b01b3061:0:0
 sieve-connect:network/sieve-connect:0.89:e51b4660:0:0
 sigil:office/sigil:0.9.12:46b35f6a:0:0
-signal-desktop:network/signal-desktop:1.33.3:f6e0c3c9:0:0
+signal-desktop:network/signal-desktop:1.33.4:f6e0c3c9:0:0
 signify:system/signify:20:94bb36e:0:0
 sigrok-cli:academic/sigrok-cli:0.7.1:340b5089:0:0
 sigrok-firmware-fx2lafw:misc/sigrok-firmware-fx2lafw:0.1.7:ef5b4e41:0:0
@@ -6533,7 +6549,7 @@ simple-scan:graphics/simple-scan:3.25.1:bac6c90:0:0
 simpleburn:multimedia/simpleburn:1.8.3.1:d75df20a:0:0
 simplegeneric:python/simplegeneric:0.8.1:8477ab2d:0:0
 simplejson:python/simplejson:3.16.1:a2e1af73:0:0
-simplenote:desktop/simplenote:1.15.1:7eeaa0fc:0:0
+simplenote:desktop/simplenote:1.16.0:7eeaa0fc:0:0
 simplesok:games/simplesok:1.0.1:1f17b601:0:0
 simsu:games/simsu:1.2.3:384d748b:0:0
 simulavr:development/simulavr:git20170521:c1c6cd39:0:0
@@ -6550,7 +6566,7 @@ skalibs:libraries/skalibs:2.9.2.1:b6d133be:0:0
 skb:desktop/skb:0.4:2ec86346:0:0
 skim:system/skim:0.8.1:d92ce169:0:0
 skippy-xd:desktop/skippy-xd:2016.10.20:892e64a5:0:0
-skopeo:system/skopeo:0.1.39:4e08dc77:0:0
+skopeo:system/skopeo:0.2.0:4e08dc77:0:0
 skrooge:business/skrooge:1.12.5:a1098af:0:0
 sks-keyserver:network/sks-keyserver:1.1.5:da0c9299:0:0
 skstream:libraries/skstream:0.3.9:99776319:0:0
@@ -6571,11 +6587,11 @@ slackware-xdm-theme:desktop/slackware-xdm-theme:20170522:96201581:0:0
 slackyd:system/slackyd:1.0:e98b61c0:0:0
 slatec:academic/slatec:4.1:13f393c:0:0
 sleepd:system/sleepd:2.05:3eeb5c00:0:0
-sleuthkit:system/sleuthkit:4.7.0:b29a9183:0:0
+sleuthkit:system/sleuthkit:4.9.0:b29a9183:0:0
 slib:libraries/slib:3b5:2dfa99bf:0:0
 slibtool:development/slibtool:0.5.28:508f6354:0:0
 slim:system/slim:1.3.6:1bdafd39:0:0
-slimjet:network/slimjet:25.0.11.0:691c5d60:0:0
+slimjet:network/slimjet:26.0.5.0:691c5d60:0:0
 slirp4netns:network/slirp4netns:0.4.1:a70f1877:0:0
 sloccount:development/sloccount:2.26:42295d3a:0:0
 slock:desktop/slock:1.4:52187454:0:0
@@ -6655,7 +6671,7 @@ sourcenav:development/sourcenav:4.5:3db4efa5:0:0
 soxr:audio/soxr:0.1.3:220551d9:0:0
 spacefm:system/spacefm:1.0.6:e0a4e11f:0:0
 spades:academic/spades:3.14.0:9b35f9f5:0:0
-spamassassin:network/spamassassin:3.4.2:7bd9cec8:0:0
+spamassassin:network/spamassassin:3.4.4:7bd9cec8:0:0
 spambayes:network/spambayes:1.0.4:95600e0c:0:0
 spandsp:audio/spandsp:0.0.6:7d7ffcc2:0:0
 sparsehash:libraries/sparsehash:2.0.3:cbff10b3:0:0
@@ -6676,6 +6692,7 @@ speedtest-cli:network/speedtest-cli:2.1.2:2b2fd0d8:0:0
 speex:audio/speex:1.2.0:e52df190:1:0
 spek:multimedia/spek:0.8.3_07c13da27d:870c359e:0:0
 sphinx:network/sphinx:2.2.11:c6df28af:0:0
+sphinx-rtd-theme:python/sphinx-rtd-theme:0.4.3:bb759cba:0:0
 sphinx_rtd_theme:development/sphinx_rtd_theme:0.4.2:96343c7a:0:0
 sphinxcontrib-applehelp:python/sphinxcontrib-applehelp:1.0.1:9b7c4d52:1:0
 sphinxcontrib-devhelp:python/sphinxcontrib-devhelp:1.0.2:3389d3ab:1:0
@@ -6692,7 +6709,7 @@ spice-protocol:development/spice-protocol:0.12.15:3a7295b3:1:0
 spice-vdagent:system/spice-vdagent:0.17.0:2c37af3d:0:0
 spiceopus:academic/spiceopus:2.3:4c0e8862:0:0
 spidey:academic/spidey:20060601:2d98edd6:0:0
-spin:development/spin:6.4.3:37f7a417:0:0
+spin:development/spin:6.5.2:5d305813:0:0
 spkg:system/spkg:1.1:89a16171:0:0
 spl:development/spl:1.0pre6:6db3a2b8:0:0
 spl-solaris:system/spl-solaris:0.7.13:a8e1bb65:0:0
@@ -6788,7 +6805,7 @@ stormbaancoureur:games/stormbaancoureur:2.1.6:d0632c13:0:0
 stow:system/stow:2.3.1:871954f0:0:0
 stratagus:games/stratagus:2.4.1:c8ffa193:0:0
 straw-viewer:multimedia/straw-viewer:0.0.2+20200307_9089523:9a5d1c6e:0:0
-strawberry:multimedia/strawberry:0.6.9:9cbddc56:0:0
+strawberry:multimedia/strawberry:0.6.10:9cbddc56:0:0
 streamripper:audio/streamripper:1.64.6:a1153cf1:0:0
 streamtuner:audio/streamtuner:0.99.99:17b62e2a:0:0
 stress:system/stress:1.0.4:e8bf11e0:0:0
@@ -6843,7 +6860,7 @@ swh-plugins:audio/swh-plugins:0.4.15:420a2872:0:0
 swh-plugins-lv2:audio/swh-plugins-lv2:1.0.16:2fa54004:0:0
 swi-prolog:development/swi-prolog:8.0.3:20ec3a15:0:0
 swift:development/swift:4.0:645c7c64:0:0
-sword:academic/sword:1.8.1:1129670f:1:0
+sword:academic/sword:1.8.1:af8b3044:0:0
 sword-data-kjv:academic/sword-data-kjv:1.8.1:4d01856a:0:0
 swun:system/swun:0.0.3:6796820d:0:0
 sxhkd:desktop/sxhkd:0.5.9:311293d7:0:0
@@ -6853,7 +6870,7 @@ symbola-font-ttf:system/symbola-font-ttf:13.00:b9c6e1de:0:0
 sympy:python/sympy:1.3:7b0b4430:0:0
 sync-engine:desktop/sync-engine:0.13:4f741ec1:0:0
 synce-kpm:desktop/synce-kpm:0.13:6e1176:0:0
-syncthing:network/syncthing:1.4.0:6baca1e5:0:0
+syncthing:network/syncthing:1.5.0:6baca1e5:0:0
 synergy:network/synergy:1.8.8:3455ea1a:0:0
 synthv1:audio/synthv1:0.9.12:e733d713:0:0
 syobonaction:games/syobonaction:0.2:5c0589fd:0:0
@@ -6922,8 +6939,8 @@ teeworlds:games/teeworlds:0.7.3.1:f010f0cc:0:0
 tegaki-zinnia-japanese:misc/tegaki-zinnia-japanese:0.3:9c6f042:0:0
 teighafileconverter:graphics/teighafileconverter:19.5.0.0:48f832c1:0:0
 teighaviewer:graphics/teighaviewer:4.00.0:c824991:0:0
-telegraf:system/telegraf:1.14.1:4daa2d3a:0:0
-telegram:network/telegram:2.1.1:b7dac4b3:0:0
+telegraf:system/telegraf:1.14.2:4daa2d3a:0:0
+telegram:network/telegram:2.1.5:b7dac4b3:0:0
 telegram-cli:network/telegram-cli:1.4.1:2a3871b5:0:0
 telepathy-farstream:multimedia/telepathy-farstream:0.6.2:f1f99e51:0:0
 telepathy-glib:multimedia/telepathy-glib:0.24.1:47c9b5b1:0:0
@@ -6951,9 +6968,9 @@ texlive:office/texlive:2019.190626:23cc1b3d:1:0
 texlive-docs:office/texlive-docs:2019.190626:35400eac:1:0
 texlive-extra:office/texlive-extra:2019.190626:738ae3c1:1:0
 texmacs:office/texmacs:1.99.12:c77ef5d6:0:0
-texmaker:office/texmaker:5.0.3:458f6534:0:0
+texmaker:office/texmaker:5.0.4:458f6534:0:0
 texscythe:misc/texscythe:git_0a7b692f:d930292d:0:0
-texstudio:office/texstudio:2.12.16:c1c7aaa:1:0
+texstudio:office/texstudio:2.12.22:c1c7aaa:1:0
 text2pdf:office/text2pdf:1.1:cc3766a7:0:0
 textadept:development/textadept:10.8:b9fac1ea:0:0
 textext:graphics/textext:0.4.4:42d7e504:0:0
@@ -6992,7 +7009,7 @@ tilem2:academic/tilem2:2.0:d7daee99:0:0
 tilix:system/tilix:1.8.5:4961f011:0:0
 timehash:python/timehash:1.1:38b7c97f:0:0
 timetrap:office/timetrap:1.15.1:8e627894:0:0
-timew:office/timew:1.2.0:b2aaf031:0:0
+timew:office/timew:1.3.0:b2aaf031:0:0
 tinc:network/tinc:1.0.35:ba4697e2:0:0
 tini:system/tini:0.18.0:de150b4d:1:0
 tint2:desktop/tint2:16.7:6bf60e3e:0:0
@@ -7039,7 +7056,7 @@ tong:games/tong:1.3:678d4829:0:0
 topdraw:academic/topdraw:sep2002:75cd0e9c:0:0
 tophat:academic/tophat:2.1.2:9d6aa441:0:0
 tor:network/tor:0.4.2.7:8141be3b:0:0
-tor-browser:network/tor-browser:9.0.9:f7a55629:1:0
+tor-browser:network/tor-browser:9.0.10:f7a55629:1:0
 tora:development/tora:2.1.3:6e454a5a:0:0
 torcs:games/torcs:1.3.7:45523dab:0:0
 tornado:network/tornado:5.1.1:493ebffc:1:0
@@ -7180,6 +7197,7 @@ typed_ast:python/typed_ast:1.4.1:b4f15e28:0:0
 typespeed:games/typespeed:0.6.5:4e690540:0:0
 typhoon_2001:games/typhoon_2001:r3992:c857b1fa:0:0
 typing:python/typing:3.7.4.1:64ce93b5:0:0
+typing-extensions:python/typing-extensions:3.7.4.2:c417276c:0:0
 tyrquake-libretro:games/tyrquake-libretro:2018.09.30_83291a1:fff0bce9:0:0
 tyrutils-ericw:development/tyrutils-ericw:0.15.4:3cc31bfc:0:0
 tzlocal:python/tzlocal:1.5.1:b935127c:0:0
@@ -7282,7 +7300,7 @@ urn:development/urn:0.7.2:25f425c1:0:0
 usbguard:system/usbguard:0.7.4:c8fde194:0:0
 usbmon:system/usbmon:6.1:4be1e437:0:0
 usbredir:system/usbredir:0.8.0:4d2d8736:1:0
-usbrelay:system/usbrelay:0.3:98ea8223:0:0
+usbrelay:system/usbrelay:0.7:98ea8223:0:0
 usbview:system/usbview:2.0:7ae4b5f0:0:0
 usermin:system/usermin:1.791:b46d432d:0:0
 ut2004:games/ut2004:3369:655c9a53:0:0
@@ -7295,7 +7313,7 @@ uwm:desktop/uwm:0.2.11a:e44e1078:0:0
 uwsgi:network/uwsgi:2.0.15:e1c7388b:0:0
 uz80as:development/uz80as:1.11:62d3c792:0:0
 vacuum-im:network/vacuum-im:1.2.5:86195b54:0:0
-vagrant:system/vagrant:2.2.7:d6dc4907:1:0
+vagrant:system/vagrant:2.2.9:d6dc4907:1:0
 vagrant-public-key:system/vagrant-public-key:1.0.0:4ad91fdc:0:0
 vala:development/vala:0.34.9:9f0c0196:1:0
 vala-12:development/vala-12:0.12.1:588c2d6c:0:0
@@ -7358,6 +7376,7 @@ vile:development/vile:9.8t:7fed74c3:0:0
 vim-qt:desktop/vim-qt:20170421:290e448:0:0
 vimb:network/vimb:3.2.0:df8ce6b2:0:0
 vimpc:audio/vimpc:0.09.1:e4c017d9:0:0
+vine:python/vine:1.3.0:78d51a02:0:0
 vinetto:python/vinetto:0.07:973afca2:0:0
 vinterm:system/vinterm:0.5.0:bf8ae98b:0:0
 vips:graphics/vips:8.1.1:70d0d886:0:0
@@ -7380,7 +7399,7 @@ vitetris:games/vitetris:0.57:97d7044b:0:0
 vitunes-mplayer:multimedia/vitunes-mplayer:2.3:275041e8:0:0
 vivacious-colors-gtk-icon-theme:desktop/vivacious-colors-gtk-icon-theme:1.4:1422e08a:0:0
 vivacious-colors-gtk-theme:desktop/vivacious-colors-gtk-theme:16.04.4:3888a2e3:0:0
-vivaldi:network/vivaldi:3.0.1874.33:e57ffb10:0:0
+vivaldi:network/vivaldi:3.0.1874.38:e57ffb10:0:0
 vkQuake:games/vkQuake:1.04.1:af6ce102:0:0
 vkeybd:multimedia/vkeybd:0.1.18d:6c018ee8:0:0
 vlc:multimedia/vlc:3.0.10:5f655c3f:1:0
@@ -7410,7 +7429,7 @@ voxelands:games/voxelands:1501.00:957fecc9:0:0
 vpnc:network/vpnc:r550:a822e699:0:0
 vrrpd:network/vrrpd:1.0:91df8e4a:0:0
 vscode:development/vscode:1.21.1:69a60bc1:0:0
-vscode-bin:development/vscode-bin:1.44.2:6cf860e7:0:0
+vscode-bin:development/vscode-bin:1.45.1:6cf860e7:0:0
 vsqlite++:libraries/vsqlite++:0.3.13:60e10396:0:0
 vstudio:development/vstudio:8.3:3783d92e:0:0
 vsxu:graphics/vsxu:0.6.3.0:421a3220:0:0
@@ -7471,6 +7490,7 @@ webmin:system/webmin:1.941:10f43319:1:0
 weboob:network/weboob:0.a:15a3aae8:0:0
 webp-pixbuf-loader:graphics/webp-pixbuf-loader:20191003.fb04954:8674e1b0:0:0
 websocket-client:python/websocket-client:0.57.0:2c937e7c:0:0
+webvfx:multimedia/webvfx:1.1.0:91534b21:0:0
 weechat:network/weechat:2.8:d0309bcf:0:0
 weetwit:network/weetwit:0.10.2:22e0ca33:0:0
 wehi-cellsymphony:academic/wehi-cellsymphony:20130721:4bea74f8:0:0
@@ -7484,6 +7504,7 @@ weston:desktop/weston:7.0.0:2549bee8:0:0
 wfmath:libraries/wfmath:1.0.2:5b02cc4e:0:0
 wgetpaste:accessibility/wgetpaste:2.29:8ded5f55:0:0
 wheel:development/wheel:0.33.0:7289eebc:0:0
+when:office/when:1.1.40:84e209e7:0:0
 whipper:audio/whipper:0.8.0:2bb14414:0:0
 whistle:multimedia/whistle:0.9.3:c37d278:0:0
 white_dune:graphics/white_dune:1.822:1ad7ea38:0:0
@@ -7509,8 +7530,8 @@ winpdb:python/winpdb:1.4.8:d3497e07:0:0
 winusb:system/winusb:1.0.11:1521f732:0:0
 wipe:system/wipe:2.3.1:c5f7f797:0:0
 wire:network/wire:3.5.2881:fc29847d:0:0
-wireguard-linux-compat:network/wireguard-linux-compat:1.0.20200429:6b2aa3dd:0:0
-wireguard-tools:network/wireguard-tools:1.0.20200319:3fbd1f9e:0:0
+wireguard-linux-compat:network/wireguard-linux-compat:1.0.20200506:6b2aa3dd:0:0
+wireguard-tools:network/wireguard-tools:1.0.20200510:3fbd1f9e:0:0
 wireshark:network/wireshark:3.2.3:44b415bf:1:0
 with-readline:misc/with-readline:0.1.1:a4533e2:0:0
 wjelement:libraries/wjelement:1.3:12c3b4fb:0:0
@@ -7583,6 +7604,7 @@ wol:network/wol:0.7.1:748bbd67:0:0
 wolf4sdl:games/wolf4sdl:1.7:e5d81a0a:0:0
 wordgrinder:office/wordgrinder:0.7.2:73a76a82:0:0
 wordwarvi:games/wordwarvi:1.0.2:3738d82d:0:0
+workbook:python/workbook:1.1:97fc9310:0:0
 worker:system/worker:4.4.0:ac647e33:0:0
 worldofgoo:games/worldofgoo:1.41:5fd5e550:0:0
 worldofpadman:games/worldofpadman:1.6:3d5a8e21:0:0
@@ -7612,7 +7634,7 @@ wxcam:multimedia/wxcam:1.1:7cb7d38d:0:0
 wxmacmolplt:academic/wxmacmolplt:7.7:4026e4d0:0:0
 wxsvg:libraries/wxsvg:1.5.12:325f9f60:0:0
 wyrd:office/wyrd:1.4.6:59449fbf:0:0
-x-tile:desktop/x-tile:2.6:e43ec6ad:0:0
+x-tile:desktop/x-tile:3.1:ea474cd7:0:0
 x11vnc:network/x11vnc:0.9.16:f80ee8be:0:0
 x264:multimedia/x264:20170225:f52a5fb1:1:0
 x265:multimedia/x265:3.3:6b4b7101:1:0
@@ -7735,6 +7757,7 @@ xlog:ham/xlog:2.0.17:38779576:0:0
 xlsx2csv:office/xlsx2csv:0.7.4:7f4c31ed:0:0
 xlt:libraries/xlt:11.1.11:f28c4471:0:0
 xlunch:desktop/xlunch:2.3.2:b03aee65:0:0
+xlutils:python/xlutils:2.0.0:1042fe39:0:0
 xmahjongg:games/xmahjongg:3.7:7b7b1423:0:0
 xmedcon:graphics/xmedcon:0.16.2:d382dff0:0:0
 xmind:office/xmind:8update5:c0bf5730:0:0
@@ -7876,6 +7899,7 @@ youtube-upload:network/youtube-upload:0.8.0:e0d17b89:0:0
 youtube-viewer:multimedia/youtube-viewer:3.7.4:8aef6a92:0:0
 yturl:network/yturl:2.0.2:9feea862:0:0
 yubikey-personalization-gui:misc/yubikey-personalization-gui:3.1.25:153f3038:0:0
+yubioath-desktop:misc/yubioath-desktop:5.0.3:1b12e469:0:0
 z:system/z:1.9:9c2eb56b:0:0
 z26:games/z26:2.13:52b5163a:0:0
 z26v3:games/z26v3:3.02.01:8920412e:0:0
@@ -7900,9 +7924,9 @@ zdaemon:libraries/zdaemon:4.0.1:a6c3f1af:0:0
 zdbsp:games/zdbsp:1.19:55e6f732:0:0
 zdoom:games/zdoom:2.8.1:b3b24a49:0:0
 zeal:development/zeal:0.6.1:81ed2400:0:0
-zeek:network/zeek:3.0.1:fd32f5ab:0:0
+zeek:network/zeek:3.0.5:fd32f5ab:0:0
 zeep:python/zeep:3.4.0:cb2fa091:0:0
-zef:perl/zef:0.8.3:afbee6ed:0:0
+zef:perl/zef:0.8.4:afbee6ed:0:0
 zelda-roth-se:games/zelda-roth-se:1.2.1:eaff746e:0:0
 zelda-xd2-mercuris-chess:games/zelda-xd2-mercuris-chess:1.1.1:28641ac6:0:0
 zenity:desktop/zenity:3.28.0:937a7199:0:0
@@ -7930,7 +7954,7 @@ znc:network/znc:1.7.5:a0d83299:0:0
 zod-engine:games/zod-engine:2011.09.06:ab273fa:0:0
 zookeeper:system/zookeeper:3.4.10:1c499de1:0:0
 zoom:games/zoom:1.1.5:de3bf9e7:0:0
-zoom-linux:network/zoom-linux:5.0.398100.0427:cb7473aa:0:0
+zoom-linux:network/zoom-linux:5.0.403652.0509:cb7473aa:0:0
 zope.component:libraries/zope.component:4.2.1:7b7222a2:0:0
 zope.configuration:libraries/zope.configuration:4.0.3:1120cca1:0:0
 zope.event:libraries/zope.event:4.0.3:56926a1d:0:0
@@ -7968,4 +7992,4 @@ zvbi:multimedia/zvbi:0.2.35:fccc7944:0:0
 zxcvbn-python:python/zxcvbn-python:4.4.22:5830da57:0:0
 zynaddsubfx:audio/zynaddsubfx:3.0.5:28b1f977:0:0
 zynjacku:audio/zynjacku:6:a8eb9f8f:0:0
-zziplib:libraries/zziplib:0.13.69:b29d7c8:0:0
+zziplib:libraries/zziplib:0.13.71:43d55692:0:0

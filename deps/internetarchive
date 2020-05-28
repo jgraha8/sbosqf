@@ -1,0 +1,10 @@
+REQUIRED:
+docopt
+python-requests
+python3-six
+schema
+tqdm
+
+OPTIONAL:
+
+BUILDOPTS:
