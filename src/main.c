@@ -298,7 +298,7 @@ static void cmd_create_print_help()
                "  -o, --output\n"
                "  -n, --no-recursive\n"
                "  -p, --revdeps\n"
-	       "  -R, --repo-db\n",
+               "  -R, --repo-db\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
@@ -317,7 +317,7 @@ static int cmd_create_options(int argc, char **argv, struct pkg_options *options
                                                      LONG_OPT("output", 'o'),
                                                      LONG_OPT("no-recursive", 'n'), /* option */
                                                      LONG_OPT("revdeps", 'p'),      /* option */
-						     LONG_OPT("repo-db", 'R'),
+                                                     LONG_OPT("repo-db", 'R'),
                                                      {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_create_print_help, options);
@@ -342,7 +342,7 @@ static void cmd_update_print_help()
                "  -h, --help\n"
                "  -l, --list\n"
                "  -o, --output\n"
-	       "  -R, --repo-db\n"
+               "  -R, --repo-db\n"
                "  -r, --rebuild-deps\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
@@ -350,14 +350,14 @@ static void cmd_update_print_help()
 static int cmd_update_options(int argc, char **argv, struct pkg_options *options)
 {
         static const char *options_str            = "Aaihlo:Rrz";
-        static const struct option long_options[] = {                              /* These options set a flag. */
+        static const struct option long_options[] = {/* These options set a flag. */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
-                                                     LONG_OPT("auto-review", 'a'), /* option */
+                                                     LONG_OPT("auto-review", 'a'),         /* option */
                                                      LONG_OPT("ignore-review", 'i'),       /* option */
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
                                                      LONG_OPT("output", 'o'),
-						     LONG_OPT("repo-db", 'R'),
+                                                     LONG_OPT("repo-db", 'R'),
                                                      LONG_OPT("rebuild-deps", 'r'),
                                                      {0, 0, 0, 0}};
 
@@ -381,20 +381,18 @@ static void cmd_remove_print_help()
                "  -h, --help\n"
                "  -l, --list\n"
                "  -o, --output\n"
-	       "  -R, --repo-db\n",
+               "  -R, --repo-db\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
 static int cmd_remove_options(int argc, char **argv, struct pkg_options *options)
 {
         static const char *options_str            = "dhlo:R";
-        static const struct option long_options[] = {                       /* These options set a flag. */
-                                                     LONG_OPT("deep", 'd'), /* option */
-                                                     LONG_OPT("help", 'h'),
-                                                     LONG_OPT("list", 'l'),
-                                                     LONG_OPT("output", 'o'),
-						     LONG_OPT("repo-db", 'R'),
-                                                     {0, 0, 0, 0}};
+        static const struct option long_options[] = {
+            /* These options set a flag. */
+            LONG_OPT("deep", 'd'), /* option */
+            LONG_OPT("help", 'h'),    LONG_OPT("list", 'l'), LONG_OPT("output", 'o'),
+            LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_remove_print_help, options);
 
@@ -500,14 +498,15 @@ static void cmd_check_updates_print_help()
                "\n"
                "Options:\n"
                "  -h, --help\n"
-	       "  -R, --repo-db\n",
+               "  -R, --repo-db\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
 static int cmd_check_updates_options(int argc, char **argv, struct pkg_options *options)
 {
         static const char *options_str            = "hR";
-        static const struct option long_options[] = {LONG_OPT("help", 'h'), LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
+        static const struct option long_options[] = {
+            LONG_OPT("help", 'h'), LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
 
         return process_options(argc, argv, options_str, long_options, cmd_check_updates_print_help, options);
 }
@@ -1723,6 +1722,9 @@ static int write_pkg_remove_sqf(const struct slack_pkg_dbi *slack_pkg_dbi, struc
                      node = pkg_iterator_next(&iter)) {
 
                         if (node->pkg.dep.is_meta)
+                                continue;
+
+                        if (!slack_pkg_dbi->is_installed(node->pkg.name, user_config.sbo_tag))
                                 continue;
 
                         node->pkg.for_removal = true;
