@@ -1440,6 +1440,7 @@ static int update_process_revdeps(const struct slack_pkg_dbi *slack_pkg_dbi, str
                                 if (PKG_UPDATE_NONE == node->pkg.update.type) {
                                         node->pkg.update =
                                             pkg_update_assign(PKG_REVDEP_UPDATE, cur_node, slack_pkg->version);
+                                        pkg_nodes_append_unique(update_list, node);
                                 }
                                 pkg_nodes_append_unique(pkg_list, node);
 
