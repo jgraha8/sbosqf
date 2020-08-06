@@ -1,4 +1,6 @@
 REQUIRED:
+xsel
+dmenu
 
 OPTIONAL:
 

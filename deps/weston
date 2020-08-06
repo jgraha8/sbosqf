@@ -2,7 +2,7 @@ REQUIRED:
 libinput
 libwebp
 libxkbcommon
-wayland-egl
+wayland
 wayland-protocols
 
 OPTIONAL:

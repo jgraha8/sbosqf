@@ -1,4 +1,6 @@
 REQUIRED:
+perl-Module-Build-Tiny
+htmldoc
 
 OPTIONAL:
 

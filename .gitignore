@@ -1,2 +1,11 @@
 *.o
 *.sqf
+deps/cx-updates
+src/archive
+src/*.yaml
+src/*.dot
+src/*.png
+src/*.save
+src/*.a
+src/*.so
+src/*.out

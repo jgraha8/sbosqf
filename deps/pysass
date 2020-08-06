@@ -1,4 +1,7 @@
 REQUIRED:
+python3
+watchdog
+BeautifulSoup4
 
 OPTIONAL:
 

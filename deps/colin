@@ -1,4 +1,6 @@
 REQUIRED:
+brotli
+graphite2
 
 OPTIONAL:
 

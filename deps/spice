@@ -8,6 +8,6 @@ OPTIONAL:
 -libcacard
 lz4
 gst-libav
-gst-plugins-bad # (with x264 support)
+gst-plugins-ugly # (with x264 support)
 
 BUILDOPTS:

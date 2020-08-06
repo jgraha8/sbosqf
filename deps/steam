@@ -1,9 +1,8 @@
 REQUIRED:
 OpenAL
 python3
+zenity
 
 OPTIONAL:
-flashplayer-plugin
-libtxc_dxtn
 
 BUILDOPTS:

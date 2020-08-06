@@ -1,5 +1,11 @@
 REQUIRED:
 
 OPTIONAL:
+-opencore-amr
+lame
+libdvdcss
+libmpeg2
+twolame
+x264
 
 BUILDOPTS:

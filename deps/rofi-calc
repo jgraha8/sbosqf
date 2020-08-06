@@ -1,4 +1,6 @@
 REQUIRED:
+rofi
+libqalculate
 
 OPTIONAL:
 

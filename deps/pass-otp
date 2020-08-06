@@ -1,0 +1,8 @@
+REQUIRED:
+password-store
+qrencode
+oath-toolkit
+
+OPTIONAL:
+
+BUILDOPTS:

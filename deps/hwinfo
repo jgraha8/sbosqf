@@ -4,3 +4,4 @@ libx86emu
 OPTIONAL:
 
 BUILDOPTS:
+MAKEFLAGS=-j1
