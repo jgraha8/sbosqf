@@ -223,11 +223,11 @@ static int process_options(int argc, char **argv, const char *options_str, const
                         break;
 
                 switch (c) {
-                case 'A':
-                        set_pkg_review_type(&pkg_options->review_type, PKG_REVIEW_AUTO_VERBOSE, long_options);
-                        break;
                 case 'a':
                         set_pkg_review_type(&pkg_options->review_type, PKG_REVIEW_AUTO, long_options);
+                        break;
+                case 'A':
+                        set_pkg_review_type(&pkg_options->review_type, PKG_REVIEW_AUTO_VERBOSE, long_options);
                         break;
                 case 'i':
                         set_pkg_review_type(&pkg_options->review_type, PKG_REVIEW_DISABLED, long_options);
@@ -250,6 +250,20 @@ static int process_options(int argc, char **argv, const char *options_str, const
                 case 'l':
                         pkg_options->output_mode = PKG_OUTPUT_STDOUT;
                         break;
+                case 'L': {
+                        long int val = strtol(optarg, NULL, 10);
+                        switch (val) {
+                        case 1:
+                                pkg_options->output_mode = PKG_OUTPUT_SLACKPKG_1;
+                                break;
+                        case 2:
+                                pkg_options->output_mode = PKG_OUTPUT_SLACKPKG_2;
+                                break;
+                        default:
+                                mesg_error("option --list-slackpkg/-L requires a value of 1 or 2\n");
+                                exit(EXIT_FAILURE);
+                        }
+                } break;
                 case 'n':
                         pkg_options->recursive = false;
                         break;
@@ -295,6 +309,7 @@ static void cmd_create_print_help()
                "  -d, --deep\n"
                "  -h, --help\n"
                "  -l, --list\n"
+               "  -L, --list-slackpkg {1|2}\n"
                "  -o, --output\n"
                "  -n, --no-recursive\n"
                "  -p, --revdeps\n"
@@ -304,7 +319,7 @@ static void cmd_create_print_help()
 
 static int cmd_create_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "aAibcCdhlo:npRtT";
+        static const char *options_str            = "aAibcCdhlL:o:npRtT";
         static const struct option long_options[] = {                              /* These options set a flag. */
                                                      LONG_OPT("auto-review", 'a'), /* option */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
@@ -314,6 +329,7 @@ static int cmd_create_options(int argc, char **argv, struct pkg_options *options
                                                      LONG_OPT("deep", 'd'),                /* option */
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
+                                                     LONG_OPT("list-slackpkg", 'L'),
                                                      LONG_OPT("output", 'o'),
                                                      LONG_OPT("no-recursive", 'n'), /* option */
                                                      LONG_OPT("revdeps", 'p'),      /* option */
@@ -324,7 +340,8 @@ static int cmd_create_options(int argc, char **argv, struct pkg_options *options
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
-                        mesg_error("options --list/-l and --output/-o are mutually exclusive\n");
+                        mesg_error(
+                            "options --list/-l, --list-slackpkg/-L, and --output/-o are mutually exclusive\n");
                         return -1;
                 }
         }
@@ -341,6 +358,7 @@ static void cmd_update_print_help()
                "  -i, --ignore-review\n"
                "  -h, --help\n"
                "  -l, --list\n"
+               "  -L, --list-slackpkg {1|2}\n"
                "  -o, --output\n"
                "  -R, --repo-db\n"
                "  -r, --rebuild-deps\n",
@@ -349,13 +367,14 @@ static void cmd_update_print_help()
 
 static int cmd_update_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "Aaihlo:Rrz";
+        static const char *options_str            = "AaihlL:o:Rrz";
         static const struct option long_options[] = {/* These options set a flag. */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
                                                      LONG_OPT("auto-review", 'a'),         /* option */
                                                      LONG_OPT("ignore-review", 'i'),       /* option */
                                                      LONG_OPT("help", 'h'),
                                                      LONG_OPT("list", 'l'),
+                                                     LONG_OPT("list-slackpkg", 'L'),
                                                      LONG_OPT("output", 'o'),
                                                      LONG_OPT("repo-db", 'R'),
                                                      LONG_OPT("rebuild-deps", 'r'),
@@ -365,7 +384,8 @@ static int cmd_update_options(int argc, char **argv, struct pkg_options *options
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
-                        mesg_error("options --list/-l and --output/-o are mutually exclusive\n");
+                        mesg_error(
+                            "options --list/-l, --list-slackpkg/-L, and --output/-o are mutually exclusive\n");
                         return -1;
                 }
         }
@@ -380,6 +400,7 @@ static void cmd_remove_print_help()
                "  -d, --deep\n"
                "  -h, --help\n"
                "  -l, --list\n"
+               "  -L, --list-slackpkg {1|2}\n"
                "  -o, --output\n"
                "  -R, --repo-db\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
@@ -387,12 +408,12 @@ static void cmd_remove_print_help()
 
 static int cmd_remove_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "dhlo:R";
-        static const struct option long_options[] = {
-            /* These options set a flag. */
-            LONG_OPT("deep", 'd'), /* option */
-            LONG_OPT("help", 'h'),    LONG_OPT("list", 'l'), LONG_OPT("output", 'o'),
-            LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
+        static const char *options_str            = "dhlL:o:R";
+        static const struct option long_options[] = {                       /* These options set a flag. */
+                                                     LONG_OPT("deep", 'd'), /* option */
+                                                     LONG_OPT("help", 'h'),          LONG_OPT("list", 'l'),
+                                                     LONG_OPT("list-slackpkg", 'L'), LONG_OPT("output", 'o'),
+                                                     LONG_OPT("repo-db", 'R'),       {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, cmd_remove_print_help, options);
 
@@ -401,7 +422,8 @@ static int cmd_remove_options(int argc, char **argv, struct pkg_options *options
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
-                        mesg_error("options --list/-l and --output/-o are mutually exclusive\n");
+                        mesg_error(
+                            "options --list/-l, --list-slackpkg/-L, and --output/-o are mutually exclusive\n");
                         return -1;
                 }
         }
@@ -1689,7 +1711,6 @@ static int write_pkg_remove_sqf(const struct slack_pkg_dbi *slack_pkg_dbi, struc
         int rc = 0;
         char sqf_file[256];
         struct ostream *os             = NULL;
-        const char *term               = NULL;
         pkg_nodes_t *pkg_list          = NULL;
         struct bds_stack *removal_list = NULL;
         struct pkg_node *node          = NULL;
@@ -1785,13 +1806,12 @@ static int write_pkg_remove_sqf(const struct slack_pkg_dbi *slack_pkg_dbi, struc
         bool buffer_stream      = (pkg_options.output_mode != PKG_OUTPUT_FILE);
         const char *output_path = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
         os                      = ostream_open(output_path, "w", buffer_stream);
-        term                    = (pkg_options.output_mode == PKG_OUTPUT_FILE ? "\n" : " ");
 
         while (bds_stack_pop(removal_list, &node)) {
-                ostream_printf(os, "%s%s", node->pkg.name, term);
+                ostream_printf(os, "%s", pkg_output_name(pkg_options.output_mode, node->pkg.name));
         }
 
-        if (pkg_options.output_mode != PKG_OUTPUT_STDOUT) {
+        if (pkg_options.output_mode == PKG_OUTPUT_FILE) {
                 mesg_ok("created %s\n", sqf_file);
         } else {
                 ostream_printf(os, "\n");

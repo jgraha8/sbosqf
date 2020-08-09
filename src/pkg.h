@@ -122,12 +122,12 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
 enum pkg_review_type { PKG_REVIEW_DISABLED = 0, PKG_REVIEW_ENABLED, PKG_REVIEW_AUTO, PKG_REVIEW_AUTO_VERBOSE };
 
-enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT };
+enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT, PKG_OUTPUT_SLACKPKG_1, PKG_OUTPUT_SLACKPKG_2 };
 
 enum pkg_track_mode { PKG_TRACK_NONE = 0, PKG_TRACK_ENABLE, PKG_TRACK_ENABLE_ALL };
 
 struct pkg_options {
-        int check_installed;              /* Bit flags for checking packages are already installed */
+        int check_installed; /* Bit flags for checking packages are already installed */
         int max_dist;
         enum pkg_review_type review_type; /* Selection for how packages are reviewed */
         enum pkg_output_mode output_mode; /* Output mode selection */
@@ -138,12 +138,14 @@ struct pkg_options {
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
         bool rebuild_deps;                /* Rebuild dependencies--used for updating packages only */
-	bool check_slackpkg_repo;         /* Check slackpkg repo for updates instead of installed packages */
+        bool check_slackpkg_repo;         /* Check slackpkg repo for updates instead of installed packages */
         bool graph;
         bool all_packages;
 };
 
 struct pkg_options pkg_options_default();
+
+const char *pkg_output_name(enum pkg_output_mode output_mode, const char *pkg_name);
 
 // pkg_nodes_t *pkg_load_sbo();
 

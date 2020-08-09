@@ -550,7 +550,7 @@ int write_sqf(struct ostream *os, const struct slack_pkg_dbi *slack_pkg_dbi, str
                         node = pkg_nodes_get_const(output_pkgs, i);
                 }
 
-                ostream_printf(os, "%s", node->pkg.name);
+                ostream_printf(os, "%s", pkg_output_name(options.output_mode, node->pkg.name));
                 if (ostream_is_console_stream(os)) {
                         ostream_printf(os, " ");
                 } else {

@@ -244,3 +244,27 @@ const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i)
 
         return string_list_get_const(pkg->dep.buildopts, i);
 }
+
+const char *pkg_output_name(enum pkg_output_mode output_mode, const char *pkg_name)
+{
+        static char buf[1024];
+
+        switch (output_mode) {
+        case PKG_OUTPUT_FILE:
+                snprintf(buf, sizeof(buf), "%s\n", pkg_name);
+                break;
+        case PKG_OUTPUT_STDOUT:
+                snprintf(buf, sizeof(buf), "%s ", pkg_name);
+                break;
+        case PKG_OUTPUT_SLACKPKG_1:
+                snprintf(buf, sizeof(buf), "^.*[[:blank:]]%s-[0-9]\\+.* ", pkg_name);
+                break;
+        case PKG_OUTPUT_SLACKPKG_2:
+                snprintf(buf, sizeof(buf), "^.*[[:blank:]]%s-[0-9]\\\\+.* ", pkg_name);
+                break;
+        default:
+                abort();
+        }
+
+        return buf;
+}
