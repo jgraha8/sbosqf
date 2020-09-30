@@ -251,7 +251,7 @@ const char *pkg_output_name(enum pkg_output_mode output_mode, const char *pkg_na
 
         switch (output_mode) {
         case PKG_OUTPUT_FILE:
-                snprintf(buf, sizeof(buf), "%s\n", pkg_name);
+                snprintf(buf, sizeof(buf), "%s", pkg_name);
                 break;
         case PKG_OUTPUT_STDOUT:
                 snprintf(buf, sizeof(buf), "%s ", pkg_name);
