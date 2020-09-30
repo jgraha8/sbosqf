@@ -1,7 +1,7 @@
 REQUIRED:
+Markdown
+BeautifulSoup
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:

@@ -1,5 +1,6 @@
 REQUIRED:
 
 OPTIONAL:
+# NOTE: libunwind is auto-detected
 
 BUILDOPTS:

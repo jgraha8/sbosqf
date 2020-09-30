@@ -1,7 +1,7 @@
 REQUIRED:
+dosbox
+openjdk8
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:

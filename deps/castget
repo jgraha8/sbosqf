@@ -1,7 +1,6 @@
 REQUIRED:
+id3lib
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:

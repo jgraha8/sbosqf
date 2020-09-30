@@ -1,0 +1,5 @@
+METAPKG
+REQUIRED:
+php7
+php7-imagick
+php7-redis

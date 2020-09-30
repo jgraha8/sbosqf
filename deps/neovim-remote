@@ -1,7 +1,8 @@
 REQUIRED:
+python3
+python-neovim
+psutil
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:

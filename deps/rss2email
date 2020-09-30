@@ -1,7 +1,8 @@
 REQUIRED:
+python3
+feedparser
+html2text
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:

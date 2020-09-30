@@ -1,7 +1,6 @@
 REQUIRED:
+solarus
 
 OPTIONAL:
-libmpeg2
-fluidsynth
 
 BUILDOPTS:
