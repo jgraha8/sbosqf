@@ -3,3 +3,7 @@ REQUIRED:
 OPTIONAL:
 
 BUILDOPTS:
+X11=yes    
+EDWIN=yes   
+IMAIL=yes
+DOCS=no    
