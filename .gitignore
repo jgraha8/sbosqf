@@ -1,5 +1,6 @@
 *.o
 *.sqf
+*~
 deps/cx-updates
 src/archive
 src/*.yaml
