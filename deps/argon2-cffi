@@ -1,5 +1,7 @@
 REQUIRED:
-shadow
+argon2
+cffi
+python3
 
 OPTIONAL:
 

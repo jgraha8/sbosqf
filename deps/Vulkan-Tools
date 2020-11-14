@@ -1,5 +1,5 @@
 REQUIRED:
-shadow
+vulkan-sdk
 
 OPTIONAL:
 

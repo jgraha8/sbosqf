@@ -1,5 +1,6 @@
 REQUIRED:
-shadow
+SPIRV-Headers
+python3
 
 OPTIONAL:
 
