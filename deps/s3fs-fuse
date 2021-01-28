@@ -1,5 +1,5 @@
 REQUIRED:
-pam
+awscli
 
 OPTIONAL:
 

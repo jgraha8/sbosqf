@@ -1,0 +1,10 @@
+REQUIRED:
+python3
+docopt
+python-requests
+python3-pythondialog
+Jinja2
+
+OPTIONAL:
+
+BUILDOPTS:

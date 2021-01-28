@@ -1,5 +1,6 @@
 REQUIRED:
-pam
+optional-django
+nose
 
 OPTIONAL:
 

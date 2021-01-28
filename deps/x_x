@@ -1,0 +1,9 @@
+REQUIRED:
+six
+click
+python-xlrd
+python-unicodecsv
+
+OPTIONAL:
+
+BUILDOPTS:

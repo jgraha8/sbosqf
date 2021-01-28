@@ -1,5 +1,5 @@
 REQUIRED:
-pam
+perl-Devel-Cycle
 
 OPTIONAL:
 

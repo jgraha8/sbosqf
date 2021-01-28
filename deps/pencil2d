@@ -1,0 +1,15 @@
+REQUIRED:
+six
+pyudev
+python-evdev
+graphviz
+ninja
+meson
+libwacom
+libinput
+libxkbcommon
+qt5
+
+OPTIONAL:
+
+BUILDOPTS:

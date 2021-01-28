@@ -1,5 +1,6 @@
 REQUIRED:
-pam
+python3
+libxkbcommon
 
 OPTIONAL:
 

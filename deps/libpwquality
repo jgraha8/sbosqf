@@ -2,5 +2,6 @@ REQUIRED:
 cracklib
 
 OPTIONAL:
+pam # autodetected
 
 BUILDOPTS:
