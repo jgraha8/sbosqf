@@ -1,8 +1,4 @@
 REQUIRED:
-#python2-pythondialog
-#
-# sbo-templates uses python3 if installed.
-#
 python3-pythondialog
 
 OPTIONAL:

@@ -1,4 +1,5 @@
 REQUIRED:
+python-soupsieve
 
 OPTIONAL:
 

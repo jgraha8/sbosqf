@@ -1,5 +1,6 @@
 REQUIRED:
 json-glib
+meson
 
 OPTIONAL:
 

@@ -1,7 +1,6 @@
 REQUIRED:
-
-OPTIONAL:
 jansson
+OPTIONAL:
 -clamav
 
 BUILDOPTS:

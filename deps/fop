@@ -1,7 +1,9 @@
 REQUIRED:
 apache-ant
-jai
+apache-maven
 
 OPTIONAL:
+jai
+jai-imageio
 
 BUILDOPTS:

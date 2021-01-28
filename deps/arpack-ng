@@ -1,6 +1,5 @@
 REQUIRED:
-blas
-lapack
+OpenBLAS
 
 OPTIONAL:
 

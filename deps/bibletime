@@ -1,6 +1,9 @@
 REQUIRED:
+cmake-202x
 sword
 qt5
+po4a
+fop
 
 OPTIONAL:
 
