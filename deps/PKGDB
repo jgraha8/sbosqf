@@ -1237,7 +1237,7 @@ corkscrew:network/corkscrew:2.0:8f475b52:0:0
 corosync:system/corosync:2.4.5:beee959:0:0
 cosmic_assault:games/cosmic_assault:1.1:ac488a7b:0:0
 cosmosmash:games/cosmosmash:1.4.7:e546d25a:0:0
-coturn:network/coturn:4.5.2:c594f724:0:0
+coturn:network/coturn:4.5.2:c594f724:1:0
 couchdb:development/couchdb:1.6.1:f92a9900:0:0
 courier-authlib:network/courier-authlib:0.69.1:e10099d9:0:0
 courier-imap:network/courier-imap:5.0.7:3a3fd35c:0:0

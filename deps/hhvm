@@ -1,7 +1,7 @@
 REQUIRED:
 tbb
 glog
-dwarf
+
 oniguruma
 libmemcached
 krb5

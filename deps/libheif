@@ -1,7 +1,7 @@
 REQUIRED:
 libde265
 x265
-libaom
+
 google-go-lang
 
 OPTIONAL:
