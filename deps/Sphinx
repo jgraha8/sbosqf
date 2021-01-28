@@ -15,7 +15,7 @@ sphinxcontrib-htmlhelp
 sphinxcontrib-jsmath
 sphinxcontrib-qthelp
 sphinxcontrib-serializinghtml
-python3-certifi
+python-certifi
 
 OPTIONAL:
 
