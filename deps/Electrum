@@ -7,7 +7,7 @@ python-jsonrpclib
 dnspython
 pyaes
 secp256k1
-python3-certifi
+
 python3-six
 python3-aiohttp
 python3-aiohttp-socks

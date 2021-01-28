@@ -8,7 +8,7 @@ QScintilla-qt5
 qtkeychain
 qca-qt5
 python3-PyYAML
-python3-certifi
+
 python-requests
 Pygments
 OWSLib

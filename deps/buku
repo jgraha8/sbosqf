@@ -3,7 +3,7 @@ python-urllib3
 BeautifulSoup4
 cryptography
 html5lib
-python3-certifi
+
 
 OPTIONAL:
 

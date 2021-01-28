@@ -5,7 +5,7 @@ libopenshot
 python-chardet
 httplib2
 jack
-python3-certifi
+
 python-requests
 
 OPTIONAL:
