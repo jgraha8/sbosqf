@@ -1,6 +1,6 @@
 REQUIRED:
-blas
-lapack
+OpenBLAS
+texlive
 
 OPTIONAL:
 # These are part of suitesparse; disabled individual components and using suitesparse instead

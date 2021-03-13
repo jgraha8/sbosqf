@@ -1,6 +1,7 @@
 REQUIRED:
 python3
-OpenBLAS
+python-toml
+setuptools-scm
 
 OPTIONAL:
 

@@ -1,4 +1,7 @@
 REQUIRED:
+allegro4
+argtable
+SDL2
 
 OPTIONAL:
 
