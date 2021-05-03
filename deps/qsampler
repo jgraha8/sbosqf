@@ -1,7 +1,0 @@
-REQUIRED:
-liblscp
-linuxsampler
-
-OPTIONAL:
-
-BUILDOPTS:

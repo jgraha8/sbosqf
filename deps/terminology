@@ -1,7 +1,0 @@
-REQUIRED:
-efl
-meson
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-IO-Tty
-protobuf
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-pytz
-kombu
-billiard
-
-OPTIONAL:
-
-BUILDOPTS:

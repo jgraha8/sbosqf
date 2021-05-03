@@ -1,7 +1,0 @@
-REQUIRED:
-libburn
-libisofs
-
-OPTIONAL:
-
-BUILDOPTS:

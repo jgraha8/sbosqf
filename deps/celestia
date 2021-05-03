@@ -1,7 +1,0 @@
-REQUIRED:
-gtkglext
-lua
-
-OPTIONAL:
-
-BUILDOPTS:

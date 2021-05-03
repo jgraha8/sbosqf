@@ -1,7 +1,0 @@
-REQUIRED:
-postgresql
-python3
-
-OPTIONAL:
-
-BUILDOPTS:

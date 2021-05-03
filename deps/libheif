@@ -1,9 +1,0 @@
-REQUIRED:
-libde265
-x265
-
-google-go-lang
-
-OPTIONAL:
-
-BUILDOPTS:

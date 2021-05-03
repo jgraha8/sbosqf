@@ -1,7 +1,0 @@
-REQUIRED:
-libminizip
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-hidapi
-gengetopt
-
-OPTIONAL:
-
-BUILDOPTS:

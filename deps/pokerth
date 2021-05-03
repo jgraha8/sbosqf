@@ -1,9 +1,0 @@
-REQUIRED:
-libgsasl
-libircclient
-tinyxml
-protobuf
-
-OPTIONAL:
-
-BUILDOPTS:

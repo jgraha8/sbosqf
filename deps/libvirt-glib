@@ -1,7 +1,0 @@
-REQUIRED:
-libvirt
-vala
-
-OPTIONAL:
-
-BUILDOPTS:

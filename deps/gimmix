@@ -1,7 +1,0 @@
-REQUIRED:
-libmpd
-libnxml
-
-OPTIONAL:
-
-BUILDOPTS:

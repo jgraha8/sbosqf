@@ -1,9 +1,0 @@
-REQUIRED:
-Pykka
-gst-python
-tornado
-python-requests
-
-OPTIONAL:
-
-BUILDOPTS:

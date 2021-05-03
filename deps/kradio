@@ -1,7 +1,0 @@
-REQUIRED:
-ffmpeg
-libmms
-
-OPTIONAL:
-
-BUILDOPTS:

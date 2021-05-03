@@ -1,7 +1,0 @@
-REQUIRED:
-python3-jsonschema
-traitlets
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-libgtop
-libwnck3
-
-OPTIONAL:
-
-BUILDOPTS:

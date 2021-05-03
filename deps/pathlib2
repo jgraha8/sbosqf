@@ -1,7 +1,0 @@
-REQUIRED:
-six
-python-scandir
-
-OPTIONAL:
-
-BUILDOPTS:

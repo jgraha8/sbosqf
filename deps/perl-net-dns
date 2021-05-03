@@ -1,7 +1,0 @@
-REQUIRED:
-perl-digest-hmac
-perl-net-ip
-
-OPTIONAL:
-
-BUILDOPTS:

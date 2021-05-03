@@ -1,7 +1,0 @@
-REQUIRED:
-lxml
-numpy
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-ring-daemon
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-file-basedir
-perl-file-desktopentry
-
-OPTIONAL:
-
-BUILDOPTS:

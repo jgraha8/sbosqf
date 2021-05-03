@@ -1,7 +1,0 @@
-REQUIRED:
-armadillo
-gdal
-
-OPTIONAL:
-
-BUILDOPTS:

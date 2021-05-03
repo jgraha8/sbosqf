@@ -1,7 +1,0 @@
-REQUIRED:
-proj
-python3-Cython
-
-OPTIONAL:
-
-BUILDOPTS:

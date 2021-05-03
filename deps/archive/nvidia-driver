@@ -1,5 +1,0 @@
-REQUIRED:
-nvidia-kernel
-
-BUILDOPTS:
-COMPAT32=yes

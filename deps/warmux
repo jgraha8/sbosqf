@@ -1,7 +1,0 @@
-REQUIRED:
-SDL_gfx
-libxml++
-
-OPTIONAL:
-
-BUILDOPTS:

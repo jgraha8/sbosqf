@@ -1,7 +1,0 @@
-REQUIRED:
-fontforge
-perl-Text-CharWidth
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-CImg
-mjpegtools
-wxPython
-xvidcore
-
-OPTIONAL:
-
-BUILDOPTS:

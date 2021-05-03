@@ -1,7 +1,0 @@
-REQUIRED:
-rtorrent
-xmlrpc-c
-
-OPTIONAL:
-
-BUILDOPTS:

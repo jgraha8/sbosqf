@@ -1,7 +1,0 @@
-REQUIRED:
-extra-cmake-modules
-qt5-webkit
-
-OPTIONAL:
-
-BUILDOPTS:

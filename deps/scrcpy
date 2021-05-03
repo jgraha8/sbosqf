@@ -1,8 +1,0 @@
-REQUIRED:
-meson
-ffmpeg
-SDL2
-
-OPTIONAL:
-
-BUILDOPTS:

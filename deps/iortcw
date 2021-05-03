@@ -1,8 +1,0 @@
-REQUIRED:
-OpenAL
-SDL2
-opusfile
-
-OPTIONAL:
-
-BUILDOPTS:

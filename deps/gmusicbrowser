@@ -1,8 +1,0 @@
-REQUIRED:
-perl-gtk2
-perl-net-dbus
-Markdown
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-glm
-liblangtag
-mdds
-
-OPTIONAL:
-
-BUILDOPTS:

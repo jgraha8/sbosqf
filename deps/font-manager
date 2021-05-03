@@ -1,9 +1,0 @@
-REQUIRED:
-vala
-json-glib
-libgee
-yelp-tools
-
-OPTIONAL:
-
-BUILDOPTS:

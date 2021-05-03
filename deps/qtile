@@ -1,8 +1,0 @@
-REQUIRED:
-python-xcffib
-cairocffi
-trollius
-
-OPTIONAL:
-
-BUILDOPTS:

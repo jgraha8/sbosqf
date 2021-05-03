@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-hspec-core
-haskell-hspec-discover
-haskell-hsp
-haskell-QuickCheck
-
-OPTIONAL:
-
-BUILDOPTS:

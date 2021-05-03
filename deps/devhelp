@@ -1,7 +1,0 @@
-REQUIRED:
-libunique
-webkitgtk
-
-OPTIONAL:
-
-BUILDOPTS:

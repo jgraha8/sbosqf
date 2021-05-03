@@ -1,7 +1,0 @@
-REQUIRED:
-libgnomecanvas
-perl-gtk2
-
-OPTIONAL:
-
-BUILDOPTS:

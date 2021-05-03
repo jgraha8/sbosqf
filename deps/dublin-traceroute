@@ -1,7 +1,0 @@
-REQUIRED:
-jsoncpp
-libtins
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-docker-machine
-libvirt
-
-OPTIONAL:
-
-BUILDOPTS:

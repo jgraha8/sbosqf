@@ -1,7 +1,0 @@
-REQUIRED:
-SoapySDR
-liquid-dsp
-
-OPTIONAL:
-
-BUILDOPTS:

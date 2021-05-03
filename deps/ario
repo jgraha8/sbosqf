@@ -1,7 +1,0 @@
-REQUIRED:
-libmpdclient
-libunique
-
-OPTIONAL:
-
-BUILDOPTS:

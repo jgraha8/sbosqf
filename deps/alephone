@@ -1,9 +1,0 @@
-REQUIRED:
-lua
-speex
-zziplib
-ffmpeg
-
-OPTIONAL:
-
-BUILDOPTS:

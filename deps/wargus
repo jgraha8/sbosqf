@@ -1,9 +1,0 @@
-REQUIRED:
-stratagus
-ffmpeg2theora
-fluidsynth
-fluid-soundfont
-
-OPTIONAL:
-
-BUILDOPTS:

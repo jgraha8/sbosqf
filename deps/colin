@@ -1,7 +1,0 @@
-REQUIRED:
-brotli
-graphite2
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-python-xlib
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

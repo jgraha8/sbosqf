@@ -1,8 +1,0 @@
-REQUIRED:
-wxPython
-matplotlib
-numpy
-
-OPTIONAL:
-
-BUILDOPTS:

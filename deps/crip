@@ -1,7 +1,0 @@
-REQUIRED:
-perl-CDDB-get
-vorbisgain
-
-OPTIONAL:
-
-BUILDOPTS:

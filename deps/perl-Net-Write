@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Class-Gomor
-perl-Net-Pcap
-perl-Socket6
-perl-Socket-GetAddrinfo
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-wxPython
-python-twisted
-
-OPTIONAL:
-
-BUILDOPTS:

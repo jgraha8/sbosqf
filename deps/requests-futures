@@ -1,7 +1,0 @@
-REQUIRED:
-futures
-python-requests
-
-OPTIONAL:
-
-BUILDOPTS:

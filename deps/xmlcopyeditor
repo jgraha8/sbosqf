@@ -1,7 +1,0 @@
-REQUIRED:
-wxPython
-xerces-c
-
-OPTIONAL:
-
-BUILDOPTS:

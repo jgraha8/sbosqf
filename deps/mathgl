@@ -1,7 +1,0 @@
-REQUIRED:
-libharu
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

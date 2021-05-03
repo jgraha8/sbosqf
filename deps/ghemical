@@ -1,9 +1,0 @@
-REQUIRED:
-gtkglext
-libghemical
-liboglappth
-openbabel
-
-OPTIONAL:
-
-BUILDOPTS:

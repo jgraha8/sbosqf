@@ -1,8 +1,0 @@
-REQUIRED:
-virtualenv
-virtualenv-clone
-stevedore
-
-OPTIONAL:
-
-BUILDOPTS:

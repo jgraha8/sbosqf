@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Parse-RecDescent
-perl-Tie-IxHash
-
-OPTIONAL:
-
-BUILDOPTS:

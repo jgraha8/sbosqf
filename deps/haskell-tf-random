@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-primitive
-haskell-random
-
-OPTIONAL:
-
-BUILDOPTS:

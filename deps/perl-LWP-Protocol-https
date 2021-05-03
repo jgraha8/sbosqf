@@ -1,9 +1,0 @@
-REQUIRED:
-libwww-perl
-perl-Mozilla-CA
-perl-IO-Socket-SSL
-perl-Test-RequiresInternet
-
-OPTIONAL:
-
-BUILDOPTS:

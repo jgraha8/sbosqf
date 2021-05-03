@@ -1,7 +1,0 @@
-REQUIRED:
-zeromq
-python3-Cython
-
-OPTIONAL:
-
-BUILDOPTS:

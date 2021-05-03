@@ -1,8 +1,0 @@
-REQUIRED:
-rubygem-atk
-rubygem-gdk_pixbuf2
-rubygem-pango
-
-OPTIONAL:
-
-BUILDOPTS:

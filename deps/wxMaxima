@@ -1,7 +1,0 @@
-REQUIRED:
-maxima
-wxGTK3
-
-OPTIONAL:
-
-BUILDOPTS:

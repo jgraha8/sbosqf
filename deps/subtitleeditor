@@ -1,7 +1,0 @@
-REQUIRED:
-gstreamermm
-libxml++
-
-OPTIONAL:
-
-BUILDOPTS:

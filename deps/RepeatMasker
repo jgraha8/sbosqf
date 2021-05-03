@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Text-Soundex
-trfind
-HMMER
-ncbi-rmblastn
-
-OPTIONAL:
-
-BUILDOPTS:

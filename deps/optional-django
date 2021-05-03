@@ -1,7 +1,0 @@
-REQUIRED:
-python-django
-nose
-
-OPTIONAL:
-
-BUILDOPTS:

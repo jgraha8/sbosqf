@@ -1,7 +1,0 @@
-# See SBo README for additional information
-
-REQUIRED:
-libwebp
-
-OPTIONAL:
-geoclue

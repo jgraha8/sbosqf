@@ -1,8 +1,0 @@
-REQUIRED:
-perl-HTML-Formatter
-perl-HTML-FormatText-WithLinks
-perl-HTML-Tree
-
-OPTIONAL:
-
-BUILDOPTS:

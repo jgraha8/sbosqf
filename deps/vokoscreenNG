@@ -1,8 +1,0 @@
-REQUIRED:
-qt5
-ffmpeg
-lame
-
-OPTIONAL:
-
-BUILDOPTS:

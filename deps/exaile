@@ -1,7 +1,0 @@
-REQUIRED:
-gst0-python
-mutagen
-
-OPTIONAL:
-
-BUILDOPTS:

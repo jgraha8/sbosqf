@@ -1,7 +1,0 @@
-REQUIRED:
-perl-List-MoreUtils
-perl-Module-Build
-
-OPTIONAL:
-
-BUILDOPTS:

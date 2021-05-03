@@ -1,7 +1,0 @@
-REQUIRED:
-liblxi
-lua
-
-OPTIONAL:
-
-BUILDOPTS:

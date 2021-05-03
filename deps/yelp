@@ -1,7 +1,0 @@
-REQUIRED:
-yelp-tools
-webkit2gtk
-
-OPTIONAL:
-
-BUILDOPTS:

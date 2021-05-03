@@ -1,9 +1,0 @@
-REQUIRED:
-zope.interface
-ipaddress
-GeoIP-Python
-txsocksx
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,5 +1,0 @@
-OPTIONAL:
--transcode
-
-BUILDOPTS:
--TRANSCODE=yes

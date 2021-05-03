@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-bifunctors
-haskell-profunctors
-haskell-semigroupoids
-haskell-semigroups
-
-OPTIONAL:
-
-BUILDOPTS:

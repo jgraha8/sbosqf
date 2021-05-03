@@ -1,8 +1,0 @@
-REQUIRED:
-ffmpeg
-qt5
-VitaMTP
-
-OPTIONAL:
-
-BUILDOPTS:

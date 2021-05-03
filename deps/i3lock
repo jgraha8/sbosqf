@@ -1,7 +1,0 @@
-REQUIRED:
-libev
-libxkbcommon
-
-OPTIONAL:
-
-BUILDOPTS:

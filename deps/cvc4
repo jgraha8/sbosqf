@@ -1,7 +1,0 @@
-REQUIRED:
-jdk
-libantlr3c
-
-OPTIONAL:
-
-BUILDOPTS:

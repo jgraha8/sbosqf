@@ -1,7 +1,0 @@
-REQUIRED:
-libmspack
-libdnet
-
-OPTIONAL:
-
-BUILDOPTS:

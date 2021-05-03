@@ -1,7 +1,0 @@
-REQUIRED:
-SDL2_net
-SDL2_mixer
-
-OPTIONAL:
-
-BUILDOPTS:

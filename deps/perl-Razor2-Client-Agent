@@ -1,7 +1,0 @@
-REQUIRED:
-perl-digest-sha1
-perl-net-dns
-
-OPTIONAL:
-
-BUILDOPTS:

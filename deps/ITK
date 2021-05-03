@@ -1,8 +1,0 @@
-REQUIRED:
-double-conversion
-gtest
-hdf5
-
-OPTIONAL:
-
-BUILDOPTS:

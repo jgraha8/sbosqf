@@ -1,7 +1,0 @@
-REQUIRED:
-
-OPTIONAL:
--slurm
-
-BUILDOPTS:
-# PMI=yes|no (default: no) requires slurm

@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-securemem
-haskell-vector
-
-OPTIONAL:
-
-BUILDOPTS:

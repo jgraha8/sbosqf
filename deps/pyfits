@@ -1,7 +1,0 @@
-REQUIRED:
-python-stsci.distutils
-numpy
-
-OPTIONAL:
-
-BUILDOPTS:

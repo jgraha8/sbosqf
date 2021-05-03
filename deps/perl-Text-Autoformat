@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Text-Reform
-perl-Text-Tabs+Wrap
-
-OPTIONAL:
-
-BUILDOPTS:

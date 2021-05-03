@@ -1,7 +1,0 @@
-REQUIRED:
-libglademm
-libtar
-
-OPTIONAL:
-
-BUILDOPTS:

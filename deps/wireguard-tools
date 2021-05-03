@@ -1,6 +1,0 @@
-REQUIRED:
-wireguard-linux-compat
-
-OPTIONAL:
-
-BUILDOPTS:

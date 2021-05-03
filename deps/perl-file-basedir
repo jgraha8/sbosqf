@@ -1,8 +1,0 @@
-REQUIRED:
-perl-File-Which
-perl-Module-Build
-perl-IPC-System-Simple
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,6 +1,0 @@
-REQUIRED:
-lapack-atlas
-
-OPTIONAL:
-
-BUILDOPTS:

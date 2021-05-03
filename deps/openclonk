@@ -1,8 +1,0 @@
-REQUIRED:
-freealut
-gtksourceview3
-libupnp
-
-OPTIONAL:
-
-BUILDOPTS:

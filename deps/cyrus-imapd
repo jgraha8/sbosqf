@@ -1,9 +1,0 @@
-REQUIRED:
-jansson
-OPTIONAL:
--clamav
-
-BUILDOPTS:
-DATABASE=mysql
-DISABLE_GSSAPI=yes
-WITHOUT_CLAMAV=yes

@@ -1,9 +1,0 @@
-REQUIRED:
-rofi
-password-store
-xdotool
-pwgen
-
-OPTIONAL:
-
-BUILDOPTS:

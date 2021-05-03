@@ -1,7 +1,0 @@
-REQUIRED:
-yaml-cpp
-SDL_gfx
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-pytest
-coverage
-
-OPTIONAL:
-
-BUILDOPTS:

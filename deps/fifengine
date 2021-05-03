@@ -1,8 +1,0 @@
-REQUIRED:
-OpenAL
-tinyxml
-fifechan
-
-OPTIONAL:
-
-BUILDOPTS:

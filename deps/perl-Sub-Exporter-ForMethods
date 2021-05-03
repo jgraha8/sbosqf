@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Sub-Exporter
-perl-Sub-Name
-perl-namespace-autoclean
-
-OPTIONAL:
-
-BUILDOPTS:

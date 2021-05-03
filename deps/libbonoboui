@@ -1,7 +1,0 @@
-REQUIRED:
-libgnome
-libgnomecanvas
-
-OPTIONAL:
-
-BUILDOPTS:

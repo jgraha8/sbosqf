@@ -1,7 +1,0 @@
-REQUIRED:
-portaudio
-fltk
-
-OPTIONAL:
-
-BUILDOPTS:

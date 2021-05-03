@@ -1,8 +1,0 @@
-REQUIRED:
-imlib2
-OpenAL
-freealut
-
-OPTIONAL:
-
-BUILDOPTS:

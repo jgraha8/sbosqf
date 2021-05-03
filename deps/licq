@@ -1,9 +1,0 @@
-REQUIRED:
-cdk
-gloox
-libaosd
-xosd
-
-OPTIONAL:
-
-BUILDOPTS:

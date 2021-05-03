@@ -1,7 +1,0 @@
-REQUIRED:
-ocamlbuild
-ocaml-findlib
-
-OPTIONAL:
-
-BUILDOPTS:

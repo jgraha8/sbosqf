@@ -1,7 +1,0 @@
-REQUIRED:
-pyudev
-python-evdev
-
-OPTIONAL:
-
-BUILDOPTS:

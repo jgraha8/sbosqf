@@ -1,7 +1,0 @@
-REQUIRED:
-cryptopp
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

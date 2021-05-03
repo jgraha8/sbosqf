@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-OpenGL
-haskell-random
-
-OPTIONAL:
-
-BUILDOPTS:

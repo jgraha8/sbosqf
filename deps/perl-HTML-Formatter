@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Font-AFM
-perl-File-Slurp
-perl-HTML-Tree
-perl-Test-Warnings
-
-OPTIONAL:
-
-BUILDOPTS:

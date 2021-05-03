@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-logict
-haskell-nats
-
-OPTIONAL:
-
-BUILDOPTS:

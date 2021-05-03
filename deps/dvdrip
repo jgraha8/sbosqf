@@ -1,9 +1,0 @@
-REQUIRED:
-perl-event
-perl-gtk2
-perl-libintl
-transcode
-
-OPTIONAL:
-
-BUILDOPTS:

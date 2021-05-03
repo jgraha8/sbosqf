@@ -1,7 +1,0 @@
-REQUIRED:
-coverage
-pyasn1-modules
-
-OPTIONAL:
-
-BUILDOPTS:

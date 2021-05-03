@@ -1,7 +1,0 @@
-REQUIRED:
-Net-SSLeay
-libwhisker2
-
-OPTIONAL:
-
-BUILDOPTS:

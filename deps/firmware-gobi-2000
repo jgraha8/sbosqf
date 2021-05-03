@@ -1,7 +1,0 @@
-REQUIRED:
-innoextract
-msitools
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,5 +1,0 @@
-OPTIONAL:
-python3
-
-BUILDOPTS:
-PYTHON3=yes

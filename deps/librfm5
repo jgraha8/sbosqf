@@ -1,7 +1,0 @@
-REQUIRED:
-libtubo0
-libdbh2
-
-OPTIONAL:
-
-BUILDOPTS:

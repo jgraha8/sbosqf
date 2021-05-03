@@ -1,7 +1,0 @@
-REQUIRED:
-numpy
-python-fonttools
-
-OPTIONAL:
-
-BUILDOPTS:

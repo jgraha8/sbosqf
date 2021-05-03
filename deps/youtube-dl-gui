@@ -1,7 +1,0 @@
-REQUIRED:
-wxPython
-youtube-dl
-
-OPTIONAL:
-
-BUILDOPTS:

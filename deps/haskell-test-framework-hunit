@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-extensible-exceptions
-haskell-HUnit
-haskell-test-framework
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-pyqode.cobol
-QDarkStyle
-python-keyring
-
-OPTIONAL:
-
-BUILDOPTS:

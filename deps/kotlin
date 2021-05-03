@@ -1,7 +1,0 @@
-REQUIRED:
-jdk
-setconf
-
-OPTIONAL:
-
-BUILDOPTS:

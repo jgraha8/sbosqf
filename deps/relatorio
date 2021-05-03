@@ -1,7 +1,0 @@
-REQUIRED:
-genshi
-lxml
-
-OPTIONAL:
-
-BUILDOPTS:

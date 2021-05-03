@@ -1,8 +1,0 @@
-REQUIRED:
-tidyp
-perl-Test-Exception
-perl-Sub-Uplevel
-
-OPTIONAL:
-
-BUILDOPTS:

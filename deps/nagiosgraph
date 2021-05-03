@@ -1,8 +1,0 @@
-REQUIRED:
-nagios
-rrdtool
-perl-CGI
-
-OPTIONAL:
-
-BUILDOPTS:

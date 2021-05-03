@@ -1,8 +1,0 @@
-REQUIRED:
-SDL2_image
-SDL2_mixer
-python3
-
-OPTIONAL:
-
-BUILDOPTS:

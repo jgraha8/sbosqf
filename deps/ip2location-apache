@@ -1,5 +1,0 @@
-REQUIRED:
-ip2location-c
-
-OPTIONAL:
-modsecurity-apache

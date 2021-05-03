@@ -1,8 +1,0 @@
-REQUIRED:
-gst0-plugins-ugly
-gst0-python
-libnice
-
-OPTIONAL:
-
-BUILDOPTS:

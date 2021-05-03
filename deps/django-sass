@@ -1,7 +1,0 @@
-REQUIRED:
-python3-django
-libsass
-
-OPTIONAL:
-
-BUILDOPTS:

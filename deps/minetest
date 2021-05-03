@@ -1,9 +1,0 @@
-REQUIRED:
-OpenAL
-irrlicht
-luajit
-jsoncpp
-
-OPTIONAL:
-
-BUILDOPTS:

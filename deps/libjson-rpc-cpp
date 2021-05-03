@@ -1,8 +1,0 @@
-REQUIRED:
-libmicrohttpd
-jsoncpp
-argtable
-
-OPTIONAL:
-
-BUILDOPTS:

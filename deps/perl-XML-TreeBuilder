@@ -1,9 +1,0 @@
-REQUIRED:
-perl-HTML-Tree
-perl-html-tagset
-perl-Test-Simple
-perl-XML-Catalog
-
-OPTIONAL:
-
-BUILDOPTS:

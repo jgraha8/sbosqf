@@ -1,7 +1,0 @@
-REQUIRED:
-six
-repoze.lru
-
-OPTIONAL:
-
-BUILDOPTS:

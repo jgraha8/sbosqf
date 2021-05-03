@@ -1,7 +1,0 @@
-REQUIRED:
-gtkglext
-lsb-release
-
-OPTIONAL:
-
-BUILDOPTS:

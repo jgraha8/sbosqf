@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-async
-haskell-hinotify
-haskell-shelly
-haskell-unix-compat
-
-OPTIONAL:
-
-BUILDOPTS:

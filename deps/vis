@@ -1,8 +1,0 @@
-REQUIRED:
-libtermkey
-lua-lpeg
-tre
-
-OPTIONAL:
-
-BUILDOPTS:

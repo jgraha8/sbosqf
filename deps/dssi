@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-ladspa_sdk
-liblo
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-python3-ptyprocess
-python3-tornado
-ptyprocess
-tornado
-
-OPTIONAL:
-
-BUILDOPTS:

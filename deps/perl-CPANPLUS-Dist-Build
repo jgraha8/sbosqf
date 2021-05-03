@@ -1,7 +1,0 @@
-REQUIRED:
-perl-CPANPLUS
-perl-Module-Build
-
-OPTIONAL:
-
-BUILDOPTS:

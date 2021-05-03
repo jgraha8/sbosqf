@@ -1,9 +1,0 @@
-REQUIRED:
-python-transaction
-zdaemon
-zope.event
-zope.proxy
-
-OPTIONAL:
-
-BUILDOPTS:

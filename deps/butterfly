@@ -1,7 +1,0 @@
-REQUIRED:
-tornado
-pyOpenSSL
-
-OPTIONAL:
-
-BUILDOPTS:

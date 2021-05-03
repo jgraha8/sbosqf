@@ -1,7 +1,0 @@
-REQUIRED:
-camlp4
-menhir
-
-OPTIONAL:
-
-BUILDOPTS:

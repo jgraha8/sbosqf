@@ -1,7 +1,0 @@
-REQUIRED:
-anyremote
-pybluez
-
-OPTIONAL:
-
-BUILDOPTS:

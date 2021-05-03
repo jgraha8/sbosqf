@@ -1,8 +1,0 @@
-REQUIRED:
-gob2
-ibus
-libchewing
-
-OPTIONAL:
-
-BUILDOPTS:

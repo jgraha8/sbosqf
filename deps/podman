@@ -1,8 +1,0 @@
-REQUIRED:
-runc
-go-md2man
-slirp4netns
-
-OPTIONAL:
-
-BUILDOPTS:

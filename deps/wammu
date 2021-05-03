@@ -1,7 +1,0 @@
-REQUIRED:
-python-gammu
-wxPython3
-
-OPTIONAL:
-
-BUILDOPTS:

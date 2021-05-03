@@ -1,7 +1,0 @@
-REQUIRED:
-cdemu-daemon
-pygobject3-python3
-
-OPTIONAL:
-
-BUILDOPTS:

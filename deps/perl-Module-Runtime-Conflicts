@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Dist-CheckConflicts
-perl-Module-Runtime
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-libspatialite
-readosm
-
-OPTIONAL:
-
-BUILDOPTS:

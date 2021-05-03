@@ -1,7 +1,0 @@
-REQUIRED:
-geos
-numpy3
-
-OPTIONAL:
-
-BUILDOPTS:

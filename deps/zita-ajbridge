@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-zita-resampler
-zita-alsa-pcmi
-
-OPTIONAL:
-
-BUILDOPTS:

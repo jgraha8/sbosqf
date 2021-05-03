@@ -1,7 +1,0 @@
-REQUIRED:
-qt5-webkit
-lxml
-
-OPTIONAL:
-
-BUILDOPTS:

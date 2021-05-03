@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Net-SNMP
-monitoring-plugins
-
-OPTIONAL:
-
-BUILDOPTS:

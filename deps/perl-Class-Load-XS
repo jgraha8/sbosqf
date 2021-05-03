@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Class-Load
-perl-Test-Fatal
-perl-Module-Implementation
-perl-Data-OptList
-
-OPTIONAL:
-
-BUILDOPTS:

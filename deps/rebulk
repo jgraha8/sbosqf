@@ -1,7 +1,0 @@
-REQUIRED:
-pytest-runner
-six
-
-OPTIONAL:
-
-BUILDOPTS:

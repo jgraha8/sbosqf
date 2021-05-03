@@ -1,7 +1,0 @@
-REQUIRED:
-apache-ant
-jdk
-
-OPTIONAL:
-
-BUILDOPTS:

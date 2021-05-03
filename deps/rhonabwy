@@ -1,8 +1,0 @@
-REQUIRED:
-jansson
-libmicrohttpd
-ulfius
-
-OPTIONAL:
-
-BUILDOPTS:

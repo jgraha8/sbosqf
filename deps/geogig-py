@@ -1,9 +1,0 @@
-REQUIRED:
-geogig
-geojson
-py4j
-Shapely
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-gtksourceview3
-pygobject3-python3
-
-OPTIONAL:
-
-BUILDOPTS:

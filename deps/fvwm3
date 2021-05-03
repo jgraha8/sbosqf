@@ -1,7 +1,0 @@
-REQUIRED:
-libbson
-google-go-lang
-
-OPTIONAL:
-
-BUILDOPTS:

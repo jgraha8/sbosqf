@@ -1,9 +1,0 @@
-REQUIRED:
-python-twisted
-pyOpenSSL
-txtorcon
-txi2p
-
-OPTIONAL:
-
-BUILDOPTS:

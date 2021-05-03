@@ -1,9 +1,0 @@
-REQUIRED:
-jack
-liblo
-rubberband
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

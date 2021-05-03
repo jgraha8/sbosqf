@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-network
-haskell-old-locale
-
-OPTIONAL:
-
-BUILDOPTS:

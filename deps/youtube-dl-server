@@ -1,7 +1,0 @@
-REQUIRED:
-Flask
-youtube-dl
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-pysendfile
-pyOpenSSL
-
-OPTIONAL:
-
-BUILDOPTS:

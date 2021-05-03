@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Tidy
-perl-File-Finder
-perl-File-Slurp
-perl-Text-Diff
-
-OPTIONAL:
-
-BUILDOPTS:

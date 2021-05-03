@@ -1,7 +1,0 @@
-REQUIRED:
-uthash
-libconfig
-
-OPTIONAL:
-
-BUILDOPTS:

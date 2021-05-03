@@ -1,7 +1,0 @@
-REQUIRED:
-numpy3
-lapack
-
-OPTIONAL:
-
-BUILDOPTS:

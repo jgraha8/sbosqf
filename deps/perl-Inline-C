@@ -1,9 +1,0 @@
-REQUIRED:
-perl-Inline
-perl-IO-All
-perl-Pegex
-perl-File-Copy-Recursive
-
-OPTIONAL:
-
-BUILDOPTS:

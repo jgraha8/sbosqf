@@ -1,7 +1,0 @@
-REQUIRED:
-qt5
-hamlib
-
-OPTIONAL:
-
-BUILDOPTS:

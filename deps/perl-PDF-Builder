@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Font-TTF
-perl-Test-Memory-Cycle
-perl-Test-Exception
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-gnome-common
-gnome-menus
-
-OPTIONAL:
-
-BUILDOPTS:

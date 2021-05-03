@@ -1,8 +1,0 @@
-
-REQUIRED:
-ocaml-findlib
-
-OPTIONAL:
--libgnomecanvas
--libgnomeui
--gtksourceview

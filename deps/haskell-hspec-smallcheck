@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-HUnit
-haskell-call-stack
-haskell-hspec-core
-haskell-smallcheck
-
-OPTIONAL:
-
-BUILDOPTS:

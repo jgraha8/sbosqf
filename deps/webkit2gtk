@@ -1,9 +1,0 @@
-REQUIRED:
-geoclue2
-hyphen
-libwebp
-woff2
-
-OPTIONAL:
-
-BUILDOPTS:

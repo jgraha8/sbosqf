@@ -1,7 +1,0 @@
-REQUIRED:
-python-requests
-python-oauthlib
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-python-gnupg
-rng-tools
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-python-django
-nose
-optional-django
-mock
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-python3-pandas
-python3-patsy
-scipy3
-
-OPTIONAL:
-
-BUILDOPTS:

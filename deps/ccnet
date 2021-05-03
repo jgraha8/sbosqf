@@ -1,8 +1,0 @@
-REQUIRED:
-libsearpc
-vala
-libzdb
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-inkscape
-lxml
-pdf2svg
-texlive
-
-OPTIONAL:
-
-BUILDOPTS:

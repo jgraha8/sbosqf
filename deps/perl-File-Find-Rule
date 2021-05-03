@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Number-Compare
-perl-Text-Glob
-
-OPTIONAL:
-
-BUILDOPTS:

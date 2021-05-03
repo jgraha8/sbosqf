@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Inline-C
-perl-file-mimeinfo
-GraphicsMagick
-
-OPTIONAL:
-
-BUILDOPTS:

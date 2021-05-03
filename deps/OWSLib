@@ -1,9 +1,0 @@
-REQUIRED:
-python-dateutil
-pytz
-lxml
-six
-
-OPTIONAL:
-
-BUILDOPTS:

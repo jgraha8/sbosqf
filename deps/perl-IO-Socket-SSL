@@ -1,6 +1,0 @@
-REQUIRED:
-Net-SSLeay
-perl-Net-LibIDN
-
-OPTIONAL:
--libwww-perl

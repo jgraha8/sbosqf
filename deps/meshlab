@@ -1,9 +1,0 @@
-REQUIRED:
-levmar
-muParser
-mpir
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

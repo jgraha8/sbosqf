@@ -1,7 +1,0 @@
-REQUIRED:
-qt5
-rubygem-asciidoctor
-
-OPTIONAL:
-
-BUILDOPTS:

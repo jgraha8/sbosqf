@@ -1,7 +1,0 @@
-REQUIRED:
-six
-python-twisted
-
-OPTIONAL:
-
-BUILDOPTS:

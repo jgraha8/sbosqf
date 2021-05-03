@@ -1,7 +1,0 @@
-REQUIRED:
-dosbox
-openjdk8
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-transformers-base
-haskell-transformers-compat
-
-OPTIONAL:
-
-BUILDOPTS:

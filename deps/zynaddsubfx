@@ -1,9 +1,0 @@
-REQUIRED:
-liblo
-fltk
-lash
-mxml
-
-OPTIONAL:
-
-BUILDOPTS:

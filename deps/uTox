@@ -1,8 +1,0 @@
-REQUIRED:
-c-toxcore
-libfilteraudio
-check
-
-OPTIONAL:
-
-BUILDOPTS:

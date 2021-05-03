@@ -1,9 +1,0 @@
-REQUIRED:
-lazarus
-tqsl
-xplanet
-hamlib
-
-OPTIONAL:
-
-BUILDOPTS:

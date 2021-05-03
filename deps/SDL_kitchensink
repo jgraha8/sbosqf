@@ -1,9 +1,0 @@
-REQUIRED:
-SDL2
-libass
-cunit
-ffmpeg
-
-OPTIONAL:
-
-BUILDOPTS:

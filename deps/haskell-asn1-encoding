@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-asn1-types
-haskell-hourglass
-
-OPTIONAL:
-
-BUILDOPTS:

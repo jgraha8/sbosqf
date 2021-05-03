@@ -1,8 +1,0 @@
-REQUIRED:
-ffmpeg
-portaudio
-SDL2
-
-OPTIONAL:
-
-BUILDOPTS:

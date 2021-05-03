@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-X11
-haskell-utf8-string
-
-OPTIONAL:
-
-BUILDOPTS:

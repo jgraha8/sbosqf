@@ -1,8 +1,0 @@
-REQUIRED:
-SDL2
-OpenAL
-libmpeg2
-
-OPTIONAL:
-
-BUILDOPTS:

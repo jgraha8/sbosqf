@@ -1,6 +1,0 @@
-OPTIONAL:
-python3
--Sphinx
-
-BUILDOPTS:
-PYTHON3=yes

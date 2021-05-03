@@ -1,7 +1,0 @@
-REQUIRED:
-libuv
-lz4
-
-OPTIONAL:
-
-BUILDOPTS:

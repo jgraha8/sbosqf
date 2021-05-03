@@ -1,8 +1,0 @@
-REQUIRED:
-zope.schema
-zope.proxy
-zope.component
-
-OPTIONAL:
-
-BUILDOPTS:

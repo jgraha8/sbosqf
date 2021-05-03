@@ -1,7 +1,0 @@
-REQUIRED:
-ghc
-haskell-old-locale
-
-OPTIONAL:
-
-BUILDOPTS:

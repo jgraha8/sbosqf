@@ -1,8 +1,0 @@
-REQUIRED:
-dssi
-libgig
-lv2
-
-OPTIONAL:
-
-BUILDOPTS:

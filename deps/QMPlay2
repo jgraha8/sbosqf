@@ -1,9 +1,0 @@
-REQUIRED:
-qt5
-ffmpeg
-libass
-libgme
-
-OPTIONAL:
-
-BUILDOPTS:

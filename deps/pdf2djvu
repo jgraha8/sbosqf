@@ -1,7 +1,0 @@
-REQUIRED:
-nose
-GraphicsMagick
-
-OPTIONAL:
-
-BUILDOPTS:

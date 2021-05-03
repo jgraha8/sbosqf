@@ -1,8 +1,0 @@
-REQUIRED:
-docker
-kubectl
-virtualbox
-
-OPTIONAL:
-
-BUILDOPTS:

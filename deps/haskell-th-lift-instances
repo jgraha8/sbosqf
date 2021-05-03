@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-th-lift
-haskell-vector
-
-OPTIONAL:
-
-BUILDOPTS:

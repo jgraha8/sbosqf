@@ -1,7 +1,0 @@
-REQUIRED:
-libev
-bitstream
-
-OPTIONAL:
-
-BUILDOPTS:

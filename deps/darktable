@@ -1,8 +1,0 @@
-REQUIRED:
-json-glib
-lensfun
-pugixml
-
-OPTIONAL:
-
-BUILDOPTS:

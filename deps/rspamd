@@ -1,9 +1,0 @@
-REQUIRED:
-ragel
-luajit
-redis
-hyperscan
-
-OPTIONAL:
-
-BUILDOPTS:

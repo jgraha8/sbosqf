@@ -1,8 +1,0 @@
-REQUIRED:
-SDL2_ttf
-OpenAL
-FreeImage
-
-OPTIONAL:
-
-BUILDOPTS:

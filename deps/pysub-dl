@@ -1,7 +1,0 @@
-REQUIRED:
-python-requests
-BeautifulSoup
-
-OPTIONAL:
-
-BUILDOPTS:

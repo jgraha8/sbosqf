@@ -1,9 +1,0 @@
-REQUIRED:
-ffmpeg
-pepperflash-plugin
-ragel
-uriparser
-
-OPTIONAL:
-
-BUILDOPTS:

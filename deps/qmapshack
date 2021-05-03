@@ -1,9 +1,0 @@
-REQUIRED:
-gdal
-qt5-webkit
-routino
-quazip-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

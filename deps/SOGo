@@ -1,7 +1,0 @@
-REQUIRED:
-SOPE
-libmemcached
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-t38modem-ptlib
-speex
-
-OPTIONAL:
-
-BUILDOPTS:

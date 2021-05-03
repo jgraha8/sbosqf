@@ -1,7 +1,0 @@
-REQUIRED:
-postgresql
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-DateTime-Format-Builder
-perl-Module-Build
-
-OPTIONAL:
-
-BUILDOPTS:

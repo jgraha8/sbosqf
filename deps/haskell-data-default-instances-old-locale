@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-data-default-class
-haskell-old-locale
-
-OPTIONAL:
-
-BUILDOPTS:

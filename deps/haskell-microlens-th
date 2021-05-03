@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-microlens
-haskell-th-abstraction
-
-OPTIONAL:
-
-BUILDOPTS:

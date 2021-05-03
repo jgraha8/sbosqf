@@ -1,7 +1,0 @@
-REQUIRED:
-pydio-agent
-qt5-webkit
-
-OPTIONAL:
-
-BUILDOPTS:

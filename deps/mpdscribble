@@ -1,7 +1,0 @@
-REQUIRED:
-libmpdclient
-mpd
-
-OPTIONAL:
-
-BUILDOPTS:

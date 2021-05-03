@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-base64-bytestring
-haskell-conduit
-haskell-conduit-extra
-haskell-resourcet
-
-OPTIONAL:
-
-BUILDOPTS:

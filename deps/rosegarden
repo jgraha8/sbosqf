@@ -1,9 +1,0 @@
-REQUIRED:
-dssi
-liblrdf
-lilypond
-liblo
-
-OPTIONAL:
-
-BUILDOPTS:

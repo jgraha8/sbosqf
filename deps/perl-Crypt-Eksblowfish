@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Module-Build
-perl-Class-Mix
-
-OPTIONAL:
-
-BUILDOPTS:

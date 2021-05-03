@@ -1,8 +1,0 @@
-REQUIRED:
-GeoIP
-graphviz
-rrdtool
-
-OPTIONAL:
-
-BUILDOPTS:

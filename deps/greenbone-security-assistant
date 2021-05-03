@@ -1,7 +1,0 @@
-REQUIRED:
-openvas-libraries
-libmicrohttpd
-
-OPTIONAL:
-
-BUILDOPTS:

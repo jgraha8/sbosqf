@@ -1,9 +1,0 @@
-REQUIRED:
-psycopg2
-argh
-python-dateutil
-argcomplete
-
-OPTIONAL:
-
-BUILDOPTS:

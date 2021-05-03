@@ -1,8 +1,0 @@
-REQUIRED:
-perl-tk
-perl-JSON
-perl-LWP-Protocol-https
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-libtommath
-libuv
-
-OPTIONAL:
-
-BUILDOPTS:

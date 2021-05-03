@@ -1,8 +1,0 @@
-REQUIRED:
-vcversioner
-python-twisted
-Parsley
-
-OPTIONAL:
-
-BUILDOPTS:

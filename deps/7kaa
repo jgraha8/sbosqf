@@ -1,8 +1,0 @@
-REQUIRED:
-SDL2
-enet
-OpenAL
-
-OPTIONAL:
-
-BUILDOPTS:

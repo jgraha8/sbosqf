@@ -1,7 +1,0 @@
-REQUIRED:
-pcre2
-
-OPTIONAL:
-
-BUILDOPTS:
-INOTIFY=yes

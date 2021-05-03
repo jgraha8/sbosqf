@@ -1,8 +1,0 @@
-REQUIRED:
-GtkD
-po4a
-vte3
-
-OPTIONAL:
-
-BUILDOPTS:

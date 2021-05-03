@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Net-Server
-Net-SSLeay
-perl-Module-Build
-
-OPTIONAL:
-
-BUILDOPTS:

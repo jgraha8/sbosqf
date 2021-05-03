@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Moose
-perl-namespace-autoclean
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-python3-ipython
-jupyter_client
-python3-tornado
-
-OPTIONAL:
-
-BUILDOPTS:

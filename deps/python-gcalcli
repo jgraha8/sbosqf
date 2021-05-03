@@ -1,8 +1,0 @@
-REQUIRED:
-gdata
-python-dateutil
-python-elementtree
-
-OPTIONAL:
-
-BUILDOPTS:

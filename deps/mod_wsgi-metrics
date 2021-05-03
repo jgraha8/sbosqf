@@ -1,6 +1,0 @@
-REQUIRED:
-psutil
-
-BUILDOPTS:
-PYTHON3=yes
-

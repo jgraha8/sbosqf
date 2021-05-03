@@ -1,8 +1,0 @@
-REQUIRED:
-python3-astroid
-python3-isort
-python3-mccabe
-
-OPTIONAL:
-
-BUILDOPTS:

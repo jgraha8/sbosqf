@@ -1,7 +1,0 @@
-REQUIRED:
-python-twitter
-click-default-group
-
-OPTIONAL:
-
-BUILDOPTS:

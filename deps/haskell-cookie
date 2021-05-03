@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-blaze-builder
-haskell-data-default
-
-OPTIONAL:
-
-BUILDOPTS:

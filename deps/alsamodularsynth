@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-clalsadrv
-ladspa_sdk
-
-OPTIONAL:
-
-BUILDOPTS:

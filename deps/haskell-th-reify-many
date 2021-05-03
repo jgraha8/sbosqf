@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-safe
-haskell-th-expand-syns
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-geos
-jsoncpp
-libgeotiff
-
-OPTIONAL:
-
-BUILDOPTS:

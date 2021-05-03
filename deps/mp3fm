@@ -1,8 +1,0 @@
-REQUIRED:
-mutagen
-musicbrainzngs
-easygui
-
-OPTIONAL:
-
-BUILDOPTS:

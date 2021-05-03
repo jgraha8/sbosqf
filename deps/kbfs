@@ -1,7 +1,0 @@
-REQUIRED:
-google-go-lang
-sshfs-fuse
-
-OPTIONAL:
-
-BUILDOPTS:

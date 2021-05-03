@@ -1,8 +1,0 @@
-REQUIRED:
-npyscreen
-psutil
-drawille
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Test-Requires
-perl-Test-Fatal
-
-OPTIONAL:
-
-BUILDOPTS:

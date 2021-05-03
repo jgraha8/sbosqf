@@ -1,8 +1,0 @@
-REQUIRED:
-bpp-seq-omics
-bpp-phyl-omics
-bpp-popgen
-
-OPTIONAL:
-
-BUILDOPTS:

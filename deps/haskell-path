@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-aeson
-haskell-exceptions
-haskell-hashable
-
-OPTIONAL:
-
-BUILDOPTS:

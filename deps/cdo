@@ -1,8 +1,0 @@
-REQUIRED:
-proj
-udunits
-netcdf
-
-OPTIONAL:
-
-BUILDOPTS:

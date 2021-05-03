@@ -1,7 +1,0 @@
-REQUIRED:
-ffmpeg
-liblo
-
-OPTIONAL:
-
-BUILDOPTS:

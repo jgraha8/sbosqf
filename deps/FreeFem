@@ -1,9 +1,0 @@
-REQUIRED:
-arpack-ng
-hdf5
-openmpi
-suitesparse
-
-OPTIONAL:
-
-BUILDOPTS:

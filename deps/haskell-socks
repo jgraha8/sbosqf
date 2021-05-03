@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-cereal
-haskell-network
-
-OPTIONAL:
-
-BUILDOPTS:

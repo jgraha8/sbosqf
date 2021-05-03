@@ -1,9 +1,0 @@
-REQUIRED:
-vala
-python3
-
-OPTIONAL:
--perl-Text-CSV
-
-BUILDOPTS:
-GTK3=yes

@@ -1,8 +1,0 @@
-REQUIRED:
-rofi
-xclip
-xsel
-
-OPTIONAL:
-
-BUILDOPTS:

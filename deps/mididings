@@ -1,9 +1,0 @@
-REQUIRED:
-jack
-libsmf
-pyliblo
-decorator
-
-OPTIONAL:
-
-BUILDOPTS:

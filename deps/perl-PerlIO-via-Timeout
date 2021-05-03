@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Time-Out
-perl-Test-SharedFork
-perl-Test-TCP
-
-OPTIONAL:
-
-BUILDOPTS:

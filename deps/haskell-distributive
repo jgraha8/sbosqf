@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-base-orphans
-haskell-semigroups
-haskell-tagged
-haskell-transformers-compat
-
-OPTIONAL:
-
-BUILDOPTS:

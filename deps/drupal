@@ -1,4 +1,0 @@
-BUILDOPTS:
-DOCROOT=/srv/httpd/vhosts
-PHPUSER=apache
-PHPGROUP=apache

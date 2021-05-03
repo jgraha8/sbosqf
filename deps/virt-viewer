@@ -1,7 +1,0 @@
-REQUIRED:
-gtk-vnc
-libvirt-glib
-
-OPTIONAL:
-
-BUILDOPTS:

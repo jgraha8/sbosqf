@@ -1,7 +1,0 @@
-REQUIRED:
-zope.configuration
-zope.location
-
-OPTIONAL:
-
-BUILDOPTS:

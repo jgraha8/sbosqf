@@ -1,9 +1,0 @@
-REQUIRED:
-attrs
-characteristic
-pyasn1-modules
-pyOpenSSL
-
-OPTIONAL:
-
-BUILDOPTS:

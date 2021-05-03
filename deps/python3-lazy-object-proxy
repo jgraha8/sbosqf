@@ -1,7 +1,0 @@
-REQUIRED:
-python3
-setuptools-scm
-
-OPTIONAL:
-
-BUILDOPTS:

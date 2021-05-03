@@ -1,8 +1,0 @@
-REQUIRED:
-libwebp
-webkitgtk
-wxGTK3
-
-OPTIONAL:
-
-BUILDOPTS:

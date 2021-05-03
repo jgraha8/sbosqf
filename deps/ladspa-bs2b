@@ -1,7 +1,0 @@
-REQUIRED:
-libbs2b
-ladspa_sdk
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-ocaml
-bubblewrap
-
-OPTIONAL:
-
-BUILDOPTS:

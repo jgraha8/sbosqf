@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-erf
-haskell-extensible-exceptions
-haskell-random
-haskell-tf-random
-
-OPTIONAL:
-
-BUILDOPTS:

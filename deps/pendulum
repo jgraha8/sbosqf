@@ -1,7 +1,0 @@
-REQUIRED:
-python-dateutil
-pytzdata
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-click
-pyinotify
-
-OPTIONAL:
-
-BUILDOPTS:

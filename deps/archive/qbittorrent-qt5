@@ -1,7 +1,0 @@
-REQUIRED:
-libtorrent-rasterbar
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

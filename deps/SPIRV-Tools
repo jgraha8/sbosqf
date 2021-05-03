@@ -1,7 +1,0 @@
-REQUIRED:
-SPIRV-Headers
-python3
-
-OPTIONAL:
-
-BUILDOPTS:

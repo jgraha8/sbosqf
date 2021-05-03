@@ -1,9 +1,0 @@
-REQUIRED:
-luasec
-luasocket
-luaexpat
-lua-filesystem
-
-OPTIONAL:
-
-BUILDOPTS:

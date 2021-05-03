@@ -1,7 +1,0 @@
-REQUIRED:
-happy
-haskell-lexer
-
-OPTIONAL:
-
-BUILDOPTS:

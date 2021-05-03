@@ -1,7 +1,0 @@
-REQUIRED:
-libpaper
-SDL_Pango
-
-OPTIONAL:
-
-BUILDOPTS:

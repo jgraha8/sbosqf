@@ -1,7 +1,0 @@
-REQUIRED:
-geda-gaf
-ngspice
-
-OPTIONAL:
-
-BUILDOPTS:

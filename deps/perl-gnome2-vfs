@@ -1,7 +1,0 @@
-REQUIRED:
-gnome-vfs
-perl-glib
-
-OPTIONAL:
-
-BUILDOPTS:

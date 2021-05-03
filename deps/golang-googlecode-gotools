@@ -1,7 +1,0 @@
-REQUIRED:
-google-go-lang
-golang-googlecode-gonet
-
-OPTIONAL:
-
-BUILDOPTS:

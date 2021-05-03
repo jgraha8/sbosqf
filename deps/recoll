@@ -1,9 +1,0 @@
-REQUIRED:
-antiword
-unrtf
-exiftool
-untex
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,6 +1,0 @@
-METAPKG
-REQUIRED:
-suitesparse
-octave
-numpy
-arpack-ng

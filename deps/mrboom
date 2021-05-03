@@ -1,8 +1,0 @@
-REQUIRED:
-libmodplug
-SDL2_mixer
-libminizip
-
-OPTIONAL:
-
-BUILDOPTS:

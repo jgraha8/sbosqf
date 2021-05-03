@@ -1,7 +1,0 @@
-REQUIRED:
-lua53
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-pam
-xmlsec
-
-OPTIONAL:
-
-BUILDOPTS:

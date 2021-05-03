@@ -1,7 +1,0 @@
-REQUIRED:
-ignition-math2
-tinyxml
-
-OPTIONAL:
-
-BUILDOPTS:

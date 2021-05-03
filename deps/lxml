@@ -1,7 +1,0 @@
-REQUIRED:
-BeautifulSoup4
-html5lib
-
-OPTIONAL:
-
-BUILDOPTS:

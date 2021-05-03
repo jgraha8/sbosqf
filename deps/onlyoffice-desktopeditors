@@ -1,8 +1,0 @@
-REQUIRED:
-gtkglext
-krb5
-ttf-carlito
-
-OPTIONAL:
-
-BUILDOPTS:

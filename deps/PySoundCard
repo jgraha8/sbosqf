@@ -1,8 +1,0 @@
-REQUIRED:
-portaudio
-numpy
-cffi
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-python3
-python3-pyparted
-python3-augeas
-maintboot
-
-OPTIONAL:
-
-BUILDOPTS:

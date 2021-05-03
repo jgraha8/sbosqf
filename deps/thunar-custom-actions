@@ -1,7 +1,0 @@
-REQUIRED:
-lxml
-zenity
-
-OPTIONAL:
-
-BUILDOPTS:

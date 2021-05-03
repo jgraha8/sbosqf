@@ -1,8 +1,0 @@
-REQUIRED:
-imlib2
-
-OPTIONAL:
-compface
-
-BUILDOPTS:
-NOMAILER=1

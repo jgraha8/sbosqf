@@ -1,7 +1,0 @@
-REQUIRED:
-webkit2gtk
-lua-filesystem
-
-OPTIONAL:
-
-BUILDOPTS:

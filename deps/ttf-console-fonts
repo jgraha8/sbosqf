@@ -1,8 +1,0 @@
-REQUIRED:
-otf2bdf
-bdf2psf
-psftools
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Test-Exception
-perl-test-warn
-
-OPTIONAL:
-
-BUILDOPTS:

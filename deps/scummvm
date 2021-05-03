@@ -1,7 +1,0 @@
-REQUIRED:
-
-OPTIONAL:
-libmpeg2
-fluidsynth
-
-BUILDOPTS:

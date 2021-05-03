@@ -1,7 +1,0 @@
-REQUIRED:
-qt5
-password-store
-
-OPTIONAL:
-
-BUILDOPTS:

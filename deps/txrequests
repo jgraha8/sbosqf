@@ -1,7 +1,0 @@
-REQUIRED:
-python-requests
-python-twisted
-
-OPTIONAL:
-
-BUILDOPTS:

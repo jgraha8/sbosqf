@@ -1,7 +1,0 @@
-REQUIRED:
-perl-File-pushd
-perl-Module-Pluggable
-
-OPTIONAL:
-
-BUILDOPTS:

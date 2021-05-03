@@ -1,7 +1,0 @@
-REQUIRED:
-portmidi
-
-OPTIONAL:
-python3
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-argon2
-libsodium
-qrencode
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

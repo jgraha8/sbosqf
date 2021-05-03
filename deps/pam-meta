@@ -1,7 +1,0 @@
-METAPKG
-REQUIRED:
-oath-toolkit
-openssh
-pam
-shadow
-sudo

@@ -1,7 +1,0 @@
-REQUIRED:
-log4shib
-xml-security-c
-
-OPTIONAL:
-
-BUILDOPTS:

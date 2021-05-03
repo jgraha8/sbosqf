@@ -1,7 +1,0 @@
-REQUIRED:
-protobuf
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

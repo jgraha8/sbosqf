@@ -1,9 +1,0 @@
-REQUIRED:
-chromaprint
-cryptopp
-libechonest
-protobuf
-
-OPTIONAL:
-
-BUILDOPTS:

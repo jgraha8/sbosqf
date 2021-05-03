@@ -1,7 +1,0 @@
-REQUIRED:
-OpenSceneGraph
-gdal
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-FlightGear
-CondConfigParser
-python3-pillow
-
-OPTIONAL:
-
-BUILDOPTS:

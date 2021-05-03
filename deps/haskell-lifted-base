@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-monad-control
-haskell-transformers-base
-
-OPTIONAL:
-
-BUILDOPTS:

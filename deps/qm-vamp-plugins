@@ -1,7 +1,0 @@
-REQUIRED:
-atlas
-vamp-plugin-sdk
-
-OPTIONAL:
-
-BUILDOPTS:

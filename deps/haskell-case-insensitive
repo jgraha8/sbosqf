@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-hashable
-haskell-semigroups
-
-OPTIONAL:
-
-BUILDOPTS:

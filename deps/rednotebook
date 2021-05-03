@@ -1,9 +1,0 @@
-REQUIRED:
-python3-PyYAML
-webkitgtk
-pygobject3-python3
-gtksourceview3
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-libxkbcommon
-extra-cmake-modules
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-hashable
-haskell-integer-logarithms
-haskell-vector
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-libconfig
-lxqt-build-tools
-
-OPTIONAL:
-
-BUILDOPTS:

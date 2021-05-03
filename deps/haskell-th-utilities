@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-primitive
-haskell-syb
-haskell-th-orphans
-
-OPTIONAL:
-
-BUILDOPTS:

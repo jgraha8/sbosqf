@@ -1,6 +1,0 @@
-REQUIRED:
-rdma-core
-
-OPTIONAL:
-
-BUILDOPTS:

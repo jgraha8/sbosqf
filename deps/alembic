@@ -1,9 +1,0 @@
-REQUIRED:
-SQLAlchemy
-Mako
-python-editor
-python-dateutil
-
-OPTIONAL:
-
-BUILDOPTS:

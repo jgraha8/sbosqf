@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-call-stack
-haskell-HUnit
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-camlp5
-lablgtk
-
-OPTIONAL:
-
-BUILDOPTS:

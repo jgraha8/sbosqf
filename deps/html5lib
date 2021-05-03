@@ -1,7 +1,0 @@
-REQUIRED:
-six
-python-webencodings
-
-OPTIONAL:
-
-BUILDOPTS:

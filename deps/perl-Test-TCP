@@ -1,6 +1,0 @@
-REQUIRED:
-perl-Test-SharedFork
-
-OPTIONAL:
-
-BUILDOPTS:

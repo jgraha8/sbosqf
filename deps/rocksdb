@@ -1,7 +1,0 @@
-REQUIRED:
-snappy
-gflags
-
-OPTIONAL:
-
-BUILDOPTS:

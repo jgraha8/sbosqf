@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-punycode
-haskell-stringprep
-
-OPTIONAL:
-
-BUILDOPTS:

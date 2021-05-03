@@ -1,9 +1,0 @@
-REQUIRED:
-attrs
-gdal
-munch
-six
-
-OPTIONAL:
-
-BUILDOPTS:

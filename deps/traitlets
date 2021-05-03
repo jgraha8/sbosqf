@@ -1,9 +1,0 @@
-REQUIRED:
-enum34
-ipython_genutils
-six
-python3-six
-
-OPTIONAL:
-
-BUILDOPTS:

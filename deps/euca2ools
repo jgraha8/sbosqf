@@ -1,7 +1,0 @@
-REQUIRED:
-python-requestbuilder
-lxml
-
-OPTIONAL:
-
-BUILDOPTS:

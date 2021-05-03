@@ -1,7 +1,0 @@
-REQUIRED:
-python-dateutil
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

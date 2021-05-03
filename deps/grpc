@@ -1,8 +1,0 @@
-REQUIRED:
-c-ares
-protobuf3
-gflags
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-arpack-ng
-OpenBLAS
-
-OPTIONAL:
-
-BUILDOPTS:

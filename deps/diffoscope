@@ -1,7 +1,0 @@
-REQUIRED:
-python-libarchive-c
-python-magic
-
-OPTIONAL:
-
-BUILDOPTS:

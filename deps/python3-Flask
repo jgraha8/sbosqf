@@ -1,9 +1,0 @@
-REQUIRED:
-werkzeug
-Jinja2
-python3-itsdangerous
-click
-
-OPTIONAL:
-
-BUILDOPTS:

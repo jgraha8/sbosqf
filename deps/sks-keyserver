@@ -1,7 +1,0 @@
-REQUIRED:
-camlp4
-db46
-
-OPTIONAL:
-
-BUILDOPTS:

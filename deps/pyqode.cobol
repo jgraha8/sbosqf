@@ -1,6 +1,0 @@
-REQUIRED:
-pyqode.core
-
-OPTIONAL:
-
-BUILDOPTS:

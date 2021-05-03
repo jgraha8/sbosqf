@@ -1,7 +1,0 @@
-REQUIRED:
-perl-NetAddr-IP
-perl-Test-Requires
-
-OPTIONAL:
-
-BUILDOPTS:

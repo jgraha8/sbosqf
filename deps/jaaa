@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-clxclient
-zita-alsa-pcmi
-
-OPTIONAL:
-
-BUILDOPTS:

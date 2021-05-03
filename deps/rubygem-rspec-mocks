@@ -1,7 +1,0 @@
-REQUIRED:
-rubygem-diff-lcs
-rubygem-rspec-support
-
-OPTIONAL:
-
-BUILDOPTS:

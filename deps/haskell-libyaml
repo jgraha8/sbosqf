@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-conduit
-haskell-resourcet
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-python3-Flask
-bcrypt
-
-OPTIONAL:
-
-BUILDOPTS:

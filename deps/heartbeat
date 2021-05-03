@@ -1,7 +1,0 @@
-REQUIRED:
-cluster-glue
-resource-agents
-
-OPTIONAL:
-
-BUILDOPTS:

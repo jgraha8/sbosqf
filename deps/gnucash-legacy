@@ -1,8 +1,0 @@
-REQUIRED:
-libgnomecanvas
-goffice0.8
-webkitgtk
-
-OPTIONAL:
-
-BUILDOPTS:

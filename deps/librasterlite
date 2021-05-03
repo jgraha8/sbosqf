@@ -1,7 +1,0 @@
-REQUIRED:
-libgeotiff
-libspatialite
-
-OPTIONAL:
-
-BUILDOPTS:

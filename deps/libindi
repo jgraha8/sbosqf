@@ -1,7 +1,0 @@
-REQUIRED:
-libnova
-cfitsio
-
-OPTIONAL:
-
-BUILDOPTS:

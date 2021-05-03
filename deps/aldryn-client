@@ -1,9 +1,0 @@
-REQUIRED:
-click
-python-tabulate
-python-requests
-six
-
-OPTIONAL:
-
-BUILDOPTS:

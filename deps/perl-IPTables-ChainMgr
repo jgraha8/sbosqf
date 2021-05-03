@@ -1,7 +1,0 @@
-REQUIRED:
-perl-IPTables-Parse
-perl-NetAddr-IP
-
-OPTIONAL:
-
-BUILDOPTS:

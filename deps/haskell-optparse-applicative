@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-ansi-wl-pprint
-haskell-transformers-compat
-
-OPTIONAL:
-
-BUILDOPTS:

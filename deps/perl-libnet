@@ -1,6 +1,0 @@
-REQUIRED:
-perl-IO-Socket-SSL
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Parse-RecDescent
-perl-Test-Simple
-
-OPTIONAL:
-
-BUILDOPTS:

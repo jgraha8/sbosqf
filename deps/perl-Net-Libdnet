@@ -1,7 +1,0 @@
-REQUIRED:
-libdnet
-perl-Class-Gomor
-
-OPTIONAL:
-
-BUILDOPTS:

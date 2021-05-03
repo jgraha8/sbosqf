@@ -1,7 +1,0 @@
-REQUIRED:
-gnuradio
-libosmo-dsp
-
-OPTIONAL:
-
-BUILDOPTS:

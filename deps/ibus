@@ -1,7 +1,0 @@
-REQUIRED:
-json-glib
-cldr-emoji-annotation
-
-OPTIONAL:
-
-BUILDOPTS:

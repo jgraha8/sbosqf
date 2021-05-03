@@ -1,7 +1,0 @@
-REQUIRED:
-acpica
-yajl
-
-OPTIONAL:
-
-BUILDOPTS:

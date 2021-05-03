@@ -1,7 +1,0 @@
-REQUIRED:
-libsodium
-libseccomp
-
-OPTIONAL:
-
-BUILDOPTS:

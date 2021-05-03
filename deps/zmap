@@ -1,7 +1,0 @@
-REQUIRED:
-byacc
-gengetopt
-
-OPTIONAL:
-
-BUILDOPTS:

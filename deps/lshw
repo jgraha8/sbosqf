@@ -1,8 +1,0 @@
-REQUIRED:
-
-OPTIONAL:
-
-BUILDOPTS:
-GUI=yes
-ZLIB=yes
-SQLITE=no

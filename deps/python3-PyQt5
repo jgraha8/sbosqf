@@ -1,7 +1,0 @@
-REQUIRED:
-qt5-webkit
-python3-sip
-
-OPTIONAL:
-
-BUILDOPTS:

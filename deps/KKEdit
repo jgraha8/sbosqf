@@ -1,8 +1,0 @@
-REQUIRED:
-gtksourceview
-libunique
-webkitgtk
-
-OPTIONAL:
-
-BUILDOPTS:

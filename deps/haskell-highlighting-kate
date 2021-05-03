@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-utf8-string
-haskell-blaze-html
-haskell-regex-pcre-builtin
-
-OPTIONAL:
-
-BUILDOPTS:

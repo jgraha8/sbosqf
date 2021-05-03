@@ -1,7 +1,0 @@
-REQUIRED:
-vcversioner
-functools32
-
-OPTIONAL:
-
-BUILDOPTS:

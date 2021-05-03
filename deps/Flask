@@ -1,9 +1,0 @@
-REQUIRED:
-werkzeug
-Jinja2
-itsdangerous
-click
-
-OPTIONAL:
-
-BUILDOPTS:

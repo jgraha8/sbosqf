@@ -1,7 +1,0 @@
-REQUIRED:
-PyOpenGL
-numpy
-
-OPTIONAL:
-
-BUILDOPTS:

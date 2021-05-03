@@ -1,7 +1,0 @@
-REQUIRED:
-ruby-faraday
-ruby-json
-
-OPTIONAL:
-
-BUILDOPTS:

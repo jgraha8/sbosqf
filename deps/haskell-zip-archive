@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-digest
-haskell-utf8-string
-haskell-zlib
-
-OPTIONAL:
-
-BUILDOPTS:

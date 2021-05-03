@@ -1,8 +1,0 @@
-REQUIRED:
-sequel4
-sqlite3
-chronic
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-prompt_toolkit
-pyte
-docopt
-
-OPTIONAL:
-
-BUILDOPTS:

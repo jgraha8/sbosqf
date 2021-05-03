@@ -1,8 +1,0 @@
-REQUIRED:
-lxml
-pyenchant
-SQLAlchemy
-
-OPTIONAL:
-
-BUILDOPTS:

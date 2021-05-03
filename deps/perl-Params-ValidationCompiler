@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Exception-Class
-perl-Eval-Closure
-
-OPTIONAL:
-
-BUILDOPTS:

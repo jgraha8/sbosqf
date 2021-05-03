@@ -1,6 +1,0 @@
-REQUIRED:
-perl-Crypt-OpenSSL-Random
-
-OPTIONAL:
-
-BUILDOPTS:

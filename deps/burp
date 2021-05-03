@@ -1,7 +1,0 @@
-REQUIRED:
-librsync
-uthash
-
-OPTIONAL:
-
-BUILDOPTS:

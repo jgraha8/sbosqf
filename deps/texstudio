@@ -1,4 +1,0 @@
-# See SBo README for additional information
-
-BUILDOPTS:
--QT5GUI=yes

@@ -1,7 +1,0 @@
-REQUIRED:
-pam
-pcsc-lite
-
-OPTIONAL:
-
-BUILDOPTS:

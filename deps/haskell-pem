@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-base64-bytestring
-haskell-basement
-haskell-memory
-
-OPTIONAL:
-
-BUILDOPTS:

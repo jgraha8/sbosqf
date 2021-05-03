@@ -1,8 +1,0 @@
-REQUIRED:
-dvdauthor
-ffmpeg
-oggvideotools
-
-OPTIONAL:
-
-BUILDOPTS:

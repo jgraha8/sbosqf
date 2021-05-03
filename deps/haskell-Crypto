@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-HUnit
-haskell-QuickCheck
-
-OPTIONAL:
-
-BUILDOPTS:

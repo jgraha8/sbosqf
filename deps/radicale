@@ -1,6 +1,0 @@
-REQUIRED:
-mod_wsgi
-
-OPTIONAL:
-
-BUILDOPTS:

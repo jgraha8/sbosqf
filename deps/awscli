@@ -1,9 +1,0 @@
-REQUIRED:
-s3transfer
-colorama
-rsa
-PyYAML
-
-OPTIONAL:
-
-BUILDOPTS:

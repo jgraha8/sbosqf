@@ -1,7 +1,0 @@
-REQUIRED:
-cfitsio
-libconfig
-
-OPTIONAL:
-
-BUILDOPTS:

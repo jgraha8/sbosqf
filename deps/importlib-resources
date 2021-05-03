@@ -1,8 +1,0 @@
-REQUIRED:
-python3
-python-toml
-setuptools-scm
-
-OPTIONAL:
-
-BUILDOPTS:

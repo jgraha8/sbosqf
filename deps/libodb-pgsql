@@ -1,7 +1,0 @@
-REQUIRED:
-libodb
-postgresql
-
-OPTIONAL:
-
-BUILDOPTS:

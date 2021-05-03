@@ -1,9 +1,0 @@
-REQUIRED:
-kaptan
-PyYAML
-argcomplete
-colorama
-
-OPTIONAL:
-
-BUILDOPTS:

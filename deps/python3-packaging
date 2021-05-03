@@ -1,8 +1,0 @@
-REQUIRED:
-python3-attrs
-python3-pyparsing
-python3-six
-
-OPTIONAL:
-
-BUILDOPTS:

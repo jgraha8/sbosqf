@@ -1,7 +1,0 @@
-REQUIRED:
-perl-File-ShareDir-Install
-perl-YAML-LibYAML
-
-OPTIONAL:
-
-BUILDOPTS:

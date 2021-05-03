@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Mojolicious
-perl-File-ShareDir
-
-OPTIONAL:
-
-BUILDOPTS:

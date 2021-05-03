@@ -1,7 +1,0 @@
-REQUIRED:
-courier-authlib
-courier-unicode
-
-OPTIONAL:
-
-BUILDOPTS:

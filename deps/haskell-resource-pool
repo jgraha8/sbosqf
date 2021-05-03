@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-hashable
-haskell-monad-control
-haskell-transformers-base
-haskell-vector
-
-OPTIONAL:
-
-BUILDOPTS:

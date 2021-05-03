@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Astro-SunTime
-perl-Device-SerialPort
-
-OPTIONAL:
-
-BUILDOPTS:

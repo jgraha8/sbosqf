@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-blaze-builder
-haskell-case-insensitive
-
-OPTIONAL:
-
-BUILDOPTS:

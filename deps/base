@@ -1,7 +1,0 @@
-REQUIRED:
-adodb
-snort
-
-OPTIONAL:
-
-BUILDOPTS:

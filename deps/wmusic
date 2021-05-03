@@ -1,7 +1,0 @@
-REQUIRED:
-libdockapp
-playerctl
-
-OPTIONAL:
-
-BUILDOPTS:

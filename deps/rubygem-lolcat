@@ -1,8 +1,0 @@
-REQUIRED:
-rubygem-paint
-rubygem-manpages
-rubygem-optimist
-
-OPTIONAL:
-
-BUILDOPTS:

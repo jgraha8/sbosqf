@@ -1,7 +1,0 @@
-REQUIRED:
-neovim
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

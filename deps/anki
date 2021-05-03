@@ -1,9 +1,0 @@
-REQUIRED:
-BeautifulSoup
-SQLAlchemy
-matplotlib
-simplejson
-
-OPTIONAL:
-
-BUILDOPTS:

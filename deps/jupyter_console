@@ -1,7 +1,0 @@
-REQUIRED:
-jupyter_client
-python3-jupyter-ipykernel
-
-OPTIONAL:
-
-BUILDOPTS:

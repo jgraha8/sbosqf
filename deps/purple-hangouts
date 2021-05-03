@@ -1,8 +1,0 @@
-REQUIRED:
-protobuf
-protobuf-c
-json-glib
-
-OPTIONAL:
-
-BUILDOPTS:

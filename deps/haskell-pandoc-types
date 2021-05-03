@@ -1,9 +1,0 @@
-REQUIRED:
-haskell-QuickCheck
-haskell-syb
-haskell-aeson
-haskell-deepseq-generics
-
-OPTIONAL:
-
-BUILDOPTS:

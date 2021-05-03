@@ -1,7 +1,0 @@
-REQUIRED:
-gnome-python2-gconf
-pyxdg
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-transmission
-json-glib
-
-OPTIONAL:
-
-BUILDOPTS:

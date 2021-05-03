@@ -1,7 +1,0 @@
-REQUIRED:
-libminizip
-uriparser
-
-OPTIONAL:
-
-BUILDOPTS:

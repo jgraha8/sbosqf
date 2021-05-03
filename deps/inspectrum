@@ -1,7 +1,0 @@
-REQUIRED:
-liquid-dsp
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-blas
-suitesparseconfig
-amd
-cholmod
-
-OPTIONAL:
-
-BUILDOPTS:

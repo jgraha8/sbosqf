@@ -1,7 +1,0 @@
-REQUIRED:
-gst0-plugins-bad
-gst0-plugins-ugly
-
-OPTIONAL:
-
-BUILDOPTS:

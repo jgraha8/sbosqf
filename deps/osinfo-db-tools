@@ -1,7 +1,0 @@
-REQUIRED:
-json-glib
-meson
-
-OPTIONAL:
-
-BUILDOPTS:

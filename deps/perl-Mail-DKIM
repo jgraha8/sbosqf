@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Crypt-OpenSSL-RSA
-perl-MailTools
-perl-net-dns
-
-OPTIONAL:
-
-BUILDOPTS:

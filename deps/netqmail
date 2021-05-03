@@ -1,7 +1,0 @@
-REQUIRED:
-ucspi-tcp
-mkchroot
-
-OPTIONAL:
-
-BUILDOPTS:

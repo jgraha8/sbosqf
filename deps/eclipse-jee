@@ -1,7 +1,0 @@
-REQUIRED:
-jdk
-webkit2gtk
-
-OPTIONAL:
-
-BUILDOPTS:

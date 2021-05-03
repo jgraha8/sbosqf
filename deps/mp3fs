@@ -1,7 +1,0 @@
-REQUIRED:
-lame
-libvorbisidec
-
-OPTIONAL:
-
-BUILDOPTS:

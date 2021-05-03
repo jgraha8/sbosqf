@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-byteable
-haskell-memory
-
-OPTIONAL:
-
-BUILDOPTS:

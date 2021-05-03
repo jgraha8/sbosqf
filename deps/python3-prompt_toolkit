@@ -1,7 +1,0 @@
-REQUIRED:
-python3-wcwidth
-python3-six
-
-OPTIONAL:
-
-BUILDOPTS:

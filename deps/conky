@@ -1,7 +1,0 @@
-REQUIRED:
-tolua++
-imlib2
-
-OPTIONAL:
-
-BUILDOPTS:

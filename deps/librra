@@ -1,7 +1,0 @@
-REQUIRED:
-libmimedir
-librapi2
-
-OPTIONAL:
-
-BUILDOPTS:

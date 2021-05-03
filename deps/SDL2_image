@@ -1,7 +1,0 @@
-REQUIRED:
-SDL2
-
-OPTIONAL:
--libwebp
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-Sphinx
-Pygments
-MarkupSafe
-
-OPTIONAL:
-
-BUILDOPTS:

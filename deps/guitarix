@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-liblrdf
-lilv
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-libspatialite
-freexl
-libgaiagraphics
-wxPython
-
-OPTIONAL:
-
-BUILDOPTS:

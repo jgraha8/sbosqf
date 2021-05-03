@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Module-Implementation
-perl-Sub-Exporter-Progressive
-perl-Variable-Magic
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-ocaml-camomile
-ocaml-findlib
-
-OPTIONAL:
-
-BUILDOPTS:

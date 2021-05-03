@@ -1,8 +1,0 @@
-REQUIRED:
-GraphicsMagick
-lensfun
-liblqr
-
-OPTIONAL:
-
-BUILDOPTS:

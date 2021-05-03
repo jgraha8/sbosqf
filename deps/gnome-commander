@@ -1,8 +1,0 @@
-REQUIRED:
-libgnomeui
-rarian
-libunique
-
-OPTIONAL:
-
-BUILDOPTS:

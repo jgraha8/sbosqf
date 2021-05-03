@@ -1,7 +1,0 @@
-REQUIRED:
-SDL2
-vulkan-sdk-bin
-
-OPTIONAL:
-
-BUILDOPTS:

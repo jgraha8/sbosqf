@@ -1,8 +1,0 @@
-REQUIRED:
-qt5
-qt5ct
-openbox
-
-OPTIONAL:
-
-BUILDOPTS:

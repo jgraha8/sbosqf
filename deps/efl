@@ -1,7 +1,0 @@
-REQUIRED:
-luajit
-bullet
-
-OPTIONAL:
-
-BUILDOPTS:

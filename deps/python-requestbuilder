@@ -1,7 +1,0 @@
-REQUIRED:
-python-requests
-six
-
-OPTIONAL:
-
-BUILDOPTS:

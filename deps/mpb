@@ -1,8 +1,0 @@
-REQUIRED:
-lapack
-hdf5
-libctl
-
-OPTIONAL:
-
-BUILDOPTS:

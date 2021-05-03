@@ -1,8 +1,0 @@
-REQUIRED:
-postgresql
-GeoIP
-php-pgsql
-
-OPTIONAL:
-
-BUILDOPTS:

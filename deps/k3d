@@ -1,7 +1,0 @@
-REQUIRED:
-gtkglext
-ftgl
-
-OPTIONAL:
-
-BUILDOPTS:

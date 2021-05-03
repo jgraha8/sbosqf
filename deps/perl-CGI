@@ -1,8 +1,0 @@
-REQUIRED:
-perl-html-parser
-perl-Test-Deep
-perl-test-warn
-
-OPTIONAL:
-
-BUILDOPTS:

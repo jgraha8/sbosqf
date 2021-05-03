@@ -1,7 +1,0 @@
-REQUIRED:
-MySQL-python
-genshi
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-fcitx-qt5
-libpinyin
-
-OPTIONAL:
-
-BUILDOPTS:

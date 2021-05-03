@@ -1,9 +1,0 @@
-REQUIRED:
-dbus-python3
-pygobject3-python3
-podcastparser
-mygpoclient
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,9 +1,0 @@
-REQUIRED:
-ecdsa
-protobuf
-mnemonic
-hidapi
-
-OPTIONAL:
-
-BUILDOPTS:

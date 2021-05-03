@@ -1,8 +1,0 @@
-REQUIRED:
-glm
-solarus
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

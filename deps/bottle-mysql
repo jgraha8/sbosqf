@@ -1,7 +1,0 @@
-REQUIRED:
-bottle
-MySQL-python
-
-OPTIONAL:
-
-BUILDOPTS:

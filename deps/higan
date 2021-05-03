@@ -1,7 +1,0 @@
-REQUIRED:
-p7zip
-gtksourceview
-
-OPTIONAL:
-
-BUILDOPTS:

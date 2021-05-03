@@ -1,7 +1,0 @@
-REQUIRED:
-imlib2
-python-xlib
-
-OPTIONAL:
-
-BUILDOPTS:

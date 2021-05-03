@@ -1,9 +1,0 @@
-REQUIRED:
-json-glib
-libpeas
-webkit2gtk
-pygobject3-python3
-
-OPTIONAL:
-
-BUILDOPTS:

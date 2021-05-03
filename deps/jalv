@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-lilv
-suil
-
-OPTIONAL:
-
-BUILDOPTS:

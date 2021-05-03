@@ -1,8 +1,0 @@
-REQUIRED:
-haskell-hashable
-haskell-semigroups
-haskell-transformers-compat
-
-OPTIONAL:
-
-BUILDOPTS:

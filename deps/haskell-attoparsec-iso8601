@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-attoparsec
-haskell-base-compat
-
-OPTIONAL:
-
-BUILDOPTS:

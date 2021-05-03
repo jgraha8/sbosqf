@@ -1,7 +1,0 @@
-REQUIRED:
-physfs
-SDL2
-
-OPTIONAL:
-
-BUILDOPTS:

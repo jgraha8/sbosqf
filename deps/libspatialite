@@ -1,9 +1,0 @@
-REQUIRED:
-proj
-geos
-freexl
-postgis
-
-OPTIONAL:
-
-BUILDOPTS:

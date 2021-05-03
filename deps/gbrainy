@@ -1,7 +1,0 @@
-REQUIRED:
-gnome-sharp
-mono-addins
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-allegro4
-SDL2_image
-SDL2_ttf
-
-OPTIONAL:
-
-BUILDOPTS:

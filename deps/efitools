@@ -1,7 +1,0 @@
-REQUIRED:
-perl-File-Slurp
-sbsigntools
-
-OPTIONAL:
-
-BUILDOPTS:

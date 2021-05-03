@@ -1,7 +1,0 @@
-REQUIRED:
-amqp
-anyjson
-
-OPTIONAL:
-
-BUILDOPTS:

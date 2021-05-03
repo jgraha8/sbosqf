@@ -1,8 +1,0 @@
-REQUIRED:
-rubygem-hpricot
-rubygem-mustache
-rubygem-rdiscount
-
-OPTIONAL:
-
-BUILDOPTS:

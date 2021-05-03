@@ -1,7 +1,0 @@
-REQUIRED:
-luajit
-postgis
-
-OPTIONAL:
-
-BUILDOPTS:

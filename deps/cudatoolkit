@@ -1,5 +1,0 @@
-REQUIRED:
-jdk
-# Needed if upstream driver is not installed
--nvidia-driver
--nvidia-legacy340-driver

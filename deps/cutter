@@ -1,7 +1,0 @@
-REQUIRED:
-qt5
-radare2
-
-OPTIONAL:
-
-BUILDOPTS:

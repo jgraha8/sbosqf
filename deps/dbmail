@@ -1,7 +1,0 @@
-REQUIRED:
-libzdb
-re2c
-
-OPTIONAL:
-
-BUILDOPTS:

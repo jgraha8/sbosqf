@@ -1,7 +1,0 @@
-REQUIRED:
-libmigdb
-librhtv
-
-OPTIONAL:
-
-BUILDOPTS:

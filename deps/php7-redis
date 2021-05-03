@@ -1,7 +1,0 @@
-REQUIRED:
-redis
-php7
-
-OPTIONAL:
-
-BUILDOPTS:

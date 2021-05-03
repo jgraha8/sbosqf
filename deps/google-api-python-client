@@ -1,8 +1,0 @@
-REQUIRED:
-httplib2
-python-uri-templates
-python-oauth2client
-
-OPTIONAL:
-
-BUILDOPTS:

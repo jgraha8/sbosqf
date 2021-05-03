@@ -1,7 +1,0 @@
-REQUIRED:
-udns
-libgsasl
-
-OPTIONAL:
-
-BUILDOPTS:

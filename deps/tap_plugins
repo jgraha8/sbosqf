@@ -1,7 +1,0 @@
-REQUIRED:
-jack
-ladspa_sdk
-
-OPTIONAL:
-
-BUILDOPTS:

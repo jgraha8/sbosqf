@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-exceptions
-haskell-fail
-
-OPTIONAL:
-
-BUILDOPTS:

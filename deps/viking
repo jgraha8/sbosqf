@@ -1,7 +1,0 @@
-REQUIRED:
-gpsd
-libgexiv2
-
-OPTIONAL:
-
-BUILDOPTS:

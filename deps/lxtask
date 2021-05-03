@@ -1,7 +1,0 @@
-REQUIRED:
-lxde-common
-lxpanel
-
-OPTIONAL:
-
-BUILDOPTS:

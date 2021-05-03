@@ -1,8 +1,0 @@
-REQUIRED:
-perl-Unicode-LineBreak
-perl-Module-Build
-perl-YAML-Tiny
-
-OPTIONAL:
-
-BUILDOPTS:

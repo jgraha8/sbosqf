@@ -1,8 +1,0 @@
-REQUIRED:
-perl-html-tagset
-perl-HTML-WikiConverter
-perl-Params-Validate
-
-OPTIONAL:
-
-BUILDOPTS:

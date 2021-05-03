@@ -1,8 +1,0 @@
-REQUIRED:
-qt5
-qt5-webkit
-qtkeychain
-
-OPTIONAL:
-
-BUILDOPTS:

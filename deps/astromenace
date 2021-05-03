@@ -1,7 +1,0 @@
-REQUIRED:
-freealut
-SDL2
-
-OPTIONAL:
-
-BUILDOPTS:

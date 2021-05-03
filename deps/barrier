@@ -1,7 +1,0 @@
-REQUIRED:
-avahi
-qt5
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-perl-net-dns
-perl-Net-CIDR-Lite
-perl-Sys-Hostname-Long
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-byteable
-haskell-securemem
-
-OPTIONAL:
-
-BUILDOPTS:

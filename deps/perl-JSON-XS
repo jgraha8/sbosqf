@@ -1,7 +1,0 @@
-REQUIRED:
-perl-Canary-Stability
-perl-Types-Serialiser
-
-OPTIONAL:
-
-BUILDOPTS:

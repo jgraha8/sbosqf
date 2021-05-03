@@ -1,7 +1,0 @@
-REQUIRED:
-python3
-htslib
-
-OPTIONAL:
-
-BUILDOPTS:

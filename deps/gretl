@@ -1,9 +1,0 @@
-REQUIRED:
-gtksourceview3
-json-glib
-lapack
-unixODBC
-
-OPTIONAL:
-
-BUILDOPTS:

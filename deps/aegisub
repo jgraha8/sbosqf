@@ -1,9 +1,0 @@
-REQUIRED:
-libass
-lua
-ffms2
-wxGTK3
-
-OPTIONAL:
-
-BUILDOPTS:

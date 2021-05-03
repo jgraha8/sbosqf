@@ -1,7 +1,0 @@
-REQUIRED:
-haskell-exceptions
-haskell-random
-
-OPTIONAL:
-
-BUILDOPTS:

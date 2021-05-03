@@ -1,9 +1,0 @@
-REQUIRED:
-python-argopt
-docopt
-tqdm
-python-tabulate
-
-OPTIONAL:
-
-BUILDOPTS:

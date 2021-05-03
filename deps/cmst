@@ -1,7 +1,0 @@
-REQUIRED:
-qt5
-connman
-
-OPTIONAL:
-
-BUILDOPTS:

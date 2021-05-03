@@ -1,7 +1,0 @@
-REQUIRED:
-webkit2gtk
-wxGTK3
-
-OPTIONAL:
-
-BUILDOPTS:

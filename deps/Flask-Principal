@@ -1,7 +1,0 @@
-REQUIRED:
-Flask
-blinker
-
-OPTIONAL:
-
-BUILDOPTS:

@@ -1,8 +1,0 @@
-REQUIRED:
-jack
-liblo
-python3-PyQt5
-
-OPTIONAL:
-
-BUILDOPTS:

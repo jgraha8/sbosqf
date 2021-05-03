@@ -1,8 +1,0 @@
-REQUIRED:
-pyOpenSSL
-python-nbxmpp
-pycrypto
-
-OPTIONAL:
-
-BUILDOPTS:
