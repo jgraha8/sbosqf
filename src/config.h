@@ -1,7 +1,7 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-#define DEPDIR "/var/lib/sbopkg-dep2sqf"
+#define DEPDIR "/var/lib/sbosqf"
 #define PKGFILE
 
 #define RED "\x1B[31m"
@@ -19,7 +19,7 @@
 #define COLOR_END "\x1B[0m"
 
 // Parameters
-#define CONFIG ".sbopkg-dep2sqf"
+#define CONFIG ".sbosqf"
 #define SBOPKG_REPO "/var/lib/sbopkg/compukix"
 #define SLACKPKG_REPO_NAME "SLACKPKGPLUS_SBo"
 #define SBO_TAG "_SBo"
@@ -27,7 +27,7 @@
 #define REVIEWED "REVIEWED"
 #define PARENTDB "PARENTDB"
 #define DEPDB "DEPDB"
-#define PROGRAM_NAME "sbopkg-dep2sqf"
+#define PROGRAM_NAME "sbosqf"
 
 // gnulib config
 #define _GL_INLINE         inline

@@ -29,12 +29,12 @@ SRC := \
 
 OBJ := $(SRC:.c=.o)
 
-all: sbopkg-dep2sqf
+all: sbosqf
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-sbopkg-dep2sqf: $(OBJ)
+sbosqf: $(OBJ)
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 #test_pkg: c-ctype.o filevercmp.o file_mmap.o sbo.o slack_pkg.o user_config.o pkg_util.o pkg.o pkg_graph.o pkg_ops.o test_pkg.o
@@ -43,4 +43,4 @@ sbopkg-dep2sqf: $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(OBJ) sbopkg-dep2sqf
+	rm -f $(OBJ) sbosqf
