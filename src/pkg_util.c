@@ -32,14 +32,12 @@ void free_string_ptr(char **str)
         *str = NULL;
 }
 
-bool skip_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_name, struct pkg_options options)
+bool check_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_name, struct pkg_options options)
 {
         if (options.check_installed) {
                 const char *check_tag =
-                    (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-                if (slack_pkg_dbi->is_installed(pkg_name, check_tag)) {
-                        return true;
-                }
+			(options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
+                return slack_pkg_dbi->is_installed(pkg_name, check_tag);
         }
         return false;
 }

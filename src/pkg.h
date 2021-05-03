@@ -135,6 +135,7 @@ struct pkg_options {
         char *output_name;                /* Output file name */
         bool recursive;                   /* Recursive dep file parsing */
         bool optional;                    /* Include optional packages in dep file parsing */
+        bool installed_revdeps;           /* Only process installed reverse dependencies */
         bool revdeps;                     /* Include reverse dependencies */
         bool deep;                        /* Perform deep graph processing */
         bool rebuild_deps;                /* Rebuild dependencies--used for updating packages only */

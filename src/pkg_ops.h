@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "pkg_graph.h"
+#include "slack_pkg_dbi.h"
 
 bool pkg_db_exists();
 int pkg_write_db(pkg_nodes_t *pkgs);
@@ -14,6 +15,8 @@ int pkg_load_sbo(pkg_nodes_t *pkgs);
 
 int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options);
 int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options);
+int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi, struct pkg_graph *pkg_graph, struct pkg_options options);
+
 
 int pkg_review(const struct pkg *pkg);
 int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *dep_status);

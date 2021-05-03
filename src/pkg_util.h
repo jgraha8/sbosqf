@@ -7,7 +7,7 @@
 #include "string_list.h"
 
 void free_string_ptr(char **str);
-bool skip_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_name, struct pkg_options options);
+bool check_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_name, struct pkg_options options);
 int load_dep_file(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options);
 bool file_exists(const char *pathname);
 bool dep_file_exists(const char *pkg_name);

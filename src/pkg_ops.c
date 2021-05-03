@@ -342,6 +342,31 @@ int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
         return 0;
 }
 
+int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi, struct pkg_graph *pkg_graph, struct pkg_options options)
+{
+        pkg_nodes_t *pkgs[2] = {pkg_graph->sbo_pkgs, pkg_graph->meta_pkgs};
+
+        for (size_t n = 0; n < 2; ++n) {
+                // We load deps for all packages
+                for (size_t i = 0; i < bds_vector_size(pkgs[n]); ++i) {
+                        struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs[n], i);
+
+                        if (pkg_node->pkg.name == NULL)
+                                continue;
+
+			if( !slack_pkg_dbi->is_installed(pkg_node->pkg.name, NULL) ) {
+				continue;
+			}
+
+                        int rc = 0;
+                        if ((rc = load_dep_file(pkg_graph, pkg_node->pkg.name, options)) != 0)
+                                return rc;
+                }
+        }
+
+        return 0;
+}
+
 static int __pkg_review(const struct pkg *pkg, bool include_dep)
 {
         const char *sbo_info = sbo_find_info(user_config.sbopkg_repo, pkg->name);
