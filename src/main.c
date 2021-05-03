@@ -366,6 +366,7 @@ static void cmd_update_print_help()
                "  -l, --list\n"
                "  -L, --list-slackpkg {1|2}\n"
                "  -o, --output\n"
+               "  -P, --installed-revdeps\n"
                "  -R, --repo-db\n"
                "  -r, --rebuild-deps\n",
                "sbopkg-dep2sqf"); // TODO: have program_name variable
@@ -373,7 +374,7 @@ static void cmd_update_print_help()
 
 static int cmd_update_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *options_str            = "AaihlL:o:Rrz";
+        static const char *options_str            = "AaihlL:o:PRrz";
         static const struct option long_options[] = {/* These options set a flag. */
                                                      LONG_OPT("auto-review-verbose", 'A'), /* option */
                                                      LONG_OPT("auto-review", 'a'),         /* option */
@@ -382,6 +383,7 @@ static int cmd_update_options(int argc, char **argv, struct pkg_options *options
                                                      LONG_OPT("list", 'l'),
                                                      LONG_OPT("list-slackpkg", 'L'),
                                                      LONG_OPT("output", 'o'),
+                                                     LONG_OPT("installed-revdeps", 'P'),      /* option */
                                                      LONG_OPT("repo-db", 'R'),
                                                      LONG_OPT("rebuild-deps", 'r'),
                                                      {0, 0, 0, 0}};
@@ -1606,7 +1608,11 @@ static int write_pkg_update_sqf(const struct slack_pkg_dbi *slack_pkg_dbi, struc
         pkg_options.deep     = true;
         pkg_options.max_dist = -1;
 
-        rc = pkg_load_all_deps(pkg_graph, pkg_options);
+	if(pkg_options.installed_revdeps) {
+		rc = pkg_load_installed_deps(slack_pkg_dbi, pkg_graph, pkg_options);
+	} else {
+		rc = pkg_load_all_deps(pkg_graph, pkg_options);
+	}
         if (rc != 0)
                 return rc;
 
