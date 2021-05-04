@@ -22,38 +22,36 @@
  */
 
 #include <assert.h>
-#include <getopt.h>
-#include <limits.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include <libbds/bds_queue.h>
 #include <libbds/bds_stack.h>
 #include <libbds/bds_vector.h>
 
+#include "build.h"
+#include "check_updates.h"
 #include "config.h"
+#include "edit.h"
+#include "info.h"
+#include "make_meta.h"
 #include "mesg.h"
-#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "remove.h"
+#include "review.h"
+#include "search.h"
+#include "update.h"
+#include "updatedb.h"
+#include "user_config.h"
+#include "utils.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
-#include "sbo.h"
-#include "slack_pkg.h"
-#include "slack_pkg_dbi.h"
-#include "string_list.h"
-#include "user_config.h"
 
-
-
-static bool                    pkg_name_required  = true;
-static bool                    pkg_name_optional  = false;
-static bool                    multiple_pkg_names = false;
-static bool                    create_graph       = true;
-static bool                    dep_file_required  = true;
-static enum slack_pkg_dbi_type pkg_dbi_type       = SLACK_PKG_DBI_PACKAGES;
+static bool pkg_name_required  = true;
+static bool pkg_name_optional  = false;
+static bool multiple_pkg_names = false;
+static bool create_graph       = true;
+static bool dep_file_required  = true;
+// static enum slack_pkg_dbi_type pkg_dbi_type       = SLACK_PKG_DBI_PACKAGES;
 
 enum command {
         COMMAND_NONE,
@@ -75,10 +73,7 @@ struct command_struct {
         const struct option *option;
 };
 
-
-
 static void print_help();
-
 
 int main(int argc, char **argv)
 {
@@ -109,7 +104,7 @@ int main(int argc, char **argv)
                 int num_opts = 0;
 
                 const char *cmd = argv[1];
-                if (strcmp(cmd, "create") == 0) {
+                if (strcmp(cmd, "build") == 0) {
                         cs.command         = COMMAND_BUILD;
                         num_opts           = process_build_options(argc, argv, &pkg_options);
                         multiple_pkg_names = true;
@@ -166,7 +161,7 @@ int main(int argc, char **argv)
                 argv += MAX(num_opts + 1, 1);
         }
 
-        slack_pkg_dbi = slack_pkg_dbi_create(pkg_dbi_type);
+        slack_pkg_dbi = slack_pkg_dbi_create(pkg_options.pkg_dbi_type);
         pkg_graph     = pkg_graph_alloc();
         sbo_pkgs      = pkg_graph_sbo_pkgs(pkg_graph);
 
@@ -192,7 +187,7 @@ int main(int argc, char **argv)
                         pkg_names = string_list_alloc_reference();
                         for (int i = 0; i < argc; ++i) {
                                 if (dep_file_required) {
-                                        if (!dep_file_exists(argv[i])) {
+                                        if (!pkg_dep_file_exists(argv[i])) {
                                                 mesg_error("dependency file %s does not exist\n", argv[i]);
                                                 exit(EXIT_FAILURE);
                                         }

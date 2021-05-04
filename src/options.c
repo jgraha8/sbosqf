@@ -1,4 +1,9 @@
+#include <assert.h>
+#include <stdio.h>
+
+#include "mesg.h"
 #include "options.h"
+#include "slack_pkg_dbi.h"
 
 static const struct option *find_option(const struct option *long_options, const char *long_name, const int name)
 {
@@ -157,7 +162,7 @@ int process_options(int                  argc,
                         pkg_options->revdeps = true;
                         break;
                 case 'R':
-                        pkg_dbi_type = SLACK_PKG_DBI_REPO;
+                        pkg_options->pkg_dbi_type = SLACK_PKG_DBI_REPO;
                         break;
                 case 'r':
                         pkg_options->rebuild_deps = true;

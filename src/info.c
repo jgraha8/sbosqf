@@ -1,3 +1,11 @@
+#include <stdio.h>
+
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_ops.h"
+#include "mesg.h"
+
 void print_info_help()
 {
         printf("Usage: %s info [option] pkg\n"
@@ -11,9 +19,8 @@ int process_info_options(int argc, char **argv, struct pkg_options *options)
         static const char *        options_str    = "h";
         static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, command_info_help, options);
+        return process_options(argc, argv, options_str, long_options, print_info_help, options);
 }
-
 
 int run_info_command(struct pkg_graph *pkg_graph, const char *pkg_name)
 {

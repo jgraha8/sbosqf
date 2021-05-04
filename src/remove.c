@@ -1,3 +1,17 @@
+#include <assert.h>
+#include <stdio.h>
+
+#include <libbds/bds_stack.h>
+
+#include "mesg.h"
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "slack_pkg_dbi.h"
+#include "string_list.h"
+#include "user_config.h"
+
 void print_remove_help()
 {
         printf("Usage: %s remove [option] pkg\n"
@@ -20,7 +34,7 @@ int process_remove_options(int argc, char **argv, struct pkg_options *options)
                                                      LONG_OPT("list-slackpkg", 'L'), LONG_OPT("output", 'o'),
                                                      LONG_OPT("repo-db", 'R'),       {0, 0, 0, 0}};
 
-        int rc = process_options(argc, argv, options_str, long_options, command_remove_help, options);
+        int rc = process_options(argc, argv, options_str, long_options, print_remove_help, options);
 
         /* Revdeps processing is required for package removal */
         options->revdeps = true;
@@ -37,9 +51,9 @@ int process_remove_options(int argc, char **argv, struct pkg_options *options)
 }
 
 int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
-		       struct pkg_graph *          pkg_graph,
-		       const string_list_t *       pkg_names,
-		       struct pkg_options          pkg_options)
+                       struct pkg_graph *          pkg_graph,
+                       const string_list_t *       pkg_names,
+                       struct pkg_options          pkg_options)
 {
 
         int                  rc = 0;

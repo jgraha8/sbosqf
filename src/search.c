@@ -1,3 +1,14 @@
+#include <stdio.h>
+#include <dirent.h>
+
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "pkg_util.h"
+#include "mesg.h"
+#include "user_config.h"
+
 void print_search_help()
 {
         printf("Usage: %s search [option] pkg\n"
@@ -11,7 +22,7 @@ int process_search_options(int argc, char **argv, struct pkg_options *options)
         static const char *        options_str    = "h";
         static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, command_search_help, options);
+        return process_options(argc, argv, options_str, long_options, print_search_help, options);
 }
 
 static int find_all_meta_pkgs(pkg_nodes_t *meta_pkgs)
@@ -27,7 +38,7 @@ static int find_all_meta_pkgs(pkg_nodes_t *meta_pkgs)
                         continue;
 
                 if (NULL == pkg_nodes_bsearch_const(meta_pkgs, dirent->d_name)) {
-                        if (is_meta_pkg(dirent->d_name)) {
+                        if (pkg_is_meta(dirent->d_name)) {
                                 struct pkg_node *meta_node = pkg_node_alloc(dirent->d_name);
                                 meta_node->pkg.dep.is_meta = true;
                                 pkg_nodes_insert_sort(meta_pkgs, meta_node);

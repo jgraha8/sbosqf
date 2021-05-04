@@ -1,3 +1,13 @@
+#include <assert.h>
+#include <stdbool.h>
+#include <stdio.h>
+
+#include "mesg.h"
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "user_config.h"
+
 void print_make_meta_help()
 {
         printf("Usage: %s make-meta -o metapkg [options] pkgs...\n"
@@ -16,7 +26,7 @@ int process_make_meta_options(int argc, char **argv, struct pkg_options *options
         static const char *        options_str    = "o:h";
         static const struct option long_options[] = {LONG_OPT("output", 'o'), LONG_OPT("help", 'h'), {0, 0, 0, 0}};
 
-        int rc = process_options(argc, argv, options_str, long_options, command_make_meta_help, options);
+        int rc = process_options(argc, argv, options_str, long_options, print_make_meta_help, options);
 
         if (rc == 0) {
                 if (options->output_name == NULL) {
@@ -30,7 +40,7 @@ int process_make_meta_options(int argc, char **argv, struct pkg_options *options
         return rc;
 }
 
-int make_meta_pkg(const pkg_nodes_t *sbo_pkgs, const char *meta_pkg_name, string_list_t *pkg_names)
+int run_make_meta_command(const pkg_nodes_t *sbo_pkgs, const char *meta_pkg_name, string_list_t *pkg_names)
 {
         char         meta_pkg_path[4096];
         const size_t num_pkgs = string_list_size(pkg_names);

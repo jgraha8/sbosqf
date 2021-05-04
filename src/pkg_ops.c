@@ -1,150 +1,26 @@
 #include <assert.h>
 #include <dirent.h>
-#include <limits.h>
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 #include <libbds/bds_queue.h>
 
 #include "file_mmap.h"
-#include "io.h"
 #include "mesg.h"
+#include "pkg_io.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
 #include "sbo.h"
 #include "user_config.h"
-
-#ifdef MAX_LINE
-#undef MAX_LINE
-#endif
-#define MAX_LINE 2048
+#include "xlimits.h"
 
 #define BORDER1 "================================================================================"
 #define BORDER2 "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
 #define BORDER3 "--------------------------------------------------------------------------------"
-
-static int __load_sbo(pkg_nodes_t *pkgs, const char *cur_path)
-{
-        static char sbo_dir[4096];
-        static int  level = 0;
-
-        int            rc     = 0;
-        struct dirent *dirent = NULL;
-
-        DIR *dp = opendir(cur_path);
-        if (dp == NULL)
-                return 1;
-
-        ++level;
-        assert(level >= 1);
-
-        if (level > 2) {
-                goto finish;
-        }
-
-        while ((dirent = readdir(dp)) != NULL) {
-                if (*dirent->d_name == '.')
-                        continue;
-
-                if (level == 1) {
-                        if (dirent->d_type == DT_DIR) {
-                                char *next_dir = bds_string_dup_concat(3, cur_path, "/", dirent->d_name);
-                                rc             = __load_sbo(pkgs, next_dir);
-                                free(next_dir);
-                                if (rc != 0)
-                                        goto finish;
-                        }
-                } else {
-                        if (dirent->d_type == DT_DIR) {
-                                assert(bds_string_copyf(sbo_dir, 4096, "%s/%s", cur_path, dirent->d_name));
-
-                                // Now check for a .info file
-                                char info[256];
-                                bds_string_copyf(info, sizeof(info), "%s/%s.info", sbo_dir, dirent->d_name);
-
-                                struct stat sb;
-                                if (stat(info, &sb) != 0) {
-                                        perror("stat()");
-                                        continue;
-                                }
-                                if (!S_ISREG(sb.st_mode))
-                                        continue;
-
-                                struct pkg_node *pkg_node = pkg_node_alloc(dirent->d_name);
-
-                                pkg_init_version(&pkg_node->pkg, sbo_read_version(sbo_dir, pkg_node->pkg.name));
-                                pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
-                                pkg_set_info_crc(&pkg_node->pkg);
-                                pkg_nodes_append(pkgs, pkg_node);
-                        }
-                }
-        }
-
-finish:
-        if (dp)
-                closedir(dp);
-        --level;
-
-        return rc;
-}
-
-int pkg_load_sbo(pkg_nodes_t *pkgs)
-{
-        int rc = 0;
-        if ((rc = __load_sbo(pkgs, user_config.sbopkg_repo)) != 0) {
-                return rc;
-        }
-        bds_vector_qsort(pkgs, pkg_nodes_compar);
-
-        return 0;
-}
-
-bool pkg_db_exists()
-{
-        char db_file[MAX_LINE];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
-
-        return file_exists(db_file);
-}
-
-static int __create_db(const char *db_file, pkg_nodes_t *pkgs)
-{
-        FILE *fp = fopen(db_file, "w");
-        if (fp == NULL) {
-                return -1;
-        }
-
-        for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
-                struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
-
-                if (pkg_node->pkg.name == NULL) /* Package has been removed */
-                        continue;
-
-                fprintf(fp, "%s:%s:%s:%x:%d:%d", pkg_node->pkg.name,
-                        pkg_node->pkg.sbo_dir + strlen(user_config.sbopkg_repo) + 1, pkg_node->pkg.version,
-                        pkg_node->pkg.info_crc, pkg_node->pkg.is_reviewed, pkg_node->pkg.is_tracked);
-                fprintf(fp, "\n");
-        }
-        fclose(fp);
-
-        return 0;
-}
-
-int pkg_write_db(pkg_nodes_t *pkgs)
-{
-        int rc = 0;
-
-        char db_file[4096];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
-
-        rc = __create_db(db_file, pkgs);
-        if (rc != 0) {
-                mesg_error("unable to write %s\n", db_file);
-        }
-
-        return rc;
-}
 
 int pkg_create_default_deps(pkg_nodes_t *pkgs)
 {
@@ -152,7 +28,7 @@ int pkg_create_default_deps(pkg_nodes_t *pkgs)
         for (size_t i = 0; i < bds_vector_size(pkgs); ++i) {
                 struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs, i);
 
-                if (dep_file_exists(pkg_node->pkg.name))
+                if (pkg_dep_file_exists(pkg_node->pkg.name))
                         continue;
 
                 const char *dep_file = NULL;
@@ -163,7 +39,7 @@ int pkg_create_default_deps(pkg_nodes_t *pkgs)
         return 0;
 }
 
-int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
+int pkg_compare_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
 {
         size_t num_nodes = 0;
 
@@ -194,7 +70,7 @@ int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                 */
                                 new_pkg->pkg.is_reviewed = old_pkg->pkg.is_reviewed;
                         } else {
-                                int        ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
+                                int ver_diff = pkg_compare_versions(old_pkg->pkg.version, new_pkg->pkg.version);
                                 struct pkg updated_pkg[2] = {old_pkg->pkg, new_pkg->pkg};
 
                                 if (ver_diff == 0) {
@@ -259,111 +135,6 @@ int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                 have_removed = true;
                         }
                         printf("  [R] %-24s %-8s\n", old_pkg->pkg.name, old_pkg->pkg.version);
-                }
-        }
-
-        return 0;
-}
-
-static int __load_db(pkg_nodes_t *pkgs, const char *db_file)
-{
-        FILE *fp = fopen(db_file, "r");
-        assert(fp);
-
-        char sbo_dir[256];
-        char line[MAX_LINE];
-        line[MAX_LINE - 1] = '\0';
-
-        while (fgets(line, MAX_LINE, fp)) {
-                char *c = NULL;
-                // Get newline character
-                if ((c = bds_string_rfind(line, "\n"))) {
-                        *c = '\0';
-                }
-                bds_string_atrim(line);
-
-                size_t num_tok = 0;
-                char **tok     = NULL;
-
-                bds_string_tokenize(line, ":", &num_tok, &tok);
-                assert(num_tok == 6);
-
-                struct pkg_node *pkg_node = pkg_node_alloc(tok[0]);
-
-                bds_string_copyf(sbo_dir, sizeof(sbo_dir), "%s/%s", user_config.sbopkg_repo, tok[1]);
-                pkg_init_sbo_dir(&pkg_node->pkg, sbo_dir);
-                pkg_init_version(&pkg_node->pkg, tok[2]);
-                pkg_node->pkg.info_crc    = strtol(tok[3], NULL, 16);
-                pkg_node->pkg.is_reviewed = strtol(tok[4], NULL, 10);
-                pkg_node->pkg.is_tracked  = strtol(tok[5], NULL, 10);
-
-                pkg_nodes_append(pkgs, pkg_node);
-
-                free(tok);
-        }
-        fclose(fp);
-
-        return 0;
-}
-
-int pkg_load_db(pkg_nodes_t *pkgs)
-{
-        if (!pkg_db_exists())
-                return 1;
-
-        char db_file[4096];
-        bds_string_copyf(db_file, sizeof(db_file), "%s/PKGDB", user_config.depdir);
-
-        return __load_db(pkgs, db_file);
-}
-
-int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
-{
-        return io_load_dep(pkg_graph, pkg_name, options);
-}
-
-int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
-{
-        pkg_nodes_t *pkgs[2] = {pkg_graph->sbo_pkgs, pkg_graph->meta_pkgs};
-
-        for (size_t n = 0; n < 2; ++n) {
-                // We load deps for all packages
-                for (size_t i = 0; i < bds_vector_size(pkgs[n]); ++i) {
-                        struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs[n], i);
-
-                        if (pkg_node->pkg.name == NULL)
-                                continue;
-
-                        int rc = 0;
-                        if ((rc = io_load_dep(pkg_graph, pkg_node->pkg.name, options)) != 0)
-                                return rc;
-                }
-        }
-
-        return 0;
-}
-
-int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi,
-                            struct pkg_graph *          pkg_graph,
-                            struct pkg_options          options)
-{
-        pkg_nodes_t *pkgs[2] = {pkg_graph->sbo_pkgs, pkg_graph->meta_pkgs};
-
-        for (size_t n = 0; n < 2; ++n) {
-                // We load deps for all packages
-                for (size_t i = 0; i < bds_vector_size(pkgs[n]); ++i) {
-                        struct pkg_node *pkg_node = *(struct pkg_node **)bds_vector_get(pkgs[n], i);
-
-                        if (pkg_node->pkg.name == NULL)
-                                continue;
-
-                        if (!slack_pkg_dbi->is_installed(pkg_node->pkg.name, NULL)) {
-                                continue;
-                        }
-
-                        int rc = 0;
-                        if ((rc = io_load_dep(pkg_graph, pkg_node->pkg.name, options)) != 0)
-                                return rc;
                 }
         }
 
@@ -528,7 +299,7 @@ int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *de
                         break;
                 }
                 if (r == 'e' || r == 'E') {
-                        if (0 != edit_dep_file(pkg->name))
+                        if (0 != pkg_edit_dep(pkg->name))
                                 exit(EXIT_FAILURE);
                         *dep_status |= PKG_DEP_EDITED;
                         if (*dep_status & return_on_modify_mask) {
@@ -549,6 +320,145 @@ int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *de
         }
 
         --level;
+
+        return rc;
+}
+
+static const char *find_dep_file(const char *pkg_name)
+{
+        static char dep_file[4096];
+        struct stat sb;
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+
+        if (stat(dep_file, &sb) == 0) {
+                if (sb.st_mode & S_IFREG) {
+                        return dep_file;
+                } else if (sb.st_mode & S_IFDIR) {
+                        fprintf(stderr, "dependency file for package %s already exists as directory: %s\n",
+                                pkg_name, dep_file);
+                } else {
+                        fprintf(stderr, "dependency file for package %s already exists as non-standard file: %s\n",
+                                pkg_name, dep_file);
+                }
+        }
+        return NULL;
+}
+
+static void sigchld_handler(int signo) { fprintf(stderr, "caught signal %d\n", signo); }
+
+int pkg_edit_dep(const char *pkg_name)
+{
+        int              rc = 0;
+        pid_t            cpid;
+        struct sigaction sa;
+
+        memset(&sa, 0, sizeof(sa));
+
+        sa.sa_handler = SIG_IGN;
+        sa.sa_flags   = 0;
+        sigemptyset(&sa.sa_mask); // Not masking SIGINT and SIGQUIT since they will be ignored
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
+
+        sa.sa_handler = sigchld_handler;
+        // sa.sa_flags   = SA_NOCLDSTOP; // do not receive notification when child process6es stop or resume
+        sigaction(SIGCHLD, &sa, NULL);
+
+        cpid = fork();
+        if (-1 == cpid) {
+                fprintf(stderr, COLOR_FAIL "[error]" COLOR_END ": unable to fork editor process\n");
+                return 1;
+        }
+
+        if (cpid == 0) {
+                // Re-enable default signal handling
+                sa.sa_handler = SIG_DFL;
+                sa.sa_flags   = 0;
+                sigaction(SIGINT, &sa, NULL);
+                sigaction(SIGQUIT, &sa, NULL);
+
+                char *dep_file = NULL;
+                if (!find_dep_file(pkg_name)) {
+                        fprintf(stderr, "[error]" COLOR_END ": unable to find dependency file for %s\n", pkg_name);
+                        exit(EXIT_FAILURE);
+                }
+                dep_file = bds_string_dup(find_dep_file(pkg_name));
+
+                size_t num_tok;
+                char **tok;
+
+                char *editor = bds_string_dup(user_config.editor);
+                bds_string_tokenize(editor, " ", &num_tok, &tok);
+                assert(1 <= num_tok);
+
+                const size_t num_args = num_tok + 2;
+                char *       args[num_args];
+
+                for (size_t i = 0; i < num_args - 2; ++i) {
+                        assert(0 < strlen(tok[i]));
+                        args[i] = tok[i];
+                }
+                args[num_args - 2] = dep_file;
+                args[num_args - 1] = NULL;
+
+                if (execvp(args[0], args) == -1) {
+                        perror("execvp()");
+                        rc = errno;
+                }
+
+                // We shouldn't get here, but if we do, clean-up (not really necessary, but good practice)
+                free(tok);
+                free(editor);
+
+                exit(rc);
+        }
+
+        while (1) {
+                pid_t pid;
+                int   wstatus = 0;
+
+                fprintf(stderr, "child wait loop...\n");
+                if ((pid = waitpid(cpid, &wstatus, WUNTRACED | WCONTINUED)) == -1) {
+                        perror("waitpid()");
+
+                        if (EINTR == errno) { // waitpid interrupted
+                                fprintf(stderr, "interrupted...\n");
+                                continue;
+                        }
+                        if (ECHILD == errno) { // child already exited
+                                fprintf(stderr, "child already exited...\n");
+                                rc = errno;
+                                break;
+                        }
+                }
+
+                if (WIFSTOPPED(wstatus)) { // Child stopped
+                        fprintf(stderr, "child stopped...\n");
+                        continue;
+                }
+                if (WIFCONTINUED(wstatus)) { // Child resumed
+                        fprintf(stderr, "child resumed...\n");
+                        continue;
+                }
+                if (WIFSIGNALED(wstatus)) { // Child terminated
+                        fprintf(stderr, "child terminated by signal %d\n", WTERMSIG(wstatus));
+                        rc = 1;
+                        break;
+                }
+                if (WIFEXITED(wstatus)) {          // Child exited normally
+                        rc = WEXITSTATUS(wstatus); // Exit status of child
+                        fprintf(stderr, "child exited with status %d\n", rc);
+                        break;
+                }
+        }
+
+        // Restore default signal handling
+        sa.sa_handler = SIG_DFL;
+        sa.sa_flags   = 0;
+        sigaction(SIGCHLD, &sa, NULL);
+        sigaction(SIGINT, &sa, NULL);
+        sigaction(SIGQUIT, &sa, NULL);
 
         return rc;
 }

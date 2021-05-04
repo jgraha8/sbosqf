@@ -1,3 +1,17 @@
+#include <assert.h>
+#include <stdio.h>
+
+#include <libbds/bds_queue.h>
+
+#include "sbo.h"
+#include "mesg.h"
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_util.h"
+#include "slack_pkg_dbi.h"
+#include "user_config.h"
+
 void print_check_updates_help()
 {
         printf("Usage: %s check-updates [option] [pkg]\n"
@@ -17,7 +31,7 @@ int process_check_updates_options(int argc, char **argv, struct pkg_options *opt
         static const struct option long_options[] = {
             LONG_OPT("help", 'h'), LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, command_check_updates_help, options);
+        return process_options(argc, argv, options_str, long_options, print_check_updates_help, options);
 }
 
 enum updated_pkg_status {
@@ -96,7 +110,7 @@ static int get_updated_pkgs(const struct slack_pkg_dbi *slack_pkg_dbi,
                 const char *sbo_version = sbo_read_version(node->pkg.sbo_dir, node->pkg.name);
                 assert(sbo_version);
 
-                int diff = compar_versions(slack_pkg->version, sbo_version);
+                int diff = pkg_compare_versions(slack_pkg->version, sbo_version);
                 if (diff == 0)
                         continue;
 

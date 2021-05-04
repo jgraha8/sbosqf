@@ -1,4 +1,13 @@
-static void print_review_help()
+#include <stdio.h>
+
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "pkg_ops.h"
+#include "mesg.h"
+
+void print_review_help()
 {
         printf("Usage: %s review [option] pkg\n"
                "Options:\n"
@@ -6,15 +15,15 @@ static void print_review_help()
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
-static int process_review_options(int argc, char **argv, struct pkg_options *options)
+int process_review_options(int argc, char **argv, struct pkg_options *options)
 {
         static const char *        options_str    = "h";
         static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, command_review_help, options);
+        return process_options(argc, argv, options_str, long_options, print_review_help, options);
 }
 
-static int run_review_command(struct pkg_graph *pkg_graph, const char *pkg_name)
+int run_review_command(struct pkg_graph *pkg_graph, const char *pkg_name)
 {
         int  rc       = 0;
         bool db_dirty = false;

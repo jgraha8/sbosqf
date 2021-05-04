@@ -1,3 +1,15 @@
+#include <assert.h>
+#include <stdio.h>
+
+#include "mesg.h"
+#include "options.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "pkg_ops.h"
+/* #include "pkg_util.h" */
+/* #include "user_config.h" */
+
 void print_updatedb_help()
 {
         printf("Usage: %s updatedb [option]\n"
@@ -11,10 +23,10 @@ int process_updatedb_options(int argc, char **argv, struct pkg_options *options)
         static const char *        options_str    = "h";
         static const struct option long_options[] = {LONG_OPT("help", 'h'), {0, 0, 0, 0}};
 
-        return process_options(argc, argv, options_str, long_options, command_updatedb_help, options);
+        return process_options(argc, argv, options_str, long_options, print_updatedb_help, options);
 }
 
-int run_updatedb(struct pkg_graph *pkg_graph)
+int run_updatedb_command(struct pkg_graph *pkg_graph)
 {
         int          rc           = 0;
         pkg_nodes_t *sbo_pkgs     = pkg_graph_sbo_pkgs(pkg_graph);
@@ -23,7 +35,7 @@ int run_updatedb(struct pkg_graph *pkg_graph)
         if ((rc = pkg_load_sbo(new_sbo_pkgs)) != 0)
                 return rc;
 
-        rc       = pkg_compar_sets(new_sbo_pkgs, sbo_pkgs);
+        rc       = pkg_compare_sets(new_sbo_pkgs, sbo_pkgs);
         sbo_pkgs = pkg_graph_assign_sbo_pkgs(pkg_graph, new_sbo_pkgs);
 
         if (rc != 0)

@@ -22,8 +22,6 @@
 #include "slack_pkg.h"
 #include "user_config.h"
 
-enum block_type { NO_BLOCK, REQUIRED_BLOCK, OPTIONAL_BLOCK, BUILDOPTS_BLOCK };
-
 void free_string_ptr(char **str)
 {
         if (*str == NULL)
@@ -42,7 +40,40 @@ bool check_installed(const struct slack_pkg_dbi *slack_pkg_dbi, const char *pkg_
         return false;
 }
 
-static bool skip_dep_line(char *line)
+bool pkg_is_meta(const char *pkg_name)
+{
+        bool is_meta = false;
+
+        // Load meta pkg dep file
+        char dep_file[2048];
+        struct file_mmap *dep = NULL;
+
+        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
+        if ((dep = file_mmap(dep_file)) == NULL)
+                return false;
+
+        char *line     = dep->data;
+        char *line_end = NULL;
+
+        while ((line_end = bds_string_find(line, "\n"))) {
+                *line_end = '\0';
+
+                if (pkg_skip_dep_line(line))
+                        goto cycle;
+
+                if (strcmp(line, "METAPKG") == 0) {
+                        is_meta = true;
+                        break;
+                }
+        cycle:
+                line = line_end + 1;
+        }
+        file_munmap(&dep);
+
+        return is_meta;
+}
+
+bool pkg_skip_dep_line(char *line)
 {
         // Trim newline
         char *c = line;
@@ -70,41 +101,6 @@ static bool skip_dep_line(char *line)
         return false;
 }
 
-bool is_meta_pkg(const char *pkg_name)
-{
-        bool is_meta = false;
-
-        // Load meta pkg dep file
-        char dep_file[2048];
-        struct file_mmap *dep = NULL;
-
-        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
-        if ((dep = file_mmap(dep_file)) == NULL)
-                return false;
-
-        char *line     = dep->data;
-        char *line_end = NULL;
-
-        while ((line_end = bds_string_find(line, "\n"))) {
-                *line_end = '\0';
-
-                if (skip_dep_line(line))
-                        goto cycle;
-
-                if (strcmp(line, "METAPKG") == 0) {
-                        is_meta = true;
-                        break;
-                }
-        cycle:
-                line = line_end + 1;
-        }
-        file_munmap(&dep);
-
-        return is_meta;
-}
-
-
-
 bool file_exists(const char *pathname)
 {
         struct stat sb;
@@ -118,7 +114,7 @@ bool file_exists(const char *pathname)
         return true;
 }
 
-bool dep_file_exists(const char *pkg_name)
+bool pkg_dep_file_exists(const char *pkg_name)
 {
         char dep_file[4096];
 
@@ -190,31 +186,6 @@ const char *create_default_dep_verbose(const struct pkg *pkg)
         return dep_file;
 }
 
-static void write_buildopts(struct ostream *os, const struct pkg *pkg)
-{
-        const size_t n = pkg_buildopts_size(pkg);
-
-        if (0 < n) {
-                ostream_printf(os, " |");
-        }
-        for (size_t i = 0; i < n; ++i) {
-                ostream_printf(os, " %s", pkg_buildopts_get_const(pkg, i));
-        }
-}
-
-/*
-  Return:
-    0    always
- */
-static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode track_mode, bool *db_dirty)
-{
-        if ((PKG_TRACK_ENABLE == track_mode && 0 == node_dist) || PKG_TRACK_ENABLE_ALL == track_mode) {
-                pkg->is_tracked = true;
-                *db_dirty       = true;
-        }
-        return 0;
-}
-
 /*
  * Return:
  *   -1   if error occurred
@@ -222,7 +193,7 @@ static int check_track_pkg(struct pkg *pkg, int node_dist, enum pkg_track_mode t
  *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
  */
 
-int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
+int pkg_check_reviewed(struct pkg *pkg, enum pkg_review_type review_type, bool *db_dirty)
 {
         int rc = 0;
 
@@ -261,91 +232,6 @@ int check_reviewed_pkg(struct pkg *pkg, enum pkg_review_type review_type, bool *
         return rc;
 }
 
-/*
- * Return:
- *   -1   if error occurred
- *    0   success / no errors
- *    >0  dep file has been modified, during review (1 == PKG_DEP_REVERTED_DEFAULT, 2 == PKG_DEP_EDITED)
- */
-static int __write_sqf(struct pkg_graph *pkg_graph, const struct slack_pkg_dbi *slack_pkg_dbi,
-                       const char *pkg_name, struct pkg_options options, bool *db_dirty,
-                       pkg_nodes_t *review_skip_pkgs, pkg_nodes_t *output_pkgs)
-{
-        int rc = 0;
-        struct pkg_iterator iter;
-
-        pkg_iterator_flags_t flags = 0;
-        int max_dist               = (options.max_dist >= 0 ? options.max_dist : (options.deep ? -1 : 1));
-
-        if (options.revdeps) {
-                flags = PKG_ITER_REVDEPS;
-        } else {
-                flags = PKG_ITER_DEPS;
-        }
-
-        for (struct pkg_node *node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist); node != NULL;
-             node                  = pkg_iterator_next(&iter)) {
-
-                if (node->pkg.dep.is_meta)
-                        continue;
-
-                check_track_pkg(&node->pkg, node->dist, options.track_mode, db_dirty);
-
-                if (options.check_installed && strcmp(pkg_name, node->pkg.name) != 0) {
-                        const char *tag =
-                            (options.check_installed & PKG_CHECK_ANY_INSTALLED ? NULL : user_config.sbo_tag);
-                        if (slack_pkg_dbi->is_installed(node->pkg.name, tag)) {
-                                // mesg_info("package %s is already installed: skipping\n", node->pkg.name);
-                                continue;
-                        }
-                }
-
-                if (pkg_nodes_bsearch_const(review_skip_pkgs, node->pkg.name) == NULL) {
-                        rc = check_reviewed_pkg(&node->pkg, options.review_type, db_dirty);
-                        if (rc < 0) {
-                                goto finish;
-                        }
-                        if (rc > 0) {
-                                // Package dependency file was edited (it may have been updated): reload the dep
-                                // file and process the node
-                                pkg_clear_required(&node->pkg);
-                                pkg_load_dep(pkg_graph, node->pkg.name, options);
-                                goto finish;
-                        }
-                        pkg_nodes_insert_sort(review_skip_pkgs, node);
-                }
-
-                if (pkg_nodes_lsearch_const(output_pkgs, node->pkg.name) == NULL) {
-                        pkg_nodes_append(output_pkgs, node);
-                }
-        }
-
-finish:
-        pkg_iterator_destroy(&iter);
-
-        return rc;
-}
 
 
-int compar_versions(const char *ver_a, const char *ver_b) { return filevercmp(ver_a, ver_b); }
-
-const char *find_dep_file(const char *pkg_name)
-{
-        static char dep_file[4096];
-        struct stat sb;
-
-        bds_string_copyf(dep_file, sizeof(dep_file), "%s/%s", user_config.depdir, pkg_name);
-
-        if (stat(dep_file, &sb) == 0) {
-                if (sb.st_mode & S_IFREG) {
-                        return dep_file;
-                } else if (sb.st_mode & S_IFDIR) {
-                        fprintf(stderr, "dependency file for package %s already exists as directory: %s\n",
-                                pkg_name, dep_file);
-                } else {
-                        fprintf(stderr, "dependency file for package %s already exists as non-standard file: %s\n",
-                                pkg_name, dep_file);
-                }
-        }
-        return NULL;
-}
+int pkg_compare_versions(const char *ver_a, const char *ver_b) { return filevercmp(ver_a, ver_b); }

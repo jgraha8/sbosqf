@@ -1,3 +1,16 @@
+#include <assert.h>
+#include <dirent.h>
+#include <stdio.h>
+
+#include "mesg.h"
+#include "options.h"
+#include "output_path.h"
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "pkg_io.h"
+#include "pkg_util.h"
+#include "user_config.h"
+
 void print_update_help()
 {
         printf("Usage: %s update [option] pkg\n"
@@ -31,7 +44,7 @@ int process_update_options(int argc, char **argv, struct pkg_options *options)
                                                      LONG_OPT("rebuild-deps", 'r'),
                                                      {0, 0, 0, 0}};
 
-        int rc = process_options(argc, argv, options_str, long_options, command_update_help, options);
+        int rc = process_options(argc, argv, options_str, long_options, print_update_help, options);
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
@@ -79,7 +92,7 @@ static int select_updated_pkgs(const struct slack_pkg_dbi *slack_pkg_dbi,
 
                         slack_pkg = slack_pkg_dbi->search_const(node->pkg.name, user_config.sbo_tag);
                         if (slack_pkg) {
-                                if (compar_versions(node->pkg.version, slack_pkg->version) > 0) {
+                                if (pkg_compare_versions(node->pkg.version, slack_pkg->version) > 0) {
                                         pkg_nodes_append_unique(updated_pkgs, node);
                                 }
                         }
@@ -161,7 +174,7 @@ static int process_update_deps(const struct slack_pkg_dbi *slack_pkg_dbi,
                                 continue;
                         }
 
-                        int ver_diff = compar_versions(node->pkg.version, slack_pkg->version);
+                        int ver_diff = pkg_compare_versions(node->pkg.version, slack_pkg->version);
                         if (ver_diff > 0) {
                                 /*
                                   Updated package (version change)
@@ -246,7 +259,7 @@ static int process_update_revdeps(const struct slack_pkg_dbi *slack_pkg_dbi,
                                 continue;
                         }
 
-                        int ver_diff = compar_versions(node->pkg.version, slack_pkg->version);
+                        int ver_diff = pkg_compare_versions(node->pkg.version, slack_pkg->version);
                         if (ver_diff > 0) {
                                 /*
                                   Update parent package
@@ -339,7 +352,7 @@ static int process_update(const struct slack_pkg_dbi *slack_pkg_dbi,
                                 continue;
                         }
 
-                        rc = check_reviewed_pkg(&pkg_nodes_get(build_list, i)->pkg, review_type, &db_dirty);
+                        rc = pkg_check_reviewed(&pkg_nodes_get(build_list, i)->pkg, review_type, &db_dirty);
                         if (0 > rc) {
                                 goto finish;
                         }
@@ -390,17 +403,18 @@ static int write_sqf(const struct slack_pkg_dbi *slack_pkg_dbi,
         }
         rc = pkg_write_sqf(os, slack_pkg_dbi, pkg_graph, pkg_names, pkg_options, db_dirty);
 
-        ostream_close(os);
+        if (os)
+                ostream_close(os);
 
         return rc;
 }
 
-static int write_pkg_sqf(const struct slack_pkg_dbi *slack_pkg_dbi,
-                         struct pkg_graph *          pkg_graph,
-                         pkg_nodes_t *               pkg_nodes,
-                         const char *                output_path,
-                         struct pkg_options          pkg_options,
-                         bool *                      db_dirty)
+static int write_nodes_sqf(const struct slack_pkg_dbi *slack_pkg_dbi,
+                           struct pkg_graph *          pkg_graph,
+                           pkg_nodes_t *               pkg_nodes,
+                           const char *                output_path,
+                           struct pkg_options          pkg_options,
+                           bool *                      db_dirty)
 {
         int rc = 0;
 
@@ -450,7 +464,7 @@ int run_update_command(const struct slack_pkg_dbi *slack_pkg_dbi,
          */
         for (size_t i = 0; i < string_list_size(pkg_names); ++i) {
                 const char *pkg_name = string_list_get_const(pkg_names, i);
-                if (is_meta_pkg(pkg_name)) {
+                if (pkg_is_meta(pkg_name)) {
                         assert(pkg_load_dep(pkg_graph, pkg_name, pkg_options) == 0);
                 }
         }

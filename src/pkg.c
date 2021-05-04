@@ -27,11 +27,12 @@ struct pkg_options pkg_options_default()
         struct pkg_options options;
         memset(&options, 0, sizeof(options));
 
-        options.recursive   = true;
-        options.optional    = true;
-        options.review_type = PKG_REVIEW_ENABLED;
-        options.output_mode = PKG_OUTPUT_FILE;
-        options.max_dist    = -1;
+        options.recursive    = true;
+        options.optional     = true;
+        options.review_type  = PKG_REVIEW_ENABLED;
+        options.output_mode  = PKG_OUTPUT_FILE;
+        options.max_dist     = -1;
+        options.pkg_dbi_type = SLACK_PKG_DBI_PACKAGES;
 
         return options;
 }
@@ -127,7 +128,7 @@ int pkg_set_info_crc(struct pkg *pkg)
         if (pkg->sbo_dir == NULL)
                 return 1;
 
-        char *readme         = sbo_load_readme(pkg->sbo_dir, pkg->name);
+        char *      readme   = sbo_load_readme(pkg->sbo_dir, pkg->name);
         const char *requires = sbo_read_requires(pkg->sbo_dir, pkg->name);
 
         pkg->info_crc = crc32_z(0L, Z_NULL, 0);

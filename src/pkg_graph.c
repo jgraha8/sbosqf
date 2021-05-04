@@ -251,7 +251,7 @@ struct pkg_node *pkg_graph_search(struct pkg_graph *pkg_graph, const char *pkg_n
         if ((pkg_node = pkg_nodes_bsearch(pkg_graph->meta_pkgs, pkg_name)))
                 return pkg_node;
 
-        if (is_meta_pkg(pkg_name)) {
+        if (pkg_is_meta(pkg_name)) {
                 pkg_node                  = pkg_node_alloc(pkg_name);
                 pkg_node->pkg.dep.is_meta = true;
                 pkg_nodes_insert_sort(pkg_graph->meta_pkgs, pkg_node);

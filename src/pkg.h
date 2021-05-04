@@ -33,6 +33,7 @@
 #include <libbds/bds_vector.h>
 
 #include "string_list.h"
+#include "slack_pkg_dbi.h"
 
 #define PKG_CHECK_INSTALLED 0x1
 #define PKG_CHECK_ANY_INSTALLED 0x2
@@ -138,6 +139,7 @@ struct pkg_options {
         enum pkg_review_type review_type;       /* Selection for how packages are reviewed */
         enum pkg_output_mode output_mode;       /* Output mode selection */
         enum pkg_track_mode  track_mode;        /* Package tracking selection */
+	enum slack_pkg_dbi_type pkg_dbi_type;   /* Package database interface type */
         char *               output_name;       /* Output file name */
         bool                 recursive;         /* Recursive dep file parsing */
         bool                 optional;          /* Include optional packages in dep file parsing */

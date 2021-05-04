@@ -1,6 +1,11 @@
 #ifndef BUILD_H__
 #define BUILD_H__
 
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "slack_pkg_dbi.h"
+#include "string_list.h"
+
 void print_build_help();
 
 int process_build_options(int argc, char **argv, struct pkg_options *options);

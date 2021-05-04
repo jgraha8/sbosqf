@@ -24,6 +24,7 @@ SRC := \
 	pkg_util.c \
 	pkg.c \
 	pkg_graph.c \
+	pkg_io.c \
 	pkg_ops.c \
 	build.c \
 	check_updates.c \
@@ -37,7 +38,6 @@ SRC := \
 	search.c \
 	update.c \
 	updatedb.c \
-	io.c \
 	main.c
 
 OBJ := $(SRC:.c=.o)

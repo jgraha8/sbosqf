@@ -1,6 +1,9 @@
 #ifndef INFO_H__
 #define INFO_H__
 
+#include "pkg.h"
+#include "pkg_graph.h"
+
 void print_info_help();
 
 int process_info_options(int argc, char **argv, struct pkg_options *options);

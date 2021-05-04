@@ -1,13 +1,13 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "io.h"
 #include "mesg.h"
 #include "options.h"
 #include "ostream.h"
 #include "pkg.h"
 #include "pkg_graph.h"
 #include "pkg_ops.h"
+#include "pkg_io.h"
 #include "slack_pkg_dbi.h"
 #include "output_path.h"
 
@@ -80,7 +80,7 @@ static int __write_pkg_sqf(const struct slack_pkg_dbi *slack_pkg_dbi,
                 mesg_error("unable to create %s\n", output_path);
                 return 1;
         }
-        rc = io_write_sqf(os, slack_pkg_dbi, pkg_graph, pkg_names, pkg_options, db_dirty);
+        rc = pkg_write_sqf(os, slack_pkg_dbi, pkg_graph, pkg_names, pkg_options, db_dirty);
 
         if (os)
                 ostream_close(os);

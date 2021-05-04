@@ -1,6 +1,11 @@
 #ifndef REMOVE_H__
 #define REMOVE_H__
 
+#include "pkg.h"
+#include "pkg_graph.h"
+#include "slack_pkg_dbi.h"
+#include "string_list.h"
+
 void print_remove_help();
 
 int process_remove_options(int argc, char **argv, struct pkg_options *options);
