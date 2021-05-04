@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef __PKG_H__
-#define __PKG_H__
+#ifndef PKG_H__
+#define PKG_H__
 
 #include <stdint.h>
 
@@ -49,10 +49,10 @@ struct pkg;
 struct pkg_node;
 
 struct pkg_dep {
-        pkg_nodes_t *required;
-        pkg_nodes_t *parents;
+        pkg_nodes_t *  required;
+        pkg_nodes_t *  parents;
         string_list_t *buildopts;
-        bool is_meta;
+        bool           is_meta;
 };
 
 enum pkg_update_type {
@@ -70,24 +70,24 @@ enum pkg_update_type {
 
 struct pkg_update {
         enum pkg_update_type type;
-        struct pkg_node *rel_node;
-        const char *version;
+        struct pkg_node *    rel_node;
+        const char *         version;
 };
 
 struct pkg_update pkg_update_assign(enum pkg_update_type type, struct pkg_node *rel_node, const char *version);
 void pkg_update_reset(struct pkg_update *update);
 
 struct pkg {
-        char *name;
-        char *version;
-        char *sbo_dir;
+        char *         name;
+        char *         version;
+        char *         sbo_dir;
         struct pkg_dep dep;
-        uint32_t info_crc; /// CRC of README and REQUIRED list in .info
-                           // struct pkg_sbo *sbo;
-        bool is_reviewed;
-        bool is_tracked;
-        bool parent_installed;
-        bool for_removal;
+        uint32_t       info_crc; /// CRC of README and REQUIRED list in .info
+                                 // struct pkg_sbo *sbo;
+        bool              is_reviewed;
+        bool              is_tracked;
+        bool              parent_installed;
+        bool              for_removal;
         struct pkg_update update;
 };
 
@@ -120,26 +120,32 @@ void pkg_append_buildopts(struct pkg *pkg, char *bopt);
 size_t pkg_buildopts_size(const struct pkg *pkg);
 const char *pkg_buildopts_get_const(const struct pkg *pkg, size_t i);
 
-enum pkg_review_type { PKG_REVIEW_DISABLED = 0, PKG_REVIEW_ENABLED, PKG_REVIEW_AUTO, PKG_REVIEW_AUTO_VERBOSE };
+enum pkg_review_type {
+        PKG_REVIEW_DISABLED = 0,
+        PKG_REVIEW_ENABLED,
+        PKG_REVIEW_AUTO,
+        PKG_REVIEW_AUTO_VERBOSE,
+        PKG_REVIEW_SIZE
+};
 
 enum pkg_output_mode { PKG_OUTPUT_FILE = 0, PKG_OUTPUT_STDOUT, PKG_OUTPUT_SLACKPKG_1, PKG_OUTPUT_SLACKPKG_2 };
 
 enum pkg_track_mode { PKG_TRACK_NONE = 0, PKG_TRACK_ENABLE, PKG_TRACK_ENABLE_ALL };
 
 struct pkg_options {
-        int check_installed; /* Bit flags for checking packages are already installed */
-        int max_dist;
-        enum pkg_review_type review_type; /* Selection for how packages are reviewed */
-        enum pkg_output_mode output_mode; /* Output mode selection */
-        enum pkg_track_mode track_mode;   /* Package tracking selection */
-        char *output_name;                /* Output file name */
-        bool recursive;                   /* Recursive dep file parsing */
-        bool optional;                    /* Include optional packages in dep file parsing */
-        bool installed_revdeps;           /* Only process installed reverse dependencies */
-        bool revdeps;                     /* Include reverse dependencies */
-        bool deep;                        /* Perform deep graph processing */
-        bool rebuild_deps;                /* Rebuild dependencies--used for updating packages only */
-        bool check_slackpkg_repo;         /* Check slackpkg repo for updates instead of installed packages */
+        int                  check_installed; /* Bit flags for checking packages are already installed */
+        int                  max_dist;
+        enum pkg_review_type review_type;       /* Selection for how packages are reviewed */
+        enum pkg_output_mode output_mode;       /* Output mode selection */
+        enum pkg_track_mode  track_mode;        /* Package tracking selection */
+        char *               output_name;       /* Output file name */
+        bool                 recursive;         /* Recursive dep file parsing */
+        bool                 optional;          /* Include optional packages in dep file parsing */
+        bool                 installed_revdeps; /* Only process installed reverse dependencies */
+        bool                 revdeps;           /* Include reverse dependencies */
+        bool                 deep;              /* Perform deep graph processing */
+        bool                 rebuild_deps;      /* Rebuild dependencies--used for updating packages only */
+        bool check_slackpkg_repo;               /* Check slackpkg repo for updates instead of installed packages */
         bool graph;
         bool all_packages;
 };
@@ -150,4 +156,4 @@ const char *pkg_output_name(enum pkg_output_mode output_mode, const char *pkg_na
 
 // pkg_nodes_t *pkg_load_sbo();
 
-#endif
+#endif // PKG_H__

@@ -8,6 +8,7 @@
 #include <libbds/bds_queue.h>
 
 #include "file_mmap.h"
+#include "io.h"
 #include "mesg.h"
 #include "pkg_ops.h"
 #include "pkg_util.h"
@@ -26,9 +27,9 @@
 static int __load_sbo(pkg_nodes_t *pkgs, const char *cur_path)
 {
         static char sbo_dir[4096];
-        static int level = 0;
+        static int  level = 0;
 
-        int rc                = 0;
+        int            rc     = 0;
         struct dirent *dirent = NULL;
 
         DIR *dp = opendir(cur_path);
@@ -193,7 +194,7 @@ int pkg_compar_sets(pkg_nodes_t *new_pkgs, pkg_nodes_t *old_pkgs)
                                 */
                                 new_pkg->pkg.is_reviewed = old_pkg->pkg.is_reviewed;
                         } else {
-                                int ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
+                                int        ver_diff = compar_versions(old_pkg->pkg.version, new_pkg->pkg.version);
                                 struct pkg updated_pkg[2] = {old_pkg->pkg, new_pkg->pkg};
 
                                 if (ver_diff == 0) {
@@ -318,7 +319,7 @@ int pkg_load_db(pkg_nodes_t *pkgs)
 
 int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_options options)
 {
-        return load_dep_file(pkg_graph, pkg_name, options);
+        return io_load_dep(pkg_graph, pkg_name, options);
 }
 
 int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
@@ -334,7 +335,7 @@ int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
                                 continue;
 
                         int rc = 0;
-                        if ((rc = load_dep_file(pkg_graph, pkg_node->pkg.name, options)) != 0)
+                        if ((rc = io_load_dep(pkg_graph, pkg_node->pkg.name, options)) != 0)
                                 return rc;
                 }
         }
@@ -342,7 +343,9 @@ int pkg_load_all_deps(struct pkg_graph *pkg_graph, struct pkg_options options)
         return 0;
 }
 
-int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi, struct pkg_graph *pkg_graph, struct pkg_options options)
+int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi,
+                            struct pkg_graph *          pkg_graph,
+                            struct pkg_options          options)
 {
         pkg_nodes_t *pkgs[2] = {pkg_graph->sbo_pkgs, pkg_graph->meta_pkgs};
 
@@ -354,12 +357,12 @@ int pkg_load_installed_deps(const struct slack_pkg_dbi *slack_pkg_dbi, struct pk
                         if (pkg_node->pkg.name == NULL)
                                 continue;
 
-			if( !slack_pkg_dbi->is_installed(pkg_node->pkg.name, NULL) ) {
-				continue;
-			}
+                        if (!slack_pkg_dbi->is_installed(pkg_node->pkg.name, NULL)) {
+                                continue;
+                        }
 
                         int rc = 0;
-                        if ((rc = load_dep_file(pkg_graph, pkg_node->pkg.name, options)) != 0)
+                        if ((rc = io_load_dep(pkg_graph, pkg_node->pkg.name, options)) != 0)
                                 return rc;
                 }
         }
@@ -488,7 +491,7 @@ static char read_response()
  */
 int pkg_review_prompt(const struct pkg *pkg, bool return_on_modify_mask, int *dep_status)
 {
-        int rc           = 0;
+        int        rc    = 0;
         static int level = 0;
 
         if (pkg_review(pkg) != 0)

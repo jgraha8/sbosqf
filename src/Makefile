@@ -25,6 +25,19 @@ SRC := \
 	pkg.c \
 	pkg_graph.c \
 	pkg_ops.c \
+	build.c \
+	check_updates.c \
+	edit.c \
+	info.c \
+	make_meta.c \
+	options.c \
+	output_path.c \
+	remove.c \
+	review.c \
+	search.c \
+	update.c \
+	updatedb.c \
+	io.c \
 	main.c
 
 OBJ := $(SRC:.c=.o)
