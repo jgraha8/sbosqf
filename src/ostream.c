@@ -15,15 +15,17 @@ struct ostream *ostream_open(const char *path, const char *mode, bool buffer_str
 	struct ostream *os = malloc(sizeof(*os));
 	memset(os, 0, sizeof(*os));
 
+	if( strcmp(path, "-") == 0 ||
+	    strcmp(path, "stdout") == 0	) {
+		path = "/dev/stdout";
+	} else if( strcmp(path, "stderr") == 0 ) {
+		path = "/dev/stderr";
+	}
+
 	os->fp = fopen(path, mode);
 	if( os->fp == NULL ) {
 		free(os);
 		return NULL;
-	}
-
-	if( strcmp(path, "/dev/stdout") == 0 ||
-	    strcmp(path, "/dev/stderr") == 0 ) {
-		os->console_stream = true;
 	}
 
 	if( buffer_stream ) {
@@ -35,20 +37,15 @@ struct ostream *ostream_open(const char *path, const char *mode, bool buffer_str
 	return os;
 }
 
-bool ostream_is_console_stream(const struct ostream *os)
-{
-	return os->console_stream;
-}
-
 int ostream_printf(struct ostream *os, const char *fmt, ...)
 {
 	static char buf[BUF_SIZE] = {0};
 	int rc = 0;
 
 	va_list va;
-	
+
 	if( os->output_buffer ) {
-		va_start(va, fmt);		
+		va_start(va, fmt);
 		rc = vsnprintf(buf, BUF_SIZE-1, fmt, va);
 		va_end(va);
 

@@ -33,12 +33,9 @@ struct ostream
 {
         FILE *fp;
         struct bds_vector *output_buffer;
-        bool console_stream;
 };
 
 struct ostream *ostream_open(const char *path, const char *mode, bool buffered);
-
-bool ostream_is_console_stream(const struct ostream *os);
 
 int ostream_printf(struct ostream *os, const char *fmt, ...);
 

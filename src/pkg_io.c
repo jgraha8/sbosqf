@@ -522,15 +522,15 @@ int pkg_write_sqf(struct ostream *            os,
                 }
 
                 ostream_printf(os, "%s", pkg_output_name(options.output_mode, node->pkg.name));
-                if (ostream_is_console_stream(os)) {
+                if (PKG_OUTPUT_FILE != options.output_mode) {
                         ostream_printf(os, " ");
                 } else {
-                        write_buildopts(os, &node->pkg);
+			write_buildopts(os, &node->pkg);
                         ostream_printf(os, "\n");
                 }
         }
 
-        if (have_output && ostream_is_console_stream(os))
+        if (have_output && PKG_OUTPUT_FILE != options.output_mode)
                 ostream_printf(os, "\n");
 
 finish:
