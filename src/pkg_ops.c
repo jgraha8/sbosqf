@@ -177,7 +177,7 @@ static int __pkg_review(const struct pkg *pkg, bool include_dep)
                 bds_string_copyf(file_name, sizeof(file_name), "%s/%s", user_config.depdir, pkg->name);
                 if ((dep = file_mmap(file_name)) == NULL) {
                         create_default_dep_verbose(pkg);
-                        assert(dep = file_mmap(file_name));
+                        assert((dep = file_mmap(file_name)) != NULL);
                 }
         }
 

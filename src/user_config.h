@@ -10,6 +10,7 @@ struct user_config {
         char *sbo_tag;
         char *pager;
 	char *editor;
+        char *output_dir;
 };
 
 extern struct user_config user_config;

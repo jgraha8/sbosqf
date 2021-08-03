@@ -27,6 +27,7 @@
 #define REVIEWED "REVIEWED"
 #define PARENTDB "PARENTDB"
 #define DEPDB "DEPDB"
+#define OUTPUT_DIR "/var/lib/sbopkg/queues"
 #define PROGRAM_NAME "sbosqf"
 
 // gnulib config

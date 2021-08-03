@@ -126,15 +126,15 @@ const char *read_info_string(const char *sbo_dir, const char *pkg_name, const ch
         char *str = c + strlen(key);
 
 	// Find opening quote
-	assert(c = bds_string_find(str, "\""));
+	assert((c = bds_string_find(str, "\"")) != NULL);
 	str = c+1;
 
         // Find closing quote
-	assert(c = bds_string_find(str, "\""));
+	assert((c = bds_string_find(str, "\"")) != NULL);
 	*c = '\0';
 
 	// Remove line continuation
-        while ((c = bds_string_find(str, "\\"))) {
+        while ((c = bds_string_find(str, "\\")) != NULL) {
                 *c = ' ';
         }
         strncpy(info_str, bds_string_atrim(str), sizeof(info_str));

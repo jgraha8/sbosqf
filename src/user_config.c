@@ -33,16 +33,16 @@ static char *strip_quotes(char *str)
 }
 
 static struct user_config default_user_config();
-static void create_user_config(const char *config_path, const struct user_config *user_config);
-static void load_user_config(const char *config_path, struct user_config *user_config);
+static void               create_user_config(const char *config_path, const struct user_config *user_config);
+static void               load_user_config(const char *config_path, struct user_config *user_config);
 
 void user_config_init()
 {
         struct stat sb;
-        char *home        = NULL;
-        char *pager       = NULL;
-        char *editor      = NULL;
-        char *config_path = NULL;
+        char *      home        = NULL;
+        char *      pager       = NULL;
+        char *      editor      = NULL;
+        char *      config_path = NULL;
 
         user_config = default_user_config();
 
@@ -82,6 +82,7 @@ void user_config_destroy()
                 free(user_config.pager);
         }
         free(user_config.editor);
+        free(user_config.output_dir);
 }
 
 static struct user_config default_user_config()
@@ -91,7 +92,8 @@ static struct user_config default_user_config()
                                  .depdir             = bds_string_dup(DEPDIR),
                                  .sbo_tag            = bds_string_dup(SBO_TAG),
                                  .pager              = bds_string_dup(PAGER),
-                                 .editor             = bds_string_dup(EDITOR)};
+                                 .editor             = bds_string_dup(EDITOR),
+                                 .output_dir         = bds_string_dup(OUTPUT_DIR)};
         return cs;
 }
 
@@ -100,15 +102,17 @@ static void create_user_config(const char *config_path, const struct user_config
         FILE *fp = fopen(config_path, "w");
         assert(fp);
 
-        fprintf(fp, "# Default sbopkg-dep2sqf configuration\n"
-                    "SBOPKG_REPO = %s\n"
-                    "SLACKPKG_REPO_NAME = %s\n"
-                    "SBO_TAG = %s\n"
-                    "DEPDIR = %s\n"
-                    "PAGER = %s\n"
-                    "EDITOR = %s\n",
+        fprintf(fp,
+                "# Default sbopkg-dep2sqf configuration\n"
+                "SBOPKG_REPO = %s\n"
+                "SLACKPKG_REPO_NAME = %s\n"
+                "SBO_TAG = %s\n"
+                "DEPDIR = %s\n"
+                "PAGER = %s\n"
+                "EDITOR = %s\n"
+                "OUTPUT_DIR = %s\n",
                 user_config->sbopkg_repo, user_config->slackpkg_repo_name, user_config->sbo_tag,
-                user_config->depdir, user_config->pager, user_config->editor);
+                user_config->depdir, user_config->pager, user_config->editor, user_config->output_dir);
 
         fclose(fp);
 }
@@ -129,7 +133,7 @@ static void load_user_config(const char *config_path, struct user_config *user_c
         }
 
         char line[LINE_MAX];
-        int lineno = 0;
+        int  lineno = 0;
 
         while (fgets(line, LINE_MAX, fp) != NULL) {
                 ++lineno;
@@ -173,6 +177,8 @@ static void load_user_config(const char *config_path, struct user_config *user_c
                         SET_CONFIG(*user_config, pager, keyval[1]);
                 } else if (strcmp(keyval[0], "EDITOR") == 0) {
                         SET_CONFIG(*user_config, editor, keyval[1]);
+                } else if (strcmp(keyval[0], "OUTPUT_DIR") == 0) {
+                        SET_CONFIG(*user_config, output_dir, keyval[1]);
                 } else {
                         fprintf(stderr, "unknown configuration %s=%s at line %d in %s\n", keyval[0], keyval[1],
                                 lineno, config_path);
