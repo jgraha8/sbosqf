@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include <assert.h>
 #include <ctype.h>
 #include <dirent.h>
@@ -93,7 +94,7 @@ const char *sbo_find_readme(const char *sbo_repo, const char *pkg_name)
 char *sbo_load_readme(const char *sbo_dir, const char *pkg_name)
 {
 	char *readme = NULL;
-        static char readme_file[4096];	
+        static char readme_file[4096];
 	bds_string_copyf(readme_file, sizeof(readme_file), "%s/README", sbo_dir);
 
 	struct file_mmap *readme_mmap = file_mmap(readme_file);
@@ -102,7 +103,7 @@ char *sbo_load_readme(const char *sbo_dir, const char *pkg_name)
 		readme = bds_string_dup(readme_mmap->data);
 		file_munmap(&readme_mmap);
 	}
-		
+
 
 	return readme;
 }

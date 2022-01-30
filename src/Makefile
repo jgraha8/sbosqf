@@ -1,8 +1,5 @@
-CC:=gcc
-#ZLIB:=${HOME}/opt/zlib/1.2.11
-#CFLAGS:=-Wall -Werror -O0 -g -I. -I$(ZLIB)/include -I/mnt/shared/include -fPIC
-#LDFLAGS:=-L$(ZLIB)/lib -L/mnt/shared/lib64 -Wl,-rpath,$(ZLIB)/lib
-CFLAGS:=-Wall -Werror -O2 -g -I. -fPIC
+CFLAGS ?= -Wall -Werror -O2 -g -fPIC
+CFLAGS += -std=c99 -I.
 CFLAGS += $(shell pkg-config --cflags zlib)
 
 LIBS:=-lbds -lm
