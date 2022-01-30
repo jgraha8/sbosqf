@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <string.h>
 
 #include <libbds/bds_queue.h>
 

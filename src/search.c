@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <dirent.h>
+#include <string.h>
 
 #include "options.h"
 #include "pkg.h"

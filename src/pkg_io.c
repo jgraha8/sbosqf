@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <string.h>
 
 #include <libbds/bds_stack.h>
 
@@ -376,7 +377,7 @@ int pkg_load_dep(struct pkg_graph *pkg_graph, const char *pkg_name, struct pkg_o
         if (pkg_node == NULL)
                 return 1;
 
-        struct bds_stack *visit_path = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
+        struct bds_stack *visit_path = bds_stack_alloc(1,sizeof(struct pkg_node *), NULL);
         pkg_nodes_t *     visit_list = pkg_nodes_alloc_reference();
 
         int rc = __load_dep(pkg_graph, pkg_node, options, visit_list, visit_path);
@@ -485,7 +486,7 @@ int pkg_write_sqf(struct ostream *            os,
         const size_t   num_pkgs         = string_list_size(pkg_names);
 
         /* if (options.revdeps) { */
-        /*         revdeps_pkgs = bds_stack_alloc(1, sizeof(struct pkg), NULL); */
+        /*         revdeps_pkgs = bds_stack_alloc(1,sizeof(struct pkg), NULL); */
         /* } */
         output_pkgs = pkg_nodes_alloc_reference();
 

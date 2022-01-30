@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <libbds/bds_queue.h>
 #include <libbds/bds_stack.h>

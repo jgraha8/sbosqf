@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "mesg.h"
 #include "options.h"

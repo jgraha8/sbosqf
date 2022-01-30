@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018-2019 Jason Graham <jgraham@compukix.net>
+ * Copyright (C) 2018-2021 Jason Graham <jgraham@compukix.net>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,6 +23,7 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <libbds/bds_queue.h>
 #include <libbds/bds_stack.h>

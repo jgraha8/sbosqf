@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <libbds/bds_stack.h>
 
@@ -284,7 +285,7 @@ struct pkg_node *pkg_iterator_begin(struct pkg_iterator *iter, struct pkg_graph 
 
         iter->flags       = flags;
         iter->max_dist    = max_dist;
-        iter->visit_nodes = bds_stack_alloc(1, sizeof(struct pkg_node *), NULL);
+        iter->visit_nodes = bds_stack_alloc(1,sizeof(struct pkg_node *), NULL);
 
         pkg_graph_clear_markers(pkg_graph, (flags & PKG_ITER_PRESERVE_COLOR ? true : false));
 

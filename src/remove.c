@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <libbds/bds_stack.h>
 
@@ -12,7 +13,8 @@
 #include "string_list.h"
 #include "user_config.h"
 
-void print_remove_help()
+void
+print_remove_help()
 {
         printf("Usage: %s remove [option] pkg\n"
                "Options:\n"
@@ -25,14 +27,15 @@ void print_remove_help()
                "sbopkg-dep2sqf"); // TODO: have program_name variable
 }
 
-int process_remove_options(int argc, char **argv, struct pkg_options *options)
+int
+process_remove_options(int argc, char **argv, struct pkg_options *options)
 {
-        static const char *        options_str    = "dhlL:o:R";
-        static const struct option long_options[] = {                       /* These options set a flag. */
-                                                     LONG_OPT("deep", 'd'), /* option */
-                                                     LONG_OPT("help", 'h'),          LONG_OPT("list", 'l'),
-                                                     LONG_OPT("list-slackpkg", 'L'), LONG_OPT("output", 'o'),
-                                                     LONG_OPT("repo-db", 'R'),       {0, 0, 0, 0}};
+        static const char         *options_str    = "dhlL:o:R";
+        static const struct option long_options[] = {
+            /* These options set a flag. */
+            LONG_OPT("deep", 'd'), /* option */
+            LONG_OPT("help", 'h'),   LONG_OPT("list", 'l'),    LONG_OPT("list-slackpkg", 'L'),
+            LONG_OPT("output", 'o'), LONG_OPT("repo-db", 'R'), {0, 0, 0, 0}};
 
         int rc = process_options(argc, argv, options_str, long_options, print_remove_help, options);
 
@@ -41,8 +44,8 @@ int process_remove_options(int argc, char **argv, struct pkg_options *options)
 
         if (rc >= 0) {
                 if (options->output_mode != PKG_OUTPUT_FILE && options->output_name) {
-                        mesg_error(
-                            "options --list/-l, --list-slackpkg/-L, and --output/-o are mutually exclusive\n");
+                        mesg_error("options --list/-l, --list-slackpkg/-L, and --output/-o are "
+                                   "mutually exclusive\n");
                         return -1;
                 }
         }
@@ -50,18 +53,19 @@ int process_remove_options(int argc, char **argv, struct pkg_options *options)
         return rc;
 }
 
-int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
-                       struct pkg_graph *          pkg_graph,
-                       const string_list_t *       pkg_names,
-                       struct pkg_options          pkg_options)
+int
+run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
+                   struct pkg_graph           *pkg_graph,
+                   const string_list_t        *pkg_names,
+                   struct pkg_options          pkg_options)
 {
 
         int                  rc = 0;
         char                 sqf_file[256];
-        struct ostream *     os           = NULL;
-        pkg_nodes_t *        pkg_list     = NULL;
-        struct bds_stack *   removal_list = NULL;
-        struct pkg_node *    node         = NULL;
+        struct ostream      *os           = NULL;
+        pkg_nodes_t         *pkg_list     = NULL;
+        struct bds_stack    *removal_list = NULL;
+        struct pkg_node     *node         = NULL;
         struct pkg_iterator  iter;
         pkg_iterator_flags_t flags    = 0;
         int                  max_dist = 0;
@@ -75,7 +79,8 @@ int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
 
         // Make sure all dependency files are loaded in case we have meta-packages
         for (size_t i = 0; i < num_pkgs; ++i) {
-                if ((rc = pkg_load_dep(pkg_graph, string_list_get_const(pkg_names, i), pkg_options)) != 0)
+                if ((rc = pkg_load_dep(pkg_graph, string_list_get_const(pkg_names, i),
+                                       pkg_options)) != 0)
                         return rc;
         }
 
@@ -88,8 +93,8 @@ int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
         for (size_t i = 0; i < num_pkgs; ++i) {
                 const char *pkg_name = string_list_get_const(pkg_names, i);
 
-                for (node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist); node != NULL;
-                     node = pkg_iterator_next(&iter)) {
+                for (node = pkg_iterator_begin(&iter, pkg_graph, pkg_name, flags, max_dist);
+                     node != NULL; node = pkg_iterator_next(&iter)) {
 
                         if (node->pkg.dep.is_meta)
                                 continue;
@@ -127,8 +132,8 @@ int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
                         bool parent_installed =
                             slack_pkg_dbi->is_installed(parent_node->pkg.name, user_config.sbo_tag);
                         if (!parent_node->pkg.for_removal && parent_installed) {
-                                mesg_error_label("%12s", " %-24s <-- %s\n", "[required]", node->pkg.name,
-                                                 parent_node->pkg.name);
+                                mesg_error_label("%12s", " %-24s <-- %s\n", "[required]",
+                                                 node->pkg.name, parent_node->pkg.name);
                                 node->pkg.for_removal = false; /* Disable package remove */
                                 break;
                         }
@@ -148,12 +153,14 @@ int run_remove_command(const struct slack_pkg_dbi *slack_pkg_dbi,
         if (pkg_options.output_name) {
                 bds_string_copyf(sqf_file, sizeof(sqf_file), "%s", pkg_options.output_name);
         } else {
-                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-remove.sqf", string_list_get_const(pkg_names, 0));
+                bds_string_copyf(sqf_file, sizeof(sqf_file), "%s-remove.sqf",
+                                 string_list_get_const(pkg_names, 0));
         }
 
         bool        buffer_stream = (pkg_options.output_mode != PKG_OUTPUT_FILE);
-        const char *output_path   = (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
-        os                        = ostream_open(output_path, "w", buffer_stream);
+        const char *output_path =
+            (pkg_options.output_mode == PKG_OUTPUT_FILE ? &sqf_file[0] : "/dev/stdout");
+        os = ostream_open(output_path, "w", buffer_stream);
 
         while (bds_stack_pop(removal_list, &node)) {
                 ostream_printf(os, "%s", pkg_output_name(pkg_options.output_mode, node->pkg.name));
