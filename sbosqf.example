@@ -1,6 +1,0 @@
-SBOPKG_REPO="/var/lib/sbopkg/reponame"
-SLACKPKG_REPO_NAME="SLACKPKGPLUS_reponame"
-DEPDIR="/var/lib/sbosqf/deps"
-PAGER="less -r"
-SBO_TAG="_reponame"
-EDITOR="nano"
